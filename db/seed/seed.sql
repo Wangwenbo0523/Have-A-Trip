@@ -1,8 +1,8 @@
 -- Have-A-Trip · 种子数据
 --
--- 114 个景点: 74 个中国境内 + 40 个境外(覆盖六大洲), 全部为自采的公开事实信息,
+-- 140 个景点: 100 个中国境内 + 40 个境外(覆盖六大洲), 全部为自采的公开事实信息,
 -- 不引入任何第三方数据集, 以便「将来可闭源」。判断见 docs/LICENSE-AUDIT.md 第三节。
--- 境外的 40 条见文件后半部分的「世界景点」分节; 境内的 74 条见「中国城市的馆 · 园 · 地标」分节。
+-- 境内的 100 条见「中国城市的馆 · 园 · 地标」与「中国城市巡礼」两节; 境外的 40 条见「世界景点」分节。
 -- 每条 attraction 都必须写清 source 与 license(S0 已把它设为 NOT NULL)。
 --
 -- 幂等性: 可重复执行。
@@ -950,6 +950,324 @@ INSERT INTO attraction (
     'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
 ),
 
+-- ---------------------------------------- 中国城市巡礼（26 条）
+-- 补的是还没进库的城市: 沈阳、长春、哈尔滨、呼和浩特、太原、石家庄、济南、青岛、
+-- 合肥、南昌、福州、厦门、昆明、贵阳、南宁、兰州、银川、西宁、乌鲁木齐、宁波、
+-- 温州、无锡、佛山、泉州。以博物馆(10)、宗教场所(4)、自然(4)、地标(3)、
+-- 宫殿 / 历史 / 古镇 / 考古(各 1) 为主。口径与前面几节完全一致。
+(
+    'shenyang-imperial-palace', '沈阳故宫', 'Shenyang Imperial Palace',
+    '清入关前的皇宫，大政殿与十王亭的布局与北京故宫不同，2004 年作为「明清皇宫」的扩展项目列入世界遗产。',
+    '始建于 1625 年，是清太祖、清太宗时期的宫殿，1644 年清迁都北京后成为陪都宫殿。'
+    || '中路为大政殿与十王亭，八旗与左右翼王亭分列两侧；东路有崇政殿与凤凰楼，西路是文溯阁等建筑。'
+    || '与北京故宫同为「明清皇宫」世界遗产的组成部分，但规模小得多，半天可以走完。',
+    (SELECT id FROM category WHERE slug = 'palace'),
+    'CN', '辽宁省', '沈阳市', '辽宁省沈阳市沈河区沈阳路 171 号',
+    NULL, NULL,
+    '四季皆宜', 2.5, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'palace-museum-of-manchukuo', '伪满皇宫博物院', 'Palace Museum of Manchukuo',
+    '溥仪在长春的宫廷旧址，现为博物馆，展出伪满洲国时期的建筑原状与史料。',
+    '位于长春市宽城区，由勤民楼、缉熙楼、同德殿等建筑组成。'
+    || '建筑是中式与日式混合的样式，室内按当时的办公与居住原状布置，另设专题陈列说明那段历史。'
+    || '参观以建筑与原状陈列为主，馆内的史料部分内容较重，适合留出完整时间慢慢看。',
+    (SELECT id FROM category WHERE slug = 'museum'),
+    'CN', '吉林省', '长春市', '吉林省长春市宽城区光复北路 5 号',
+    NULL, NULL,
+    '四季皆宜，室内为主', 3.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'harbin-saint-sophia-cathedral', '哈尔滨圣索菲亚教堂', 'Harbin Saint Sophia Cathedral',
+    '拜占庭样式的教堂建筑，红砖墙体与绿色穹顶，现为建筑艺术馆。',
+    '建于 20 世纪初，1932 年重建后形成现在的砖砌结构，曾长期作为宗教场所。'
+    || '平面为拉丁十字，中央是大型穹顶，四角有帐篷顶式的塔楼，立面以红砖砌出装饰线脚。'
+    || '教堂前的广场是常见的拍摄点，内部现用作展览空间，展出与哈尔滨城市历史相关的图片。',
+    (SELECT id FROM category WHERE slug = 'religion'),
+    'CN', '黑龙江省', '哈尔滨市', '黑龙江省哈尔滨市道里区透笼街 88 号',
+    NULL, NULL,
+    '四季皆宜，夜间亮灯另有看点', 1.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'inner-mongolia-museum', '内蒙古博物院', 'Inner Mongolia Museum',
+    '以草原文化为主线的自治区博物馆，古生物化石与民族文物是两大部分。',
+    '位于呼和浩特市区东部，常设陈列包括远古世界、草原雄风、草原天骄等主题。'
+    || '恐龙与哺乳动物化石是自然部分的主要内容，民族部分陈列游牧生活的器具、服饰与宗教用品。'
+    || '馆内展厅按楼层分布，整体步行量不大，适合与市区的其他行程串起来。',
+    (SELECT id FROM category WHERE slug = 'museum'),
+    'CN', '内蒙古自治区', '呼和浩特市', '内蒙古呼和浩特市新城区新华东街 27 号',
+    NULL, NULL,
+    '四季皆宜，室内为主', 3.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'shanxi-museum', '山西博物院', 'Shanxi Museum',
+    '以晋国与北朝文物为主的省级博物馆，晋侯鸟尊是常被提及的一件。',
+    '位于太原汾河西岸，主馆外形取斗与鼎的轮廓，展厅围绕「晋魂」这条主线布置。'
+    || '青铜器是核心，晋侯墓地出土的器物成组陈列；另有北朝壁画、佛教造像与晋商文物等专题。'
+    || '展厅按主题分列，走完一遍需要半天，馆内休息区与文创店集中在一层。',
+    (SELECT id FROM category WHERE slug = 'museum'),
+    'CN', '山西省', '太原市', '山西省太原市万柏林区滨河西路北段 13 号',
+    NULL, NULL,
+    '四季皆宜，室内为主', 3.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'hebei-museum', '河北博物院', 'Hebei Museum',
+    '满城汉墓出土文物是这里的重点，金缕玉衣与长信宫灯都在常设陈列中。',
+    '位于石家庄市中心，常设陈列包括战国中山、满城汉墓、燕赵故事等部分。'
+    || '满城汉墓展区集中展出刘胜与窦绾墓的随葬品，金缕玉衣与长信宫灯是其中的代表。'
+    || '另设石刻、陶瓷与近现代专题，展厅之间以楼层相连，整体以室内参观为主。',
+    (SELECT id FROM category WHERE slug = 'museum'),
+    'CN', '河北省', '石家庄市', '河北省石家庄市长安区东大街 4 号',
+    NULL, NULL,
+    '四季皆宜，室内为主', 3.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'zhaozhou-bridge', '赵州桥', 'Zhaozhou Bridge',
+    '隋代建成的敞肩石拱桥，是现存最早采用敞肩式构造的石拱桥。',
+    '位于石家庄东南的赵县，横跨洨河，由隋代工匠李春主持建造。'
+    || '桥身主拱两端各有两个小拱，既减重又便于泄洪，这种敞肩式构造在桥梁史上出现得很早。'
+    || '桥面现为步行通道，两侧有栏杆与雕刻，与桥旁的陈列馆可以一并参观。',
+    (SELECT id FROM category WHERE slug = 'history'),
+    'CN', '河北省', '石家庄市', '河北省石家庄市赵县赵州镇',
+    NULL, NULL,
+    '四季皆宜', 1.5, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'shandong-museum', '山东博物馆', 'Shandong Museum',
+    '以龙山文化黑陶、汉画像石与甲骨为主的省级博物馆。',
+    '位于济南经十路沿线，常设陈列按时间顺序梳理山东一带的考古发现。'
+    || '龙山文化的蛋壳黑陶器壁极薄，是常被提到的代表性器物；另有商周青铜器与汉代画像石。'
+    || '另有佛教造像与书画专题，展厅集中在主馆内，半天可以走完主要部分。',
+    (SELECT id FROM category WHERE slug = 'museum'),
+    'CN', '山东省', '济南市', '山东省济南市历下区经十路 11899 号',
+    NULL, NULL,
+    '四季皆宜，室内为主', 3.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'baotu-spring', '趵突泉', 'Baotu Spring',
+    '济南城内的名泉，泉水自地下涌出，与周边的泉池、园林组成一片园区。',
+    '位于济南老城西南，泉池中的三股水常年涌出，水位随季节变化。'
+    || '园内除趵突泉外还有金线泉、漱玉泉等多处泉池，另有李清照纪念堂等建筑。'
+    || '与大明湖、五龙潭相距不远，可以步行串起来，园内以平坦步道为主。',
+    (SELECT id FROM category WHERE slug = 'nature'),
+    'CN', '山东省', '济南市', '山东省济南市历下区趵突泉南路 1 号',
+    NULL, NULL,
+    '四季皆宜，秋季水位较稳', 2.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'zhanqiao-pier', '栈桥', 'Zhanqiao Pier',
+    '伸入海中的长栈桥，尽头是回澜阁，是青岛老城的标志性一处。',
+    '始建于 19 世纪末，从太平路一侧伸向海中，全长数百米。'
+    || '栈桥尽头的八角亭为回澜阁，两侧是青岛湾，退潮时桥旁露出礁石与沙滩。'
+    || '桥北端接老城的中山路一带，可以步行串起周边建筑，冬季海鸥聚集时人尤其多。',
+    (SELECT id FROM category WHERE slug = 'landmark'),
+    'CN', '山东省', '青岛市', '山东省青岛市市南区太平路 12 号',
+    NULL, NULL,
+    '四季皆宜', 1.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'anhui-museum', '安徽博物院', 'Anhui Museum',
+    '以青铜器与徽州文化为主的省级博物馆，楚大鼎是其中的代表器物。',
+    '位于合肥市蜀山区，常设陈列包括安徽文明史、徽州古建筑、文房四宝等部分。'
+    || '青铜部分是重点，楚大鼎体量大，与蔡侯墓等出土器物成组陈列；徽州部分以砖木雕件与原状构件为主。'
+    || '另设书画与文房专题，展厅集中在主馆内。',
+    (SELECT id FROM category WHERE slug = 'museum'),
+    'CN', '安徽省', '合肥市', '安徽省合肥市蜀山区怀宁路 268 号',
+    NULL, NULL,
+    '四季皆宜，室内为主', 3.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'tengwang-pavilion', '滕王阁', 'Tengwang Pavilion',
+    '江南三大名楼之一，临赣江而立，因《滕王阁序》而著名。',
+    '最早建于唐代，历代屡毁屡建，现楼为 1989 年重建，主阁明三层暗七层。'
+    || '各层陈列与滕王阁相关的诗文、碑刻与图画，登到高层可以望赣江与南昌城的轮廓。'
+    || '与黄鹤楼、岳阳楼并称江南三大名楼，园区内另有附属建筑与庭院。',
+    (SELECT id FROM category WHERE slug = 'landmark'),
+    'CN', '江西省', '南昌市', '江西省南昌市东湖区仿古街 58 号',
+    NULL, NULL,
+    '四季皆宜，夜间亮灯另有看点', 2.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'three-lanes-seven-alleys', '三坊七巷', 'Three Lanes and Seven Alleys',
+    '福州老城的明清坊巷格局，三条坊、七条巷与一条主街组成棋盘般的街巷。',
+    '街区自唐宋形成，现存建筑多为明清与民国时期，白墙黛瓦、马鞍墙是常见的形式。'
+    || '沿主街南后街两侧分布着多处名人故居与祠堂，部分宅院对外开放，可以看到天井与厅堂的布局。'
+    || '街区内以步行为主，也会遇到仍在使用的民居与商铺，参观时注意不要打扰住户。',
+    (SELECT id FROM category WHERE slug = 'ancient-town'),
+    'CN', '福建省', '福州市', '福建省福州市鼓楼区南后街',
+    NULL, NULL,
+    '四季皆宜', 3.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'gulangyu-island', '鼓浪屿', 'Gulangyu Island',
+    '岛上的历史国际社区，各国风格的老建筑与街巷并存，2017 年列入世界遗产。',
+    '位于厦门岛西南海面，全岛以步行为主，没有机动车通行。'
+    || '岛上保存了大量 19 世纪末至 20 世纪初的住宅、领事馆与教堂建筑，样式混杂了南洋与欧洲的作法。'
+    || '日光岩与菽庄花园是常见的停留点，岛上另有钢琴博物馆等展馆，渡轮是唯一的进出方式。',
+    (SELECT id FROM category WHERE slug = 'ancient-town'),
+    'CN', '福建省', '厦门市', '福建省厦门市思明区鼓浪屿',
+    NULL, NULL,
+    '四季皆宜', 5.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'stone-forest', '石林', 'Stone Forest',
+    '喀斯特石柱群，密集的石峰连成一片「石头森林」，2007 年作为「中国南方喀斯特」列入世界自然遗产。',
+    '位于昆明东南的石林彝族自治县，石柱由石灰岩经长期溶蚀与切割形成。'
+    || '景区分大石林、小石林等片区，大石林石峰最高最密，小石林一带草地与石峰相间，常见的那座「阿诗玛」石峰在此。'
+    || '片区之间靠步道与摆渡车连接，园内步行量不小，日晒强时宜早进园。',
+    (SELECT id FROM category WHERE slug = 'nature'),
+    'CN', '云南省', '昆明市', '云南省昆明市石林彝族自治县',
+    NULL, NULL,
+    '四季皆宜，春季与秋季更舒适', 4.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'jiaxiu-pavilion', '甲秀楼', 'Jiaxiu Pavilion',
+    '南明河上鳌矶石上的三层楼阁，是贵阳老城的标志。',
+    '始建于明代，历代重修，楼下以石桥与两岸相连，楼体为三层三重檐。'
+    || '楼前的浮玉桥横跨南明河，桥上有涵碧亭，与楼体组成一组临水建筑。'
+    || '夜间亮灯后楼体与河面倒影相衬，周边是步行可达的河岸步道。',
+    (SELECT id FROM category WHERE slug = 'landmark'),
+    'CN', '贵州省', '贵阳市', '贵州省贵阳市南明区翠微巷 8 号',
+    NULL, NULL,
+    '四季皆宜，夜间最佳', 1.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'guangxi-museum-of-nationalities', '广西民族博物馆', 'Guangxi Museum of Nationalities',
+    '以广西各民族生活与铜鼓文化为主题的博物馆。',
+    '位于南宁青秀山一带，主馆外形取自铜鼓的轮廓。'
+    || '常设陈列按民族分列，展出服饰、织锦、建筑构件与生产工具，铜鼓单独成一部分，数量较多。'
+    || '馆外有民族村寨式的建筑与原状民居，室内外结合，适合安排半天。',
+    (SELECT id FROM category WHERE slug = 'museum'),
+    'CN', '广西壮族自治区', '南宁市', '广西南宁市青秀区青环路 11 号',
+    NULL, NULL,
+    '四季皆宜，室内外结合', 3.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'gansu-provincial-museum', '甘肃省博物馆', 'Gansu Provincial Museum',
+    '铜奔马（马踏飞燕）与彩陶是这里的重点，另有一条丝绸之路的陈列线。',
+    '位于兰州市七里河区，常设陈列包括甘肃丝绸之路文明、彩陶、古生物化石等部分。'
+    || '武威雷台汉墓出土的铜奔马是常被提及的一件，同出的铜车马仪仗队成组陈列。'
+    || '彩陶部分按年代排列，从大地湾到马家窑的器物连成一条线。',
+    (SELECT id FROM category WHERE slug = 'museum'),
+    'CN', '甘肃省', '兰州市', '甘肃省兰州市七里河区西津西路 3 号',
+    NULL, NULL,
+    '四季皆宜，室内为主', 3.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'western-xia-tombs', '西夏陵', 'Western Xia Imperial Tombs',
+    '贺兰山东麓的西夏帝王陵墓群，夯土陵塔散布在戈壁滩上。',
+    '陵区南北绵延数公里，包含多座帝陵与陪葬墓，每座陵园都有神道、碑亭与陵城的遗迹。'
+    || '陵塔为夯土筑成，形制与中原帝陵不同，经数百年风蚀后成为现在的锥形土丘。'
+    || '陵区内有博物馆与陈列馆，各陵之间距离较远，通常乘车在主要几处停留。',
+    (SELECT id FROM category WHERE slug = 'archaeology'),
+    'CN', '宁夏回族自治区', '银川市', '宁夏银川市西夏区贺兰山东麓',
+    NULL, NULL,
+    '4 月至 10 月', 3.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'kumbum-monastery', '塔尔寺', 'Kumbum Monastery',
+    '藏传佛教格鲁派的重要寺院，酥油花、壁画与堆绣被称为「艺术三绝」。',
+    '位于西宁西南的湟中区鲁沙尔镇，寺院依山而建，由众多殿堂与僧舍组成。'
+    || '大金瓦殿是核心建筑，殿前有供信徒叩拜的区域；酥油花馆内展出用彩色酥油塑成的造像与故事场景。'
+    || '寺内有多处殿堂需要按指示单向参观，宗教场所内注意着装与拍摄规定。',
+    (SELECT id FROM category WHERE slug = 'religion'),
+    'CN', '青海省', '西宁市', '青海省西宁市湟中区鲁沙尔镇',
+    NULL, NULL,
+    '5 月至 10 月', 3.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'xinjiang-regional-museum', '新疆维吾尔自治区博物馆', 'Xinjiang Regional Museum',
+    '以丝绸之路文物与古代干尸陈列为主的自治区博物馆。',
+    '位于乌鲁木齐市区，常设陈列包括西域历史、民族风情与古代干尸等部分。'
+    || '干尸陈列保存了出土于吐鲁番、罗布泊一带的古代遗体及相关随葬品，年代跨度较大。'
+    || '丝路部分展出织锦、文书与钱币等，展品说明较细，适合按顺序看。',
+    (SELECT id FROM category WHERE slug = 'museum'),
+    'CN', '新疆维吾尔自治区', '乌鲁木齐市', '新疆乌鲁木齐市沙依巴克区西北路 581 号',
+    NULL, NULL,
+    '四季皆宜，室内为主', 3.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'tianyi-pavilion', '天一阁', 'Tianyi Pavilion',
+    '中国现存最早的私家藏书楼，明代建成，院落里另有园林与碑廊。',
+    '由明代范钦于 16 世纪创建，藏书楼为两层硬山顶建筑，楼下六间、楼上通为一间。'
+    || '院落中有水池与假山，池边布置了碑廊与近现代移入的亭台，园内还设有麻将等专题陈列。'
+    || '与月湖一带相距不远，参观以建筑、园林与藏书史料为主，步行量不大。',
+    (SELECT id FROM category WHERE slug = 'museum'),
+    'CN', '浙江省', '宁波市', '浙江省宁波市海曙区天一街 10 号',
+    NULL, NULL,
+    '四季皆宜', 2.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'yandang-mountain', '雁荡山', 'Yandang Mountain',
+    '以流纹岩地貌著称的山岳，岩峰与洞壑在云雾中形态多变。',
+    '位于温州乐清一带，分灵峰、灵岩、大龙湫、雁湖等片区，各片区之间需要乘车。'
+    || '岩体为流纹岩，经断裂与风化后形成柱状、叠嶂状的峰群，大龙湫是一处落差较大的瀑布。'
+    || '灵峰夜景是当地常见的安排，同一处岩峰在不同角度看形态差别很大。',
+    (SELECT id FROM category WHERE slug = 'nature'),
+    'CN', '浙江省', '温州市', '浙江省温州市乐清市雁荡镇',
+    NULL, NULL,
+    '4 月至 10 月', 5.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'yuantouzhu', '鼋头渚', 'Yuantouzhu',
+    '太湖边的一处半岛，樱花与湖景是主要看点。',
+    '位于无锡西南的太湖之滨，因半岛形似鼋头而得名，园区包含充山、鹿顶山与若干小岛。'
+    || '春季樱花成片开放，是园内最集中的时段；平时以湖景、芦苇与山坡步道为主。'
+    || '园内有游船可到太湖中的岛上，整体步行量中等，环湖一带路况平缓。',
+    (SELECT id FROM category WHERE slug = 'nature'),
+    'CN', '江苏省', '无锡市', '江苏省无锡市滨湖区鼋渚路 1 号',
+    NULL, NULL,
+    '3 月至 5 月，樱花期最佳', 3.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'foshan-ancestral-temple', '佛山祖庙', 'Foshan Ancestral Temple',
+    '供奉北帝的明代庙宇，砖雕、木雕与陶塑脊饰集中，旁边是黄飞鸿纪念馆。',
+    '始建于北宋，现存建筑多为明代重建，沿中轴依次为万福台、灵应牌坊与正殿。'
+    || '建筑上的砖雕、木雕、石雕与灰塑、陶塑脊饰是主要看点，正殿屋顶的瓦脊上排列着陶塑人物。'
+    || '与黄飞鸿纪念馆、叶问堂在同一片区域内，可以看到醒狮与武术相关的陈列。',
+    (SELECT id FROM category WHERE slug = 'religion'),
+    'CN', '广东省', '佛山市', '广东省佛山市禅城区祖庙路 21 号',
+    NULL, NULL,
+    '四季皆宜', 2.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'quanzhou-kaiyuan-temple', '泉州开元寺', 'Kaiyuan Temple',
+    '唐代始建的佛寺，东西两座石塔是泉州老城的天际线。',
+    '位于泉州西街，寺院始建于唐代，现存建筑布局为明代以后重修。'
+    || '大雄宝殿的柱础与廊柱中有印度教石刻构件，殿前月台须弥座上有狮身人面浮雕，是海上贸易留下的痕迹。'
+    || '东西两座石塔为宋代所建，五层八角，塔身浮雕保存较好；2021 年泉州以「宋元中国的世界海洋商贸中心」列入世界遗产，开元寺是其中一处。',
+    (SELECT id FROM category WHERE slug = 'religion'),
+    'CN', '福建省', '泉州市', '福建省泉州市鲤城区西街 176 号',
+    NULL, NULL,
+    '四季皆宜', 1.5, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+
 -- ------------------------------------------------ 世界景点（40 条）
 -- 覆盖六大洲: 亚洲 9 / 欧洲 12 / 非洲 5 / 北美洲 6 / 南美洲 5 / 大洋洲 3。
 -- 口径与上面一致: 不带坐标, 票价只在确定免费时写 0, 评分一律 0。
@@ -1474,7 +1792,15 @@ FROM (VALUES
     ('great-barrier-reef',    NULL,  'natural'),
     ('milford-sound',         NULL,  'natural'),
     ('guangzhou-chimelong',   '5A',  NULL),
-    ('yellow-crane-tower',    '5A',  NULL)
+    ('yellow-crane-tower',    '5A',  NULL),
+    ('shenyang-imperial-palace',      '5A',  'cultural'),
+    ('tengwang-pavilion',             '5A',  NULL),
+    ('gulangyu-island',               '5A',  'cultural'),
+    ('stone-forest',                  '5A',  'natural'),
+    ('kumbum-monastery',              '5A',  NULL),
+    ('yandang-mountain',              '5A',  NULL),
+    ('yuantouzhu',                    '5A',  NULL),
+    ('quanzhou-kaiyuan-temple',       NULL,  'cultural')
 ) AS m(slug, a_level, heritage)
 WHERE a.slug = m.slug;
 
@@ -1920,7 +2246,81 @@ FROM (VALUES
     ('xian-bell-tower',             'photography'           ),
     ('macau-tower',                 'city-view'             ),
     ('macau-tower',                 'photography'           ),
-    ('macau-tower',                 'night-view'            )
+    ('macau-tower',                 'night-view'            ),
+    ('shenyang-imperial-palace',        'world-heritage'        ),
+    ('shenyang-imperial-palace',        'ancient-architecture'  ),
+    ('shenyang-imperial-palace',        'must-see'              ),
+    ('palace-museum-of-manchukuo',      'indoor'                ),
+    ('palace-museum-of-manchukuo',      'architecture'          ),
+    ('harbin-saint-sophia-cathedral',   'architecture'          ),
+    ('harbin-saint-sophia-cathedral',   'night-view'            ),
+    ('harbin-saint-sophia-cathedral',   'photography'           ),
+    ('inner-mongolia-museum',           'indoor'                ),
+    ('inner-mongolia-museum',           'family'                ),
+    ('shanxi-museum',                   'art'                   ),
+    ('shanxi-museum',                   'indoor'                ),
+    ('shanxi-museum',                   'must-see'              ),
+    ('hebei-museum',                    'art'                   ),
+    ('hebei-museum',                    'indoor'                ),
+    ('zhaozhou-bridge',                 'ancient-architecture'  ),
+    ('zhaozhou-bridge',                 'architecture'          ),
+    ('shandong-museum',                 'art'                   ),
+    ('shandong-museum',                 'indoor'                ),
+    ('baotu-spring',                    'park'                  ),
+    ('baotu-spring',                    'family'                ),
+    ('baotu-spring',                    'photography'           ),
+    ('zhanqiao-pier',                   'city-view'             ),
+    ('zhanqiao-pier',                   'photography'           ),
+    ('zhanqiao-pier',                   'sunset'                ),
+    ('anhui-museum',                    'art'                   ),
+    ('anhui-museum',                    'indoor'                ),
+    ('tengwang-pavilion',               'ancient-architecture'  ),
+    ('tengwang-pavilion',               'city-view'             ),
+    ('tengwang-pavilion',               'night-view'            ),
+    ('tengwang-pavilion',               'must-see'              ),
+    ('three-lanes-seven-alleys',        'ancient-architecture'  ),
+    ('three-lanes-seven-alleys',        'photography'           ),
+    ('three-lanes-seven-alleys',        'must-see'              ),
+    ('gulangyu-island',                 'world-heritage'        ),
+    ('gulangyu-island',                 'island'                ),
+    ('gulangyu-island',                 'architecture'          ),
+    ('gulangyu-island',                 'photography'           ),
+    ('stone-forest',                    'world-heritage'        ),
+    ('stone-forest',                    'photography'           ),
+    ('stone-forest',                    'hiking'                ),
+    ('jiaxiu-pavilion',                 'ancient-architecture'  ),
+    ('jiaxiu-pavilion',                 'night-view'            ),
+    ('jiaxiu-pavilion',                 'city-view'             ),
+    ('guangxi-museum-of-nationalities', 'indoor'                ),
+    ('guangxi-museum-of-nationalities', 'family'                ),
+    ('guangxi-museum-of-nationalities', 'art'                   ),
+    ('gansu-provincial-museum',         'art'                   ),
+    ('gansu-provincial-museum',         'indoor'                ),
+    ('gansu-provincial-museum',         'must-see'              ),
+    ('western-xia-tombs',               'ruins'                 ),
+    ('western-xia-tombs',               'ancient-civilization'  ),
+    ('western-xia-tombs',               'desert'                ),
+    ('western-xia-tombs',               'photography'           ),
+    ('kumbum-monastery',                'ancient-architecture'  ),
+    ('kumbum-monastery',                'art'                   ),
+    ('kumbum-monastery',                'must-see'              ),
+    ('xinjiang-regional-museum',        'indoor'                ),
+    ('xinjiang-regional-museum',        'art'                   ),
+    ('tianyi-pavilion',                 'garden'                ),
+    ('tianyi-pavilion',                 'ancient-architecture'  ),
+    ('tianyi-pavilion',                 'art'                   ),
+    ('yandang-mountain',                'hiking'                ),
+    ('yandang-mountain',                'sunrise'               ),
+    ('yandang-mountain',                'photography'           ),
+    ('yuantouzhu',                      'lake'                  ),
+    ('yuantouzhu',                      'park'                  ),
+    ('yuantouzhu',                      'family'                ),
+    ('foshan-ancestral-temple',         'ancient-architecture'  ),
+    ('foshan-ancestral-temple',         'art'                   ),
+    ('foshan-ancestral-temple',         'family'                ),
+    ('quanzhou-kaiyuan-temple',         'world-heritage'        ),
+    ('quanzhou-kaiyuan-temple',         'ancient-architecture'  ),
+    ('quanzhou-kaiyuan-temple',         'art'                   )
 ) AS m(attraction_slug, tag_slug)
 JOIN attraction a ON a.slug = m.attraction_slug
 JOIN tag t        ON t.slug = m.tag_slug
@@ -1929,7 +2329,7 @@ ON CONFLICT DO NOTHING;
 -- ---------------------------------------------------------------- 旅游方案
 --
 -- 「怎么玩」独立于「是什么」: 一个景点可以有多个方案, 方案由有序步骤组成,
--- 步骤按天分组(day_no)。当前 114 个景点各一个方案(中国境内 74 + 境外 40)。
+-- 步骤按天分组(day_no)。当前 140 个景点各一个方案(中国境内 100 + 境外 40)。
 -- 步骤先按 source 认领后删除再重建, 与景点标签同一套做法, 所以删步骤也能同步。
 -- 内容是本仓库自写的行程建议, 不是官方或旅行社线路。
 
@@ -2848,6 +3248,214 @@ INSERT INTO attraction_plan (
     1, 'mid', '在澳门半岛安排半天的游客',
     '先登观景层看澳门全景，再看是否要参加塔上的户外项目。下来后沿南湖一带走到半岛南部，行程紧凑。',
     'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'shenyang-imperial-palace'),
+    'shenyang-imperial-palace-plan',
+    '沈阳故宫半日：中东西三路',
+    1, 'low', '在沈阳老城安排半天的游客',
+    '宫殿分中、东、西三路，先走中路的大政殿与十王亭，再看凤凰楼与文溯阁。整体规模不大，半天足够。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'palace-museum-of-manchukuo'),
+    'palace-museum-of-manchukuo-plan',
+    '伪满皇宫半日：按原状陈列走',
+    1, 'low', '对近代史感兴趣的游客',
+    '建筑按办公与居住两处原状布置，参观以室内为主。史料部分内容较重，慢慢看需要半天。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'harbin-saint-sophia-cathedral'),
+    'harbin-saint-sophia-cathedral-plan',
+    '圣索菲亚教堂半日：广场与老城',
+    1, 'low', '在道里区安排半天的游客',
+    '教堂本体不大，重点是外观与广场。看过内部展览之后，可以步行到中央大街与松花江边。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'inner-mongolia-museum'),
+    'inner-mongolia-museum-plan',
+    '内蒙古博物院半日：自然与草原两条线',
+    1, 'low', '在呼和浩特安排半天的游客',
+    '前半段看古生物化石，后半段看草原民族文物。展厅按楼层分布，跟着主题走一趟需要半天。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'shanxi-museum'),
+    'shanxi-museum-plan',
+    '山西博物院半日：从晋侯鸟尊看起',
+    1, 'low', '对青铜器与北朝文物感兴趣的游客',
+    '「晋魂」主线按时间铺开，青铜器与北朝壁画是重点。展厅集中在主馆内，半天可以走完。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'hebei-museum'),
+    'hebei-museum-plan',
+    '河北博物院半日：满城汉墓为主',
+    1, 'low', '专程来看满城汉墓文物的游客',
+    '满城汉墓展区是重点，金缕玉衣与长信宫灯都在其中。其余展厅按时间安排。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'zhaozhou-bridge'),
+    'zhaozhou-bridge-plan',
+    '赵州桥半日：看桥也看陈列馆',
+    1, 'low', '自驾或包车经过赵县的游客',
+    '桥本体不大，重点是敞肩拱的构造。旁边的陈列馆有桥梁史料与更换下来的构件，两处加起来半天足够。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'shandong-museum'),
+    'shandong-museum-plan',
+    '山东博物馆半日：黑陶与画像石',
+    1, 'low', '在济南安排半天的游客',
+    '按时间顺序走一遍山东的考古发现，龙山黑陶与汉画像石是两处重点。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'baotu-spring'),
+    'baotu-spring-plan',
+    '趵突泉到护城河：泉水半日',
+    1, 'low', '想按泉水一条线走的游客',
+    '从趵突泉进园，看泉池与园林，再沿护城河走到另一处泉群，一条线把几处泉串起来。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'zhanqiao-pier'),
+    'zhanqiao-pier-plan',
+    '栈桥与老城半日：从桥上到中山路',
+    1, 'low', '在青岛老城安排半天的游客',
+    '先走栈桥到回澜阁，再沿中山路往北看老建筑，傍晚回到海边。冬季海鸥聚集时桥上人最多。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'anhui-museum'),
+    'anhui-museum-plan',
+    '安徽博物院半日：青铜与徽州',
+    1, 'low', '在合肥安排半天的游客',
+    '先看青铜部分的楚大鼎与蔡侯墓器物，再看徽州建筑与文房四宝。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'tengwang-pavilion'),
+    'tengwang-pavilion-plan',
+    '滕王阁半日：登阁与赣江',
+    1, 'mid', '想在南昌安排半天的游客',
+    '主阁明三层暗七层，逐层上行看陈列，高层可以望赣江。之后在园区与江边走一段。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'three-lanes-seven-alleys'),
+    'three-lanes-seven-alleys-plan',
+    '三坊七巷半日：主街与几条巷',
+    1, 'low', '在福州老城安排半天的游客',
+    '以主街南后街为轴，横向走进几条坊巷看民居与故居。院落多且结构相似，挑重点看即可。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'gulangyu-island'),
+    'gulangyu-island-plan',
+    '鼓浪屿一日：日光岩与老别墅',
+    1, 'mid', '第一次上岛的游客',
+    '岛上没有机动车，全程步行。上午登日光岩看全岛，下午按街巷看老建筑，傍晚回到菽庄花园一带。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'stone-forest'),
+    'stone-forest-plan',
+    '石林一日：大石林到小石林',
+    1, 'mid', '想看喀斯特地貌的游客',
+    '园区分若干片区，靠步道与摆渡车连接。先走大石林最密的石峰群，再去小石林一带的草地。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'jiaxiu-pavilion'),
+    'jiaxiu-pavilion-plan',
+    '甲秀楼半日：南明河两岸',
+    1, 'low', '在贵阳老城安排半天的游客',
+    '楼体不大，重点是临水的这一组建筑。白天看结构与浮玉桥，傍晚亮灯后再回来一次。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'guangxi-museum-of-nationalities'),
+    'guangxi-museum-of-nationalities-plan',
+    '广西民族博物馆半天：铜鼓与村寨',
+    1, 'low', '带孩子或对民族文物感兴趣的游客',
+    '馆内按民族分列，铜鼓单独成一部分。馆外的村寨式建筑与原状民居可以一并走，室内外各占一半时间。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'gansu-provincial-museum'),
+    'gansu-provincial-museum-plan',
+    '甘肃省博物馆半日：看铜奔马',
+    1, 'low', '在兰州安排半天的游客',
+    '铜奔马所在的展厅是重点，彩陶与丝路文物各占一条线。展厅集中在同一馆内。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'western-xia-tombs'),
+    'western-xia-tombs-plan',
+    '西夏陵半日：陵塔与博物馆',
+    1, 'mid', '对西夏历史或戈壁景观感兴趣的游客',
+    '陵区范围大，各陵之间距离远，通常乘车在主要几处停留。先看博物馆理清背景，再到现场看夯土陵塔。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'kumbum-monastery'),
+    'kumbum-monastery-plan',
+    '塔尔寺半日：按殿堂顺序走',
+    1, 'mid', '在西宁安排半天的游客',
+    '寺院依山而建，殿堂分散，按指示单向参观。大金瓦殿与酥油花馆是两处重点。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'xinjiang-regional-museum'),
+    'xinjiang-regional-museum-plan',
+    '新疆博物馆半日：丝路与干尸陈列',
+    1, 'low', '在乌鲁木齐安排半天的游客',
+    '常设陈列以丝路文物与古代干尸两部分最能代表这里，展品说明较细，按顺序看一遍需要半天。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'tianyi-pavilion'),
+    'tianyi-pavilion-plan',
+    '天一阁半日：藏书楼与园林',
+    1, 'low', '在宁波老城安排半天的游客',
+    '藏书楼本体是重点，院落里的水池、假山与碑廊可以一并走，之后到月湖一带收尾。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'yandang-mountain'),
+    'yandang-mountain-plan',
+    '雁荡山两日：灵峰 · 灵岩 · 大龙湫',
+    2, 'mid', '想看流纹岩峰群的游客',
+    '三个主要片区之间需要乘车，两天比较从容。白天看岩峰与瀑布，晚上再看一次灵峰夜景。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'yuantouzhu'),
+    'yuantouzhu-plan',
+    '鼋头渚半日：樱花与太湖',
+    1, 'low', '春季到无锡的游客',
+    '园区以半岛与湖面为主，春季看樱花，平时看湖景。可以乘船到湖中的岛上，整体步行量中等。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'foshan-ancestral-temple'),
+    'foshan-ancestral-temple-plan',
+    '佛山祖庙半日：三雕两塑与醒狮',
+    1, 'low', '想一次看建筑装饰与民俗的游客',
+    '沿中轴看牌坊与正殿，重点是建筑上的砖木石雕与屋脊陶塑，之后到旁边的纪念馆看醒狮与武术陈列。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'quanzhou-kaiyuan-temple'),
+    'quanzhou-kaiyuan-temple-plan',
+    '开元寺半日：东西塔与西街',
+    1, 'low', '在泉州老城安排半天的游客',
+    '先看大殿与月台的石刻构件，再走到寺外看东西两座石塔，最后沿西街逛一段。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
 )
 ON CONFLICT (slug) DO UPDATE SET
     attraction_id = EXCLUDED.attraction_id,
@@ -3246,7 +3854,85 @@ FROM (VALUES
     ('xian-bell-tower-plan',      1, 2, '入夜 · 回看亮灯', '夜间亮灯后从街面看楼体，是城墙内常见的拍摄对象。', 0.5, NULL),
     ('macau-tower-plan',          1, 0, '下午 · 观景层', '高区观景层可以俯瞰澳门半岛、氹仔与珠海方向。', 1.0, NULL),
     ('macau-tower-plan',          1, 1, '接着 · 户外项目', '高飞跳与空中漫步需另行预约，参加前先确认当日的开放与天气条件。', 1.5, '项目有健康与年龄限制，按现场规定执行。'),
-    ('macau-tower-plan',          1, 2, '傍晚 · 南湾湖一带', '从塔下步行到南湾湖畔，傍晚的湖面与对岸建筑是常见的拍摄场景。', 1.5, NULL)
+    ('macau-tower-plan',          1, 2, '傍晚 · 南湾湖一带', '从塔下步行到南湾湖畔，傍晚的湖面与对岸建筑是常见的拍摄场景。', 1.5, NULL),
+    ('shenyang-imperial-palace-plan',   1, 0, '上午 · 中路', '从大清门进，过大政殿与十王亭，向北到崇政殿与凤凰楼一带。', 1.5, '八旗与左右翼王亭的排列是这里最特别的地方。'),
+    ('shenyang-imperial-palace-plan',   1, 1, '下午 · 东路与西路', '东路是大政殿周边的院落，西路有文溯阁等建筑。', 1.0, NULL),
+    ('shenyang-imperial-palace-plan',   1, 2, '收尾 · 老城街巷', '出宫后是中街一带的老城街巷，可以顺路走一段。', 0.5, NULL),
+    ('palace-museum-of-manchukuo-plan', 1, 0, '上午 · 勤民楼与缉熙楼', '办公楼与起居楼按原状布置，室内陈设不能触碰。', 1.5, NULL),
+    ('palace-museum-of-manchukuo-plan', 1, 1, '中午 · 同德殿与庭院', '同德殿体量最大，内部陈列与庭院可以一并看。', 1.0, NULL),
+    ('palace-museum-of-manchukuo-plan', 1, 2, '下午 · 专题陈列', '专题陈列说明那段历史的来龙去脉，内容偏文字，按体力取舍。', 1.5, NULL),
+    ('harbin-saint-sophia-cathedral-plan', 1, 0, '傍晚 · 外观与广场', '红砖墙体与绿色穹顶在傍晚侧光下最清楚，广场一带可以绕行一圈。', 0.5, NULL),
+    ('harbin-saint-sophia-cathedral-plan', 1, 1, '入内 · 展览', '内部现用作展览空间，展品以城市历史的图片为主。', 0.5, NULL),
+    ('harbin-saint-sophia-cathedral-plan', 1, 2, '夜间 · 亮灯与中央大街', '亮灯后回广场再看一次，之后步行到中央大街一带收尾。', 1.5, '冬季路面结冰, 走慢一些。'),
+    ('inner-mongolia-museum-plan',      1, 0, '上午 · 远古世界', '恐龙与哺乳动物化石集中在自然部分，标本体量都不小。', 1.5, NULL),
+    ('inner-mongolia-museum-plan',      1, 1, '中午 · 馆内休息', '馆内有休息区，周边新华东街一带有餐饮。', 1.0, NULL),
+    ('inner-mongolia-museum-plan',      1, 2, '下午 · 草原雄风与草原天骄', '民族部分按时期陈列，游牧器具、服饰与宗教用品是主要内容。', 2.0, NULL),
+    ('shanxi-museum-plan',              1, 0, '上午 · 晋国霸业', '晋侯墓地出土器物成组陈列，鸟尊一类的青铜器集中在这一段。', 2.0, NULL),
+    ('shanxi-museum-plan',              1, 1, '中午 · 馆内休息', '主馆一层有休息区与文创店，午间人流少一些。', 1.0, NULL),
+    ('shanxi-museum-plan',              1, 2, '下午 · 北朝与晋商', '北朝壁画、佛教造像与晋商文物分列不同展厅，按兴趣取舍。', 2.0, NULL),
+    ('hebei-museum-plan',               1, 0, '上午 · 满城汉墓', '刘胜与窦绾墓的随葬品集中展出，玉衣与宫灯是核心展品。', 2.0, '展厅光线偏暗, 看细节要靠近展柜。'),
+    ('hebei-museum-plan',               1, 1, '中午 · 馆内休息', '馆内一层有休息区，周边东大街一带有餐饮。', 1.0, NULL),
+    ('hebei-museum-plan',               1, 2, '下午 · 战国中山与燕赵故事', '中山国与燕赵两条线各占展厅，可以按兴趣挑一段。', 1.5, NULL),
+    ('zhaozhou-bridge-plan',            1, 0, '上午 · 桥面与拱券', '沿桥面走一趟，再到桥侧看主拱与两端小拱的关系。', 1.0, '看桥侧会走到水边, 注意湿滑。'),
+    ('zhaozhou-bridge-plan',            1, 1, '接着 · 陈列馆', '陈列馆展出桥梁史料与历次修缮替换下来的构件。', 1.0, NULL),
+    ('zhaozhou-bridge-plan',            1, 2, '收尾 · 县城方向', '赵县县城内还有其他古迹，时间宽裕时可以顺路安排。', 0.5, NULL),
+    ('shandong-museum-plan',            1, 0, '上午 · 史前与龙山文化', '蛋壳黑陶的器壁极薄，是这一段最常被提到的器物。', 2.0, NULL),
+    ('shandong-museum-plan',            1, 1, '中午 · 馆内休息', '馆内有休息区，周边经十路一带有餐饮。', 1.0, NULL),
+    ('shandong-museum-plan',            1, 2, '下午 · 汉画像石与佛教造像', '画像石与造像分列展厅，可以连着看。', 1.5, NULL),
+    ('baotu-spring-plan',               1, 0, '上午 · 趵突泉园区', '泉池中的三股水是主要看点，园内其他泉池与建筑顺路走。', 1.5, '雨季与秋季水位较高, 涌势更明显。'),
+    ('baotu-spring-plan',               1, 1, '中午 · 周边街巷', '园外是济南老城一带，餐饮集中。', 1.0, NULL),
+    ('baotu-spring-plan',               1, 2, '下午 · 护城河一带', '沿护城河步道向东，一路可以看到取水的市民与另一处泉群。', 1.5, NULL),
+    ('zhanqiao-pier-plan',              1, 0, '上午 · 栈桥与回澜阁', '沿栈桥走到尽头的八角亭，两侧是青岛湾。', 1.0, '冬季桥上风大, 注意保暖。'),
+    ('zhanqiao-pier-plan',              1, 1, '中午 · 中山路一带', '从桥北端步行到中山路，周边是老城的商业街与旧建筑。', 1.5, NULL),
+    ('zhanqiao-pier-plan',              1, 2, '傍晚 · 回到海边', '傍晚再回到栈桥一带，退潮时桥旁会有礁石与沙滩露出。', 1.0, NULL),
+    ('anhui-museum-plan',               1, 0, '上午 · 安徽文明史', '青铜器集中在这一段，楚大鼎体量最大。', 2.0, NULL),
+    ('anhui-museum-plan',               1, 1, '中午 · 馆内休息', '馆内有休息区，周边怀宁路一带有餐饮。', 1.0, NULL),
+    ('anhui-museum-plan',               1, 2, '下午 · 徽州古建筑与文房四宝', '砖木雕件与原状构件是徽州部分的主要内容，文房部分另有专厅。', 1.5, NULL),
+    ('tengwang-pavilion-plan',          1, 0, '下午 · 登阁', '各层陈列诗文与图画，登到高层看赣江与南昌城的轮廓。', 1.5, NULL),
+    ('tengwang-pavilion-plan',          1, 1, '傍晚 · 园区与江边', '园区内另有附属建筑与庭院，出园后可以沿江边走一段。', 1.5, '夜间亮灯后楼体轮廓更清楚。'),
+    ('three-lanes-seven-alleys-plan',   1, 0, '下午 · 主街南后街', '沿主街走一遍，两侧是商铺与各条巷子的入口。', 1.0, NULL),
+    ('three-lanes-seven-alleys-plan',   1, 1, '接着 · 坊巷与故居', '挑两三处开放的宅院进去，看天井、厅堂与马鞍墙。', 2.0, '部分院落仍有人居住, 参观时保持安静。'),
+    ('three-lanes-seven-alleys-plan',   1, 2, '傍晚 · 街区收尾', '傍晚亮灯后街巷氛围不同，可以再走一小段。', 1.0, NULL),
+    ('gulangyu-island-plan',            1, 0, '上午 · 日光岩', '登高看全岛与厦门岛方向，台阶较陡，量力而行。', 2.0, '旺季登顶需要排队。'),
+    ('gulangyu-island-plan',            1, 1, '中午 · 岛上街巷', '沿龙头路一带解决午饭，这一片是岛上最热闹的一段。', 1.5, NULL),
+    ('gulangyu-island-plan',            1, 2, '下午 · 老别墅与菽庄花园', '按街巷走看各国风格的老建筑，菽庄花园临海而建。', 3.0, '渡轮班次需提前安排, 晚班船较挤。'),
+    ('stone-forest-plan',               1, 0, '上午 · 大石林', '石峰最高最密，主步道穿行其间，部分路段要上下石阶。', 3.0, '石间小路易走岔, 跟着指示走。'),
+    ('stone-forest-plan',               1, 1, '中午 · 园区休息', '园区内有休息与餐饮点，正午日照强。', 1.0, NULL),
+    ('stone-forest-plan',               1, 2, '下午 · 小石林', '草地与石峰相间，那座形似人物的石峰在这一片。', 2.0, NULL),
+    ('jiaxiu-pavilion-plan',            1, 0, '下午 · 楼体与浮玉桥', '从桥上走到楼前，看三层三重檐的结构与它在河中的位置。', 1.0, NULL),
+    ('jiaxiu-pavilion-plan',            1, 1, '傍晚 · 河岸步道', '沿南明河两岸的步道走一段，周边是市区街巷。', 1.0, NULL),
+    ('jiaxiu-pavilion-plan',            1, 2, '入夜 · 回看亮灯', '亮灯后河面有倒影，是常见的拍摄视角。', 0.5, NULL),
+    ('guangxi-museum-of-nationalities-plan', 1, 0, '上午 · 民族陈列', '服饰、织锦与建筑构件按民族分列。', 2.0, NULL),
+    ('guangxi-museum-of-nationalities-plan', 1, 1, '接着 · 铜鼓', '铜鼓集中陈列，数量较多，可以看到不同形制的差别。', 1.0, NULL),
+    ('guangxi-museum-of-nationalities-plan', 1, 2, '下午 · 馆外村寨', '馆外的民族村寨式建筑与原状民居适合慢慢走。', 1.5, NULL),
+    ('gansu-provincial-museum-plan',    1, 0, '上午 · 丝绸之路文明', '铜奔马与同出的铜车马仪仗队集中在这一段，另有简牍与织物。', 2.0, NULL),
+    ('gansu-provincial-museum-plan',    1, 1, '中午 · 馆内休息', '馆内有休息区，周边西津西路一带有餐饮。', 1.0, NULL),
+    ('gansu-provincial-museum-plan',    1, 2, '下午 · 彩陶与古生物', '彩陶按年代排列，从大地湾到马家窑连成一条线。', 1.5, NULL),
+    ('western-xia-tombs-plan',          1, 0, '上午 · 博物馆与陈列馆', '先看展陈了解西夏与陵区布局，后面的现场会好懂很多。', 1.5, NULL),
+    ('western-xia-tombs-plan',          1, 1, '中午 · 陵区主要点位', '在三号陵等主要点位下车看陵塔与陵城遗迹。', 2.0, '戈壁上没有遮阴, 带水与防晒。'),
+    ('western-xia-tombs-plan',          1, 2, '返程 · 贺兰山下', '返程时可以从远处看整片陵区与贺兰山的轮廓。', 1.0, NULL),
+    ('kumbum-monastery-plan',           1, 0, '上午 · 大金瓦殿一带', '核心殿堂与叩拜区都在这一片，人流集中。', 1.5, '宗教场所内按指示着装与拍摄。'),
+    ('kumbum-monastery-plan',           1, 1, '中午 · 酥油花馆', '用彩色酥油塑成的造像与故事场景陈列在馆内。', 1.0, NULL),
+    ('kumbum-monastery-plan',           1, 2, '下午 · 其他殿堂与塔', '沿山势向上分布的其他殿堂与如意宝塔顺序走过。', 1.5, NULL),
+    ('xinjiang-regional-museum-plan',   1, 0, '上午 · 西域历史', '按时间顺序梳理，织锦、文书与钱币是主要内容。', 2.0, NULL),
+    ('xinjiang-regional-museum-plan',   1, 1, '接着 · 古代干尸陈列', '出土于吐鲁番、罗布泊一带的古代遗体与随葬品在这一部分。', 1.0, '展厅内请保持安静。'),
+    ('xinjiang-regional-museum-plan',   1, 2, '下午 · 民族风情', '服饰与生活器具按民族分列，可以按体力取舍。', 1.5, NULL),
+    ('tianyi-pavilion-plan',            1, 0, '上午 · 藏书楼与院落', '两层硬山顶的藏书楼与院中的水池假山是这处园林的核心。', 1.5, NULL),
+    ('tianyi-pavilion-plan',            1, 1, '接着 · 碑廊与专题陈列', '园内移入的碑刻与专题陈列分布在多个院落。', 1.0, NULL),
+    ('tianyi-pavilion-plan',            1, 2, '下午 · 月湖一带', '出馆后可以步行到月湖周边，老城街巷与小桥连成一片。', 1.0, NULL),
+    ('yandang-mountain-plan',           1, 0, '第一天 · 灵峰', '白天看岩峰与洞壑，同一处岩峰换个角度形态差别很大。', 3.0, NULL),
+    ('yandang-mountain-plan',           1, 1, '第一天夜间 · 灵峰夜景', '夜景是当地常见的安排，跟着指示走。', 1.5, '夜间路暗, 台阶要看清。'),
+    ('yandang-mountain-plan',           2, 0, '第二天上午 · 灵岩', '灵岩一带以峰与寺为主，另有高空表演按场次进行。', 2.5, NULL),
+    ('yandang-mountain-plan',           2, 1, '第二天下午 · 大龙湫', '瀑布落差较大，水量随季节变化明显。', 2.5, '枯水期水量小, 观感差别较大。'),
+    ('yuantouzhu-plan',                 1, 0, '上午 · 樱花区', '樱花集中的片区在春季人流最密，早进园更从容。', 2.0, '花期短, 出发前先看当年花讯。'),
+    ('yuantouzhu-plan',                 1, 1, '中午 · 湖边休息', '环湖一带路况平缓，餐饮集中在主要入口附近。', 1.0, NULL),
+    ('yuantouzhu-plan',                 1, 2, '下午 · 乘船与鹿顶山', '可乘船到湖中岛屿，也可以上鹿顶山俯瞰太湖。', 2.0, NULL),
+    ('foshan-ancestral-temple-plan',    1, 0, '上午 · 中轴建筑', '从万福台进，经灵应牌坊到正殿，逐处看装饰构件。', 1.5, NULL),
+    ('foshan-ancestral-temple-plan',    1, 1, '接着 · 屋脊与陶塑', '正殿屋顶的瓦脊上有成排陶塑人物，需要抬头细看。', 0.5, NULL),
+    ('foshan-ancestral-temple-plan',    1, 2, '下午 · 黄飞鸿纪念馆与叶问堂', '同一片区域内有武术与醒狮相关的陈列，醒狮表演按场次进行。', 1.5, NULL),
+    ('quanzhou-kaiyuan-temple-plan',    1, 0, '上午 · 大殿与月台', '殿前月台的须弥座上有狮身人面浮雕，廊柱中混有印度教石刻构件。', 1.5, NULL),
+    ('quanzhou-kaiyuan-temple-plan',    1, 1, '接着 · 东西塔', '两座宋代石塔在寺外两侧，塔身浮雕保存较好。', 1.0, NULL),
+    ('quanzhou-kaiyuan-temple-plan',    1, 2, '下午 · 西街', '出寺即是西街，老城街巷与小吃集中在这一带。', 1.5, NULL)
 ) AS m(plan_slug, day_no, sort, title, detail, duration_hours, tip)
 JOIN attraction_plan p ON p.slug = m.plan_slug;
 

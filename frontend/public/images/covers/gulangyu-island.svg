@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="鼓浪屿">
+  <title>鼓浪屿</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a2126"/>
+      <stop offset="1" stop-color="#384c4e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <rect x="-30.0" y="491.4" width="193.3" height="112.6" fill="#1e2b2f"/>
+  <polygon points="-46.0,491.4 66.6,441.4 179.3,491.4" fill="#2a3a3e"/>
+  <rect x="-42.0" y="467.4" width="34.0" height="24" fill="#2a3a3e"/>
+  <rect x="-42.0" y="443.4" width="28.0" height="24" fill="#2a3a3e"/>
+  <rect x="-42.0" y="419.4" width="22.0" height="24" fill="#2a3a3e"/>
+  <rect x="193.3" y="463.0" width="166.0" height="141.0" fill="#1e2b2f"/>
+  <polygon points="177.3,463.0 276.3,413.0 375.3,463.0" fill="#2a3a3e"/>
+  <rect x="181.3" y="439.0" width="34.0" height="24" fill="#2a3a3e"/>
+  <rect x="181.3" y="415.0" width="28.0" height="24" fill="#2a3a3e"/>
+  <rect x="181.3" y="391.0" width="22.0" height="24" fill="#2a3a3e"/>
+  <rect x="389.3" y="456.1" width="200.1" height="147.9" fill="#1e2b2f"/>
+  <polygon points="373.3,456.1 489.3,406.1 605.4,456.1" fill="#2a3a3e"/>
+  <rect x="377.3" y="432.1" width="34.0" height="24" fill="#2a3a3e"/>
+  <rect x="377.3" y="408.1" width="28.0" height="24" fill="#2a3a3e"/>
+  <rect x="377.3" y="384.1" width="22.0" height="24" fill="#2a3a3e"/>
+  <rect x="619.4" y="499.4" width="199.6" height="104.6" fill="#1e2b2f"/>
+  <polygon points="603.4,499.4 719.2,449.4 835.0,499.4" fill="#2a3a3e"/>
+  <rect x="607.4" y="475.4" width="34.0" height="24" fill="#2a3a3e"/>
+  <rect x="607.4" y="451.4" width="28.0" height="24" fill="#2a3a3e"/>
+  <rect x="607.4" y="427.4" width="22.0" height="24" fill="#2a3a3e"/>
+  <rect x="849.0" y="474.8" width="204.9" height="129.2" fill="#1e2b2f"/>
+  <polygon points="833.0,474.8 951.4,424.8 1069.9,474.8" fill="#2a3a3e"/>
+  <rect x="837.0" y="450.8" width="34.0" height="24" fill="#2a3a3e"/>
+  <rect x="837.0" y="426.8" width="28.0" height="24" fill="#2a3a3e"/>
+  <rect x="837.0" y="402.8" width="22.0" height="24" fill="#2a3a3e"/>
+  <rect x="1083.9" y="506.4" width="185.6" height="97.6" fill="#1e2b2f"/>
+  <polygon points="1067.9,506.4 1176.7,456.4 1285.5,506.4" fill="#2a3a3e"/>
+  <rect x="1071.9" y="482.4" width="34.0" height="24" fill="#2a3a3e"/>
+  <rect x="1071.9" y="458.4" width="28.0" height="24" fill="#2a3a3e"/>
+  <rect x="1071.9" y="434.4" width="22.0" height="24" fill="#2a3a3e"/>
+  <rect x="0" y="604.0" width="1200" height="196.0" fill="#131b1f"/>
+  <path d="M202.0,638.0 Q320.0,664.0 438.0,638.0 Z" fill="#2a3a3e"/>
+  <path d="M276.0,635.0 Q320.0,596.0 364.0,635.0 Z" fill="#1e2b2f"/>
+  <path d="M783.2,638.0 Q880.0,659.3 976.8,638.0 Z" fill="#2a3a3e"/>
+  <path d="M843.9,635.0 Q880.0,603.6 916.1,635.0 Z" fill="#1e2b2f"/>
+  <rect x="0" y="700.0" width="1200" height="3" fill="#e89355" opacity="0.22"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e89355" letter-spacing="7">古镇村落</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">鼓浪屿</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

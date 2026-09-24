@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="栈桥">
+  <title>栈桥</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#12152a"/>
+      <stop offset="1" stop-color="#332b52"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <rect x="-20.0" y="486.6" width="85.9" height="173.4" fill="#1b1833"/>
+  <rect x="-6.0" y="502.6" width="57.9" height="9" fill="#f46723" opacity="0.3"/>
+  <rect x="91.9" y="509.3" width="123.8" height="150.7" fill="#1b1833"/>
+  <rect x="105.9" y="583.3" width="95.8" height="9" fill="#f46723" opacity="0.3"/>
+  <rect x="241.7" y="448.2" width="115.1" height="211.8" fill="#1b1833"/>
+  <rect x="255.7" y="522.2" width="87.1" height="9" fill="#f46723" opacity="0.3"/>
+  <rect x="255.7" y="580.2" width="87.1" height="9" fill="#f46723" opacity="0.3"/>
+  <rect x="382.8" y="409.7" width="134.3" height="250.3" fill="#1b1833"/>
+  <rect x="396.8" y="541.7" width="106.3" height="9" fill="#f46723" opacity="0.3"/>
+  <rect x="543.1" y="472.5" width="107.2" height="187.5" fill="#1b1833"/>
+  <rect x="557.1" y="488.5" width="79.2" height="9" fill="#f46723" opacity="0.3"/>
+  <rect x="557.1" y="546.5" width="79.2" height="9" fill="#f46723" opacity="0.3"/>
+  <rect x="676.3" y="378.4" width="97.8" height="281.6" fill="#1b1833"/>
+  <rect x="690.3" y="510.4" width="69.8" height="9" fill="#f46723" opacity="0.3"/>
+  <rect x="800.1" y="477.2" width="124.1" height="182.8" fill="#1b1833"/>
+  <rect x="814.1" y="493.2" width="96.1" height="9" fill="#f46723" opacity="0.3"/>
+  <rect x="814.1" y="609.2" width="96.1" height="9" fill="#f46723" opacity="0.3"/>
+  <rect x="950.2" y="445.0" width="150.5" height="215.0" fill="#1b1833"/>
+  <rect x="964.2" y="461.0" width="122.5" height="9" fill="#f46723" opacity="0.3"/>
+  <rect x="964.2" y="577.0" width="122.5" height="9" fill="#f46723" opacity="0.3"/>
+  <rect x="1126.7" y="431.7" width="140.0" height="228.3" fill="#1b1833"/>
+  <rect x="1140.7" y="447.7" width="112.0" height="9" fill="#f46723" opacity="0.3"/>
+  <rect x="1140.7" y="563.7" width="112.0" height="9" fill="#f46723" opacity="0.3"/>
+  <rect x="642.6" y="442" width="30" height="218.0" fill="#252244"/>
+  <circle cx="657.6" cy="442" r="40" fill="#252244"/>
+  <circle cx="657.6" cy="442" r="40" fill="#f46723" opacity="0.22"/>
+  <rect x="654.6" y="376" width="6" height="30" fill="#252244"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#f46723" letter-spacing="7">城市地标</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">栈桥</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

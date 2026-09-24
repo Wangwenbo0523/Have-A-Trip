@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="三坊七巷">
+  <title>三坊七巷</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b2526"/>
+      <stop offset="1" stop-color="#3b4e49"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <rect x="-30.0" y="501.2" width="160.1" height="102.8" fill="#202f2e"/>
+  <polygon points="-46.0,501.2 50.1,451.2 146.1,501.2" fill="#2d3e3c"/>
+  <rect x="-42.0" y="477.2" width="34.0" height="24" fill="#2d3e3c"/>
+  <rect x="-42.0" y="453.2" width="28.0" height="24" fill="#2d3e3c"/>
+  <rect x="-42.0" y="429.2" width="22.0" height="24" fill="#2d3e3c"/>
+  <rect x="160.1" y="452.5" width="156.6" height="151.5" fill="#202f2e"/>
+  <polygon points="144.1,452.5 238.4,402.5 332.7,452.5" fill="#2d3e3c"/>
+  <rect x="148.1" y="428.5" width="34.0" height="24" fill="#2d3e3c"/>
+  <rect x="148.1" y="404.5" width="28.0" height="24" fill="#2d3e3c"/>
+  <rect x="148.1" y="380.5" width="22.0" height="24" fill="#2d3e3c"/>
+  <rect x="346.7" y="460.9" width="157.7" height="143.1" fill="#202f2e"/>
+  <polygon points="330.7,460.9 425.5,410.9 520.4,460.9" fill="#2d3e3c"/>
+  <rect x="334.7" y="436.9" width="34.0" height="24" fill="#2d3e3c"/>
+  <rect x="334.7" y="412.9" width="28.0" height="24" fill="#2d3e3c"/>
+  <rect x="334.7" y="388.9" width="22.0" height="24" fill="#2d3e3c"/>
+  <rect x="534.4" y="494.8" width="164.9" height="109.2" fill="#202f2e"/>
+  <polygon points="518.4,494.8 616.8,444.8 715.3,494.8" fill="#2d3e3c"/>
+  <rect x="522.4" y="470.8" width="34.0" height="24" fill="#2d3e3c"/>
+  <rect x="522.4" y="446.8" width="28.0" height="24" fill="#2d3e3c"/>
+  <rect x="522.4" y="422.8" width="22.0" height="24" fill="#2d3e3c"/>
+  <rect x="729.3" y="506.0" width="167.8" height="98.0" fill="#202f2e"/>
+  <polygon points="713.3,506.0 813.2,456.0 913.1,506.0" fill="#2d3e3c"/>
+  <rect x="717.3" y="482.0" width="34.0" height="24" fill="#2d3e3c"/>
+  <rect x="717.3" y="458.0" width="28.0" height="24" fill="#2d3e3c"/>
+  <rect x="717.3" y="434.0" width="22.0" height="24" fill="#2d3e3c"/>
+  <rect x="927.1" y="500.9" width="160.8" height="103.1" fill="#202f2e"/>
+  <polygon points="911.1,500.9 1007.5,450.9 1103.9,500.9" fill="#2d3e3c"/>
+  <rect x="915.1" y="476.9" width="34.0" height="24" fill="#2d3e3c"/>
+  <rect x="915.1" y="452.9" width="28.0" height="24" fill="#2d3e3c"/>
+  <rect x="915.1" y="428.9" width="22.0" height="24" fill="#2d3e3c"/>
+  <rect x="1117.9" y="505.3" width="162.7" height="98.7" fill="#202f2e"/>
+  <polygon points="1101.9,505.3 1199.2,455.3 1296.6,505.3" fill="#2d3e3c"/>
+  <rect x="1105.9" y="481.3" width="34.0" height="24" fill="#2d3e3c"/>
+  <rect x="1105.9" y="457.3" width="28.0" height="24" fill="#2d3e3c"/>
+  <rect x="1105.9" y="433.3" width="22.0" height="24" fill="#2d3e3c"/>
+  <rect x="0" y="604.0" width="1200" height="196.0" fill="#141f1f"/>
+  <path d="M202.0,638.0 Q320.0,664.0 438.0,638.0 Z" fill="#2d3e3c"/>
+  <path d="M276.0,635.0 Q320.0,596.0 364.0,635.0 Z" fill="#202f2e"/>
+  <path d="M783.2,638.0 Q880.0,659.3 976.8,638.0 Z" fill="#2d3e3c"/>
+  <path d="M843.9,635.0 Q880.0,603.6 916.1,635.0 Z" fill="#202f2e"/>
+  <rect x="0" y="700.0" width="1200" height="3" fill="#e87366" opacity="0.22"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e87366" letter-spacing="7">古镇村落</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">三坊七巷</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>
