@@ -41,6 +41,17 @@ ALLOW_PATTERNS = [
     r"PUBLIC DOMAIN", r"\bCC0\b", r"MULANPSL", r"WTFPL",
 ]
 
+# 已登记的「未标注许可证」依赖: 已知来源与移除计划, 不阻塞 CI。
+# 要求: 每项都要能说清来自哪条依赖链、什么时候会消失。不允许无脑加白。
+# 这 4 项来自前端地图库 `ol` -> `ol-mapbox-style` -> `@mapbox/mapbox-gl-style-spec`,
+# 删除 `ol`(本项目不需要地图)后整条链会一并消失。
+KNOWN_UNLABELED = {
+    "@mapbox/jsonlint-lines-primitives",
+    "sort-asc",
+    "sort-desc",
+    "sort-object",
+}
+
 ROOT = Path(__file__).resolve().parent.parent
 
 try:
@@ -131,13 +142,15 @@ def main() -> int:
     banned: list[str] = []
     warned: list[str] = []
     unknown: list[str] = []
+    registered: list[str] = []
 
     for label, rows in (("python", python_licenses()), ("npm", npm_licenses())):
         for name, version, lic in rows:
             verdict = classify(lic)
             if verdict is None:
                 if not lic.strip() or lic.strip().upper() in {"UNKNOWN", "NONE", "N/A"}:
-                    unknown.append(f"[{label}] {name}@{version}")
+                    entry = f"[{label}] {name}@{version}"
+                    (registered if name in KNOWN_UNLABELED else unknown).append(entry)
                 continue
             level, why = verdict
             entry = f"[{label}] {name}@{version}  <-- {lic.strip()[:80]}  ({why})"
@@ -168,6 +181,11 @@ def main() -> int:
             print("  . " + line)
         if len(unknown) > 15:
             print(f"  ... 另有 {len(unknown) - 15} 项")
+
+    if registered:
+        print(f"\n[已登记] {len(registered)} 项未标注许可但来源已知, 不阻塞:\n")
+        for line in registered:
+            print("  - " + line)
 
     failed = bool(banned) or bool(problems) or (strict and bool(unknown))
     print("\n" + ("结果: 未通过" if failed else "结果: 通过"))
