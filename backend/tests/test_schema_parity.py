@@ -11,7 +11,8 @@ import os
 import pathlib
 
 import pytest
-from sqlalchemy import create_engine, inspect, text
+from sqlalchemy import create_engine, inspect
+from sqlalchemy.dialects import postgresql
 
 from app.db import Base
 
@@ -27,7 +28,9 @@ pytestmark = pytest.mark.skipif(
 def pg_engine():
     engine = create_engine(PG_URL, future=True)
     with engine.begin() as conn:
-        conn.execute(text(SCHEMA_SQL.read_text(encoding="utf-8")))
+        # 用 exec_driver_sql 而不是 text(): schema.sql 是整份脚本, 里面有中文注释,
+        # 注释里的 `... < :limit` 这类写法会被 text() 当成绑定参数, 整个夹具在 setup 就炸。
+        conn.exec_driver_sql(SCHEMA_SQL.read_text(encoding="utf-8"))
     yield engine
     engine.dispose()
 
@@ -76,7 +79,9 @@ EXPECTED_TYPES = {
         "status": "TEXT",
         "prompt_tokens": "INTEGER",
         "completion_tokens": "INTEGER",
-        "unit_price": "NUMERIC",
+        # 带精度的类型必须连精度一起写: PG 的 inspector 会把 NUMERIC(10, 6) 原样报出来,
+        # 只写 NUMERIC 一定对不上
+        "unit_price": "NUMERIC(10, 6)",
         "cache_key": "TEXT",
         "worker_id": "TEXT",
         "started_at": "TIMESTAMP WITH TIME ZONE",
@@ -100,10 +105,20 @@ EXPECTED_TYPES = {
 }
 
 
+def _type_name(column) -> str:
+    """按 PostgreSQL 的 DDL 语法渲染反射出来的类型。
+
+    不能只用 str(type): 通用 TIMESTAMP 的 str() 是 "TIMESTAMP", 时区信息在 timezone
+    属性上(str(NUMERIC(10, 6)) 又恰好把精度带出来), 于是同一套断言时对时错。
+    按方言编译一次, 精度与时区都会如实出现, 期望值可以直接照 DDL 写。
+    """
+    return str(column["type"].compile(dialect=postgresql.dialect())).upper()
+
+
 @pytest.mark.parametrize("table", sorted(EXPECTED_TYPES))
 def test_new_column_types_match(pg_engine, table):
     actual = {
-        column["name"]: str(column["type"]).upper()
+        column["name"]: _type_name(column)
         for column in inspect(pg_engine).get_columns(table)
     }
     for name, expected in EXPECTED_TYPES[table].items():
