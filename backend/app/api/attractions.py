@@ -1,8 +1,6 @@
 """景点列表 / 详情 / 相似推荐。"""
 from __future__ import annotations
 
-from typing import Literal
-
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import Select, func, or_, select
 from sqlalchemy.orm import Session
@@ -11,13 +9,11 @@ from ..config import Settings, get_settings
 from ..db import get_db
 from ..models import Attraction, Category, Tag, attraction_tag
 from ..recommend.content_based import similar_attractions
-from ..schemas import AttractionDetail, AttractionListItem, GradeFilter, Page
+from ..schemas import AttractionDetail, AttractionListItem, GradeFilter, Page, SortKey
 
 router = APIRouter(prefix="/attractions", tags=["attractions"])
 
 PUBLISHED = "published"
-
-SortKey = Literal["rating", "newest", "name"]
 
 ORDER_BY: dict[str, tuple] = {
     # 都带上 id 作为最后的排序键, 保证分页稳定、结果可测
@@ -31,6 +27,59 @@ def published() -> Select:
     """只有 published 的景点才对外。draft / archived 不出现在任何接口里。"""
     return select(Attraction).where(Attraction.status == PUBLISHED)
 
+def build_query(
+    *,
+    category: str | None = None,
+    city: str | None = None,
+    tag: str | None = None,
+    grade: str | None = None,
+    q: str | None = None,
+) -> Select:
+    """列表筛选的唯一实现。
+
+    /attractions 与 /ai/search 都走这里 —— AI 解析出来的条件与用户手点的筛选
+    走的是同一条路径, 不存在「AI 专用」的另一套宽松查询。
+    """
+    statement = published()
+    if category:
+        statement = statement.join(
+            Category, Attraction.category_id == Category.id
+        ).where(Category.slug == category)
+    if city:
+        statement = statement.where(Attraction.city == city)
+    if tag:
+        statement = (
+            statement.join(attraction_tag, attraction_tag.c.attraction_id == Attraction.id)
+            .join(Tag, Tag.id == attraction_tag.c.tag_id)
+            .where(Tag.slug == tag)
+        )
+    if grade == "heritage":
+        # 世界遗产没有 A 级, 所以这是一个独立的取值, 不是 a_level 的某个档位
+        statement = statement.where(Attraction.heritage.is_not(None))
+    elif grade:
+        statement = statement.where(Attraction.a_level == grade)
+    if q and q.strip():
+        needle = f"%{q.strip().lower()}%"
+        statement = statement.where(
+            or_(
+                func.lower(Attraction.name).like(needle),
+                func.lower(func.coalesce(Attraction.name_en, "")).like(needle),
+                func.lower(func.coalesce(Attraction.summary, "")).like(needle),
+            )
+        )
+    return statement
+
+
+def count_of(db: Session, statement: Select) -> int:
+    return db.scalar(select(func.count()).select_from(statement.subquery())) or 0
+
+
+def page_of(db: Session, statement: Select, *, page: int, limit: int, sort: str):
+    """按排序键取一页。排序键只从 ORDER_BY 里取, 不接受任意表达式。"""
+    order = ORDER_BY.get(sort) or ORDER_BY["rating"]
+    return list(
+        db.scalars(statement.order_by(*order).offset((page - 1) * limit).limit(limit)).all()
+    )
 
 def find_attraction(db: Session, id_or_slug: str) -> Attraction | None:
     statement = published().where(Attraction.slug == id_or_slug)
@@ -58,43 +107,9 @@ def list_attractions(
     settings: Settings = Depends(get_settings),
 ) -> Page[AttractionListItem]:
     limit = min(size or settings.default_page_size, settings.max_page_size)
-    statement = published()
-
-    if category:
-        statement = statement.join(
-            Category, Attraction.category_id == Category.id
-        ).where(Category.slug == category)
-    if city:
-        statement = statement.where(Attraction.city == city)
-    if tag:
-        statement = (
-            statement.join(attraction_tag, attraction_tag.c.attraction_id == Attraction.id)
-            .join(Tag, Tag.id == attraction_tag.c.tag_id)
-            .where(Tag.slug == tag)
-        )
-    if grade == "heritage":
-        # 世界遗产没有 A 级, 所以这是一个独立的取值, 不是 a_level 的某个档位
-        statement = statement.where(Attraction.heritage.is_not(None))
-    elif grade:
-        statement = statement.where(Attraction.a_level == grade)
-    if q and q.strip():
-        needle = f"%{q.strip().lower()}%"
-        statement = statement.where(
-            or_(
-                func.lower(Attraction.name).like(needle),
-                func.lower(func.coalesce(Attraction.name_en, "")).like(needle),
-                func.lower(func.coalesce(Attraction.summary, "")).like(needle),
-            )
-        )
-
-    total = db.scalar(select(func.count()).select_from(statement.subquery())) or 0
-
-    statement = (
-        statement.order_by(*ORDER_BY[sort])
-        .offset((page - 1) * limit)
-        .limit(limit)
-    )
-    items = list(db.scalars(statement).all())
+    statement = build_query(category=category, city=city, tag=tag, grade=grade, q=q)
+    total = count_of(db, statement)
+    items = page_of(db, statement, page=page, limit=limit, sort=sort)
 
     return Page[AttractionListItem](items=items, page=page, size=limit, total=total)
 

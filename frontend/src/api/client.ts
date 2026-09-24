@@ -7,6 +7,8 @@
 import axios from "axios"
 
 import type {
+  AISearchResult,
+  AIStatus,
   Attraction,
   AttractionDetail,
   CategoryWithCount,
@@ -103,6 +105,34 @@ export async function fetchRecommendations(limit = 6): Promise<Recommendation[]>
 /** 数据来源与许可声明页的原料。后端从 attraction / attraction_image 聚合, 前端不写死。 */
 export async function fetchSources(): Promise<SourcesResponse> {
   const { data } = await http.get<SourcesResponse>("/sources")
+  return data
+}
+
+/**
+ * 模型调用比普通查询慢得多(后端 LLM_TIMEOUT_SECONDS 默认 20 秒)。
+ * 用 axios 那个 10 秒的默认超时会把一次正常的解析掐断, 所以单独给一个更宽的值。
+ */
+const AI_TIMEOUT_MS = 30000
+
+/**
+ * AI 入口是否可用。默认配置下后端返回 available=false。
+ * 拿不到就当不可用 —— 宁可不显示入口, 也不给一个点了没反应的按钮。
+ */
+export async function fetchAIStatus(): Promise<AIStatus> {
+  const { data } = await http.get<AIStatus>("/ai/status")
+  return data
+}
+
+/**
+ * 用一句话找景点。后端把这句话解析成筛选条件, 再用库内档案检索。
+ * 模型不可用 / 超时时仍然返回 200 并带 degraded=true, 不是错误 —— 调用方按正常结果处理。
+ */
+export async function searchByAI(query: string): Promise<AISearchResult> {
+  const { data } = await http.post<AISearchResult>(
+    "/ai/search",
+    { query },
+    { timeout: AI_TIMEOUT_MS },
+  )
   return data
 }
 

@@ -16,6 +16,7 @@
 | 2 | 浏览与检索 | 列表分页、按分类/城市/标签筛选、关键字搜索 |
 | 3 | 推荐 | 有行为数据时走 RecBole 离线结果；冷启动走内容相似度兜底 |
 | 4 | 行为采集 | 浏览/收藏/评分的埋点入库，作为推荐原料（只记录行为，不做定位） |
+| 5 | AI 一句话检索 | 把自然语言解析成筛选条件后走**既有**检索（S9）；模型不产出景点内容 |
 
 ### 明确不做（非目标）
 
@@ -63,6 +64,7 @@
 | **S7** | 内容与数据 | `db/seed/*.sql`（30–50 个景点）+ 来源清单 | S0 | G4 | 每个景点 `source` / `license` 非空且可用 | `data(seed):` | ✅ 本次提交 |
 | **S5** | 数据来源与许可声明页 | `frontend/src/components/Credits.tsx` 改造 + `GET /api/v1/sources` | S4、S7 | G5 | 页面逐条列出来源与许可，与 S7 一致 | `feat(web):` | ✅ 本次提交 |
 | **S8** | 工程化收尾 | CI 增 build/test、`README`、部署说明 | S2、S4、S6 | G6 | CI 三条工作流全绿且**真的会**变红 | `chore(ci):` | ✅ 本次提交 |
+| **S9** | AI 接入（一句话检索） | `backend/app/llm/*`、`backend/app/api/ai.py`、`tests/test_ai.py` | S1、S4 | G7 | 默认不配模型也能跑；模型只解析需求、不产出景点 | `feat(ai):` | 🚧 第一刀完成 |
 
 ---
 
@@ -89,8 +91,12 @@ G6         +----------+------------------+--> S8 (工程化收尾)
 | G1 | S0 ∥ S3 | 互不相干：一个是 SQL，一个是删前端地图 |
 | G3 | S2 ∥ S4 | 只要 S1 的接口契约先冻结，两边可同时开工 |
 | G4 | S6 ∥ S7 | 训练脚本用种子数据就能跑；内容整理独立进行 |
+| G7 | S9 ∥ 其余 | 后三刀（详情页追问 / 推荐理由润色 / 离线批量生成）互不依赖，可分别开工 |
 
 **关键路径**：`S0 → S1 → S2 → S8`。S3/S4/S5 不在关键路径上，晚做不会拖整体。
+
+**S9 的位置**：`S9`（AI 接入）是计划外追加的一步（2026-09-25，用户提出「接入 AI 大模型」）。
+它只依赖 S1 的查询契约与 S4 的页面，**不改变已定的关键路径**，也不阻塞其余步骤。
 
 ---
 
@@ -453,6 +459,69 @@ npm.cmd run dev                        # 手动过一遍: 首页 -> 分类 -> �
 
 ---
 
+### S9 · AI 接入（一句话检索）
+
+**上下文**
+
+需求原话：「能否将我的软件接入 AI 大模型？」。范围**只要**把用户那句话变成已有的查询条件 ——
+「想找杭州安静点的古迹」→ `city=杭州市` + `category=history`，再交给 `/attractions` 那套既有的查询。
+不做行程规划、不做问答机器人、不做景点内容生成。
+
+**这个设计里最重要的一条**：模型**只产出查询条件，不产出景点条目**。
+景点永远由数据库检索，所以它根本没有编造景点的机会 —— 编造是这类功能最大的风险，这里从结构上消掉。
+
+**分批交付（按此顺序，一刀一个能验的成果）**
+
+| # | 这一刀 | 产出 | 状态 |
+|---|---|---|---|
+| 1 | **自然语言检索** | `app/llm/{client,interpret}.py`、`app/api/ai.py`、`tests/test_ai.py` | ✅ 本次 |
+| 2 | 详情页追问 | 把「这个景点适合带小孩吗」这类问题，答成**站内字段的复述**（适合人群 / 建议时长 / 最佳季节） | ⏳ 未开工 |
+| 3 | 推荐理由润色 | 把 `recommend` 已给出的 `reason` 说成人话；**推荐结果本身不交给模型** | ⏳ 未开工 |
+| 4 | 离线批量生成 | 用模型给景点补简介草稿，**人审后入库**，产物进 `db/` 而非运行时 | ⏳ 未开工 |
+
+**第一刀 · 任务清单**
+
+1. 一层抽象同时支持云端 API 与本地 Ollama（`app/llm/client.py`）：两者都是 OpenAI 兼容的
+   `/chat/completions`，只改环境变量切换；默认 `LLM_PROVIDER=none`
+2. 意图解析与护栏（`app/llm/interpret.py`）：白名单字段 + 取值双向校验，模型给的取值必须能在库里对上
+3. 接口：`GET /api/v1/ai/status`（入口是否可用）、`POST /api/v1/ai/search`（一句话检索）
+4. 降级：模型不可用 / 超时 / 返回不是 JSON → 退回关键词检索，**HTTP 200 而不是 500**
+5. 测试（`backend/tests/test_ai.py`、`test_llm_client.py`）：打桩 + 本机 HTTP 服务，CI 不需要任何 key，不打**真的**模型接口
+6. 文档：`.env.example` 给 ollama / deepseek 两种配法；`docs/LICENSE-AUDIT.md` 增「AI 与模型条款」
+
+**第一刀 · 验收标准**
+
+- [x] 默认（`LLM_PROVIDER=none`）时 `/ai/status` 的 `available=false`；`/ai/search` 仍返回 200 且 `degraded=true`
+- [x] 模型给的取值在库里对不上时一律丢弃，并在 `note` 里说明丢了什么
+- [x] 模型试图指定 `status`、景点名等白名单外字段时一律无效；`draft` 景点绝不出现在结果里
+- [x] 模型抛错（超时 / 连不上）时降级，HTTP 200，不是 500
+- [x] 超长输入被截到 60 字，不会整段塞进提示词
+- [x] 提示词里只有取值清单（分类 / 标签 / 城市），**不含任何景点条目**
+- [x] 不引任何模型厂商的官方 SDK；`httpx`（BSD-3）提到运行时依赖
+- [x] `pytest` 通过且不需要任何 key；`license_gate.py --strict` 通过
+
+**第一刀 · 实际做了什么**
+
+| 项 | 结果 |
+|---|---|
+| 客户端 | `app/llm/client.py`：provider 预设（ollama / deepseek / openai / custom）、进程内 TTL 缓存、带 `response_format` 请求 JSON、网关不认该字段（400）时去掉重试一次 |
+| 解析器 | `app/llm/interpret.py`：`PROMPT_VERSION=ai-search-v1`；提示词由库里的真实取值现拼；城市做「杭州 → 杭州市」的唯一匹配归一 |
+| 接口 | `app/api/ai.py`：两个端点；查询复用 `attractions.build_query / count_of / page_of` —— 与用户手点筛选**同一条路径**，不存在「AI 专用」的宽松查询 |
+| 契约 | `app/schemas.py` 增 `AIFilters` / `AISearchIn` / `AISearchOut` / `AIStatusOut`；`AISearchOut.disclaimer` 是必填字段，前端想漏掉这句也漏不掉 |
+| 测试 | `backend/tests/test_ai.py` 14 个用例：可用性、三类降级、越权与编造防护、提示词不含景点名、`extract_json` 的容错 |
+| 客户端测试 | `backend/tests/test_llm_client.py` 8 个用例：起一个**本机** HTTP 服务, 把 URL 拼接 / 请求体形状 / 400 重试 / 缓存 / 错误映射都走一遍真路径 |
+| 依赖修正 | `httpx` 原先只在 `requirements-dev.txt` —— 而它是 AI 客户端的**运行时**依赖，只装 `requirements.txt` 的生产环境会直接 ImportError。已提到运行时依赖 |
+| 实测 | `pytest`：**84 passed / 3 skipped**（后端 65 → 87 条；3 skip 是既有的 parity 用例，需 `TEST_DATABASE_URL`）。前端 Vitest：**50 passed**（41 → 50） |
+| 端到端 | 真起 `uvicorn` + 一个桩模型服务（OpenAI 兼容）逐条验过：正常解析命中；模型故意给 `category=雪山` / `status=draft` / 景点名时全部被丢且 note 如实说明；`LLM_PROVIDER=none` 与「模型连不上」两条路径都是 HTTP 200 + 降级；经 vite 同源代理再跑一遍，链路通 |
+
+**第二刀起的护栏（后面几刀同样适用）**
+
+- 详情页追问只能**复述站内字段**，不允许模型自答票价 / 开放时间 / 天气 / 交通
+- 推荐理由润色只改写文案，**不改推荐结果本身**，也不改变排序
+- 离线批量生成的产物必须**人审后入库**；不接受「模型直写数据库」
+- 任何一刀都不得让「模型不可用」变成用户可见的报错页
+
+---
 ## 六、每一步都必须满足的护栏
 
 | 护栏 | 检查方式 |
@@ -510,3 +579,4 @@ npm.cmd run dev                        # 手动过一遍: 首页 -> 分类 -> �
 | 2026-09-25 | v2.0 | 世界景点与旅游方案：`attraction` 增 `a_level` / `heritage` 两列（各带 CHECK 与部分索引），新增 `attraction_plan` / `attraction_plan_step` 两张表（表数 9 → 11）；种子扩到 90 个景点（境内 50 + 境外 40，覆盖六大洲 30 个国家）、9 个分类、31 个标签、90 个方案 / 307 条步骤，配图 90 张自绘 SVG；`/attractions` 加 `grade=5A\|4A\|3A\|heritage` 筛选（A 级与世界遗产是两套刻度，各占一个取值），详情返回 `plans`；前端加等级徽章、等级筛选与「旅游方案」段，票价改成按国别渲染（不再硬编码人民币）；`db-schema.yml` 断言同步并新增等级 / 方案口径与重跑自愈检查 |
 | 2026-09-25 | v1.8 | 占位图标换成自绘：新增 `scripts/make_favicon.py`（标准库程序化生成 7 档尺寸），`public/earth.ico`（225 KB，出处无从查证）删除，图标落到约定路径 `public/favicon.ico`（8.5 KB）；`index.html`、`manifest.json`、`Credits.tsx`、`docs/LICENSE-AUDIT.md` 同步；`license-gate` 加一道 `make_favicon.py --check` |
 | 2026-09-25 | v2.1 | 详情页加「相关视频」站外入口：新增 `frontend/src/lib/externalSearch.ts`（只拼搜索页地址）与 `ExternalVideoSearch` 组件（4 个用例，前端 37 → 41）。**只给 B 站搜索页外链** —— 不内嵌播放器、不抓取视频、不用对方标识；具体视频一律不链（会死链，且等于替单条内容背书）。`Credits.tsx`「这个应用不做什么」与 `docs/LICENSE-AUDIT.md` 新增第六节同步口径 |
+| 2026-09-25 | v2.2 | **S9 第一刀（AI 接入 · 自然语言检索）**：新增 `backend/app/llm/{client,interpret}.py` 与 `GET /api/v1/ai/status`、`POST /api/v1/ai/search`。模型**只产出查询条件、不产出景点条目**，取值白名单 + 库内双向校验，解析失败一律降级成关键词检索（HTTP 200 而非 500）。默认 `LLM_PROVIDER=none`，不配模型应用照常跑。`tests/test_ai.py` 14 用例 + `tests/test_llm_client.py` 8 用例（后端 65 → 87）；前端加「用一句话找景点」面板（41 → 50 用例）。`httpx` 从开发依赖提到运行时依赖（AI 客户端要用）。剩三刀（详情页追问 / 推荐理由润色 / 离线批量生成）待开工 |

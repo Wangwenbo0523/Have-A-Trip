@@ -21,6 +21,7 @@ if str(BACKEND_ROOT) not in sys.path:
 
 from app.config import get_settings  # noqa: E402
 from app.db import Base, get_db  # noqa: E402
+from app.llm import cache_clear as llm_cache_clear  # noqa: E402
 from app.main import app  # noqa: E402
 from app.recommend import service as rec_service  # noqa: E402
 from app.models import AppUser, Attraction, BehaviorLog, Category, Tag  # noqa: E402
@@ -48,10 +49,13 @@ def client(db_session):
     # 推荐缓存是进程级的, 而每个用例的库都是全新的(id 会从 1 重新开始),
     # 不清就可能读到上一个用例的结果。
     rec_service.get_cache(get_settings()).clear()
+    # 模型解析结果也是进程级缓存, 同样要清 —— 否则用例之间会读到彼此的那句话。
+    llm_cache_clear()
     with TestClient(app) as test_client:
         yield test_client
     app.dependency_overrides.clear()
     rec_service.get_cache(get_settings()).clear()
+    llm_cache_clear()
 
 
 @pytest.fixture()

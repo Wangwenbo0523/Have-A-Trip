@@ -24,6 +24,25 @@ class Settings(BaseSettings):
     rec_default_limit: int = 10
     rec_max_limit: int = 50
 
+    # ---------------------------------------------------------------- AI / 大模型
+    #
+    # 默认 none: 什么都不配时应用照常跑, AI 入口显示为不可用(见 app/llm/client.py)。
+    # provider 取值: none | ollama | deepseek | openai | custom
+    #   ollama              本地, 数据不出本机, 不需要 key
+    #   deepseek / openai   云端, 需要 llm_api_key
+    #   custom              任何 OpenAI 兼容网关, base_url 与 model 自己给
+    # base_url 与 model 留空时用 provider 预设值。密钥只从环境变量来, 绝不写进仓库。
+    llm_provider: str = "none"
+    llm_base_url: str | None = None
+    llm_model: str | None = None
+    llm_api_key: str | None = None
+    # 模型调用超时: 宁可降级成关键词检索, 也不让用户在页面上干等
+    llm_timeout_seconds: float = 20.0
+    # 每次请求的输出上限 —— 我们要的是几个查询条件, 不是文章
+    llm_max_tokens: int = 400
+    # 同一句话的解析结果缓存(秒), 0 表示不缓存
+    llm_cache_ttl_seconds: int = 300
+
     @property
     def cors_origin_list(self) -> list[str]:
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]

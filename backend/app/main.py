@@ -9,7 +9,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from . import __version__
-from .api import attractions, categories, events, health, recommendations, sources
+from .api import ai, attractions, categories, events, health, recommendations, sources
 from .config import get_settings
 
 settings = get_settings()
@@ -30,7 +30,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-for module in (health, attractions, categories, events, recommendations, sources):
+# ai 放在最前: 新路由统一排在具体资源路由之前, 避免将来前缀交叠时被通配路径抢走
+for module in (ai, health, attractions, categories, events, recommendations, sources):
     app.include_router(module.router, prefix=settings.api_prefix)
 
 

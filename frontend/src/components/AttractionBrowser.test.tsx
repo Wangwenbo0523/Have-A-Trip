@@ -3,16 +3,21 @@ import userEvent from "@testing-library/user-event"
 import { MemoryRouter } from "react-router-dom"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { fetchAttractions } from "../api/client"
-import type { Attraction } from "../types"
+import { fetchAIStatus, fetchAttractions, searchByAI } from "../api/client"
+import type { AISearchResult, AIStatus, Attraction } from "../types"
 import AttractionBrowser from "./AttractionBrowser"
 
 vi.mock("../api/client", async () => {
   const actual = await vi.importActual<typeof import("../api/client")>("../api/client")
-  return { ...actual, fetchAttractions: vi.fn() }
+  return { ...actual, fetchAttractions: vi.fn(), fetchAIStatus: vi.fn(), searchByAI: vi.fn() }
 })
 
 const mockedFetch = vi.mocked(fetchAttractions)
+const mockedAIStatus = vi.mocked(fetchAIStatus)
+const mockedAISearch = vi.mocked(searchByAI)
+
+/** 默认配置下后端说 AI 不可用, 面板整个不渲染 —— 多数用例按这个来。 */
+const aiOff: AIStatus = { available: false, provider: "none", model: null, disclaimer: "" }
 
 const item: Attraction = {
   id: 1,
@@ -50,6 +55,9 @@ const renderBrowser = (props: { category?: string } = {}) =>
 
 beforeEach(() => {
   mockedFetch.mockReset()
+  mockedAIStatus.mockReset()
+  mockedAISearch.mockReset()
+  mockedAIStatus.mockResolvedValue(aiOff)
 })
 
 describe("AttractionBrowser", () => {
@@ -145,5 +153,41 @@ describe("AttractionBrowser", () => {
     expect(screen.getByRole("button", { name: "上一页" })).toBeDisabled()
     expect(screen.getByRole("button", { name: "下一页" })).toBeEnabled()
     expect(screen.getByText(/第 1 \/ 3 页/)).toBeInTheDocument()
+  })
+
+  it("AI 可用且出了结果时, 普通检索那条列表收起来", async () => {
+    const disclaimer = "结果全部来自本站景点档案, AI 只参与理解你这句需求。"
+    mockedAIStatus.mockResolvedValue({
+      available: true,
+      provider: "ollama",
+      model: "qwen2.5:7b-instruct",
+      disclaimer,
+    })
+    const aiResult: AISearchResult = {
+      query: "杭州的古迹",
+      interpreted: true,
+      degraded: false,
+      model: "qwen2.5:7b-instruct",
+      note: "已按你的描述筛选。",
+      filters: { category: "history", tag: null, grade: null, city: "杭州市", q: null, sort: "rating" },
+      items: [{ ...item, id: 2, slug: "lingyin-temple", name: "灵隐寺" }],
+      page: 1,
+      size: 20,
+      total: 1,
+      disclaimer,
+    }
+    mockedAISearch.mockResolvedValue(aiResult)
+    mockedFetch.mockResolvedValue(page([item]))
+    renderBrowser()
+
+    await screen.findByRole("heading", { name: "西湖" })
+    // 面板的输入与普通搜索框都是 searchbox, 用 label 区分
+    await userEvent.type(screen.getByLabelText("用一句话找景点"), "杭州的古迹")
+    await userEvent.click(screen.getByRole("button", { name: "找一下" }))
+
+    expect(await screen.findByRole("heading", { name: "灵隐寺" })).toBeInTheDocument()
+    // 普通检索那条列表与它那套筛选按钮都收起来了, 不会两份列表同时出现
+    expect(screen.queryByRole("heading", { name: "西湖" })).not.toBeInTheDocument()
+    expect(screen.queryByRole("group", { name: "等级筛选" })).not.toBeInTheDocument()
   })
 })

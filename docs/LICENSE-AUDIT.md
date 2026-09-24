@@ -156,6 +156,57 @@ vendor 进来的 `frontend/LICENSE`（`Copyright (c) 2019 Zero To Mastery`）原
 `frontend/src/components/ExternalVideoSearch.tsx`。**加站点前先确认那条搜索地址免登录可打开**，
 再往数组里加一条 —— 组件本身与站点无关。
 
+## 七、AI 与模型条款
+
+AI 在本项目里只做一件事：把用户的一句话解析成查询条件（`backend/app/llm/`）。
+由此新引出三类问题，逐条定口径 —— 这一节同时也是 `app/llm/client.py` 里那段注释的出处。
+
+### 1. 引不引模型厂商的 SDK
+
+**不引**。只用一个 HTTP 客户端打 OpenAI 兼容的 `/chat/completions`：
+
+| 做法 | 为什么 |
+|---|---|
+| 不装 `openai` / `anthropic` / `dashscope` 之类官方 SDK | 少一个依赖少一份许可面，也少一条被上游牵着走的升级路径 |
+| 用 `httpx`（BSD-3-Clause） | 宽松许可，且它本来就在依赖树里（`fastapi` 的测试链） |
+| 自建 `app/llm/client.py` 一层薄封装 | 超时、JSON 解析、降级策略都握在自己手里；换 provider 只改环境变量 |
+
+**换 provider 不改代码**：本地 Ollama 与云端 API 都提供 OpenAI 兼容接口，
+`LLM_PROVIDER=ollama` 与 `LLM_PROVIDER=deepseek` 跑的是同一段代码，差别只在配置。
+
+### 2. 数据出境
+
+| provider | 数据去哪 | 结论 |
+|---|---|---|
+| `ollama`（本地） | 不出本机 | **默认推荐**。想彻底绕开出境问题就只用这个 |
+| `deepseek` / `openai` / `custom` | 发到服务商 | 由部署者自己判断合规性；**默认关闭**，不配置就不调用 |
+
+- 默认 `LLM_PROVIDER=none`：**不配置就一个字节都不发出去**。这是默认值，不是异常分支。
+- 发出去的只有**用户那句话本身**，外加一份取值清单（分类 slug / 标签 slug / 城市名）。
+  **不发景点档案、不发用户行为、不发任何设备标识。**
+- 本站不收集个人身份信息（只有匿名 `device_id`），这句输入也不与用户绑定存储 ——
+  解析结果只在进程内做 TTL 缓存（`LLM_CACHE_TTL_SECONDS`，默认 5 分钟），
+  缓存键是「模型 + 提示词 + 这句话」的哈希。
+- 将来若商用（闭源后收费），数据出境与模型服务条款**要重新过一遍**，不能沿用当前判断。
+
+### 3. 模型输出不能当事实
+
+这是整节的硬线：
+
+| 线 | 落在哪 |
+|---|---|
+| 模型**不产出景点条目**，只产出查询条件 | `app/api/ai.py` 把条件交给 `attractions.build_query`，条目永远从库里查 |
+| 取值必须能在库里对上，对不上就丢 | `app/llm/interpret.py` 的 `validate()`；丢了什么会写进 `note` 返回给用户 |
+| 白名单外的字段一律无效 | 同上。模型写 `status=draft` 不会有任何效果，未发布景点也捞不出来 |
+| 禁止承诺票价 / 开放时间 / 天气 / 交通 | 写进了 `SYSTEM_PROMPT` 的硬规则 |
+| 模型挂了不是错误页 | 一律降级成关键词检索，返回 HTTP 200 |
+
+页面必须显示 `AISearchOut.disclaimer`：**结果全部来自本站景点档案，AI 只参与理解需求**。
+这个字段是 `AISearchOut` 的必填项 —— 不是文档里的口头约定，前端想漏掉也漏不掉。
+
+> **不接抖音**（用户明确要求）。站外视频只对 B 站搜索页开一个纯链接，口径见第六节。
+
+---
 ## 四、操作清单
 
 - [x] 根许可证存在于 `LICENSE`；两个基底的 LICENSE 随源码保留（`frontend/LICENSE` = MIT）
@@ -171,6 +222,8 @@ vendor 进来的 `frontend/LICENSE`（`Copyright (c) 2019 Zero To Mastery`）原
 - [x] 一期数据层已定案（2026-09-25，S7）：50 条全部自采、`license` 为 MIT，无第三方数据集，无图片
 - [ ] 接入新数据源或图片时，回来更新第三、第五节并逐条复核
 - [x] 站外内容口径已单独立节（见第六节）：详情页只给 B 站搜索页外链，不内嵌、不抓取、不转载（2026-09-25）
+- [x] AI 与模型条款已单独立节（见第七节）：不引厂商 SDK、默认 `LLM_PROVIDER=none` 时一个字节都不发出、模型输出只当查询条件（2026-09-25）
+- [ ] 换 LLM provider 或开始商用前，回来复核第七节的数据出境与模型服务条款
 - [ ] 定期跑 `python scripts/license_gate.py --strict`
 
 > 以上是工程与合规判断，不构成法律意见。真要闭源时建议请律师过一遍。

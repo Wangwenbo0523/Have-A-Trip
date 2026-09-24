@@ -10,8 +10,8 @@
 | 模块 | 状态 | 说明 |
 |---|---|---|
 | `db/` | ✅ | 11 张表 + 视图 + 触发器，幂等可重复执行；90 个景点、31 个标签、90 个旅游方案 |
-| `backend/` | ✅ | 景点列表/详情/搜索、分类标签、来源与许可、行为埋点、推荐接口；65 用例通过 |
-| `frontend/` | ✅ | 首页、全部景点（含等级筛选）、分类页、详情页（含旅游方案、站外视频搜索）、搜索、数据来源与许可页、错误态；41 用例通过 |
+| `backend/` | ✅ | 景点列表/详情/搜索、分类标签、来源与许可、行为埋点、推荐接口、一句话检索（AI 默认关闭）；84 用例通过（另有 3 个 schema 对拍用例需 PostgreSQL） |
+| `frontend/` | ✅ | 首页、全部景点（含等级筛选与「用一句话找景点」）、分类页、详情页（含旅游方案、站外视频搜索）、搜索、数据来源与许可页、错误态；50 用例通过 |
 | `recsys/` | ✅ | 三条脚本（导出 → 训练 → 回写）端到端跑通，BPR 离线结果已写回 `rec_result` |
 | 数据量 | ✅ | 90 个景点 / 31 个标签，中国境内 50 + 境外 40（覆盖六大洲 30 个国家），全部自采（`license` 为 MIT）；图片为程序化自绘 |
 
@@ -34,6 +34,7 @@
       v
 API 服务  FastAPI  Python 3.13     <-- 不 import recbole, 只读推荐结果表
       |            冷启动走内容相似度 -> 热门兜底
+      |            一句话检索: 模型只解析查询条件, 条目仍从库里查(默认关闭)
       v
 PostgreSQL   景点档案 / 用户行为日志 / 推荐结果表
       ^
@@ -70,6 +71,7 @@ psql -d attraction_atlas -f db/seed/images.sql
 cd backend
 python -m venv .venv && .venv/Scripts/pip install -r requirements.txt
 cp .env.example .env          # 按需改 DATABASE_URL
+#                               想开 AI 检索就在 .env 里配 LLM_PROVIDER(见 .env.example)
 .venv/Scripts/uvicorn app.main:app --reload
 
 # 3. 前端 (http://127.0.0.1:5173)
@@ -94,6 +96,8 @@ npm run start                 # /api 由 vite 代理到 :8000, 本地免跨域
 | GET | `/sources` | 数据来源与许可：从 `attraction` / `attraction_image` 聚合，声明页据此渲染 |
 | POST | `/events` | 行为埋点：`view` / `favorite` / `rate` / `share` |
 | GET | `/recommendations` | 为你推荐，`user_id` 与 `device_id` 二选一 |
+| GET | `/ai/status` | AI 入口是否可用。默认配置（`LLM_PROVIDER=none`）返回 `available=false` |
+| POST | `/ai/search` | 用一句话找景点：模型把这句话解析成上面的筛选条件，**条目仍从库里查** |
 
 `grade` 取值 `5A` / `4A` / `3A` / `heritage`。前三个是中国景区的质量等级（GB/T 17775），
 `heritage` 表示「已列入 UNESCO 世界遗产名录」—— 世界遗产没有 A 级，所以它与 A 级各占一个取值，
@@ -101,6 +105,12 @@ npm run start                 # /api 由 vite 代理到 :8000, 本地免跨域
 
 `status != published` 的景点不会出现在任何接口与推荐里。`/recommendations` 保证非空：
 离线结果 → 内容相似度 → 热门兜底，三级降级，每条都带 `reason`。
+
+`/ai/*` 默认是关的（`LLM_PROVIDER=none`）：不配模型时应用照常运行，页面不显示 AI 入口。
+开启方式见 `backend/.env.example`，本地 Ollama 与云端 API 用同一段代码，只换环境变量。
+**模型只产出查询条件，不产出景点条目** —— 结果永远由上面的 `/attractions` 查询给出，
+所以它没有编造景点的机会；取值对不上的一律丢弃并如实告诉用户。模型不可用或超时时
+降级成关键词检索（HTTP 200 而非 500），不是错误页。完整口径见 `docs/LICENSE-AUDIT.md` 第七节。
 
 ## 许可证纪律（重要）
 

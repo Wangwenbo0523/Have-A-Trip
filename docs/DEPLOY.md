@@ -71,6 +71,11 @@ WantedBy=multi-user.target
 | `DATABASE_URL` | `postgresql+psycopg://user:pw@host:5432/attraction_atlas` |
 | `CORS_ORIGINS` | 前端 origin，逗号分隔。同源部署（由反向代理统一入口）时其实用不到，但留着不碍事 |
 | `REC_CACHE_TTL_SECONDS` | 每用户推荐结果的短 TTL 缓存，默认 60 秒 |
+| `LLM_PROVIDER` | `none`(默认) / `ollama` / `deepseek` / `openai` / `custom`。留空即关闭 AI 入口 |
+| `LLM_MODEL`、`LLM_BASE_URL` | 留空用 provider 预设值；`custom` 必须自己给 |
+| `LLM_API_KEY` | 云端 provider 需要。**只放环境变量**，绝不进仓库 |
+| `LLM_TIMEOUT_SECONDS` | 模型调用超时，默认 20 秒。宁可降级成关键词检索，也不让用户干等 |
+| `LLM_CACHE_TTL_SECONDS` | 同一句话解析结果的进程内缓存，默认 300 秒；`0` 表示不缓存 |
 
 健康检查用 `GET /api/v1/healthz`：数据库连不上时它返回 `degraded` 而不是 500，
 所以不要拿 HTTP 200 当「一切正常」，要读 `status` 字段。
@@ -137,6 +142,8 @@ server {
 - [ ] `db/schema.sql` 在目标库上跑过至少两次（验幂等）
 - [ ] `/api/v1/healthz` 的 `status` 是 `ok`
 - [ ] `/api/v1/sources` 的 `needs_attention` 是 `false`（库里有 share-alike 来源却没登记修改状态时为 `true`，声明页会出红色告警）
+- [ ] 配了 `LLM_PROVIDER` 时 `/api/v1/ai/status` 的 `available` 是 `true`；**没配时它必须是 `false`**（否则说明密钥或地址写错了，AI 入口会以不可用的状态对外，页面不显示）
+- [ ] 若 `LLM_PROVIDER` 指向云端：确认数据出境已过合规，且 `LLM_API_KEY` 只存在于环境变量里（`git log -p -- .env` 应为空）
 - [ ] 刷新 `/attraction/<某个 slug>` 不 404（SPA 回落生效）
 - [ ] 静态素材与生成脚本一致：`python scripts/make_favicon.py --check` 与 `python scripts/make_attraction_covers.py --check` 都通过
 - [ ] 前端产物里没有任何地图 SDK：`grep -rIn "leaflet\|mapbox\|ol/" dist/assets` 应为空

@@ -2,4 +2,4 @@
 -r requirements.txt
 
 pytest==9.1.1
-httpx==0.28.1
+# httpx 已提到 requirements.txt(运行时要用), 这里不重复钉版

@@ -4,6 +4,7 @@ import { fetchAttractions } from "../api/client"
 import { useApi } from "../hooks/useApi"
 import { useDebouncedValue } from "../hooks/useDebouncedValue"
 import type { GradeFilter, PageQuery } from "../types"
+import AiSearchPanel from "./AiSearchPanel"
 import AttractionList from "./AttractionList"
 import SearchBox from "./SearchBox"
 import StateMessage from "./StateMessage"
@@ -48,6 +49,7 @@ const AttractionBrowser = ({ category, pageSize = 12 }: AttractionBrowserProps) 
   const [sort, setSort] = useState<SortKey>("rating")
   const [grade, setGrade] = useState<GradeFilter | "">("")
   const [page, setPage] = useState(1)
+  const [aiActive, setAiActive] = useState(false)
   const debouncedKeyword = useDebouncedValue(keyword, 300)
 
   // 换分类 / 换关键字 / 换排序 / 换等级之后原页码可能越界, 一律回到第一页
@@ -73,80 +75,92 @@ const AttractionBrowser = ({ category, pageSize = 12 }: AttractionBrowserProps) 
 
   return (
     <div className="browser">
-      <div className="browser__toolbar">
-        <SearchBox
-          value={keyword}
-          onChange={setKeyword}
-          placeholder="搜索景点名称或简介…"
-        />
-        <div className="browser__controls">
-          <div className="browser__grades" role="group" aria-label="等级筛选">
-            {GRADES.map((item) => (
-              <button
-                key={item.value || "all"}
-                type="button"
-                className={`browser__sort${grade === item.value ? " is-active" : ""}`}
-                aria-pressed={grade === item.value}
-                onClick={() => setGrade(item.value)}
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
-          <div className="browser__sorts" role="group" aria-label="排序方式">
-            {SORTS.map((item) => (
-              <button
-                key={item.value}
-                type="button"
-                className={`browser__sort${sort === item.value ? " is-active" : ""}`}
-                aria-pressed={sort === item.value}
-                onClick={() => setSort(item.value)}
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
+      {/*
+        AI 一句话检索只在「全部景点」页出现 —— 分类页自己已经限定了分类,
+        再叠一个跨分类的自然语言检索只会让人困惑。
+        后端说不可用(默认配置)时这个组件整个不渲染, 页面与以前完全一样。
+      */}
+      {category ? null : <AiSearchPanel onActiveChange={setAiActive} />}
 
-      {loading ? <Loader /> : null}
-
-      {!loading && error ? (
-        <StateMessage
-          title="景点加载失败"
-          detail={error}
-          tone="error"
-          onRetry={reload}
-        />
-      ) : null}
-
-      {!loading && !error && data && data.items.length === 0 ? (
-        <StateMessage
-          title="没有匹配的景点"
-          detail={emptyDetail(debouncedKeyword, grade)}
-        />
-      ) : null}
-
-      {!loading && !error && data && data.items.length > 0 ? (
+      {/* AI 结果在显示时, 把下面这条普通检索收起来: 两份列表同时出现分不清哪份是目标 */}
+      {aiActive ? null : (
         <>
-          <AttractionList attractions={data.items} />
-          <div className="browser__pager">
-            <button type="button" disabled={page <= 1} onClick={() => setPage((n) => n - 1)}>
-              上一页
-            </button>
-            <span>
-              第 {data.page} / {totalPages} 页 · 共 {data.total} 个景点
-            </span>
-            <button
-              type="button"
-              disabled={page >= totalPages}
-              onClick={() => setPage((n) => n + 1)}
-            >
-              下一页
-            </button>
+          <div className="browser__toolbar">
+            <SearchBox
+              value={keyword}
+              onChange={setKeyword}
+              placeholder="搜索景点名称或简介…"
+            />
+            <div className="browser__controls">
+              <div className="browser__grades" role="group" aria-label="等级筛选">
+                {GRADES.map((item) => (
+                  <button
+                    key={item.value || "all"}
+                    type="button"
+                    className={`browser__sort${grade === item.value ? " is-active" : ""}`}
+                    aria-pressed={grade === item.value}
+                    onClick={() => setGrade(item.value)}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+              <div className="browser__sorts" role="group" aria-label="排序方式">
+                {SORTS.map((item) => (
+                  <button
+                    key={item.value}
+                    type="button"
+                    className={`browser__sort${sort === item.value ? " is-active" : ""}`}
+                    aria-pressed={sort === item.value}
+                    onClick={() => setSort(item.value)}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
+
+          {loading ? <Loader /> : null}
+
+          {!loading && error ? (
+            <StateMessage
+              title="景点加载失败"
+              detail={error}
+              tone="error"
+              onRetry={reload}
+            />
+          ) : null}
+
+          {!loading && !error && data && data.items.length === 0 ? (
+            <StateMessage
+              title="没有匹配的景点"
+              detail={emptyDetail(debouncedKeyword, grade)}
+            />
+          ) : null}
+
+          {!loading && !error && data && data.items.length > 0 ? (
+            <>
+              <AttractionList attractions={data.items} />
+              <div className="browser__pager">
+                <button type="button" disabled={page <= 1} onClick={() => setPage((n) => n - 1)}>
+                  上一页
+                </button>
+                <span>
+                  第 {data.page} / {totalPages} 页 · 共 {data.total} 个景点
+                </span>
+                <button
+                  type="button"
+                  disabled={page >= totalPages}
+                  onClick={() => setPage((n) => n + 1)}
+                >
+                  下一页
+                </button>
+              </div>
+            </>
+          ) : null}
         </>
-      ) : null}
+      )}
     </div>
   )
 }

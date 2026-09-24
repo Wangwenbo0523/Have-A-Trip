@@ -10,3 +10,8 @@ SQLAlchemy==2.0.54
 psycopg[binary]==3.2.3
 pydantic==2.13.5
 pydantic-settings==2.7.1
+
+# AI 检索的 HTTP 客户端(app/llm/client.py)。用 httpx(BSD-3) 直打 OpenAI 兼容的
+# /chat/completions, 不引各家官方 SDK —— 少一个依赖少一份许可面, 见 docs/LICENSE-AUDIT.md
+# 「AI 与模型条款」。测试用的 TestClient 也复用它。
+httpx==0.28.1

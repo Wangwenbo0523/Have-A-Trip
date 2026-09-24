@@ -177,3 +177,50 @@ export interface SourcesResponse {
   /** 库里有 share-alike 来源却没登记修改状态 */
   needs_attention: boolean
 }
+
+// ---------------------------------------------------------------- AI 一句话检索
+//
+// 契约真身是 backend/app/schemas.py。模型只把这句话解析成筛选条件,
+// items 永远来自库内档案 —— 所以这里没有「模型生成的景点」这种类型。
+
+/** 解析出来的筛选条件, 与 /attractions 的查询参数一一对应。 */
+export interface AIFilters {
+  category: string | null
+  tag: string | null
+  grade: GradeFilter | null
+  city: string | null
+  q: string | null
+  sort: "rating" | "newest" | "name"
+}
+
+/**
+ * AI 入口是否可用。默认配置(后端 LLM_PROVIDER=none)下 available 为 false,
+ * 页面据此决定要不要显示入口 —— 不给一个点了没反应的按钮。
+ */
+export interface AIStatus {
+  available: boolean
+  provider: string
+  model: string | null
+  disclaimer: string
+}
+
+/**
+ * 一句话检索的结果。
+ *
+ * interpreted=false 或 degraded=true 表示这次没走成模型(未配置 / 超时 / 返回不合法),
+ * 后端已退回关键词检索 —— 这是降级, 不是错误, 所以 note 与 degraded 都要显示给用户。
+ */
+export interface AISearchResult {
+  query: string
+  interpreted: boolean
+  degraded: boolean
+  model: string | null
+  note: string
+  filters: AIFilters
+  items: Attraction[]
+  page: number
+  size: number
+  total: number
+  /** 后端给的免责声明, 必须显示 */
+  disclaimer: string
+}

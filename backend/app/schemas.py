@@ -207,3 +207,58 @@ class SourcesOut(BaseModel):
     image_total: int
     # 有 share-alike 来源却没登记修改状态。页面据此显示告警横幅。
     needs_attention: bool
+
+
+# ---------------------------------------------------------------- AI 检索
+#
+# 契约真身同样在这里, 前端类型按它写。
+# AI 只负责把一句话解析成查询条件(见 app/llm/interpret.py), 结果永远来自库内档案。
+
+SortKey = Literal["rating", "newest", "name"]
+
+
+class AIFilters(BaseModel):
+    """模型解析出来的查询条件。字段与 /attractions 的查询参数一一对应。"""
+
+    category: str | None = None
+    tag: str | None = None
+    grade: GradeFilter | None = None
+    city: str | None = None
+    q: str | None = None
+    sort: SortKey = "rating"
+
+
+class AISearchIn(BaseModel):
+    query: str = Field(min_length=1, max_length=200)
+    page: int = Field(default=1, ge=1)
+    size: int | None = Field(default=None, ge=1)
+
+
+class AISearchOut(BaseModel):
+    """一句话检索的结果。
+
+    filters 是实际生效的条件, 前端可以把它渲染成可编辑的筛选条;
+    interpreted=false 或 degraded=true 表示这次没走成模型, 已退回关键词检索。
+    """
+
+    query: str
+    interpreted: bool
+    degraded: bool
+    model: str | None = None
+    note: str
+    filters: AIFilters
+    items: list[AttractionListItem]
+    page: int
+    size: int
+    total: int
+    # 页面上必须显示这句: 结果全部来自库内档案, AI 只参与理解需求
+    disclaimer: str
+
+
+class AIStatusOut(BaseModel):
+    """AI 入口的可用性。前端据此决定要不要显示「用一句话找景点」。"""
+
+    available: bool
+    provider: str
+    model: str | None = None
+    disclaimer: str
