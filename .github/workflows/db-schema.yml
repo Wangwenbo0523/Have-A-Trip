@@ -1,0 +1,132 @@
+name: db-schema
+
+# 用真实 PostgreSQL 验证 db/schema.sql 与 db/seed/seed.sql:
+# 各跑两遍证明幂等, 再断言结构、行数与 CHECK 约束。
+# 本机没有 psql, 所以这是「行为层」唯一的验证手段。
+on:
+  push:
+    branches: [main]
+    paths:
+      - "db/**"
+      - ".github/workflows/db-schema.yml"
+  pull_request:
+    paths:
+      - "db/**"
+      - ".github/workflows/db-schema.yml"
+  workflow_dispatch:
+
+jobs:
+  schema:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: attraction_atlas
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      PGPASSWORD: postgres
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 应用 schema.sql 两次(验证幂等)
+        run: |
+          for i in 1 2; do
+            echo "--- schema.sql 第 $i 次 ---"
+            psql -h 127.0.0.1 -U postgres -d attraction_atlas -v ON_ERROR_STOP=1 -q -f db/schema.sql
+          done
+
+      - name: 应用 seed.sql 两次(验证幂等)
+        run: |
+          for i in 1 2; do
+            echo "--- seed.sql 第 $i 次 ---"
+            psql -h 127.0.0.1 -U postgres -d attraction_atlas -v ON_ERROR_STOP=1 -q -f db/seed/seed.sql
+          done
+
+      - name: 断言结构与数据
+        run: |
+          set -euo pipefail
+          q() { psql -h 127.0.0.1 -U postgres -d attraction_atlas -tAc "$1"; }
+          expect() { # expect <期望> <实际> <说明>
+            if [ "$1" != "$2" ]; then echo "::error::$3: 期望 $1, 实际 $2"; exit 1; fi
+            echo "OK: $3 = $2"
+          }
+
+          expect 9 "$(q "select count(*) from information_schema.tables where table_schema='public' and table_type='BASE TABLE';")" "表数量"
+          expect 1 "$(q "select count(*) from information_schema.views where table_schema='public';")" "视图数量"
+          expect 1 "$(q "select count(*) from information_schema.triggers where trigger_name='trg_attraction_updated_at';")" "updated_at 触发器"
+
+          # 两遍种子数据不该产生重复行
+          expect 7 "$(q "select count(*) from category;")" "category 行数"
+          expect 8 "$(q "select count(*) from tag;")" "tag 行数"
+          expect 3 "$(q "select count(*) from attraction;")" "attraction 行数(重跑未重复插入)"
+          expect 0 "$(q "select count(*) from attraction where source is null or license is null;")" "缺 source/license 的景点数"
+          expect 0 "$(q "select count(*) from attraction where status <> 'published';")" "非 published 的种子景点数"
+          expect 1 "$(q "select count(*) from schema_version where version='0001_init';")" "schema_version 记录数"
+
+      - name: 断言 CHECK 约束真的拦得住
+        run: |
+          set -euo pipefail
+          q() { psql -h 127.0.0.1 -U postgres -d attraction_atlas -tAc "$1"; }
+
+          q "insert into app_user (device_id) values ('ci-probe');" > /dev/null
+          uid=$(q "select id from app_user where device_id='ci-probe';")
+          aid=$(q "select id from attraction where slug='west-lake';")
+
+          # rate 事件不带 rating 必须被拒
+          if q "insert into behavior_log (user_id, attraction_id, event_type) values ($uid, $aid, 'rate');" > /dev/null 2>&1; then
+            echo "::error::behavior_rate_needs_rating 约束没有生效"
+            exit 1
+          fi
+          echo "OK: rate 缺 rating 被拒绝"
+
+          # 越界评分必须被拒
+          if q "insert into behavior_log (user_id, attraction_id, event_type, rating) values ($uid, $aid, 'rate', 9);" > /dev/null 2>&1; then
+            echo "::error::rating 范围约束没有生效"
+            exit 1
+          fi
+          echo "OK: rating=9 被拒绝"
+
+          # 非法 event_type 必须被拒
+          if q "insert into behavior_log (user_id, attraction_id, event_type) values ($uid, $aid, 'click');" > /dev/null 2>&1; then
+            echo "::error::event_type 枚举约束没有生效"
+            exit 1
+          fi
+          echo "OK: event_type=click 被拒绝"
+
+          # 合法的插入必须成功
+          q "insert into behavior_log (user_id, attraction_id, event_type, rating) values ($uid, $aid, 'rate', 4.5);" > /dev/null
+          expect() { if [ "$1" != "$2" ]; then echo "::error::$3"; exit 1; fi; echo "OK: $3"; }
+          expect 1 "$(q "select count(*) from behavior_log where user_id=$uid and event_type='rate';")" "合法 rate 事件写入成功"
+
+          # status 只允许三态
+          if q "insert into attraction (slug, name, category_id, status, source, license) values ('x','x',(select id from category limit 1),'live','t','t');" > /dev/null 2>&1; then
+            echo "::error::status 枚举约束没有生效"
+            exit 1
+          fi
+          echo "OK: status=live 被拒绝"
+
+      - name: 断言 v_latest_rec 只取最近一批
+        run: |
+          set -euo pipefail
+          q() { psql -h 127.0.0.1 -U postgres -d attraction_atlas -tAc "$1"; }
+          uid=$(q "select id from app_user where device_id='ci-probe';")
+          aid=$(q "select id from attraction where slug='west-lake';")
+
+          q "insert into rec_result (user_id, attraction_id, score, rank, algo, reason, batch_id, generated_at)
+             values ($uid, $aid, 0.9, 1, 'bpr', '测试', 'batch-old', now() - interval '1 hour');" > /dev/null
+          q "insert into rec_result (user_id, attraction_id, score, rank, algo, reason, batch_id, generated_at)
+             values ($uid, $aid, 0.8, 1, 'bpr', '测试', 'batch-new', now());" > /dev/null
+
+          n=$(q "select count(*) from v_latest_rec where user_id=$uid;")
+          if [ "$n" != "1" ]; then echo "::error::v_latest_rec 期望 1 行, 实际 $n"; exit 1; fi
+          batch=$(q "select batch_id from v_latest_rec where user_id=$uid;")
+          if [ "$batch" != "batch-new" ]; then echo "::error::v_latest_rec 取到了 $batch, 应为 batch-new"; exit 1; fi
+          echo "OK: v_latest_rec 只返回最新一批"
