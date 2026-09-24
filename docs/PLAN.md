@@ -52,17 +52,17 @@
 
 下表按**执行顺序**排列（步骤编号是稳定标识，不代表先后）：
 
-| 步骤 | 任务 | 主要产出 | 前置 | 并行组 | 关键验收 | 提交前缀 |
-|---|---|---|---|---|---|---|
-| **S0** | 数据模型 | `db/schema.sql`、`db/seed/seed.sql`、`db/README.md` | — | G1 | 幂等可重复执行；外键与索引齐；种子数据可查 | `feat(db):` |
-| **S3** | 前端去地图化 | 删 `MapView/`、`ol`、`registerServiceWorker.js`；清空卡口白名单 | — | G1 | 构建通过；`ol`/`MapView` 无残留；卡口 0 未标注项 | `refactor(frontend):` |
-| **S1** | 后端骨架 | `backend/app/**`、`requirements.txt`、`tests/**` | S0 | G2 | `uvicorn` 起得来；`pytest` 通过；**不 import recbole** | `feat(api):` |
-| **S2** | 推荐接口 + 冷启动 | `backend/app/recommend/*` | S1 | G3 | 无行为的新用户也能拿到非空推荐，且每条带 `reason` | `feat(rec):` |
-| **S4** | 前端 Attraction 化 | `types/index.ts` 重写、`Attraction*` 组件、`api/client.ts` | S1、S3 | G3 | 首页/分类/详情/搜索可用；无 `Country` 残留 | `feat(web):` |
-| **S6** | 离线训练链路 | `recsys/{export_interactions,run_recbole,write_back}.py` | S0 | G4 | 三条脚本端到端跑通，`rec_result` 有数据 | `feat(recsys):` |
-| **S7** | 内容与数据 | `db/seed/*.sql`（30–50 个景点）+ 来源清单 | S0 | G4 | 每个景点 `source` / `license` 非空且可用 | `data(seed):` |
-| **S5** | 数据来源与许可声明页 | `frontend/src/components/Credits.tsx` 改造 | S4、S7 | G5 | 页面逐条列出来源与许可，与 S7 一致 | `feat(web):` |
-| **S8** | 工程化收尾 | CI 增 build/test、`README`、部署说明 | S2、S4、S6 | G6 | CI 三条工作流全绿且**真的会**变红 | `chore(ci):` |
+| 步骤 | 任务 | 主要产出 | 前置 | 并行组 | 关键验收 | 提交前缀 | 状态 |
+|---|---|---|---|---|---|---|---|
+| **S0** | 数据模型 | `db/schema.sql`、`db/seed/seed.sql`、`db/README.md` | — | G1 | 幂等可重复执行；外键与索引齐；种子数据可查 | `feat(db):` | ✅ `2f80afc` |
+| **S3** | 前端去地图化 | 删 `MapView/`、`ol`、`registerServiceWorker.js`；清空卡口白名单 | — | G1 | 构建通过；`ol`/`MapView` 无残留；卡口 0 未标注项 | `refactor(frontend):` | ✅ `7361ce7` |
+| **S1** | 后端骨架 | `backend/app/**`、`requirements.txt`、`tests/**` | S0 | G2 | `uvicorn` 起得来；`pytest` 通过；**不 import recbole** | `feat(api):` | ✅ `2802594` |
+| **S2** | 推荐接口 + 冷启动 | `backend/app/recommend/*` | S1 | G3 | 无行为的新用户也能拿到非空推荐，且每条带 `reason` | `feat(rec):` | ✅ `29069bb` |
+| **S4** | 前端 Attraction 化 | `types/index.ts` 重写、`Attraction*` 组件、`api/client.ts` | S1、S3 | G3 | 首页/分类/详情/搜索可用；无 `Country` 残留 | `feat(web):` | ⬜ 下一步 |
+| **S6** | 离线训练链路 | `recsys/{export_interactions,run_recbole,write_back}.py` | S0 | G4 | 三条脚本端到端跑通，`rec_result` 有数据 | `feat(recsys):` | ⬜ 待开工 |
+| **S7** | 内容与数据 | `db/seed/*.sql`（30–50 个景点）+ 来源清单 | S0 | G4 | 每个景点 `source` / `license` 非空且可用 | `data(seed):` | ⬜ 待开工 |
+| **S5** | 数据来源与许可声明页 | `frontend/src/components/Credits.tsx` 改造 | S4、S7 | G5 | 页面逐条列出来源与许可，与 S7 一致 | `feat(web):` | ⬜ 待开工 |
+| **S8** | 工程化收尾 | CI 增 build/test、`README`、部署说明 | S2、S4、S6 | G6 | CI 三条工作流全绿且**真的会**变红 | `chore(ci):` | ⬜ 待开工 |
 
 ---
 
@@ -429,3 +429,4 @@ psql -d attraction_atlas -c "select count(*), max(generated_at) from rec_result;
 |---|---|---|
 | 2026-09-25 | v1 | 初版，基线 commit `88a15f1` |
 | 2026-09-25 | v1.1 | 定下执行顺序 `S0 → S3 → S1 → S2 → S4 → S8 → S7 → S6` |
+| 2026-09-25 | v1.2 | S0 / S3 / S1 / S2 全部完成并入 `main`；总览表加状态列 |
