@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="海口骑楼老街">
+  <title>海口骑楼老街</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b2126"/>
+      <stop offset="1" stop-color="#3b4b4e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <rect x="-30.0" y="474.3" width="206.0" height="129.7" fill="#202a2f"/>
+  <polygon points="-46.0,474.3 73.0,424.3 192.0,474.3" fill="#2c3a3e"/>
+  <rect x="-42.0" y="450.3" width="34.0" height="24" fill="#2c3a3e"/>
+  <rect x="-42.0" y="426.3" width="28.0" height="24" fill="#2c3a3e"/>
+  <rect x="-42.0" y="402.3" width="22.0" height="24" fill="#2c3a3e"/>
+  <rect x="206.0" y="500.0" width="182.5" height="104.0" fill="#202a2f"/>
+  <polygon points="190.0,500.0 297.3,450.0 404.5,500.0" fill="#2c3a3e"/>
+  <rect x="194.0" y="476.0" width="34.0" height="24" fill="#2c3a3e"/>
+  <rect x="194.0" y="452.0" width="28.0" height="24" fill="#2c3a3e"/>
+  <rect x="194.0" y="428.0" width="22.0" height="24" fill="#2c3a3e"/>
+  <rect x="418.5" y="455.7" width="161.4" height="148.3" fill="#202a2f"/>
+  <polygon points="402.5,455.7 499.2,405.7 595.9,455.7" fill="#2c3a3e"/>
+  <rect x="406.5" y="431.7" width="34.0" height="24" fill="#2c3a3e"/>
+  <rect x="406.5" y="407.7" width="28.0" height="24" fill="#2c3a3e"/>
+  <rect x="406.5" y="383.7" width="22.0" height="24" fill="#2c3a3e"/>
+  <rect x="609.9" y="493.4" width="186.9" height="110.6" fill="#202a2f"/>
+  <polygon points="593.9,493.4 703.4,443.4 812.8,493.4" fill="#2c3a3e"/>
+  <rect x="597.9" y="469.4" width="34.0" height="24" fill="#2c3a3e"/>
+  <rect x="597.9" y="445.4" width="28.0" height="24" fill="#2c3a3e"/>
+  <rect x="597.9" y="421.4" width="22.0" height="24" fill="#2c3a3e"/>
+  <rect x="826.8" y="452.7" width="160.1" height="151.3" fill="#202a2f"/>
+  <polygon points="810.8,452.7 906.9,402.7 1002.9,452.7" fill="#2c3a3e"/>
+  <rect x="814.8" y="428.7" width="34.0" height="24" fill="#2c3a3e"/>
+  <rect x="814.8" y="404.7" width="28.0" height="24" fill="#2c3a3e"/>
+  <rect x="814.8" y="380.7" width="22.0" height="24" fill="#2c3a3e"/>
+  <rect x="1016.9" y="492.3" width="172.2" height="111.7" fill="#202a2f"/>
+  <polygon points="1000.9,492.3 1103.0,442.3 1205.1,492.3" fill="#2c3a3e"/>
+  <rect x="1004.9" y="468.3" width="34.0" height="24" fill="#2c3a3e"/>
+  <rect x="1004.9" y="444.3" width="28.0" height="24" fill="#2c3a3e"/>
+  <rect x="1004.9" y="420.3" width="22.0" height="24" fill="#2c3a3e"/>
+  <rect x="0" y="604.0" width="1200" height="196.0" fill="#141b1f"/>
+  <path d="M202.0,638.0 Q320.0,664.0 438.0,638.0 Z" fill="#2c3a3e"/>
+  <path d="M276.0,635.0 Q320.0,596.0 364.0,635.0 Z" fill="#202a2f"/>
+  <path d="M783.2,638.0 Q880.0,659.3 976.8,638.0 Z" fill="#2c3a3e"/>
+  <path d="M843.9,635.0 Q880.0,603.6 916.1,635.0 Z" fill="#202a2f"/>
+  <rect x="0" y="700.0" width="1200" height="3" fill="#e8a364" opacity="0.22"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e8a364" letter-spacing="7">古镇村落</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">海口骑楼老街</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

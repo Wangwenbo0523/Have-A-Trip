@@ -1,8 +1,8 @@
 -- Have-A-Trip · 种子数据
 --
--- 140 个景点: 100 个中国境内 + 40 个境外(覆盖六大洲), 全部为自采的公开事实信息,
+-- 156 个景点: 116 个中国境内 + 40 个境外(覆盖六大洲), 全部为自采的公开事实信息,
 -- 不引入任何第三方数据集, 以便「将来可闭源」。判断见 docs/LICENSE-AUDIT.md 第三节。
--- 境内的 100 条见「中国城市的馆 · 园 · 地标」与「中国城市巡礼」两节; 境外的 40 条见「世界景点」分节。
+-- 境内的 116 条见「中国城市的馆 · 园 · 地标」「中国城市巡礼」「海南 · 台湾」三节; 境外的 40 条见「世界景点」分节。
 -- 每条 attraction 都必须写清 source 与 license(S0 已把它设为 NOT NULL)。
 --
 -- 幂等性: 可重复执行。
@@ -78,13 +78,15 @@ INSERT INTO tag (slug, name) VALUES
     ('canyon',                 '峡谷'),
     ('glacier',                '冰川'),
     ('reef',                   '珊瑚礁'),
-    ('art',                    '艺术')
+    ('art',                    '艺术'),
+    ('beach',                  '海滩')
 ON CONFLICT (slug) DO UPDATE SET
     name = EXCLUDED.name;
 
 -- ---------------------------------------------------------------- 景点
 --
 -- 每条都带 source 与 license; 不带坐标与票价(见文件头的口径说明)。
+-- 分节: 早期境内 / 中国城市的馆 · 园 · 地标 / 中国城市巡礼 / 海南 · 台湾 / 世界景点。
 
 INSERT INTO attraction (
     slug, name, name_en, summary, description,
@@ -1268,6 +1270,205 @@ INSERT INTO attraction (
     'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
 ),
 
+-- ---------------------------------------- 海南 · 台湾（16 条）
+-- 补的是最后两处空白: 海南与台湾。至此中国境内 34 个省级行政区都有可核实的条目,
+-- 境内景点 100 → 116。以自然(7)、博物馆(2)、地标(2)、古镇(2)、历史(2)、宗教(1) 为主,
+-- 并新增一个标签 beach(海滩): 这两地的海滨是主要看点, 原有的 island / reef 覆盖不到沙滩。
+-- 口径与前面几节完全一致。
+
+(
+    'sanya-nanshan-temple', '三亚南山文化旅游区', 'Nanshan Cultural Tourism Zone',
+    '以佛教文化为主题的海滨园区，观音像立于海中人工岛上，与岸上的南山寺构成一条中轴。',
+    '位于三亚市以西的海滨，园区依山面海，1998 年建成开放，是海南规模较大的佛教文化主题园区。'
+    || '最醒目的是立于海中人工岛上的观音像，高一百余米；岸上按中轴依次是不二法门、南山寺与各处配殿。'
+    || '园区面积大，各片区之间通常乘车移动；临海一段步道可以看日落。',
+    (SELECT id FROM category WHERE slug = 'religion'),
+    'CN', '海南省', '三亚市', '海南省三亚市崖州区南山文化旅游区',
+    NULL, NULL,
+    '11 月至次年 4 月', 4.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'tianya-haijiao', '天涯海角游览区', 'Tianya Haijiao',
+    '海边巨石上刻有「天涯」「海角」两处题字，是三亚西端最老牌的海滨景点。',
+    '位于三亚市西侧的海湾，清代至民国年间有人在巨石上题刻「天涯」「海角」等字样，此后成为海南最知名的一处地名景观。'
+    || '海滩平缓，礁石群集中在西段，刻字就分布在这些巨石上；弯道与海面在不同角度看反差明显。'
+    || '园区沿海滩展开，步行距离较长，多数人会坐观光车到最西端再往回走。',
+    (SELECT id FROM category WHERE slug = 'nature'),
+    'CN', '海南省', '三亚市', '海南省三亚市天涯区天涯海角游览区',
+    NULL, NULL,
+    '11 月至次年 4 月', 3.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'wuzhizhou-island', '蜈支洲岛', 'Wuzhizhou Island',
+    '三亚东侧的小岛，周边水色清透，是海南开展潜水与水上项目较集中的地方。',
+    '位于三亚市北部的海湾内，面积不大，岛上有相对完整的热带植被与环岛步道。'
+    || '岛周海水能见度较好，浅水区分布珊瑚，潜水、浮潜等水上项目集中在这一带。'
+    || '往返靠轮渡，船程短，旺季排队时间往往比船程长；岛东侧多礁石，西侧有较平的沙滩。',
+    (SELECT id FROM category WHERE slug = 'nature'),
+    'CN', '海南省', '三亚市', '海南省三亚市海棠区蜈支洲岛',
+    NULL, NULL,
+    '11 月至次年 4 月', 5.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'yanoda-rainforest', '呀诺达雨林文化旅游区', 'Yanoda Rainforest Cultural Tourism Zone',
+    '保亭的热带雨林景区，以雨林栈道与溪流瀑布为主。',
+    '位于保亭黎族苗族自治县，属热带季风气候下的低海拔雨林，园区以木栈道串联。'
+    || '沿途标注常见雨林植物，中段经过溪流与几处瀑布，水量随季节变化明显。'
+    || '另有漂流与滑索一类项目可选；雨林内湿度大，午后雷阵雨常见。',
+    (SELECT id FROM category WHERE slug = 'nature'),
+    'CN', '海南省', '保亭黎族苗族自治县', '海南省保亭黎族苗族自治县三道镇',
+    NULL, NULL,
+    '11 月至次年 4 月', 4.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'haikou-arcade-street', '海口骑楼老街', 'Haikou Arcade Street',
+    '海口老城的骑楼街区，沿街建筑多为 20 世纪上半叶所建的南洋样式。',
+    '位于海口市龙华区，主要指中山路、博爱路、得胜沙路一带的老街区。'
+    || '现存骑楼多为 19 世纪末至 20 世纪上半叶所建，做法是楼下留出连续的廊道供人通行、楼上住人，立面带南洋风格的装饰。'
+    || '这一带同时是海口的老商业区，街巷里小吃与老字号集中，廊道可以一路走过去。',
+    (SELECT id FROM category WHERE slug = 'ancient-town'),
+    'CN', '海南省', '海口市', '海南省海口市龙华区中山路一带',
+    NULL, NULL,
+    '四季皆宜', 2.0, 0.0,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'hainan-museum', '海南省博物馆', 'Hainan Museum',
+    '海南的省级博物馆，以南海水下文物与黎族苗族民俗为主要特色。',
+    '位于海口市国兴大道，常设陈列分为历史、民族、非物质文化遗产等部分。'
+    || '其中南海水下文化遗产陈列展出西沙海域出水的瓷器等文物，是外地少见的题材。'
+    || '民族部分介绍黎族与苗族的服饰、织锦与生活用具；室内为主，适合雨天与高温时段。',
+    (SELECT id FROM category WHERE slug = 'museum'),
+    'CN', '海南省', '海口市', '海南省海口市琼山区国兴大道 68 号',
+    NULL, NULL,
+    '四季皆宜，室内为主', 2.5, 0.0,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'boao-forum-site', '博鳌亚洲论坛永久会址', 'Boao Forum for Asia Permanent Site',
+    '博鳌亚洲论坛年会的举办地，主会场与河海交汇的景观一同开放参观。',
+    '位于琼海市博鳌镇，东侧是万泉河入海口；2001 年论坛在此设立，此后年会固定在会址举行。'
+    || '参观部分包括主会场与配套展览，另有游船沿河开到出海口一带。'
+    || '会址所在的东屿岛三面环水，与镇区之间以桥相连。',
+    (SELECT id FROM category WHERE slug = 'landmark'),
+    'CN', '海南省', '琼海市', '海南省琼海市博鳌镇东屿岛',
+    NULL, NULL,
+    '11 月至次年 4 月', 3.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'wugong-shrine', '五公祠', 'Wugong Shrine',
+    '海口为纪念唐宋时期被贬谪到海南的五位官员所建的祠堂建筑群。',
+    '位于海口市琼山区，始建于明代，现存建筑群由五公祠、苏公祠、观稼堂、学圃堂等组成。'
+    || '祠内供奉的是唐宋两代被贬至海南的李德裕、李纲、赵鼎、李光、胡铨五人，苏公祠则纪念苏轼。'
+    || '建筑是典型的南方祠堂样式，庭院内有古树与碑刻。',
+    (SELECT id FROM category WHERE slug = 'history'),
+    'CN', '海南省', '海口市', '海南省海口市琼山区海府路 169 号',
+    NULL, NULL,
+    '四季皆宜', 1.5, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'national-palace-museum', '台北故宫博物院', 'National Palace Museum',
+    '以清代宫廷旧藏为主体的博物馆，青铜器、瓷器与书画的收藏规模著称。',
+    '位于台北市士林区外双溪，1965 年落成。'
+    || '藏品主体来自清宫旧藏，涵盖青铜器、玉器、陶瓷、书画与图书文献等门类，因数量庞大而分批轮换展出。'
+    || '展厅共三层，看重点展品通常要留出半天以上；镇馆展品会轮换，入馆先看当期的展品清单。',
+    (SELECT id FROM category WHERE slug = 'museum'),
+    'CN', '台湾省', '台北市', '台湾省台北市士林区至善路二段 221 号',
+    NULL, NULL,
+    '四季皆宜，室内为主', 3.5, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'sun-moon-lake', '日月潭', 'Sun Moon Lake',
+    '台湾中部山间的天然湖泊，环湖有步道、寺庙与几处观景平台。',
+    '位于南投县鱼池乡，是台湾面积较大的天然湖泊，湖面被拉鲁岛分隔出形似日月的两块水域，故得名。'
+    || '环湖公路约三十公里，可骑车或乘车绕行，沿途有文武庙、玄光寺、伊达邵等点。'
+    || '清晨湖面常有薄雾；水社与伊达邵之间靠游船与公路相连。',
+    (SELECT id FROM category WHERE slug = 'nature'),
+    'CN', '台湾省', '南投县', '台湾省南投县鱼池乡日月潭',
+    NULL, NULL,
+    '四季皆宜', 4.0, 0.0,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'alishan', '阿里山', 'Alishan',
+    '嘉义东部的山区，以日出、云海、森林铁路与巨木群著称。',
+    '位于嘉义县阿里山乡，属玉山山脉北段，园区海拔在两千余米。'
+    || '森林铁路自嘉义市一路爬升到山上，是早期为运木材修建的产业铁路，现兼作观光线路。'
+    || '园区内步道串联神木群、姊妹潭等点，清晨可乘小火车到祝山看日出；山区气温明显低于平地，昼夜温差大。',
+    (SELECT id FROM category WHERE slug = 'nature'),
+    'CN', '台湾省', '嘉义县', '台湾省嘉义县阿里山乡',
+    NULL, NULL,
+    '3 月至 5 月、10 月至 12 月', 6.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'taroko-gorge', '太鲁阁峡谷', 'Taroko Gorge',
+    '花莲北侧的大理石峡谷，立雾溪切出的崖壁与峡谷步道是主要看点。',
+    '位于花莲县，属太鲁阁国家公园；立雾溪在变质岩层中下切，形成两岸近乎垂直的峡谷。'
+    || '岩壁以大理岩为主，中部横贯公路沿溪修建并穿行其间，燕子口、九曲洞一带的步道贴着崖壁。'
+    || '山区落石常见，部分步道会因落石或施工封闭，进入前需在现场确认。',
+    (SELECT id FROM category WHERE slug = 'nature'),
+    'CN', '台湾省', '花莲县', '台湾省花莲县秀林乡太鲁阁',
+    NULL, NULL,
+    '四季皆宜，雨季留意落石', 5.0, 0.0,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'jiufen-old-street', '九份老街', 'Jiufen Old Street',
+    '依山而建的矿村街巷，窄巷与阶梯两侧是茶馆与小店。',
+    '位于新北市瑞芳区，19 世纪末因金矿开采兴起，矿脉枯竭后逐渐沉寂，后因山城景色重新受到注意。'
+    || '聚落沿山坡分布，主要街道狭窄，两侧店铺密集，阶梯贯穿其间。'
+    || '傍晚灯亮后与山下海岸形成对比，是人最集中的时段。',
+    (SELECT id FROM category WHERE slug = 'ancient-town'),
+    'CN', '台湾省', '新北市', '台湾省新北市瑞芳区基山街',
+    NULL, NULL,
+    '四季皆宜', 3.0, 0.0,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'yehliu-geopark', '野柳地质公园', 'Yehliu Geopark',
+    '北海岸的砂岩海岬，蕈状岩与棋盘岩等风化地貌密集。',
+    '位于新北市万里区，是一段伸入海中的砂岩岬角。'
+    || '岩层因差别侵蚀形成蕈状岩，其中颈部细长的被称为女王头，是园区的标志。'
+    || '地面还可见姜石、棋盘岩、烛台石等不同形态，步道沿岬角环绕；部分区域会按风化情况限制靠近。',
+    (SELECT id FROM category WHERE slug = 'nature'),
+    'CN', '台湾省', '新北市', '台湾省新北市万里区野柳里港东路 167-1 号',
+    NULL, NULL,
+    '四季皆宜', 2.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'taipei-101', '台北 101', 'Taipei 101',
+    '曾长期位居世界第一高楼的塔楼，观景层可俯瞰台北盆地。',
+    '位于台北市信义区，2004 年落成，楼高 508 米。'
+    || '塔身按传统多层塔形分节，每八层为一组；楼内低层为商场，观景层设在高区，可看到台北盆地四周的山系。'
+    || '楼顶设有调谐质量阻尼器以减小风致摆动，这部分也在参观范围内。',
+    (SELECT id FROM category WHERE slug = 'landmark'),
+    'CN', '台湾省', '台北市', '台湾省台北市信义区信义路五段 7 号',
+    NULL, NULL,
+    '四季皆宜', 2.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'anping-fort', '安平古堡', 'Anping Fort',
+    '台南安平的旧城堡遗址，是台湾较早的西洋式建筑遗存之一。',
+    '位于台南市安平区，原为 17 世纪荷兰人在安平所建的城堡。'
+    || '现存可见的多为后来的砖砌残迹与一座红砖瞭望台，墙体用糯米灰浆与砖石交替砌筑。'
+    || '园区内有展览说明当时的贸易与筑城情况，旁边即安平老街。',
+    (SELECT id FROM category WHERE slug = 'history'),
+    'CN', '台湾省', '台南市', '台湾省台南市安平区国胜路 82 号',
+    NULL, NULL,
+    '四季皆宜', 1.5, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+
 -- ------------------------------------------------ 世界景点（40 条）
 -- 覆盖六大洲: 亚洲 9 / 欧洲 12 / 非洲 5 / 北美洲 6 / 南美洲 5 / 大洋洲 3。
 -- 口径与上面一致: 不带坐标, 票价只在确定免费时写 0, 评分一律 0。
@@ -1800,7 +2001,8 @@ FROM (VALUES
     ('kumbum-monastery',              '5A',  NULL),
     ('yandang-mountain',              '5A',  NULL),
     ('yuantouzhu',                    '5A',  NULL),
-    ('quanzhou-kaiyuan-temple',       NULL,  'cultural')
+    ('quanzhou-kaiyuan-temple',       NULL,  'cultural'),
+    ('sanya-nanshan-temple',          '5A',  NULL)
 ) AS m(slug, a_level, heritage)
 WHERE a.slug = m.slug;
 
@@ -2320,7 +2522,53 @@ FROM (VALUES
     ('foshan-ancestral-temple',         'family'                ),
     ('quanzhou-kaiyuan-temple',         'world-heritage'        ),
     ('quanzhou-kaiyuan-temple',         'ancient-architecture'  ),
-    ('quanzhou-kaiyuan-temple',         'art'                   )
+    ('quanzhou-kaiyuan-temple',         'art'                   ),
+    ('sanya-nanshan-temple',            'must-see'              ),
+    ('sanya-nanshan-temple',            'sunset'                ),
+    ('sanya-nanshan-temple',            'photography'           ),
+    ('tianya-haijiao',                  'beach'                 ),
+    ('tianya-haijiao',                  'sunset'                ),
+    ('tianya-haijiao',                  'photography'           ),
+    ('wuzhizhou-island',                'island'                ),
+    ('wuzhizhou-island',                'reef'                  ),
+    ('wuzhizhou-island',                'beach'                 ),
+    ('yanoda-rainforest',               'waterfall'             ),
+    ('yanoda-rainforest',               'hiking'                ),
+    ('yanoda-rainforest',               'wildlife'              ),
+    ('haikou-arcade-street',            'ancient-architecture'  ),
+    ('haikou-arcade-street',            'free'                  ),
+    ('haikou-arcade-street',            'photography'           ),
+    ('hainan-museum',                   'indoor'                ),
+    ('hainan-museum',                   'free'                  ),
+    ('hainan-museum',                   'must-see'              ),
+    ('boao-forum-site',                 'architecture'          ),
+    ('boao-forum-site',                 'cruise'                ),
+    ('boao-forum-site',                 'city-view'             ),
+    ('wugong-shrine',                   'ancient-architecture'  ),
+    ('wugong-shrine',                   'garden'                ),
+    ('national-palace-museum',          'indoor'                ),
+    ('national-palace-museum',          'must-see'              ),
+    ('national-palace-museum',          'art'                   ),
+    ('sun-moon-lake',                   'lake'                  ),
+    ('sun-moon-lake',                   'photography'           ),
+    ('sun-moon-lake',                   'cruise'                ),
+    ('sun-moon-lake',                   'sunrise'               ),
+    ('alishan',                         'sunrise'               ),
+    ('alishan',                         'hiking'                ),
+    ('alishan',                         'photography'           ),
+    ('taroko-gorge',                    'canyon'                ),
+    ('taroko-gorge',                    'hiking'                ),
+    ('taroko-gorge',                    'photography'           ),
+    ('jiufen-old-street',               'night-view'            ),
+    ('jiufen-old-street',               'free'                  ),
+    ('jiufen-old-street',               'photography'           ),
+    ('yehliu-geopark',                  'photography'           ),
+    ('yehliu-geopark',                  'must-see'              ),
+    ('taipei-101',                      'city-view'             ),
+    ('taipei-101',                      'night-view'            ),
+    ('taipei-101',                      'architecture'          ),
+    ('anping-fort',                     'ruins'                 ),
+    ('anping-fort',                     'ancient-architecture'  )
 ) AS m(attraction_slug, tag_slug)
 JOIN attraction a ON a.slug = m.attraction_slug
 JOIN tag t        ON t.slug = m.tag_slug
@@ -2329,7 +2577,7 @@ ON CONFLICT DO NOTHING;
 -- ---------------------------------------------------------------- 旅游方案
 --
 -- 「怎么玩」独立于「是什么」: 一个景点可以有多个方案, 方案由有序步骤组成,
--- 步骤按天分组(day_no)。当前 140 个景点各一个方案(中国境内 100 + 境外 40)。
+-- 步骤按天分组(day_no)。当前 156 个景点各一个方案(中国境内 116 + 境外 40)。
 -- 步骤先按 source 认领后删除再重建, 与景点标签同一套做法, 所以删步骤也能同步。
 -- 内容是本仓库自写的行程建议, 不是官方或旅行社线路。
 
@@ -3456,6 +3704,134 @@ INSERT INTO attraction_plan (
     1, 'low', '在泉州老城安排半天的游客',
     '先看大殿与月台的石刻构件，再走到寺外看东西两座石塔，最后沿西街逛一段。',
     'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'sanya-nanshan-temple'),
+    'sanya-nanshan-temple-plan',
+    '南山半日：观音像与南山寺',
+    1, 'low', '在三亚安排半天到一天的游客',
+    '先到海边远看观音像，再沿中轴走到南山寺，最后在临海一段看日落。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'tianya-haijiao'),
+    'tianya-haijiao-plan',
+    '天涯海角半日：石刻与海滩',
+    1, 'low', '想在海边慢走、看石刻的游客',
+    '先坐观光车到最西端看石刻，再沿沙滩往回走。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'wuzhizhou-island'),
+    'wuzhizhou-island-plan',
+    '蜈支洲岛一日：环岛与水上项目',
+    1, 'mid', '想玩水上项目、留一整天在海岛的游客',
+    '上午先环岛走一圈，下午安排潜水或水上项目，赶在末班船前返回。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'yanoda-rainforest'),
+    'yanoda-rainforest-plan',
+    '呀诺达半日：雨林栈道',
+    1, 'low', '想看雨林植被与溪流、走半天的游客',
+    '沿木栈道走进雨林，途中看溪流与瀑布，赶在午后雷雨前返回。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'haikou-arcade-street'),
+    'haikou-arcade-street-plan',
+    '骑楼老街半日：中山路到博爱路',
+    1, 'free', '想在老城逛半天、吃小吃的游客',
+    '从中山路走起，沿骑楼廊道看立面，再转进博爱路一带的街巷。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'hainan-museum'),
+    'hainan-museum-plan',
+    '海南省博物馆半日',
+    1, 'free', '想了解南海文物与黎苗民俗的游客',
+    '先看南海水下文化遗产陈列，再看民族与非物质文化遗产部分。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'boao-forum-site'),
+    'boao-forum-site-plan',
+    '博鳌会址半日',
+    1, 'low', '顺路看会址、还想坐一段船的游客',
+    '先参观主会场与配套展览，再乘船看万泉河入海口。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'wugong-shrine'),
+    'wugong-shrine-plan',
+    '五公祠一个半小时',
+    1, 'low', '在海口看古建筑、顺路停一站的游客',
+    '沿中轴看五公祠与苏公祠，再看庭院里的碑刻与古树。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'national-palace-museum'),
+    'national-palace-museum-plan',
+    '台北故宫半日：按展厅顺序看',
+    1, 'low', '第一次去、想看代表展品的游客',
+    '从三层往下看，先看轮换展出的书画与瓷器，再看常设的青铜与玉器。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'sun-moon-lake'),
+    'sun-moon-lake-plan',
+    '日月潭一日：环湖与游船',
+    1, 'low', '想把湖环一圈、看清晨湖面的游客',
+    '清晨先看湖面，再乘船或骑车环湖，傍晚回到水社一带。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'alishan'),
+    'alishan-plan',
+    '阿里山两日：日出与森林步道',
+    2, 'mid', '愿意在山里住一晚、赶日出的人',
+    '第一天走森林步道看巨木群，第二天清晨乘小火车到祝山看日出。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'taroko-gorge'),
+    'taroko-gorge-plan',
+    '太鲁阁一日：峡谷步道',
+    1, 'low', '想看峡谷地貌、走几条短步道的游客',
+    '沿中横公路由东往西，燕子口与九曲洞各走一段，再看天祥一带。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'jiufen-old-street'),
+    'jiufen-old-street-plan',
+    '九份半日：老街与阶梯',
+    1, 'low', '傍晚看山城灯火、顺便吃小吃的游客',
+    '先走基山街，再沿阶梯下到竖崎路一带，等灯亮后看山城。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'yehliu-geopark'),
+    'yehliu-geopark-plan',
+    '野柳两小时：海岬地貌',
+    1, 'low', '在北海岸顺路停一站、看地貌的游客',
+    '进园先走第一区看蕈状岩，再绕到后面几区看姜石与棋盘岩。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'taipei-101'),
+    'taipei-101-plan',
+    '台北 101 两小时：观景层',
+    1, 'low', '想俯瞰台北盆地的游客',
+    '先到观景层看盆地四周，再上楼顶段看阻尼器。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'anping-fort'),
+    'anping-fort-plan',
+    '安平古堡一个半小时',
+    1, 'low', '在台南看旧城堡遗址、顺逛安平老街的游客',
+    '先看城堡残迹与瞭望台，再看展馆，出门即安平老街。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
 )
 ON CONFLICT (slug) DO UPDATE SET
     attraction_id = EXCLUDED.attraction_id,
@@ -3932,7 +4308,54 @@ FROM (VALUES
     ('foshan-ancestral-temple-plan',    1, 2, '下午 · 黄飞鸿纪念馆与叶问堂', '同一片区域内有武术与醒狮相关的陈列，醒狮表演按场次进行。', 1.5, NULL),
     ('quanzhou-kaiyuan-temple-plan',    1, 0, '上午 · 大殿与月台', '殿前月台的须弥座上有狮身人面浮雕，廊柱中混有印度教石刻构件。', 1.5, NULL),
     ('quanzhou-kaiyuan-temple-plan',    1, 1, '接着 · 东西塔', '两座宋代石塔在寺外两侧，塔身浮雕保存较好。', 1.0, NULL),
-    ('quanzhou-kaiyuan-temple-plan',    1, 2, '下午 · 西街', '出寺即是西街，老城街巷与小吃集中在这一带。', 1.5, NULL)
+    ('quanzhou-kaiyuan-temple-plan',    1, 2, '下午 · 西街', '出寺即是西街，老城街巷与小吃集中在这一带。', 1.5, NULL),
+    ('sanya-nanshan-temple-plan',         1, 0, '上午 · 不二法门与观音像', '从园区入口经不二法门往海边走，观音像立在人工岛上，岸上有观景平台。', 2.0, '园区面积大，入口到海边有代步车，走路会多花时间。'),
+    ('sanya-nanshan-temple-plan',         1, 1, '接着 · 南山寺', '寺内按中轴依次为山门、天王殿、大雄宝殿，两侧配殿供参观。', 1.5, NULL),
+    ('sanya-nanshan-temple-plan',         1, 2, '下午 · 临海步道与返程', '临海一段步道可以慢慢走，傍晚光线适合看观音像的侧影。', 1.5, NULL),
+    ('tianya-haijiao-plan',               1, 0, '上午 · 西端石刻', '先到最西端的巨石群看「天涯」「海角」题刻，这一段人最集中。', 1.5, '石刻前拍照要排队，早到省时间。'),
+    ('tianya-haijiao-plan',               1, 1, '接着 · 沿海滩东行', '沿沙滩往东走，礁石与海面的角度不断变化，途中人少。', 1.5, '沙面反光强，注意防晒。'),
+    ('tianya-haijiao-plan',               1, 2, '中午 · 出口一带', '回到园区东侧，餐饮与休息集中在入口附近。', 1.0, NULL),
+    ('wuzhizhou-island-plan',             1, 0, '08:00 排队乘船', '轮渡班次密集，但旺季排队时间长，早到码头更稳妥。', 1.0, '往返船班时间以码头当日公告为准。'),
+    ('wuzhizhou-island-plan',             1, 1, '上午 · 环岛步道', '沿岛上的环岛路走一圈，礁石集中在一侧，另一侧有沙滩。', 2.5, '岛上遮阴少，带足水。'),
+    ('wuzhizhou-island-plan',             1, 2, '下午 · 水上项目', '潜水、浮潜与快艇集中在码头一侧，按场次安排。', 3.0, '潜水的能见度受风浪影响，前一天先问清海况。'),
+    ('wuzhizhou-island-plan',             1, 3, '傍晚 · 乘船返程', '留意末班船时间，提前半小时回到码头。', 1.0, NULL),
+    ('yanoda-rainforest-plan',            1, 0, '上午 · 雨林栈道', '从入口沿栈道往里走，两边是标注过的雨林植物。', 2.0, '栈道湿滑，穿防滑的鞋。'),
+    ('yanoda-rainforest-plan',            1, 1, '接着 · 溪流与瀑布', '栈道中段经过溪流与几处瀑布，水量随季节变化。', 1.5, NULL),
+    ('yanoda-rainforest-plan',            1, 2, '午后 · 返程', '午后雷阵雨常见，尽量在雨前走出来。', 1.0, '雨林内雨衣比伞实用。'),
+    ('haikou-arcade-street-plan',         1, 0, '上午 · 中山路骑楼', '沿中山路看两侧骑楼立面，楼下廊道可以一路走过去。', 1.5, NULL),
+    ('haikou-arcade-street-plan',         1, 1, '接着 · 博爱路与得胜沙路', '转进相邻街巷，老字号与小摊集中在这一带。', 1.5, '小吃店多在上午与傍晚营业，午后有一段休息。'),
+    ('haikou-arcade-street-plan',         1, 2, '傍晚 · 回到街口', '傍晚灯亮后骑楼立面更容易看清细节。', 1.0, NULL),
+    ('hainan-museum-plan',                1, 0, '上午 · 南海水下文化遗产', '这一部分是馆内最有特色的陈列，展出西沙海域出水的瓷器等文物。', 1.5, '周一闭馆，出发前确认开放日。'),
+    ('hainan-museum-plan',                1, 1, '接着 · 民族与非遗', '黎锦、服饰与生活用具集中在这一段。', 1.0, NULL),
+    ('boao-forum-site-plan',              1, 0, '上午 · 主会场', '会场与展览按参观路线开放，能看到年会使用的场地。', 1.5, NULL),
+    ('boao-forum-site-plan',              1, 1, '接着 · 乘船看入海口', '游船沿万泉河开到出海口一带，河海交界处水色分明。', 1.5, '船班按人数发船，淡季等待时间可能较长。'),
+    ('wugong-shrine-plan',                1, 0, '上午 · 五公祠与苏公祠', '两座祠堂相邻，先看五公祠的供奉与碑记，再进苏公祠。', 1.0, NULL),
+    ('wugong-shrine-plan',                1, 1, '接着 · 庭院与碑刻', '庭院内有古树与碑刻，绕一圈约半小时。', 0.5, NULL),
+    ('national-palace-museum-plan',       1, 0, '09:00 入馆 · 三层', '开馆时人最少，先从三层看起，书画类展品多在这一层轮换。', 1.5, '重点展品会轮换，入馆先看当期的展品清单。'),
+    ('national-palace-museum-plan',       1, 1, '接着 · 二层瓷器与玉器', '瓷器与玉器展厅集中在二层，几件常被点名的展品就在附近。', 1.5, NULL),
+    ('national-palace-museum-plan',       1, 2, '下午 · 一层青铜与特展', '青铜器与临时特展在一层，出口也在同一层。', 1.5, '定时导览按场次报名，馆内可借语音导览。'),
+    ('sun-moon-lake-plan',                1, 0, '清晨 · 水社湖畔', '清晨湖面常有薄雾，水社一带的步道适合先走一段。', 1.5, '山区清晨气温低，加件外套。'),
+    ('sun-moon-lake-plan',                1, 1, '上午 · 乘船到玄光寺', '游船在水社、玄光寺、伊达邵之间往返，可中途下船。', 2.0, NULL),
+    ('sun-moon-lake-plan',                1, 2, '下午 · 环湖段', '沿环湖公路骑行或乘车，文武庙与伊达邵各停一次。', 3.0, '环湖公路有车流，骑行靠边慢行。'),
+    ('sun-moon-lake-plan',                1, 3, '傍晚 · 返回水社', '傍晚回到水社一带，湖边光线转暖。', 1.0, NULL),
+    ('alishan-plan',                      2, 0, '第一天上午 · 上山', '从嘉义乘森林铁路或乘车到阿里山，先安顿再进园区。', 3.0, '山上住宿需提前订，节假日很早就订满。'),
+    ('alishan-plan',                      2, 1, '第一天下午 · 巨木群步道', '步道串联神木群与姊妹潭，走一圈约两小时。', 2.5, '步道上下起伏，慢慢走。'),
+    ('alishan-plan',                      2, 2, '第二天清晨 · 祝山日出', '乘日出小火车到祝山，日出后沿步道下山。', 2.5, '日出时间随季节变化，按当天公布的班次出发。'),
+    ('alishan-plan',                      2, 3, '第二天上午 · 返程', '回到园区用餐后退房，按班次下山。', 2.0, NULL),
+    ('taroko-gorge-plan',                 1, 0, '上午 · 燕子口', '步道贴着崖壁走，能看到峡谷最窄的一段。', 1.5, '落石频繁，需戴安全帽；部分路段会临时封闭。'),
+    ('taroko-gorge-plan',                 1, 1, '接着 · 九曲洞', '隧道与步道交替，光线从岩壁缝隙进到谷底。', 1.5, NULL),
+    ('taroko-gorge-plan',                 1, 2, '下午 · 天祥与返程', '天祥一带有餐饮与休息点，之后按原路返回。', 2.0, '山区午后易起雾下雨，返程留出余量。'),
+    ('jiufen-old-street-plan',            1, 0, '下午 · 基山街', '主街两侧店铺密集，先走一遍看整体样貌。', 1.5, '主街狭窄，周末人多时基本是被人流推着走。'),
+    ('jiufen-old-street-plan',            1, 1, '接着 · 竖崎路阶梯', '沿阶梯往下走，可以看聚落贴山而建的层次。', 1.0, NULL),
+    ('jiufen-old-street-plan',            1, 2, '傍晚 · 等灯亮', '灯亮之后与山下海岸形成对比，也是人最多的时候。', 1.0, '班车在傍晚排队最长，可考虑错峰离开。'),
+    ('yehliu-geopark-plan',               1, 0, '上午 · 第一区与女王头', '蕈状岩最密集的是第一区，女王头在靠海一侧。', 1.0, '女王头前拍照排队最长，早到能省时间。'),
+    ('yehliu-geopark-plan',               1, 1, '接着 · 第二、三区', '后两区人少，可见姜石、棋盘岩等不同形态。', 1.0, '按现场标示通行，风化区不要越线。'),
+    ('taipei-101-plan',                   1, 0, '傍晚前 · 观景层', '上到观景层后按四周环看，北侧可以看到基隆河与山系。', 1.0, '傍晚前上楼可以同时看到白天与夜景。'),
+    ('taipei-101-plan',                   1, 1, '接着 · 阻尼器与展示层', '楼顶段的调谐质量阻尼器在参观范围内，旁边有说明。', 0.5, NULL),
+    ('taipei-101-plan',                   1, 2, '接着 · 楼下商场', '低层是商场与餐饮，可顺路解决晚饭。', 0.5, NULL),
+    ('anping-fort-plan',                  1, 0, '上午 · 城堡残迹与瞭望台', '现存墙体多为砖石交替砌筑，瞭望台可以上去看安平一带。', 1.0, NULL),
+    ('anping-fort-plan',                  1, 1, '接着 · 展馆与旧墙', '展馆说明 17 世纪筑城与贸易的情况，出口旁保留有一段旧墙。', 0.5, NULL),
+    ('anping-fort-plan',                  1, 2, '中午 · 安平老街', '出门就是老街，小吃集中在延平街一带。', 1.0, NULL)
 ) AS m(plan_slug, day_no, sort, title, detail, duration_hours, tip)
 JOIN attraction_plan p ON p.slug = m.plan_slug;
 
