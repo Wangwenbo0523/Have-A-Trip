@@ -61,7 +61,7 @@
 | **S4** | 前端 Attraction 化 | `types/index.ts` 重写、`Attraction*` 组件、`api/client.ts` | S1、S3 | G3 | 首页/分类/详情/搜索可用；无 `Country` 残留 | `feat(web):` | ✅ 本次提交 |
 | **S6** | 离线训练链路 | `recsys/{common,export_interactions,run_recbole,write_back}.py` | S0 | G4 | 三条脚本端到端跑通，`rec_result` 有数据 | `feat(recsys):` | ✅ 本次提交 |
 | **S7** | 内容与数据 | `db/seed/*.sql`（30–50 个景点）+ 来源清单 | S0 | G4 | 每个景点 `source` / `license` 非空且可用 | `data(seed):` | ✅ 本次提交 |
-| **S5** | 数据来源与许可声明页 | `frontend/src/components/Credits.tsx` 改造 | S4、S7 | G5 | 页面逐条列出来源与许可，与 S7 一致 | `feat(web):` | ⬜ 待开工 |
+| **S5** | 数据来源与许可声明页 | `frontend/src/components/Credits.tsx` 改造 + `GET /api/v1/sources` | S4、S7 | G5 | 页面逐条列出来源与许可，与 S7 一致 | `feat(web):` | ✅ 本次提交 |
 | **S8** | 工程化收尾 | CI 增 build/test、`README`、部署说明 | S2、S4、S6 | G6 | CI 三条工作流全绿且**真的会**变红 | `chore(ci):` | ✅ 本次提交 |
 
 ---
@@ -319,11 +319,30 @@ npm.cmd run dev                        # 手动过一遍: 首页 -> 分类 -> �
 3. 静态素材（字体、图标、图片）与代码依赖的许可分开列
 4. 路由挂在 `/credits`，页脚已有入口
 
-**退出标准**
+**实际做了什么**
 
-- [ ] S7 种子数据里出现过的每个 `source` 都在页面上有对应条目
-- [ ] ODbL / CC BY-SA 来源标注了「已修改 / 未修改」
-- [ ] 页面内容与 `docs/LICENSE-AUDIT.md` 第三节的数据源表一致
+| 项 | 结果 |
+|---|---|
+| 数据怎么来 | 新增 `GET /api/v1/sources`（`backend/app/api/sources.py`），每次从 `attraction` / `attraction_image` **现算**，前端不持有清单。这样引入新来源时页面自己会变，不靠谁记得改前端 |
+| 页面 | `Credits.tsx` 从「上游贡献者致谢墙」重写成四段：景点数据来源、图片署名、代码与静态素材、这个应用不做什么。前两段走接口，后两段是仓库里的文件，接口挂了也照常显示 |
+| 修改状态 | 许可判定为 share-alike（ODbL / CC BY-SA）时，必须在本项目自己维护的 `SOURCE_MODIFICATIONS` 里登记「已修改 / 未修改」；没登记就返回 `unregistered`，页面顶部弹红色告警。**这是把「别忘了标注」变成会红的闸，而不是写进文档的提醒** |
+| 不适用则明说 | 不含 share-alike 义务的许可（MIT / CC0 / CC BY…）显示「无需标注」，不是留空 —— 空着会被误读成「忘了填」 |
+| 图片 | 目前 `attraction_image` 是 0 行，页面给空态并说明原因（查不到出处的图不进仓库），而不是给一张空表格 |
+| 样式 | `credits.css` 一并重写：上游那套贡献者卡片样式全部删掉。表格用「容器横向滚动 + `min-width`」兜窄屏 —— 试过 `table { display: block }`，会把「来源」列压成一列一个字 |
+
+**验证记录**：本机 PostgreSQL 16.2 + `uvicorn` + `vite` dev server + 内置浏览器实测。页面显示
+「Have-A-Trip 自采（公开事实信息） / MIT / 50 / 21 / 无需标注」，与 `db/README.md` 的聚合口径一致；
+往库里临时插一条 `source='OpenStreetMap'`、`license='ODbL 1.0'` 的景点后刷新，顶部红色告警与表里的
+「未登记」都如期出现，随后删除该行复原。接口挂掉时给出错误态 + 重试，代码与静态素材段落不受影响。
+
+**退出标准（2026-09-25 全部达成）**
+
+- [x] S7 种子数据里出现过的每个 `source` 都在页面上有对应条目 —— 页面就是按 `source` 聚合出来的，不是人工抄的
+- [x] ODbL / CC BY-SA 来源标注了「已修改 / 未修改」—— 现在库里没有这类来源；一旦有，未登记会在页面上标红（已用临时数据实测）
+- [x] 页面内容与 `docs/LICENSE-AUDIT.md` 第三节的数据源表一致 —— 两边都指向同一个聚合口径，且该节已补上「声明页已上线 + 登记闸在哪」
+
+**与计划的偏差**：计划里只写了改 `Credits.tsx`。为了让「不手写」成立，多加了后端接口
+`GET /api/v1/sources`（9 个新测试覆盖它），并把「是否修改过」做成会红的闸而不是文档提醒。
 
 ---
 
@@ -485,3 +504,4 @@ npm.cmd run dev                        # 手动过一遍: 首页 -> 分类 -> �
 | 2026-09-25 | v1.3 | S4 完成：前端整体换成 attraction 模型，接自家 API；顺带修掉 AOS 死链导致页头不可见等上游遗留 |
 | 2026-09-25 | v1.4 | S8 完成：CI 补 `frontend-build` 与 `dco` 两条工作流、前端接入 Vitest（21 用例）、项目名统一为 Have-A-Trip、新增 `docs/DEPLOY.md`；第八节待决问题全部定案 |
 | 2026-09-25 | v1.5 | S6 完成：`recsys/` 四个脚本端到端跑通，BPR 离线结果写回 `rec_result`；钉死 4 个上游依赖坑；`run_recbole.py` 改 `chdir` 修掉仓库里的野 `log/` 目录 |
+| 2026-09-25 | v1.6 | S5 完成：`Credits.tsx` 重写成数据来源与许可声明页，数据由新增的 `GET /api/v1/sources` 从库里现算；share-alike 来源未登记修改状态会在页面标红。全部计划步骤 S0–S8 至此收口 |

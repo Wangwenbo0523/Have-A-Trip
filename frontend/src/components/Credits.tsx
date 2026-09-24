@@ -1,441 +1,235 @@
-import React, { Component } from "react";
+import React from "react"
 
-import "../styles/credits.css";
+import { fetchSources } from "../api/client"
+import { APP_REPO_URL, BASE_REPO_NAME, BASE_REPO_URL } from "../config"
+import { useApi } from "../hooks/useApi"
+import type { ModificationStatus } from "../types"
+import StateMessage from "./StateMessage"
 
-const contributors = [
-  {
-    name: "@paganim",
-    link: "https://github.com/paganim"
-  },
-  {
-    name: "@Anmol270900",
-    link: "https://github.com/Anmol270900"
-  },
-  {
-    name: "@Furkan Kursun",
-    link: "https://github.com/soyu1234"
-  },
-  {
-    name: "@ido-netaneli",
-    link: "https://github.com/ido-netaneli"
-  },
-  {
-    name: "@sandipguchait",
-    link: "https://github.com/sandipguchait"
-  },
-  {
-    name: "@rpaltayev",
-    link: "https://github.com/rpaltayev"
-  },
-  {
-    name: "@ngodi",
-    link: "https://github.com/ngodi"
-  },
-  {
-    name: "@Pierre Khoury",
-    link: "https://github.com/PierreDeveloper18"
-  },
-  {
-    name: "@mynaur",
-    link: "https://github.com/mynaur"
-  },
-  {
-    name: "@akashkann",
-    link: "https://github.com/akashkann"
-  },
-  {
-    name: "@alexacoronel",
-    link: "https://github.com/alexacoronel"
-  },
-  {
-    name: "@gabipfeffer",
-    link: "https://github.com/gabipfeffer"
-  },
-  {
-    name: "@Litchstarken",
-    link: "https://github.com/Litchstarken"
-  },
-  {
-    name: "@BLiTz3R",
-    link: "https://github.com/BLiTz3R"
-  },
-  {
-    name: "@peterson oaikhenah",
-    link: "https://github.com/nextwebb"
-  },
-  {
-    name: "@umanghans",
-    link: "https://github.com/umanghans"
-  },
-  {
-    name: "@dark-wonder",
-    link: "https://github.com/dark-wonder"
-  },
-  {
-    name: "@jawlee",
-    link: "https://github.com/jawlee"
-  },
-  {
-    name: "@siklinb01",
-    link: "https://github.com/siklinb01"
-  },
-  {
-    name: "@xFinality",
-    link: "https://github.com/xFinality"
-  },
-  {
-    name: "@SuperSafie",
-    link: "https://github.com/SuperSafie"
-  },
-  {
-    name: "@Veene",
-    link: "https://github.com/Veene"
-  },
-  {
-    name: "@jckonewalik",
-    link: "https://github.com/jckonewalik"
-  },
-  {
-    name: "@Lordberbeross",
-    link: "https://github.com/lordberbeross"
-  },
-  {
-    name: "@DanielMarcano",
-    link: "https://github.com/DanielMarcano"
-  },
-  {
-    name: "@AlexanderKruk",
-    link: "https://github.com/AlexanderKruk"
-  },
-  {
-    name: "@sidebone",
-    link: "https://github.com/sidebone"
-  },
-  {
-    name: "@ytrkptl",
-    link: "https://github.com/ytrkptl"
-  },
-  {
-    name: "@rezzco",
-    link: "https://github.com/rezzco"
-  },
-  {
-    name: "@liissaar",
-    link: "https://github.com/liissaar"
-  },
-  {
-    name: "@Arsen4ik",
-    link: "https://github.com/Arsen4ik"
-  },
-  {
-    name: "@AmujoDotun",
-    link: "https://github.com/AmujoDotun"
-  },
-  {
-    name: "@Jrejoire",
-    link: "https://github.com/Jrejoire"
-  },
-  {
-    name: "@Kingbee1",
-    link: "https://github.com/Kingbee1"
-  },
-  {
-    name: "@mishhubc",
-    link: "https://github.com/mishhubc"
-  },
-  {
-    name: "@cruzex100",
-    link: "https://github.com/cruzex100"
-  },
-  {
-    name: "@2neyadets",
-    link: "https://github.com/2neyadets"
-  },
-  {
-    name: "@ergonometry",
-    link: "https://github.com/ergonometry"
-  },
-  {
-    name: "@stefhangibson",
-    link: "https://github.com/stefhangibson"
-  },
-  {
-    name: "@Zeafromar",
-    link: "https://github.com/Zeafromar"
-  },
-  {
-    name: "@nsadev",
-    link: "https://github.com/nsadev"
-  },
-  {
-    name: "@giochajon",
-    link: "https://github.com/giochajon"
-  },
-  {
-    name: "@Gajhendran",
-    link: "https://github.com/Gajhendran"
-  },
-  {
-    name: "@01Clarian",
-    link: "https://github.com/01Clarian"
-  },
-  {
-    name: "@kweku76",
-    link: "https://github.com/kweku76"
-  },
-  {
-    name: "@mrzahidjabbar",
-    link: "https://github.com/mrzahidjabbar"
-  },
-  {
-    name: "@Vincent-Mpenyana",
-    link: "https://github.com/Vincent-Mpenyana"
-  },
-  {
-    name: "@Pourush1",
-    link: "https://github.com/Pourush1"
-  },
-  {
-    name: "@jgulbickyte",
-    link: "https://github.com/jgulbickyte"
-  },
-  {
-    name: "@Ron1722",
-    link: "https://github.com/Ron1722"
-  },
-  {
-    name: "@billshannon",
-    link: "https://github.com/billshannon"
-  },
-  {
-    name: "@marathohoho",
-    link: "https://github.com/marathohoho"
-  },
-  {
-    name: "@YasenPeev",
-    link: "https://github.com/YasenPeev"
-  },
-  {
-    name: "@JQuien",
-    link: "https://github.com/JQuien"
-  },
-  {
-    name: "@pedromzgrc",
-    link: "http://github.com/pedromzgrc"
-  },
-  {
-    name: "@kostispodaras",
-    link: "https://github.com/kostisPodaras"
-  },
-  {
-    name: "@sarizzuz",
-    link: "https://github.com/sarizzuz"
-  },
-  {
-    name: "@SimplyToCreate",
-    link: "https://github.com/SimplyToCreate"
-  },
-  {
-    name: "@mariyanyanakiev",
-    link: "https://github.com/mariyanyanakiev"
-  },
-  {
-    name: "@aditya1906",
-    link: "https://github.com/aditya1906"
-  },
-  {
-    name: "@clintonwuks",
-    link: "https://github.com/clintonwuks"
-  },
-  {
-    name: "@SudeepaGo",
-    link: "https://github.com/SudeepaGo"
-  },
-  {
-    name: "@connectthapa",
-    link: "https://github.com/ThapaRahul"
-  },
-  {
-    name: "@naftalib",
-    link: "https://github.com/naftalib"
-  },
-  {
-    name: "@BATMANGOO",
-    link: "https://github.com/BATMANGOO"
-  },
-  {
-    name: "@Pvanloon1983",
-    link: "https://github.com/Pvanloon1983"
-  },
-  {
-    name: "@rajat98dogra",
-    link: "https://github.com/rajat98dogra"
-  },
-  {
-    name: "@Satyaki233",
-    link: "https://github.com/Satyaki233"
-  },
-  {
-    name: "@Madgeniusblink",
-    link: "https://github.com/Madgeniusblink"
-  },
-  {
-    name: "@hamzamakk1",
-    link: "https://github.com/hamzamakk1"
-  },
-  {
-    name: "@hanthienduc",
-    link: "https://github.com/hanthienduc"
-  },
-  {
-    name: "@sevydev",
-    link: "https://github.com/sevydev"
-  },
-  {
-    name: "@chimachinedum",
-    link: "https://github.com/chimachinedum"
-  },
-  {
-    name: "@borason",
-    link: "https://github.com/borason"
-  },
-  {
-    name: "@Mirhatyasar",
-    link: "https://github.com/Mirhatyasar"
-  },
-  {
-    name: "@erics0n",
-    link: "https://github.com/erics0n"
-  },
-  {
-    name: "@nataschaluna",
-    link: "https://github.com/nataschaluna"
-  },
-  {
-    name: "@khasanovsm",
-    link: "https://github.com/khasanovsm"
-  },
-  {
-    name: "@Dorin-Ciora",
-    link: "https://github.com/dorin-ciora"
-  },
-  {
-    name: "@Devyani",
-    link: "https://github.com/devyaniwaghmare"
-  },
-  {
-    name: "@ruchirV",
-    link: "https://github.com/ruchirV"
-  },
-  {
-    name: "@khurram-syed",
-    link: "https://github.com/khurram-syed"
-  },
-  {
-    name: "@Arjun0o",
-    link: "https://github.com/Arjun0o"
-  },
-  {
-    name: "@famebyproxy",
-    link: "https://github.com/famebyproxy"
-  },
-  {
-    name: "@luis-escoto11",
-    link: "https://github.com/luis-escoto11"
-  },
-  {
-    name: "@benjohnsondev",
-    link: "https://github.com/benjohnsondev"
-  },
-  {
-    name: "@giulianocernada",
-    link: "https://github.com/giulianocernada"
-  },
-  {
-    name: "@vxsunstriderxv",
-    link: "https://github.com/vxsunstriderxv"
-  },
-  {
-    name: "@jqueijo",
-    link: "https://github.com/jqueijo"
-  },
-  {
-    name: "@Marius1388",
-    link: "https://github.com/Marius1388"
-  },
-  {
-    name: "@gandho12",
-    link: "https://github.com/gandho12"
-  },
-  {
-    name: "@pau-lo",
-    link: "https://github.com/pau-lo"
-  },
-  {
-    name: "@binyaalex",
-    link: "https://github.com/binyaalex"
-  },
-  {
-    name: "@tew9",
-    link: "https://github.com/tew9"
-  },
-  {
-    name: "@sjovanovic974",
-    link: "https://github.com/sjovanovic974"
-  },
-  {
-    name: "@AlexGithubbb",
-    link: "https://github.com/AlexGithubbb"
-  },
-  {
-    name: "@mwheatfill",
-    link: "https://github.com/mwheatfill"
-  },
-  {
-    name: "@webguy83",
-    link: "https://github.com/webguy83"
-  },
-  {
-    name: "@minshinkhant",
-    link: "https://github.com/minshinkhant"
-  },
-  {
-    name: "@KarenDouglas",
-    link: "https://github.com/KarenDouglas"
-  },
-  {
-    name: "@samkcrespo",
-    link: "https://github.com/samkcrespo"
-  },
-  {
-    name: "@DewaldFourie",
-    link: "https://github.com/DewaldFourie"
-  },
-  {
-    name: "@l-white",
-    link: "https://github.com/l-white"
-  }
-];
+import "../styles/credits.css"
 
-class Credits extends Component {
-  render() {
-    return (
-      <div>
-        <h1 className="searchBox mt1">Credits</h1>
-        <ul className="list">
-          {contributors.map(c => (
-            <a key={c.name} href={c.link} target="_blank" rel="noopener noreferrer">
-              <div className="card">
-                <div className="listContributors margin_left tc bg-black-20 code dib mb2 bw2 shadow-4">
-                  <p className="contributors">{c.name}</p>
-                </div>
-              </div>
-            </a>
-          ))}
-        </ul>
-      </div>
-    );
-  }
+/**
+ * 修改状态 -> 页面上的一句话。
+ *
+ * unregistered 不是「第四种正常状态」, 而是告警: 库里有 share-alike 来源, 但没人登记过
+ * 改没改过。ODbL 与 CC BY-SA 都要求标注, 所以它必须显眼地露出来。
+ */
+const MODIFICATION_LABEL: Record<ModificationStatus, string> = {
+  modified: "已修改",
+  unmodified: "未修改",
+  "not-applicable": "无需标注",
+  unregistered: "未登记",
 }
 
-export default Credits;
+interface CodeAsset {
+  name: string
+  license: string
+  note: string
+  link?: string
+}
+
+/**
+ * 代码层与静态素材。这一块**不进数据库** —— 它是仓库里的文件, 不是景点档案,
+ * 所以只能手写。口径见 docs/LICENSE-AUDIT.md 第一、五节, 改这里要同步那边。
+ */
+const CODE_ASSETS: CodeAsset[] = [
+  {
+    name: "Have-A-Trip 本体",
+    license: "MIT",
+    note: "根 LICENSE 的署名为 Copyright (c) 2026 Wangwenbo0523",
+    link: APP_REPO_URL,
+  },
+  {
+    name: `前端基底 ${BASE_REPO_NAME}`,
+    license: "MIT",
+    note: "已大幅修改: 删掉地图与定位、整体换成景点模型。上游 LICENSE 原样保留",
+    link: BASE_REPO_URL,
+  },
+  {
+    name: "RecBole",
+    license: "MIT",
+    note: "推荐引擎, 当 pip 依赖使用, 未改动源码",
+    link: "https://github.com/RUCAIBox/RecBole",
+  },
+  {
+    name: "站点图标 public/favicon.ico、public/earth.ico",
+    license: "未标注",
+    note: "沿用上游基底的占位图标, 出处无从查证, 上线前替换成自绘图标",
+  },
+]
+
+const Credits = () => {
+  const { data, loading, error, reload } = useApi(() => fetchSources(), [])
+
+  const sourceSection = () => {
+    if (loading) return <StateMessage title="正在加载来源清单" />
+    // 错误态在上面统一给过一次, 这里不再重复一个带按钮的报错
+    if (!data) return null
+    if (data.sources.length === 0) {
+      return (
+        <StateMessage
+          title="暂无已发布的景点数据"
+          detail="库里还没有 status='published' 的景点。"
+        />
+      )
+    }
+    return (
+      <>
+        <div className="credits__scroll">
+          <table className="credits__table">
+            <caption className="credits__caption">
+              共 {data.attraction_total} 条已发布景点
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">来源</th>
+                <th scope="col">许可</th>
+                <th scope="col">景点数</th>
+                <th scope="col">覆盖省级行政区</th>
+                <th scope="col">修改状态</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.sources.map((record) => (
+                <tr key={`${record.source}::${record.license}`}>
+                  <td>{record.source}</td>
+                  <td>{record.license}</td>
+                  <td>{record.attraction_count}</td>
+                  <td>{record.province_count}</td>
+                  <td>
+                    <span
+                      className={
+                        record.modification === "unregistered"
+                          ? "credits__flag credits__flag--warn"
+                          : "credits__flag"
+                      }
+                    >
+                      {MODIFICATION_LABEL[record.modification]}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="credits__note">
+          许可带相同方式共享义务(ODbL / CC BY-SA)时必须有「已修改 / 未修改」的标注。
+          「未登记」的意思是还没登记, 不等于无需标注。
+        </p>
+      </>
+    )
+  }
+
+  const imageSection = () => {
+    if (loading) return <StateMessage title="正在加载图片署名" />
+    if (!data) return null
+    if (data.images.length === 0) {
+      return (
+        <StateMessage
+          title="目前一张配图都没有"
+          detail="查不到出处的图一律不进仓库, 所以 attraction_image 是 0 行。落图时每条都会带署名与许可, 数据库字段已经设成 NOT NULL。"
+        />
+      )
+    }
+    return (
+      <div className="credits__scroll">
+        <table className="credits__table">
+          <caption className="credits__caption">共 {data.image_total} 张图</caption>
+          <thead>
+            <tr>
+              <th scope="col">署名</th>
+              <th scope="col">许可</th>
+              <th scope="col">张数</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.images.map((image) => (
+              <tr key={`${image.credit}::${image.license}`}>
+                <td>{image.credit}</td>
+                <td>{image.license}</td>
+                <td>{image.image_count}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )
+  }
+
+  return (
+    <main className="page">
+      <h2 className="page__title">数据来源与许可</h2>
+      <p className="page__subtitle">景点数据与图片署名由数据库聚合生成, 不是手写的清单</p>
+
+      {error ? (
+        <StateMessage tone="error" title="来源清单加载失败" detail={error} onRetry={reload} />
+      ) : null}
+
+      {data?.needs_attention ? (
+        <StateMessage
+          tone="error"
+          title="有 share-alike 来源没有登记修改状态"
+          detail="ODbL 与 CC BY-SA 要求标注「是否修改过」。请先在 backend/app/api/sources.py 的 SOURCE_MODIFICATIONS 里登记, 再对外发布。"
+        />
+      ) : null}
+
+      <section className="section">
+        <h3 className="section__title">景点数据来源</h3>
+        {sourceSection()}
+      </section>
+
+      <section className="section">
+        <h3 className="section__title">图片署名</h3>
+        {imageSection()}
+      </section>
+
+      <section className="section">
+        <h3 className="section__title">代码与静态素材</h3>
+        <div className="credits__scroll">
+          <table className="credits__table">
+            <thead>
+              <tr>
+                <th scope="col">名称</th>
+                <th scope="col">许可</th>
+                <th scope="col">说明</th>
+              </tr>
+            </thead>
+            <tbody>
+              {CODE_ASSETS.map((asset) => (
+                <tr key={asset.name}>
+                  <td>
+                    {asset.link ? (
+                      <a
+                        className="credits__link"
+                        href={asset.link}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                      >
+                        {asset.name}
+                      </a>
+                    ) : (
+                      asset.name
+                    )}
+                  </td>
+                  <td>{asset.license}</td>
+                  <td>{asset.note}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="section">
+        <h3 className="section__title">这个应用不做什么</h3>
+        <ul className="credits__list">
+          <li>不含地图与定位: 没有地图 SDK, 不采集轨迹, 也不上报位置。</li>
+          <li>评分只来自用户主动打分: 种子数据里的评分恒为 0, 不伪造数字。</li>
+          <li>推荐结果由离线任务整批写入, 接口只读结果表, 不实时跟踪任何个人。</li>
+        </ul>
+      </section>
+    </main>
+  )
+}
+
+export default Credits

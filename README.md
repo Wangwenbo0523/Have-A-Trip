@@ -10,8 +10,8 @@
 | 模块 | 状态 | 说明 |
 |---|---|---|
 | `db/` | ✅ | 9 张表 + 视图 + 触发器，幂等可重复执行；50 个景点、19 个标签 |
-| `backend/` | ✅ | 景点列表/详情/搜索、分类标签、行为埋点、推荐接口；55 用例通过 |
-| `frontend/` | ✅ | 首页、全部景点、分类页、详情页、搜索、错误态；21 用例通过 |
+| `backend/` | ✅ | 景点列表/详情/搜索、分类标签、来源与许可、行为埋点、推荐接口；65 用例通过 |
+| `frontend/` | ✅ | 首页、全部景点、分类页、详情页、搜索、数据来源与许可页、错误态；28 用例通过 |
 | `recsys/` | ✅ | 三条脚本（导出 → 训练 → 回写）端到端跑通，BPR 离线结果已写回 `rec_result` |
 | 数据量 | ✅ | 50 个景点 / 19 个标签，覆盖 21 个省级行政区，全部自采（`license` 为 MIT） |
 
@@ -90,6 +90,7 @@ npm run start                 # /api 由 vite 代理到 :8000, 本地免跨域
 | GET | `/attractions/{id_or_slug}` | 详情（含图集、标签、来源与许可） |
 | GET | `/attractions/{id_or_slug}/similar` | 相似景点（内容相似度，不需要用户行为） |
 | GET | `/categories`、`/tags` | 分类与标签（只统计已发布景点） |
+| GET | `/sources` | 数据来源与许可：从 `attraction` / `attraction_image` 聚合，声明页据此渲染 |
 | POST | `/events` | 行为埋点：`view` / `favorite` / `rate` / `share` |
 | GET | `/recommendations` | 为你推荐，`user_id` 与 `device_id` 二选一 |
 

@@ -131,3 +131,40 @@ class HealthOut(BaseModel):
     status: str
     database: str
     version: str
+
+
+# ---------------------------------------------------------------- 数据来源与许可声明
+
+# 「修改状态」只有这几种取值。ODbL 与 CC BY-SA 都明确要求标注「是否修改过」,
+# 所以 share-alike 来源的这个字段不是可选信息; not-applicable 只对不要求标注的许可成立。
+# unregistered 是一种**告警态**: 库里有 share-alike 来源, 但没人登记过改没改过。
+ModificationStatus = Literal["modified", "unmodified", "not-applicable", "unregistered"]
+
+
+class SourceRecord(BaseModel):
+    """一条 (source, license) 聚合。声明页据此渲染, 前端不写死。"""
+
+    source: str
+    license: str
+    attraction_count: int
+    province_count: int
+    # 许可是否带相同方式共享义务(ODbL / CC BY-SA)。为真时页面必须显示修改状态。
+    share_alike: bool
+    modification: ModificationStatus
+
+
+class ImageCredit(BaseModel):
+    """一条 (credit, license) 聚合。图片的署名与许可存在库里, 不是文档里的口头约定。"""
+
+    credit: str
+    license: str
+    image_count: int
+
+
+class SourcesOut(BaseModel):
+    sources: list[SourceRecord]
+    images: list[ImageCredit]
+    attraction_total: int
+    image_total: int
+    # 有 share-alike 来源却没登记修改状态。页面据此显示告警横幅。
+    needs_attention: bool

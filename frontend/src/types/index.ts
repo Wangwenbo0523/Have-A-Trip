@@ -99,3 +99,33 @@ export interface PageQuery {
   q?: string
   sort?: "rating" | "newest" | "name"
 }
+
+/** 数据来源的修改状态。unregistered 是告警态, 不是正常的第四种状态。 */
+export type ModificationStatus = "modified" | "unmodified" | "not-applicable" | "unregistered"
+
+/** 一条 (source, license) 聚合。声明页从接口拿, 不在前端写死。 */
+export interface SourceRecord {
+  source: string
+  license: string
+  attraction_count: number
+  province_count: number
+  /** 许可是否带相同方式共享义务(ODbL / CC BY-SA)。为真时页面必须显示修改状态 */
+  share_alike: boolean
+  modification: ModificationStatus
+}
+
+/** 一条 (credit, license) 聚合。图片的署名与许可是数据库字段, 不是文档里的口头约定。 */
+export interface ImageCredit {
+  credit: string
+  license: string
+  image_count: number
+}
+
+export interface SourcesResponse {
+  sources: SourceRecord[]
+  images: ImageCredit[]
+  attraction_total: number
+  image_total: number
+  /** 库里有 share-alike 来源却没登记修改状态 */
+  needs_attention: boolean
+}

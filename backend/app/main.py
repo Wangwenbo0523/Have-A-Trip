@@ -9,7 +9,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from . import __version__
-from .api import attractions, categories, events, health, recommendations
+from .api import attractions, categories, events, health, recommendations, sources
 from .config import get_settings
 
 settings = get_settings()
@@ -30,7 +30,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-for module in (health, attractions, categories, events, recommendations):
+for module in (health, attractions, categories, events, recommendations, sources):
     app.include_router(module.router, prefix=settings.api_prefix)
 
 

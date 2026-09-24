@@ -81,14 +81,20 @@ ol  ->  ol-mapbox-style  ->  @mapbox/mapbox-gl-style-spec  ->  { @mapbox/jsonlin
 | 图片 | `attraction_image` **0 行** —— 没有可靠出处的图不进仓库 |
 | share-alike | **无**。ODbL / CC BY-SA 义务目前不沾这个库，也没有可传染的衍生物 |
 
-聚合口径与查询语句在 `db/README.md` 的「数据来源清单」一节，S5 的声明页从数据库聚合生成，
-所以将来引入新来源时，声明页会跟着变，不靠人记得改前端。**引入新来源时先回来更新本节。**
+聚合口径与查询语句在 `db/README.md` 的「数据来源清单」一节。声明页 `/credits` 已经上线，
+它读 `GET /api/v1/sources`，而后端每次都是从 `attraction` / `attraction_image` 现算的 ——
+所以将来引入新来源时，页面会自己跟着变，不靠谁记得改前端。**引入新来源时仍要先回来更新本节。**
+
+另一道闸在 `backend/app/api/sources.py`：许可一旦被判定为 share-alike（ODbL / CC BY-SA），
+就必须在那个文件的 `SOURCE_MODIFICATIONS` 里登记「是否修改过」，否则接口返回 `unregistered`、
+声明页顶部弹出红色告警。**没登记就上线不了，这是设计如此。**
 
 ### 处理原则
 
 1. **优先自采或 MIT 数据源**。景点名录本质是事实信息，自己整理最干净。
 2. 必须使用 ODbL / CC BY-SA 数据时，把该数据**隔离在明确边界内**（独立数据集、独立导入脚本），
-   并在 `frontend/src/components/Credits.tsx` 对应的数据来源声明页里逐条署名。
+   在 `/credits` 声明页（数据来自 `GET /api/v1/sources`）里逐条署名，并在
+   `backend/app/api/sources.py` 的 `SOURCE_MODIFICATIONS` 里登记「是否修改过」—— 不登记页面就标红。
 3. 数据层与代码层解耦——`data/`、`dataset/` 已在 `.gitignore` 中，第三方数据不进代码仓库。
 4. 闭源前逐条复核本表，而不是假设它没变。
 

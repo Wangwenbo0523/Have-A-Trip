@@ -22,6 +22,7 @@ def test_openapi_has_expected_paths(client):
         f"{API}/attractions/{{id_or_slug}}/similar",
         f"{API}/categories",
         f"{API}/tags",
+        f"{API}/sources",
         f"{API}/events",
     } <= paths
 
