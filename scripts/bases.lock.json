@@ -19,7 +19,13 @@
         "路由前缀 /travel-guide/* 改为 /*, 与 base 保持一致",
         "App.tsx: 移除 navigator.geolocation 调用 (会在首屏请求定位授权, 与「不做地图跟踪」冲突)",
         "删除零引用死资源 src/hero-pic.jpg, src/changed/Globe.svg, src/Google_Earth_Logo.svg; 删除零引用依赖 jquery",
-        "package.json 元信息改为本项目 (name/description/repository/author/homepage/bugs)"
+        "package.json 元信息改为本项目 (name/description/repository/author/homepage/bugs)",
+        "S3 去地图化: 删除 src/components/MapView/** 与 src/registerServiceWorker.js, 移除 package.json 里的 ol (依赖树 160 -> 131 个包), 路由与导航去掉 /map",
+        "S4 Attraction 化: 删除 RegionList/RegionCard/Region/CountryCard/CountryDetails 与 Country 类型, 新增 AttractionBrowser/AttractionList/AttractionCard/CategoryCard/CategoryPage/AttractionDetail/HomePage/StateMessage 与 src/api/client.ts, 全部数据改由本项目 FastAPI 提供",
+        "S4 修复上游遗留: index.html 的 cdn.rawgit.com 死链导致 AOS 从未初始化, 带 data-aos 的页头/页脚元素因 aos.css 的初始 opacity:0 一直不可见 —— 改为从 npm 包 import AOS 并 init",
+        "S4 重写 index.css: 去掉 body 的 grid/padding-top:10%、全局 img{height:17em;width:17em} 与第三方 CDN 背景图, 改为本地渐变 + 正常文档流",
+        "S4 重写 Header/Footer: 去掉 giphy iframe 与上游作者社交账号链接, 导航改为按 /api/v1/categories 动态生成",
+        "S4 删除 @types/react-router-dom@5 (react-router-dom 7 自带类型)"
       ],
       "stack": "React 19 + TypeScript + Vite 8 + react-router-dom 7 + axios"
     },
@@ -38,9 +44,17 @@
   },
   "rejected": {
     "_comment": "因许可证被排除的候选，勿引入",
-    "AGPL-3.0": ["liketrek/TREK"],
-    "GPL-3.0": ["seanmorley15/AdventureLog", "osmandapp/OsmAnd", "yyzwz/s023"],
-    "GPL-2.0": ["1sdv/TripStar"],
+    "AGPL-3.0": [
+      "liketrek/TREK"
+    ],
+    "GPL-3.0": [
+      "seanmorley15/AdventureLog",
+      "osmandapp/OsmAnd",
+      "yyzwz/s023"
+    ],
+    "GPL-2.0": [
+      "1sdv/TripStar"
+    ],
     "NO-LICENSE": [
       "nanbouking/WeTravel",
       "dingyuanyind/WeCulture",

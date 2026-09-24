@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 
+import "../styles/credits.css";
+
 const contributors = [
   {
     name: "@paganim",
@@ -424,7 +426,7 @@ class Credits extends Component {
           {contributors.map(c => (
             <a key={c.name} href={c.link} target="_blank" rel="noopener noreferrer">
               <div className="card">
-                <div className="listContributors margin_left tc bg-black-20 code dib mb2 bw2 shadow-4 regionFlagContainer">
+                <div className="listContributors margin_left tc bg-black-20 code dib mb2 bw2 shadow-4">
                   <p className="contributors">{c.name}</p>
                 </div>
               </div>

@@ -1,21 +1,101 @@
-export interface Currency {
-    name: string
-    symbol: string
+/**
+ * 与后端契约一一对应的类型。
+ *
+ * 契约来源: backend/app/schemas.py —— 改这里之前先改后端, 反之亦然。
+ * 字段口径见 db/README.md。
+ */
+
+export interface Category {
+  slug: string
+  name: string
 }
 
-export interface Country {
-    name: { common: string }
-    flags: { svg: string }
-    region: string
-    latlng: [number, number]
-    capital: string[]
-    population: number
-    currencies: Record<string, Currency>
-    languages: Record<string, string>
-    timezones: string[]
-    demonyms: { eng: { f: string; m: string } }
-    idd: { root: string; suffixes: string[] }
-    callingCodes?: string[]
-    borders: string[]
-    cca3: string
+export interface CategoryWithCount extends Category {
+  attraction_count: number
+}
+
+export interface Tag {
+  slug: string
+  name: string
+}
+
+export interface TagWithCount extends Tag {
+  attraction_count: number
+}
+
+export interface AttractionImage {
+  url: string
+  caption: string | null
+  credit: string
+  license: string
+}
+
+/** 列表 / 卡片用的字段。后端刻意不含 description, 列表页不需要那段长文本。 */
+export interface Attraction {
+  id: number
+  slug: string
+  name: string
+  name_en: string | null
+  summary: string | null
+  category: Category
+  city: string | null
+  province: string | null
+  tags: Tag[]
+  cover_image: string | null
+  rating_avg: number
+  rating_count: number
+  ticket_price: number | null
+  suggested_hours: number | null
+}
+
+export interface AttractionDetail extends Attraction {
+  description: string | null
+  country_code: string
+  address: string | null
+  /** 仅用于同城聚合等静态计算; 前端不渲染地图, 也不做定位 */
+  lat: number | null
+  lon: number | null
+  best_season: string | null
+  images: AttractionImage[]
+  source: string
+  license: string
+  source_url: string | null
+  updated_at: string
+}
+
+export interface Page<T> {
+  items: T[]
+  page: number
+  size: number
+  total: number
+}
+
+export type EventType = "view" | "favorite" | "rate" | "share"
+
+export interface EventPayload {
+  device_id: string
+  attraction_id: number
+  event_type: EventType
+  /** 只有 event_type === "rate" 能带, 后端与数据库两侧都校验 */
+  rating?: number
+  dwell_ms?: number
+}
+
+export interface Recommendation {
+  attraction: Attraction
+  rank: number
+  score: number | null
+  /** 产出这条推荐的算法: recbole / content-based / popular-fallback */
+  algo: string
+  reason: string
+}
+
+export interface PageQuery {
+  page?: number
+  size?: number
+  category?: string
+  city?: string
+  tag?: string
+  q?: string
+  sort?: "rating" | "newest" | "name"
 }

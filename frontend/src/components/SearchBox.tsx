@@ -1,33 +1,27 @@
-import React from 'react';
-import '../styles/search.css'
+import React from "react"
 
-const SearchBox = ({ search, onSearchChange }) => (
-    <div>
-        <div className="searchBox pa2">
-            <form>
-                <input
-                    id="userInput" 
-                    className = 'search tc bg-lightest-purple'
-                    type = 'search'
-                    placeholder = 'search countries...'          
-                    style = {
-                        {
-                            display: "block",
-                            margin: "auto",
-                            border: "1px solid white",
-                            borderRadius: "30px",
-                            height: "45px",
-                            outline: "none"
+import "../styles/search.css"
 
+interface SearchBoxProps {
+  value: string
+  onChange: (value: string) => void
+  placeholder?: string
+}
 
-                        }
-                    }
-                    value={search}
-                    onChange={(text) => onSearchChange(text)}
-                />
-            </form>
-        </div>
-    </div>
-);
+const SearchBox = ({ value, onChange, placeholder = "搜索…" }: SearchBoxProps) => (
+  <form className="searchBox" role="search" onSubmit={(event) => event.preventDefault()}>
+    <label className="searchBox__label" htmlFor="attraction-search">
+      搜索
+    </label>
+    <input
+      id="attraction-search"
+      className="search"
+      type="search"
+      placeholder={placeholder}
+      value={value}
+      onChange={(event) => onChange(event.target.value)}
+    />
+  </form>
+)
 
-export default SearchBox;
+export default SearchBox

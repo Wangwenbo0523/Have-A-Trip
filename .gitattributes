@@ -20,6 +20,9 @@
 # 许可证与属性文件本身
 LICENSE        text eol=lf
 .gitattributes text eol=lf
+# 无扩展名与点文件, 上面的 *.ext 规则盖不到
+.gitignore     text eol=lf
+.env.example   text eol=lf
 
 # PowerShell 脚本在 Windows 上运行
 *.ps1     text eol=crlf

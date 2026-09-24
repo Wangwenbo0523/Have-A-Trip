@@ -71,11 +71,11 @@
 
 | 文件/依赖 | 原因 | 状态 |
 |---|---|---|
-| `src/components/MapView/MapView.tsx` + `.css` | 明确不需要地图 | 待办 |
-| `package.json` 里的 `ol`（OpenLayers 6） | 只有 MapView 用。删掉它连带移除 `ol-mapbox-style` -> `@mapbox/mapbox-gl-style-spec` -> `@mapbox/jsonlint-lines-primitives` / `sort-object` -> `sort-asc`/`sort-desc` 整条链（此链已验证），许可证扫描里的 4 个「未标注许可」项一并消失 | 待办 |
+| `src/components/MapView/MapView.tsx` + `.css` | 明确不需要地图 | **已删 (S3)** |
+| `package.json` 里的 `ol`（OpenLayers 6） | 只有 MapView 用。删掉它连带移除 `ol-mapbox-style` -> `@mapbox/mapbox-gl-style-spec` -> `@mapbox/jsonlint-lines-primitives` / `sort-object` -> `sort-asc`/`sort-desc` 整条链（此链已验证），许可证扫描里的 4 个「未标注许可」项一并消失 | **已删 (S3)** |
 | `package.json` 里的 `jquery`（4.0.0） | CRA 时代遗留，无引用 | **已删** |
 | `src/hero-pic.jpg`（7.75 MB）、`src/changed/Globe.svg`（200 KB）、`src/Google_Earth_Logo.svg` | 死资源，零引用 | **已删** |
-| `src/registerServiceWorker.js` | CRA 遗留；要做 PWA 再单独加 | 待办 |
+| `src/registerServiceWorker.js` | CRA 遗留；要做 PWA 再单独加 | **已删 (S3)** |
 
 **替换**
 
@@ -84,6 +84,25 @@
 | `src/img/BaganMyanmar.jpg`（675 KB） | 原样进 `dist/assets/`，转 WebP 能显著减小首屏体积 | 待办 |
 
 保留的依赖：`react`、`react-dom`、`react-router-dom`、`axios`（用来打我们的 FastAPI）、`react-spinners`、`aos`、`tachyons`。
+
+**S4 实际落地（2026-09-25）**
+
+上面那张「原文件 → 改成」的表已全部执行完。与计划的差异：
+
+| 项 | 计划 | 实际 |
+|---|---|---|
+| 页面拆分 | `AttractionList` / `CategoryPage` / `AttractionDetail` | 多拆了一个 `AttractionBrowser`（搜索 + 排序 + 分页的列表主体），`/attractions` 与 `/category/:slug` 共用，避免两处重复 |
+| 路由 | 首页 / 分类 / 详情 / credits | 增加 `/attractions`（全部景点）与 `*`（404 兜底） |
+| `Footer.tsx` | 保留 | 重写：上游的 Facebook/Instagram/Twitter 链指向的是原作者账号，不属于本项目；改为仓库、致谢页与基底署名 |
+| `Header.tsx` | 保留 | 重写：去掉 giphy 内嵌 iframe；导航改为按 `/api/v1/categories` 动态生成（最多 6 个） |
+| `tachyons` | 保留 | **仍保留**（`Credits.tsx` 还在用）。S5 重做致谢页时可以一并去掉，顺带能关掉 `vite.config.js` 里的 `lightningcss.errorRecovery` |
+| `App.test.js` | 见待决 #2 | 未动 |
+
+同时修掉三个上游遗留问题（与本次改动同一批文件，故一并处理）：
+
+- `index.html` 里 `cdn.rawgit.com` 的 AOS `<script>` 是死链，`AOS.init()` 从未运行过；而 `aos.css` 会给 `[data-aos]` 元素初始 `opacity: 0` —— 结果**页头标题与页脚链接一直不可见**。改为在 `src/index.tsx` 里 `import AOS from "aos"` 并初始化。
+- `index.css` 原本把 `body` 设成 `display: grid` + `padding-top: 10%`，还带一条全局 `img { height: 17em; width: 17em }`（会把景点配图压成正方形），并外链了第三方博客 CDN 的背景图。已重写为本地渐变 + 正常文档流。
+- 依赖清理：删掉 `@types/react-router-dom@5`（react-router-dom 7 自带类型，装 v5 的类型包只会误导）。
 
 ---
 

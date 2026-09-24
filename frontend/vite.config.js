@@ -8,6 +8,18 @@ export default defineConfig({
   // 若将来部署到 GitHub Pages 的子路径(如 /Have-A-Trip/), 改回该路径。
   base: '/',
 
+  server: {
+    // 前端默认请求同源的 /api/v1, 由这里转发到本机 FastAPI。
+    // 这样本地开发不需要配跨域, 也不用写 .env.local。
+    // 前后端分开部署时用 VITE_API_BASE 指到真实地址(见 .env.example)。
+    proxy: {
+      '/api': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true,
+      },
+    },
+  },
+
   esbuild: {
     loader: 'tsx',
     include: /src\/.*\.[jt]sx?$/,

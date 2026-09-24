@@ -6,10 +6,13 @@
 
 # production
 /build
+/dist
 
 # misc
 .DS_Store
 .env.*
+# .env.example 是给人看的模板, 必须进仓库
+!.env.example
 .vscode/
 .idea/
 .history/

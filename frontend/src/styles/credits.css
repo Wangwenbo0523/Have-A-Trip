@@ -1,0 +1,44 @@
+/* 致谢页的样式。上游把这几条散在几个样式文件里, 那些文件在 S4 删掉了,
+   于是收拢到这里。S5 重做致谢页时会一并整理。 */
+
+.contributors {
+  font-size: 22px;
+  margin: 8px 0;
+}
+
+.margin_left {
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
+.listContributors {
+  width: 200px !important;
+  height: 100% !important;
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 200px);
+  justify-content: center;
+  grid-row-gap: 2rem;
+  grid-column-gap: 2rem;
+  padding: 0;
+  margin: 1.1em;
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem auto;
+  padding: 0.5rem 0 0.4rem;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.06);
+  transition: transform 0.3s ease-out;
+}
+
+.card:hover {
+  transform: scale(1.08);
+}

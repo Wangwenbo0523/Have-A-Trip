@@ -1,0 +1,130 @@
+.browser {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.browser__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.browser__sorts {
+  display: flex;
+  gap: 6px;
+}
+
+.browser__sort {
+  padding: 8px 16px;
+  border: 1px solid var(--panel-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.9rem;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.browser__sort:hover {
+  color: var(--text);
+}
+
+.browser__sort.is-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.browser__pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.browser__pager button {
+  padding: 8px 20px;
+  border: 1px solid var(--panel-border);
+  border-radius: 999px;
+  background: transparent;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.browser__pager button:hover:enabled {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.browser__pager button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.categoryCard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px 16px;
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  background: var(--panel-bg);
+  text-align: center;
+  transition: transform 0.2s ease-out, border-color 0.2s;
+}
+
+.categoryCard:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+}
+
+.categoryCard__name {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.categoryCard__count {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.stateMessage {
+  padding: 24px;
+  border: 1px dashed var(--panel-border);
+  border-radius: 10px;
+  text-align: center;
+  color: var(--muted);
+}
+
+.stateMessage--error {
+  border-color: rgba(244, 103, 50, 0.6);
+  background: var(--accent-soft);
+}
+
+.stateMessage__title {
+  color: var(--text);
+  font-size: 1.05rem;
+}
+
+.stateMessage__detail {
+  margin-top: 6px;
+  font-size: 0.9rem;
+}
+
+.stateMessage__retry {
+  margin-top: 14px;
+  padding: 8px 22px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--accent);
+}
+
+.stateMessage__retry:hover {
+  background: var(--accent);
+  color: #fff;
+}

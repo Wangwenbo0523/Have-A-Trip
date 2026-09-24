@@ -58,7 +58,7 @@
 | **S3** | 前端去地图化 | 删 `MapView/`、`ol`、`registerServiceWorker.js`；清空卡口白名单 | — | G1 | 构建通过；`ol`/`MapView` 无残留；卡口 0 未标注项 | `refactor(frontend):` | ✅ `7361ce7` |
 | **S1** | 后端骨架 | `backend/app/**`、`requirements.txt`、`tests/**` | S0 | G2 | `uvicorn` 起得来；`pytest` 通过；**不 import recbole** | `feat(api):` | ✅ `2802594` |
 | **S2** | 推荐接口 + 冷启动 | `backend/app/recommend/*` | S1 | G3 | 无行为的新用户也能拿到非空推荐，且每条带 `reason` | `feat(rec):` | ✅ `29069bb` |
-| **S4** | 前端 Attraction 化 | `types/index.ts` 重写、`Attraction*` 组件、`api/client.ts` | S1、S3 | G3 | 首页/分类/详情/搜索可用；无 `Country` 残留 | `feat(web):` | ⬜ 下一步 |
+| **S4** | 前端 Attraction 化 | `types/index.ts` 重写、`Attraction*` 组件、`api/client.ts` | S1、S3 | G3 | 首页/分类/详情/搜索可用；无 `Country` 残留 | `feat(web):` | ✅ 本次提交 |
 | **S6** | 离线训练链路 | `recsys/{export_interactions,run_recbole,write_back}.py` | S0 | G4 | 三条脚本端到端跑通，`rec_result` 有数据 | `feat(recsys):` | ⬜ 待开工 |
 | **S7** | 内容与数据 | `db/seed/*.sql`（30–50 个景点）+ 来源清单 | S0 | G4 | 每个景点 `source` / `license` 非空且可用 | `data(seed):` | ⬜ 待开工 |
 | **S5** | 数据来源与许可声明页 | `frontend/src/components/Credits.tsx` 改造 | S4、S7 | G5 | 页面逐条列出来源与许可，与 S7 一致 | `feat(web):` | ⬜ 待开工 |
@@ -287,12 +287,24 @@ rg -n "restcountries|Country" src      # 应为空
 npm.cmd run dev                        # 手动过一遍: 首页 -> 分类 -> 详情 -> 搜索
 ```
 
-**退出标准**
+**退出标准（2026-09-25 全部达成）**
 
-- [ ] 首页景点卡片流、分类页、详情页、搜索四条路径都可用
-- [ ] `src` 内无 `Country` / `restcountries` 残留
-- [ ] `npm run build` 通过
-- [ ] 后端未启动时页面给出明确错误态，不是白屏
+- [x] 首页景点卡片流、分类页、详情页、搜索四条路径都可用 —— 用浏览器实测过，见下方「验证记录」
+- [x] `src` 内无 `Country` / `restcountries` 残留
+- [x] `npm run build` 通过（131 modules，JS 315.19 KB / gzip 102.62 KB，CSS 106.97 KB）
+- [x] 后端未启动时页面给出明确错误态，不是白屏
+- [x] 额外：`npx tsc --noEmit` 零错误（构建本身不跑 tsc，得单独查）
+
+**与计划的偏差**：多拆了一个 `AttractionBrowser`（搜索 + 排序 + 分页的列表主体），
+`/attractions` 与 `/category/:slug` 共用它；路由多了 `/attractions` 与 404 兜底。
+`Footer.tsx` / `Header.tsx` 不是「保留」而是重写（上游的社交链指向原作者账号，giphy iframe 也不该留）。
+`tachyons` 仍然保留（`Credits.tsx` 在用）。详见 `docs/BASES.md` 一节的「S4 实际落地」。
+
+**验证记录**：用 SQLite 起真实后端（`uvicorn`）+ `vite` dev server + 内置浏览器实测 ——
+首页推荐位带理由渲染、`/category/history` 出 2 个景点、`/attraction/west-lake` 详情完整、
+搜索 `West` 命中「西湖」（验 `name_en` 匹配）、搜索无结果出空态、`/attraction/does-not-exist` 出错误态、
+详情页浏览行为落进 `behavior_log`，随后推荐从 `popular-fallback` 自动切成内容相似并给出「因为它和你浏览过的「西湖」相似」。
+控制台无报错（AOS 修复生效）。
 
 ---
 
@@ -430,3 +442,4 @@ psql -d attraction_atlas -c "select count(*), max(generated_at) from rec_result;
 | 2026-09-25 | v1 | 初版，基线 commit `88a15f1` |
 | 2026-09-25 | v1.1 | 定下执行顺序 `S0 → S3 → S1 → S2 → S4 → S8 → S7 → S6` |
 | 2026-09-25 | v1.2 | S0 / S3 / S1 / S2 全部完成并入 `main`；总览表加状态列 |
+| 2026-09-25 | v1.3 | S4 完成：前端整体换成 attraction 模型，接自家 API；顺带修掉 AOS 死链导致页头不可见等上游遗留 |

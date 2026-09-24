@@ -1,76 +1,49 @@
 import React from "react"
-import { BrowserRouter, Routes, Route } from "react-router-dom"
-import Region from "../components/Region"
-import RegionList from "../components/RegionList"
-import Header from "../components/Header"
-import Footer from "../components/Footer"
-import Detail from "../components/CountryDetails/Detail"
+import { BrowserRouter, Route, Routes } from "react-router-dom"
+
+import AttractionBrowser from "../components/AttractionBrowser"
+import AttractionDetail from "../components/AttractionDetail"
+import CategoryPage from "../components/CategoryPage"
 import Credits from "../components/Credits"
+import Footer from "../components/Footer"
+import Header from "../components/Header"
+import HomePage from "../components/HomePage"
+import StateMessage from "../components/StateMessage"
+import type { CategoryWithCount } from "../types"
+
+const AllAttractions = () => (
+  <main className="page">
+    <h2 className="page__title">全部景点</h2>
+    <p className="page__subtitle">支持关键字搜索、排序与分页</p>
+    <AttractionBrowser />
+  </main>
+)
+
+const NotFound = () => (
+  <main className="page">
+    <StateMessage title="页面不存在" detail="检查一下链接, 或者回首页看看" />
+  </main>
+)
 
 interface AppRouterProps {
-  onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void
-  regionList: string[]
-  countryList: string[]
-  flagList: string[]
-  countries: any[]
-  searchField: string
+  categories: CategoryWithCount[]
 }
 
-function AppRouter({
-  onSearchChange,
-  regionList,
-  countries,
-  searchField,
-}: AppRouterProps) {
-  const regions = [
-    "/africa",
-    "/americas",
-    "/antarctic",
-    "/antarctic-ocean",
-    "/asia",
-    "/europe",
-    "/oceania",
-    "/polar",
-  ]
-
-  const routes = regions.map((region, index) => {
-    const regionName = region.replace("/", "")
-      .replace(/-/g, " ")
-      .replace(/\b\w/g, l => l.toUpperCase())
-
-    return (
-      <Route
-        key={index}
-        path={region}
-        element={
-          <Region
-            onSearchChange={onSearchChange}
-            search={searchField}
-            region={regionName}
-            countries={countries}
-          />
-        }
-      />
-    )
-  })
-
-  return (
-    <BrowserRouter>
-      <div>
-        <Header />
-        <Routes>
-          <Route
-            path="/"
-            element={<RegionList countries={countries} regions={regionList} />}
-          />
-          {routes}
-          <Route path="/detail/:id" element={<Detail />} />
-          <Route path="/credits" element={<Credits />} />
-        </Routes>
-        <Footer />
-      </div>
-    </BrowserRouter>
-  )
-}
+const AppRouter = ({ categories }: AppRouterProps) => (
+  <BrowserRouter>
+    <div className="app">
+      <Header categories={categories} />
+      <Routes>
+        <Route path="/" element={<HomePage categories={categories} />} />
+        <Route path="/attractions" element={<AllAttractions />} />
+        <Route path="/category/:slug" element={<CategoryPage categories={categories} />} />
+        <Route path="/attraction/:slug" element={<AttractionDetail />} />
+        <Route path="/credits" element={<Credits />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      <Footer />
+    </div>
+  </BrowserRouter>
+)
 
 export default AppRouter

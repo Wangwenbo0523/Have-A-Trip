@@ -1,46 +1,67 @@
-@import url('https://fonts.googleapis.com/css?family=Abril+Fatface|Staatliches&display=swap');
-
-:root {
-    --text-color: rgba(0, 0, 0, 0.952);
-    --header-background: linear-gradient(rgba(0, 0, 0, 0.075), rgba(0, 0, 0, 0.849)), url(../img/BaganMyanmar.jpg);
-    --header-text-color: transparent;
-    --shadow-color: white;
-}
+@import url("https://fonts.googleapis.com/css?family=Staatliches&display=swap");
 
 .header {
-    background-image: var(--header-background);
-    background-position: 20% 85%;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-origin: content-box;
-    padding-top: 0;
+  position: relative;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.88)),
+    url(../img/BaganMyanmar.jpg);
+  background-position: 20% 85%;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
-@media screen and (min-width: 1300px) {
-    .header {
-        background-position: 10% 80%;
-    }
+.header__bar {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding: 28px 16px 0;
 }
 
-.headertext {
-    background: rgb(0, 0, 0);
-    letter-spacing: 7px;
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: var(--header-text-color);
-    font-family: 'Staatliches', cursive;
-    font-size: 6em;
-    text-transform: uppercase;
-    text-shadow: 4px 3px 0px var(--shadow-color);
-    margin-top: 0;
+.header__brand {
+  display: block;
+  text-align: center;
 }
 
-.nav {
-    background-color: var(--text-color);
-    position: relative;
-    bottom: -40px;
+.header__name {
+  display: block;
+  font-family: "Staatliches", "Microsoft YaHei", cursive;
+  font-size: 3rem;
+  letter-spacing: 7px;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 4px 3px 0 rgba(0, 0, 0, 0.6);
 }
 
-iframe {
-    border: none;
+.header__tagline {
+  display: block;
+  color: var(--muted);
+  letter-spacing: 4px;
+  margin-top: 4px;
+}
+
+.header__nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 24px;
+  padding: 8px 0;
+  border-top: 1px solid var(--panel-border);
+  border-bottom: 1px solid var(--panel-border);
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.header__link {
+  padding: 8px 16px;
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.82);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.header__link:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.header__link.is-active {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
 }
