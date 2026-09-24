@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="西安钟楼">
+  <title>西安钟楼</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#13162a"/>
+      <stop offset="1" stop-color="#332c52"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <rect x="-20.0" y="561.9" width="153.0" height="98.1" fill="#1b1833"/>
+  <rect x="-6.0" y="577.9" width="125.0" height="9" fill="#f46625" opacity="0.3"/>
+  <rect x="159.0" y="465.4" width="151.6" height="194.6" fill="#1b1833"/>
+  <rect x="173.0" y="481.4" width="123.6" height="9" fill="#f46625" opacity="0.3"/>
+  <rect x="173.0" y="597.4" width="123.6" height="9" fill="#f46625" opacity="0.3"/>
+  <rect x="336.6" y="435.6" width="80.5" height="224.4" fill="#1b1833"/>
+  <rect x="350.6" y="451.6" width="52.5" height="9" fill="#f46625" opacity="0.3"/>
+  <rect x="350.6" y="509.6" width="52.5" height="9" fill="#f46625" opacity="0.3"/>
+  <rect x="350.6" y="567.6" width="52.5" height="9" fill="#f46625" opacity="0.3"/>
+  <rect x="443.1" y="441.1" width="85.5" height="218.9" fill="#1b1833"/>
+  <rect x="457.1" y="457.1" width="57.5" height="9" fill="#f46625" opacity="0.3"/>
+  <rect x="457.1" y="515.1" width="57.5" height="9" fill="#f46625" opacity="0.3"/>
+  <rect x="457.1" y="573.1" width="57.5" height="9" fill="#f46625" opacity="0.3"/>
+  <rect x="554.6" y="489.7" width="110.4" height="170.3" fill="#1b1833"/>
+  <rect x="691.1" y="486.6" width="91.7" height="173.4" fill="#1b1833"/>
+  <rect x="705.1" y="502.6" width="63.7" height="9" fill="#f46625" opacity="0.3"/>
+  <rect x="808.7" y="455.2" width="133.5" height="204.8" fill="#1b1833"/>
+  <rect x="968.3" y="550.9" width="136.1" height="109.1" fill="#1b1833"/>
+  <rect x="982.3" y="566.9" width="108.1" height="9" fill="#f46625" opacity="0.3"/>
+  <rect x="1130.3" y="391.7" width="131.4" height="268.3" fill="#1b1833"/>
+  <rect x="1144.3" y="407.7" width="103.4" height="9" fill="#f46625" opacity="0.3"/>
+  <rect x="1144.3" y="581.7" width="103.4" height="9" fill="#f46625" opacity="0.3"/>
+  <rect x="534.4" y="442" width="30" height="218.0" fill="#252244"/>
+  <circle cx="549.4" cy="442" r="40" fill="#252244"/>
+  <circle cx="549.4" cy="442" r="40" fill="#f46625" opacity="0.22"/>
+  <rect x="546.4" y="376" width="6" height="30" fill="#252244"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#f46625" letter-spacing="7">城市地标</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">西安钟楼</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

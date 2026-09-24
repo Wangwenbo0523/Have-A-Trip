@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="澳门旅游塔">
+  <title>澳门旅游塔</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#131d2a"/>
+      <stop offset="1" stop-color="#2d3052"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <rect x="-20.0" y="549.3" width="90.6" height="110.7" fill="#191e33"/>
+  <rect x="96.6" y="525.0" width="160.9" height="135.0" fill="#191e33"/>
+  <rect x="110.6" y="541.0" width="132.9" height="9" fill="#f4362d" opacity="0.3"/>
+  <rect x="283.5" y="465.4" width="86.3" height="194.6" fill="#191e33"/>
+  <rect x="297.5" y="539.4" width="58.3" height="9" fill="#f4362d" opacity="0.3"/>
+  <rect x="297.5" y="597.4" width="58.3" height="9" fill="#f4362d" opacity="0.3"/>
+  <rect x="395.8" y="420.7" width="94.6" height="239.3" fill="#191e33"/>
+  <rect x="409.8" y="436.7" width="66.6" height="9" fill="#f4362d" opacity="0.3"/>
+  <rect x="409.8" y="610.7" width="66.6" height="9" fill="#f4362d" opacity="0.3"/>
+  <rect x="516.4" y="396.4" width="153.4" height="263.6" fill="#191e33"/>
+  <rect x="530.4" y="470.4" width="125.4" height="9" fill="#f4362d" opacity="0.3"/>
+  <rect x="530.4" y="528.4" width="125.4" height="9" fill="#f4362d" opacity="0.3"/>
+  <rect x="695.7" y="380.7" width="111.9" height="279.3" fill="#191e33"/>
+  <rect x="709.7" y="512.7" width="83.9" height="9" fill="#f4362d" opacity="0.3"/>
+  <rect x="833.6" y="382.3" width="147.2" height="277.7" fill="#191e33"/>
+  <rect x="847.6" y="456.3" width="119.2" height="9" fill="#f4362d" opacity="0.3"/>
+  <rect x="847.6" y="514.3" width="119.2" height="9" fill="#f4362d" opacity="0.3"/>
+  <rect x="1006.9" y="531.3" width="145.4" height="128.7" fill="#191e33"/>
+  <rect x="1020.9" y="605.3" width="117.4" height="9" fill="#f4362d" opacity="0.3"/>
+  <rect x="1178.3" y="556.4" width="102.1" height="103.6" fill="#191e33"/>
+  <rect x="1192.3" y="572.4" width="74.1" height="9" fill="#f4362d" opacity="0.3"/>
+  <rect x="640.3" y="442" width="30" height="218.0" fill="#232944"/>
+  <circle cx="655.3" cy="442" r="40" fill="#232944"/>
+  <circle cx="655.3" cy="442" r="40" fill="#f4362d" opacity="0.22"/>
+  <rect x="652.3" y="376" width="6" height="30" fill="#232944"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#f4362d" letter-spacing="7">城市地标</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">澳门旅游塔</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

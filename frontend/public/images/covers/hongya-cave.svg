@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="洪崖洞">
+  <title>洪崖洞</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#141d2a"/>
+      <stop offset="1" stop-color="#2e3252"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <rect x="-20.0" y="430.9" width="120.2" height="229.1" fill="#1a1f33"/>
+  <rect x="-6.0" y="562.9" width="92.2" height="9" fill="#f43430" opacity="0.3"/>
+  <rect x="126.2" y="456.8" width="146.9" height="203.2" fill="#1a1f33"/>
+  <rect x="140.2" y="530.8" width="118.9" height="9" fill="#f43430" opacity="0.3"/>
+  <rect x="140.2" y="588.8" width="118.9" height="9" fill="#f43430" opacity="0.3"/>
+  <rect x="299.1" y="525.0" width="140.7" height="135.0" fill="#1a1f33"/>
+  <rect x="313.1" y="541.0" width="112.7" height="9" fill="#f43430" opacity="0.3"/>
+  <rect x="465.8" y="430.9" width="135.3" height="229.1" fill="#1a1f33"/>
+  <rect x="479.8" y="446.9" width="107.3" height="9" fill="#f43430" opacity="0.3"/>
+  <rect x="627.1" y="524.2" width="84.5" height="135.8" fill="#1a1f33"/>
+  <rect x="737.6" y="533.6" width="151.2" height="126.4" fill="#1a1f33"/>
+  <rect x="914.8" y="568.2" width="148.0" height="91.8" fill="#1a1f33"/>
+  <rect x="928.8" y="584.2" width="120.0" height="9" fill="#f43430" opacity="0.3"/>
+  <rect x="1088.8" y="442.7" width="140.7" height="217.3" fill="#1a1f33"/>
+  <rect x="1102.8" y="458.7" width="112.7" height="9" fill="#f43430" opacity="0.3"/>
+  <rect x="1102.8" y="516.7" width="112.7" height="9" fill="#f43430" opacity="0.3"/>
+  <rect x="1102.8" y="574.7" width="112.7" height="9" fill="#f43430" opacity="0.3"/>
+  <rect x="487.4" y="442" width="30" height="218.0" fill="#242a44"/>
+  <circle cx="502.4" cy="442" r="40" fill="#242a44"/>
+  <circle cx="502.4" cy="442" r="40" fill="#f43430" opacity="0.22"/>
+  <rect x="499.4" y="376" width="6" height="30" fill="#242a44"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#f43430" letter-spacing="7">城市地标</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">洪崖洞</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

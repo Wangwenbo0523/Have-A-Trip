@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="黄鹤楼">
+  <title>黄鹤楼</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#141c2a"/>
+      <stop offset="1" stop-color="#2f3052"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <rect x="-20.0" y="545.4" width="113.3" height="114.6" fill="#1a1e33"/>
+  <rect x="119.3" y="428.5" width="115.1" height="231.5" fill="#1a1e33"/>
+  <rect x="133.3" y="502.5" width="87.1" height="9" fill="#f44735" opacity="0.3"/>
+  <rect x="260.5" y="549.3" width="88.1" height="110.7" fill="#1a1e33"/>
+  <rect x="274.5" y="565.3" width="60.1" height="9" fill="#f44735" opacity="0.3"/>
+  <rect x="374.5" y="423.8" width="137.5" height="236.2" fill="#1a1e33"/>
+  <rect x="388.5" y="497.8" width="109.5" height="9" fill="#f44735" opacity="0.3"/>
+  <rect x="538.0" y="445.8" width="154.1" height="214.2" fill="#1a1e33"/>
+  <rect x="552.0" y="461.8" width="126.1" height="9" fill="#f44735" opacity="0.3"/>
+  <rect x="552.0" y="519.8" width="126.1" height="9" fill="#f44735" opacity="0.3"/>
+  <rect x="718.1" y="445.8" width="91.0" height="214.2" fill="#1a1e33"/>
+  <rect x="835.1" y="467.8" width="86.3" height="192.2" fill="#1a1e33"/>
+  <rect x="849.1" y="483.8" width="58.3" height="9" fill="#f44735" opacity="0.3"/>
+  <rect x="849.1" y="541.8" width="58.3" height="9" fill="#f44735" opacity="0.3"/>
+  <rect x="947.3" y="438.0" width="144.0" height="222.0" fill="#1a1e33"/>
+  <rect x="961.3" y="512.0" width="116.0" height="9" fill="#f44735" opacity="0.3"/>
+  <rect x="961.3" y="570.0" width="116.0" height="9" fill="#f44735" opacity="0.3"/>
+  <rect x="1117.3" y="548.5" width="139.3" height="111.5" fill="#1a1e33"/>
+  <rect x="1131.3" y="564.5" width="111.3" height="9" fill="#f44735" opacity="0.3"/>
+  <rect x="575.2" y="442" width="30" height="218.0" fill="#252844"/>
+  <circle cx="590.2" cy="442" r="40" fill="#252844"/>
+  <circle cx="590.2" cy="442" r="40" fill="#f44735" opacity="0.22"/>
+  <rect x="587.2" y="376" width="6" height="30" fill="#252844"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#f44735" letter-spacing="7">城市地标</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">黄鹤楼</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

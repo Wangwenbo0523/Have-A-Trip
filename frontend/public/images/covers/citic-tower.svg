@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="中信大厦（中国尊）">
+  <title>中信大厦（中国尊）</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#13112a"/>
+      <stop offset="1" stop-color="#392952"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <rect x="-20.0" y="396.4" width="119.8" height="263.6" fill="#1f1633"/>
+  <rect x="-6.0" y="412.4" width="91.8" height="9" fill="#f48c16" opacity="0.3"/>
+  <rect x="125.8" y="563.5" width="155.9" height="96.5" fill="#1f1633"/>
+  <rect x="307.7" y="512.5" width="156.6" height="147.5" fill="#1f1633"/>
+  <rect x="490.3" y="394.8" width="107.9" height="265.2" fill="#1f1633"/>
+  <rect x="504.3" y="468.8" width="79.9" height="9" fill="#f48c16" opacity="0.3"/>
+  <rect x="504.3" y="526.8" width="79.9" height="9" fill="#f48c16" opacity="0.3"/>
+  <rect x="624.3" y="399.5" width="113.3" height="260.5" fill="#1f1633"/>
+  <rect x="638.3" y="531.5" width="85.3" height="9" fill="#f48c16" opacity="0.3"/>
+  <rect x="638.3" y="589.5" width="85.3" height="9" fill="#f48c16" opacity="0.3"/>
+  <rect x="763.6" y="466.2" width="129.6" height="193.8" fill="#1f1633"/>
+  <rect x="777.6" y="598.2" width="101.6" height="9" fill="#f48c16" opacity="0.3"/>
+  <rect x="919.1" y="572.9" width="102.5" height="87.1" fill="#1f1633"/>
+  <rect x="1047.6" y="502.3" width="157.3" height="157.7" fill="#1f1633"/>
+  <rect x="554.8" y="442" width="30" height="218.0" fill="#2b1f44"/>
+  <circle cx="569.8" cy="442" r="40" fill="#2b1f44"/>
+  <circle cx="569.8" cy="442" r="40" fill="#f48c16" opacity="0.22"/>
+  <rect x="566.8" y="376" width="6" height="30" fill="#2b1f44"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#f48c16" letter-spacing="7">城市地标</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">中信大厦（中国尊）</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

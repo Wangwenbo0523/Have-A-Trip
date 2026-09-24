@@ -1,8 +1,8 @@
 -- Have-A-Trip · 种子数据
 --
--- 90 个景点: 50 个中国境内 + 40 个境外(覆盖六大洲), 全部为自采的公开事实信息,
+-- 114 个景点: 74 个中国境内 + 40 个境外(覆盖六大洲), 全部为自采的公开事实信息,
 -- 不引入任何第三方数据集, 以便「将来可闭源」。判断见 docs/LICENSE-AUDIT.md 第三节。
--- 境外的 40 条见文件后半部分的「世界景点」分节。
+-- 境外的 40 条见文件后半部分的「世界景点」分节; 境内的 74 条见「中国城市的馆 · 园 · 地标」分节。
 -- 每条 attraction 都必须写清 source 与 license(S0 已把它设为 NOT NULL)。
 --
 -- 幂等性: 可重复执行。
@@ -656,6 +656,300 @@ INSERT INTO attraction (
     'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
 ),
 
+-- ---------------------------------------- 中国城市的馆 · 园 · 地标（24 条）
+-- 这一批补的是各城市的博物馆、游乐场与地标性建筑: 博物馆 8(含科技馆 1)、
+-- 主题乐园 8(含海洋公园与迪士尼各 1)、城市地标 8(含超高层 3、古楼 2、摩天轮 1)。
+-- 口径与上面完全一致: 不带坐标, 评分一律 0, 票价一律留空(不写拿不准的免费),
+-- a_level 只填能核实的(广州长隆旅游度假区、黄鹤楼), 其余留空表示「未核实」。
+(
+    'shanghai-natural-history-museum', '上海自然博物馆', 'Shanghai Natural History Museum',
+    '以「自然·人·和谐」为主题的自然科学博物馆，从古生物、矿物到现生动植物都有陈列。',
+    '新馆 2015 年在静安雕塑公园内开放，建筑外形取自鹦鹉螺的螺旋，屋顶绿化与公园连成一片。'
+    || '展厅按起源之谜、生命长河、演化之道、大地探珍等主题划分，恐龙骨架、大型鲸类与矿物标本是常见停留点。'
+    || '展项以可动手操作为主，带孩子参观的比例较高，展线为单向，中途折返要走回头路。',
+    (SELECT id FROM category WHERE slug = 'museum'),
+    'CN', '上海市', '上海市', '上海市静安区山海关路 399 号',
+    NULL, NULL,
+    '四季皆宜，室内为主', 3.5, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'nanjing-museum', '南京博物院', 'Nanjing Museum',
+    '中国最早创建的博物馆之一，分六馆陈列，从史前一直铺到民国。',
+    '前身是 1933 年筹建的国立中央博物院，院内大殿为仿辽代式样的建筑，位于中山门内。'
+    || '分历史馆、特展馆、数字馆、艺术馆、民国馆与非遗馆六部分；历史馆按年代陈列江苏一带的出土文物。'
+    || '民国馆做成街景式展陈，节奏可以放慢；各馆之间步行有距离，整体参观量不小。',
+    (SELECT id FROM category WHERE slug = 'museum'),
+    'CN', '江苏省', '南京市', '江苏省南京市玄武区中山东路 321 号',
+    NULL, NULL,
+    '四季皆宜，室内为主', 3.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'hubei-museum', '湖北省博物馆', 'Hubei Provincial Museum',
+    '以东周曾侯乙墓与越王勾践剑等出土文物著称的省级博物馆，馆内有编钟演奏。',
+    '坐落在武昌东湖之滨，由主展馆与相邻的专题馆组成一片院落。'
+    || '曾侯乙墓出土的编钟、尊盘与九鼎八簋是核心展品，另有越王勾践剑、郧县人头骨化石与元青花四爱图梅瓶。'
+    || '编钟演奏按场次在馆内进行，进馆先记下当天的场次时间更从容。',
+    (SELECT id FROM category WHERE slug = 'museum'),
+    'CN', '湖北省', '武汉市', '湖北省武汉市武昌区东湖路 160 号',
+    NULL, NULL,
+    '四季皆宜，室内为主', 3.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'henan-museum', '河南博物院', 'Henan Museum',
+    '以中原地区出土文物为主线的省级博物馆，史前到宋元的青铜、陶瓷与玉器是主体。',
+    '位于郑州市区北部，主展馆取「九鼎定中原」的寓意，中庭方形，四面为展厅。'
+    || '贾湖骨笛、莲鹤方壶、妇好鸮尊、云纹铜禁等常被列为镇院之宝，年代自新石器时代延续到汉代。'
+    || '按朝代顺序布置的展厅适合自上而下走一遍，馆内另设专题展与临时展。',
+    (SELECT id FROM category WHERE slug = 'museum'),
+    'CN', '河南省', '郑州市', '河南省郑州市金水区农业路 8 号',
+    NULL, NULL,
+    '四季皆宜，室内为主', 3.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'hunan-museum', '湖南博物院', 'Hunan Museum',
+    '以马王堆汉墓出土文物为核心的省级博物馆，帛画、丝织品与简牍是主要看点。',
+    '位于长沙市开福区，前身为湖南省博物馆，2022 年更名为湖南博物院。'
+    || '马王堆汉墓的 T 形帛画、素纱襌衣与大量漆器集中展出，墓葬结构在展厅内做了复原。'
+    || '另有商周青铜器与长沙窑瓷器等专题陈列，整体参观时间通常控制在半天内。',
+    (SELECT id FROM category WHERE slug = 'museum'),
+    'CN', '湖南省', '长沙市', '湖南省长沙市开福区东风路 50 号',
+    NULL, NULL,
+    '四季皆宜，室内为主', 3.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'jinsha-site-museum', '金沙遗址博物馆', 'Jinsha Site Museum',
+    '建在商周古蜀都邑遗址上的博物馆，太阳神鸟金饰出土于此。',
+    '位于成都市区西部，由遗迹馆与陈列馆两部分组成。'
+    || '遗迹馆保留祭祀区的考古现场做原状展示；陈列馆按主题陈列出土文物，太阳神鸟金饰、金面具与成堆象牙是核心展品。'
+    || '太阳神鸟图案后来被用作中国文化遗产标志；两馆之间有园区绿地相连，全程以步行为主。',
+    (SELECT id FROM category WHERE slug = 'museum'),
+    'CN', '四川省', '成都市', '四川省成都市青羊区金沙遗址路 2 号',
+    NULL, NULL,
+    '四季皆宜，室内为主', 3.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'guangdong-museum', '广东省博物馆', 'Guangdong Museum',
+    '珠江新城的省级综合博物馆，外观为镂空方盒，以广东历史与工艺美术陈列为主。',
+    '2010 年在珠江新城落成开放，外立面覆镂空金属板，夜间透光。'
+    || '常设展包括广东历史文化陈列、潮州木雕、端砚与历代陶瓷，另设自然与艺术专题。'
+    || '与广州图书馆、广州大剧院同处一片文化建筑群，可以跟周边行程串起来。',
+    (SELECT id FROM category WHERE slug = 'museum'),
+    'CN', '广东省', '广州市', '广东省广州市天河区珠江东路 2 号',
+    NULL, NULL,
+    '四季皆宜，室内为主', 3.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'china-science-technology-museum', '中国科学技术馆', 'China Science and Technology Museum',
+    '以互动体验为主的科普场馆，展厅覆盖物理、机械、生命与航天等内容。',
+    '位于北京奥林匹克公园内，与鸟巢、水立方相距不远。'
+    || '常设展厅按华夏之光、探索与发现、科技与生活、挑战与未来等主题分布，多数展项可以手动操作。'
+    || '另有球幕与巨幕影院按场次放映；儿童科学乐园面向年龄较小的观众，需要单独安排时间。',
+    (SELECT id FROM category WHERE slug = 'museum'),
+    'CN', '北京市', '北京市', '北京市朝阳区北辰东路 5 号',
+    NULL, NULL,
+    '四季皆宜，室内为主', 4.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'guangzhou-chimelong', '广州长隆旅游度假区', 'Chimelong Resort',
+    '由野生动物世界、欢乐世界与水乐园等多个园区组成的度假区。',
+    '园区集中在广州番禺，各园单独售票，园与园之间有穿梭巴士接驳。'
+    || '野生动物世界以乘车观赏与缆车结合的路线为主，欢乐世界以过山车等大型游乐设施为主。'
+    || '单园面积都不小，一天通常只够玩一园，节假日排队时间会更长。',
+    (SELECT id FROM category WHERE slug = 'theme-park'),
+    'CN', '广东省', '广州市', '广东省广州市番禺区大石街道',
+    NULL, NULL,
+    '四季皆宜，夏季注意防晒', 6.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'happy-valley-beijing', '北京欢乐谷', 'Happy Valley Beijing',
+    '东四环旁的大型主题公园，以大型游乐设施与演艺为主要内容。',
+    '园区按主题分区布置，项目以过山车一类的机械游乐设施为主，另有剧场与巡游演出。'
+    || '夏季开放水上项目，园区内餐饮与商店分布在各片区。'
+    || '节假日排队时间较长，开园即入园能多玩几个热门项目。',
+    (SELECT id FROM category WHERE slug = 'theme-park'),
+    'CN', '北京市', '北京市', '北京市朝阳区东四环小武基北路',
+    NULL, NULL,
+    '4 月至 10 月', 5.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'shanghai-haichang-park', '上海海昌海洋公园', 'Shanghai Haichang Ocean Park',
+    '浦东临港的海洋主题公园，大型展缸、海洋动物与游乐设施兼有。',
+    '位于浦东临港，与滴水湖一带相距不远。'
+    || '园内分为人鱼海湾、极地小镇、海底奇域等区域，既有观赏展馆，也有过山车一类的设施。'
+    || '鲸鲨、虎鲸与企鹅展区是常见停留点，各类演艺按场次开演，入园后先看时间表更省事。',
+    (SELECT id FROM category WHERE slug = 'theme-park'),
+    'CN', '上海市', '上海市', '上海市浦东新区南汇新城镇银飞路 166 号',
+    NULL, NULL,
+    '四季皆宜，室内外结合', 5.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'happy-valley-shenzhen', '深圳欢乐谷', 'Happy Valley Shenzhen',
+    '华侨城片区的大型主题公园，以过山车与季节性水上项目为主。',
+    '与深圳世界之窗同在华侨城一带，两园相距不远，一天通常二选一。'
+    || '园区按主题分区，既有大型机械项目，也有面向低龄观众的亲子区域。'
+    || '部分时段开放夜场，夏季项目排队时间较长。',
+    (SELECT id FROM category WHERE slug = 'theme-park'),
+    'CN', '广东省', '深圳市', '广东省深圳市南山区侨城西街 18 号',
+    NULL, NULL,
+    '四季皆宜，夏季注意防晒', 4.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'happy-valley-wuhan', '武汉欢乐谷', 'Happy Valley Wuhan',
+    '东湖片区的大型主题公园，以大型游乐设施与季节性水上项目为主。',
+    '位于东湖北岸一带，与玛雅海滩水公园相邻。'
+    || '园区按主题分区，项目以大型机械游乐与演艺为主。'
+    || '夏季水公园与主园区分别运营，购票时需看清包含范围。',
+    (SELECT id FROM category WHERE slug = 'theme-park'),
+    'CN', '湖北省', '武汉市', '湖北省武汉市洪山区欢乐大道 196 号',
+    NULL, NULL,
+    '4 月至 10 月', 4.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'happy-valley-chengdu', '成都欢乐谷', 'Happy Valley Chengdu',
+    '成都城西的大型主题公园，以大型游乐设施与节庆活动为主。',
+    '位于成都西北三环附近，园区按主题分区布置。'
+    || '既有面向成人的大型项目，也有面向儿童的区域与剧场演出。'
+    || '节假日与暑期人流量大，部分时段开放夜场。',
+    (SELECT id FROM category WHERE slug = 'theme-park'),
+    'CN', '四川省', '成都市', '四川省成都市金牛区西华大道 16 号',
+    NULL, NULL,
+    '4 月至 10 月', 4.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'happy-valley-chongqing', '重庆欢乐谷', 'Happy Valley Chongqing',
+    '两江新区的大型主题公园，项目以大型机械游乐设施为主。',
+    '位于嘉陵江以北的礼嘉一带，园区按主题分区。'
+    || '过山车等大型项目集中在几处片区，另有室内项目与演艺，雨天可玩的选择相对多一些。'
+    || '与市区之间以轨道交通和自驾衔接，出行前先看清当日的开放时间。',
+    (SELECT id FROM category WHERE slug = 'theme-park'),
+    'CN', '重庆市', '重庆市', '重庆市两江新区礼嘉街道',
+    NULL, NULL,
+    '4 月至 10 月', 4.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'hongkong-disneyland', '香港迪士尼乐园', 'Hong Kong Disneyland',
+    '大屿山的迪士尼主题乐园，以园区巡游、剧场演出与城堡夜景为主要内容。',
+    '位于大屿山竹篙湾，可由东涌线转乘度假区专线前往。'
+    || '园区分为美国小镇大街、幻想世界、明日世界等区域，整体规模小于其他迪士尼乐园，一天可以走完。'
+    || '巡游与夜间演出按当日时间表安排，门票按日期分档，需提前在官方渠道购买。',
+    (SELECT id FROM category WHERE slug = 'theme-park'),
+    'CN', '香港特别行政区', '香港', '香港大屿山竹篙湾',
+    NULL, NULL,
+    '四季皆宜', 6.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'shanghai-tower', '上海中心大厦', 'Shanghai Tower',
+    '陆家嘴的超高层建筑，楼体螺旋收分，观光层可俯瞰黄浦江两岸。',
+    '高 632 米、118 层，2016 年建成启用，是中国已建成建筑中最高的。'
+    || '楼体每层相对下层旋转一个小角度，外立面因此呈螺旋上升的形态，双层幕墙之间形成中庭。'
+    || '观光层设在高区，电梯直达；与金茂大厦、上海环球金融中心相邻，三座塔楼在同一片街区内。',
+    (SELECT id FROM category WHERE slug = 'landmark'),
+    'CN', '上海市', '上海市', '上海市浦东新区银城中路 501 号',
+    NULL, NULL,
+    '四季皆宜，晴天视野更好', 2.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'citic-tower', '中信大厦（中国尊）', 'CITIC Tower',
+    '北京国贸一带的超高层建筑，外形取礼器「尊」的轮廓，是北京最高的建筑。',
+    '高 528 米、108 层，2018 年建成，位于朝阳区国贸中央商务区。'
+    || '楼体自下而上收分，底部宽、上部窄，轮廓取自古代礼器「尊」。'
+    || '建筑以办公为主，从国贸一带的街道与邻近楼宇可以看到它的轮廓，入夜后与周边建筑形成一组天际线。',
+    (SELECT id FROM category WHERE slug = 'landmark'),
+    'CN', '北京市', '北京市', '北京市朝阳区光华路 10 号',
+    NULL, NULL,
+    '四季皆宜', 1.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'ping-an-finance-center', '平安金融中心', 'Ping An Finance Centre',
+    '福田 CBD 的超高层建筑，塔尖直上，是深圳最高的建筑。',
+    '高约 600 米、118 层，2017 年落成，位于福田中心区。'
+    || '楼体为矩形平面，立面以竖向线条强调高度，顶部收成塔尖。'
+    || '设有对外观光的云际观光层，可俯瞰福田中心区与香港方向，具体开放安排以现场公告为准。',
+    (SELECT id FROM category WHERE slug = 'landmark'),
+    'CN', '广东省', '深圳市', '广东省深圳市福田区益田路 5033 号',
+    NULL, NULL,
+    '四季皆宜，晴天视野更好', 2.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'hongya-cave', '洪崖洞', 'Hongya Cave',
+    '嘉陵江边的吊脚楼样建筑群，依崖壁分层而建，夜景是主要看点。',
+    '位于渝中区嘉陵江畔，建筑自上而下分多层，上层临沧白路、下层临江，各层由街道与步道连通。'
+    || '是依山就势建造的吊脚楼样式街区，入夜亮灯后，楼体与江面倒影是常见的拍摄场景。'
+    || '区域内以商业与餐饮为主，人流集中在晚间，节假日常常限流。',
+    (SELECT id FROM category WHERE slug = 'landmark'),
+    'CN', '重庆市', '重庆市', '重庆市渝中区嘉陵江滨江路 88 号',
+    NULL, NULL,
+    '四季皆宜，傍晚与夜间最佳', 2.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'yellow-crane-tower', '黄鹤楼', 'Yellow Crane Tower',
+    '江南三大名楼之一，坐落于蛇山之上，可俯瞰长江与武汉长江大桥。',
+    '现楼为 1985 年重建，五层攒尖顶，通高约 51 米，位于武昌蛇山西端。'
+    || '楼名因历代题咏而著名，各层陈列相关碑刻与楹联，登楼后向东可望长江与武汉长江大桥。'
+    || '园区内另有白云阁等建筑，整体步行量不大。',
+    (SELECT id FROM category WHERE slug = 'landmark'),
+    'CN', '湖北省', '武汉市', '湖北省武汉市武昌区蛇山西山坡特 1 号',
+    NULL, NULL,
+    '四季皆宜', 2.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'tianjin-eye', '天津之眼', 'Tianjin Eye',
+    '跨海河而建的摩天轮，轮体架在桥上，夜间灯光是主要看点。',
+    '位于永乐桥上，横跨海河，轮体直径约 110 米。'
+    || '座舱为封闭式，转一圈约半小时，最高处可俯瞰海河两岸的市区。'
+    || '靠近三岔河口一带，周边是步行可达的河岸区域，晚间灯光效果更明显。',
+    (SELECT id FROM category WHERE slug = 'landmark'),
+    'CN', '天津市', '天津市', '天津市河北区永乐桥',
+    NULL, NULL,
+    '四季皆宜，夜间最佳', 1.5, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'xian-bell-tower', '西安钟楼', 'Xian Bell Tower',
+    '明代修建的楼阁式钟楼，位于西安城墙内四条大街的交汇点。',
+    '建于明洪武年间，后世有过迁移与重修，现存楼体为砖木结构，重檐三滴水，四角攒尖顶。'
+    || '楼内陈列钟与鼓，登楼可以看到四条大街以钟楼为中心向四方延伸。'
+    || '与鼓楼相距不远，夜间亮灯后是城墙内常见的拍摄对象。',
+    (SELECT id FROM category WHERE slug = 'landmark'),
+    'CN', '陕西省', '西安市', '陕西省西安市碑林区东西南北四条大街交汇处',
+    NULL, NULL,
+    '四季皆宜，夜间最佳', 1.5, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    'macau-tower', '澳门旅游塔', 'Macau Tower',
+    '澳门半岛南端的观光塔，塔身细高，设有观景层与户外活动项目。',
+    '塔高约 338 米，2001 年投入使用，位于南湾湖畔的填海区。'
+    || '观景层设在高区，可俯瞰澳门半岛、氹仔与珠海方向。'
+    || '塔上另设高飞跳与空中漫步等户外项目，需另行预约，具体安排以现场公告为准。',
+    (SELECT id FROM category WHERE slug = 'landmark'),
+    'CN', '澳门特别行政区', '澳门', '澳门观光塔前地',
+    NULL, NULL,
+    '四季皆宜', 2.0, NULL,
+    'published', 'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+
 -- ------------------------------------------------ 世界景点（40 条）
 -- 覆盖六大洲: 亚洲 9 / 欧洲 12 / 非洲 5 / 北美洲 6 / 南美洲 5 / 大洋洲 3。
 -- 口径与上面一致: 不带坐标, 票价只在确定免费时写 0, 评分一律 0。
@@ -1082,7 +1376,7 @@ ON CONFLICT (slug) DO UPDATE SET
 
 -- ------------------------------------------------- 景区等级与世界遗产 (v2.0)
 --
--- 这两列不放进上面的 INSERT: 加进列清单会让 50 条老记录每条都要改一遍, 而且
+-- 这两列不放进上面的 INSERT: 加进列清单会让每条老记录都要改一遍, 而且
 -- 它们的口径不同 —— **留空表示「未核实」, 不是「没有等级」**, 单独一块更好核对。
 -- a_level 用 GB/T 17775 的说法, 只适用于中国大陆景区; 境外景点一律留空,
 -- 它们的「等级」看 heritage(UNESCO 世界遗产类别)。
@@ -1178,7 +1472,9 @@ FROM (VALUES
     ('easter-island',         NULL,  'cultural'),
     ('sydney-opera-house',    NULL,  'cultural'),
     ('great-barrier-reef',    NULL,  'natural'),
-    ('milford-sound',         NULL,  'natural')
+    ('milford-sound',         NULL,  'natural'),
+    ('guangzhou-chimelong',   '5A',  NULL),
+    ('yellow-crane-tower',    '5A',  NULL)
 ) AS m(slug, a_level, heritage)
 WHERE a.slug = m.slug;
 
@@ -1554,7 +1850,77 @@ FROM (VALUES
     ('milford-sound',            'glacier'),
     ('milford-sound',            'cruise'),
     ('milford-sound',            'waterfall'),
-    ('milford-sound',            'sunset')
+    ('milford-sound',            'sunset'),
+    ('shanghai-natural-history-museum', 'family'                ),
+    ('shanghai-natural-history-museum', 'indoor'                ),
+    ('shanghai-natural-history-museum', 'must-see'              ),
+    ('nanjing-museum',              'art'                   ),
+    ('nanjing-museum',              'indoor'                ),
+    ('nanjing-museum',              'must-see'              ),
+    ('hubei-museum',                'art'                   ),
+    ('hubei-museum',                'indoor'                ),
+    ('hubei-museum',                'must-see'              ),
+    ('henan-museum',                'art'                   ),
+    ('henan-museum',                'indoor'                ),
+    ('hunan-museum',                'art'                   ),
+    ('hunan-museum',                'indoor'                ),
+    ('jinsha-site-museum',          'art'                   ),
+    ('jinsha-site-museum',          'indoor'                ),
+    ('jinsha-site-museum',          'ancient-civilization'  ),
+    ('guangdong-museum',            'art'                   ),
+    ('guangdong-museum',            'indoor'                ),
+    ('guangdong-museum',            'city-view'             ),
+    ('china-science-technology-museum', 'family'                ),
+    ('china-science-technology-museum', 'indoor'                ),
+    ('guangzhou-chimelong',         'amusement'             ),
+    ('guangzhou-chimelong',         'family'                ),
+    ('guangzhou-chimelong',         'must-see'              ),
+    ('guangzhou-chimelong',         'wildlife'              ),
+    ('happy-valley-beijing',        'amusement'             ),
+    ('happy-valley-beijing',        'family'                ),
+    ('happy-valley-beijing',        'night-view'            ),
+    ('shanghai-haichang-park',      'amusement'             ),
+    ('shanghai-haichang-park',      'family'                ),
+    ('shanghai-haichang-park',      'wildlife'              ),
+    ('happy-valley-shenzhen',       'amusement'             ),
+    ('happy-valley-shenzhen',       'family'                ),
+    ('happy-valley-shenzhen',       'night-view'            ),
+    ('happy-valley-wuhan',          'amusement'             ),
+    ('happy-valley-wuhan',          'family'                ),
+    ('happy-valley-chengdu',        'amusement'             ),
+    ('happy-valley-chengdu',        'family'                ),
+    ('happy-valley-chongqing',      'amusement'             ),
+    ('happy-valley-chongqing',      'family'                ),
+    ('happy-valley-chongqing',      'indoor'                ),
+    ('hongkong-disneyland',         'amusement'             ),
+    ('hongkong-disneyland',         'family'                ),
+    ('hongkong-disneyland',         'must-see'              ),
+    ('hongkong-disneyland',         'night-view'            ),
+    ('shanghai-tower',              'city-view'             ),
+    ('shanghai-tower',              'architecture'          ),
+    ('shanghai-tower',              'night-view'            ),
+    ('shanghai-tower',              'must-see'              ),
+    ('citic-tower',                 'city-view'             ),
+    ('citic-tower',                 'architecture'          ),
+    ('citic-tower',                 'night-view'            ),
+    ('ping-an-finance-center',      'city-view'             ),
+    ('ping-an-finance-center',      'architecture'          ),
+    ('ping-an-finance-center',      'night-view'            ),
+    ('hongya-cave',                 'night-view'            ),
+    ('hongya-cave',                 'photography'           ),
+    ('hongya-cave',                 'architecture'          ),
+    ('yellow-crane-tower',          'ancient-architecture'  ),
+    ('yellow-crane-tower',          'city-view'             ),
+    ('yellow-crane-tower',          'must-see'              ),
+    ('tianjin-eye',                 'night-view'            ),
+    ('tianjin-eye',                 'city-view'             ),
+    ('tianjin-eye',                 'photography'           ),
+    ('xian-bell-tower',             'ancient-architecture'  ),
+    ('xian-bell-tower',             'night-view'            ),
+    ('xian-bell-tower',             'photography'           ),
+    ('macau-tower',                 'city-view'             ),
+    ('macau-tower',                 'photography'           ),
+    ('macau-tower',                 'night-view'            )
 ) AS m(attraction_slug, tag_slug)
 JOIN attraction a ON a.slug = m.attraction_slug
 JOIN tag t        ON t.slug = m.tag_slug
@@ -1563,7 +1929,7 @@ ON CONFLICT DO NOTHING;
 -- ---------------------------------------------------------------- 旅游方案
 --
 -- 「怎么玩」独立于「是什么」: 一个景点可以有多个方案, 方案由有序步骤组成,
--- 步骤按天分组(day_no)。当前 90 个景点各一个方案(中国境内 50 + 境外 40)。
+-- 步骤按天分组(day_no)。当前 114 个景点各一个方案(中国境内 74 + 境外 40)。
 -- 步骤先按 source 认领后删除再重建, 与景点标签同一套做法, 所以删步骤也能同步。
 -- 内容是本仓库自写的行程建议, 不是官方或旅行社线路。
 
@@ -2290,6 +2656,198 @@ INSERT INTO attraction_plan (
     1, 'mid', '想在一天里走完桂林到阳朔水路的游客',
     '游览方式以竹筏与游船为主，全程水路通常四到五小时。兴坪一带是二十元人民币背面图案的取景处，也是常见的下船点。',
     'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'shanghai-natural-history-museum'),
+    'shanghai-natural-history-museum-plan',
+    '上海自然博物馆半日：从生命长河走到底',
+    1, 'low', '带孩子看展、只有半天的游客',
+    '馆内展线是单向的，从上层逐层往下走最顺。重点放在生命长河与演化之道两段，其余展区按体力取舍。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'nanjing-museum'),
+    'nanjing-museum-plan',
+    '南京博物院半日：历史馆为主线',
+    1, 'low', '想把江苏一带的文物脉络看一遍的游客',
+    '六馆分散在同一片院落里，先走历史馆理清年代，再看民国馆与艺术馆。特展馆的当期展览按兴趣取舍。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'hubei-museum'),
+    'hubei-museum-plan',
+    '湖北省博物馆半日：先看曾侯乙，再看编钟演奏',
+    1, 'low', '对青铜器与先秦文物感兴趣的游客',
+    '编钟、尊盘与越王勾践剑是必看的几件，按演奏场次把时间排开，剩下的展厅按体力走。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'henan-museum'),
+    'henan-museum-plan',
+    '河南博物院半日：按朝代往下走',
+    1, 'low', '想在半天里看清中原文物脉络的游客',
+    '主展馆按年代分层布置，自上而下走一遍就是一串中原通史。贾湖骨笛、莲鹤方壶、妇好鸮尊是几处常停留的展位。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'hunan-museum'),
+    'hunan-museum-plan',
+    '湖南博物院半日：马王堆是重点',
+    1, 'low', '专程来看马王堆文物的游客',
+    '马王堆的陈列占据主要篇幅，帛画、素纱襌衣与漆器逐件看下来需要两小时以上，其余展厅按时间取舍。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'jinsha-site-museum'),
+    'jinsha-site-museum-plan',
+    '金沙遗址半日：先看现场，再看文物',
+    1, 'low', '对古蜀文明与考古现场感兴趣的游客',
+    '先到遗迹馆看祭祀区的原状现场，再进陈列馆看太阳神鸟金饰与金面具。两馆之间有绿地相连，全程步行。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'guangdong-museum'),
+    'guangdong-museum-plan',
+    '广东省博物馆半日：历史与工艺两条线',
+    1, 'low', '在珠江新城一带安排半天的游客',
+    '常设展以广东历史文化陈列为主，潮州木雕、端砚与历代陶瓷各有专厅。出馆后可以与周边的图书馆、大剧院连成一片。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'china-science-technology-museum'),
+    'china-science-technology-museum-plan',
+    '中国科技馆半日：主展厅挑重点',
+    1, 'low', '带孩子体验互动展项的游客',
+    '主展厅按主题分布，展项以动手操作为主，半天只能走完其中两三个主题。影院另需按场次安排时间。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'guangzhou-chimelong'),
+    'guangzhou-chimelong-plan',
+    '长隆两日：野生动物世界 + 欢乐世界',
+    2, 'high', '带孩子、想在两天里玩两个园的游客',
+    '单园面积都大，两天分别给野生动物世界与欢乐世界比较从容。两园之间有穿梭巴士，中午回酒店避热是常见的做法。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'happy-valley-beijing'),
+    'happy-valley-beijing-plan',
+    '北京欢乐谷一日：先热门后演艺',
+    1, 'mid', '想玩大型项目的游客',
+    '开园先排最热门的几项，午后转向演艺与室内项目，傍晚按体力决定是否留到夜场。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'shanghai-haichang-park'),
+    'shanghai-haichang-park-plan',
+    '海昌海洋公园一日：按演艺场次排顺序',
+    1, 'mid', '带孩子看海洋动物的游客',
+    '园内演艺按场次开演，入园先看当日时间表，把几场演出定下来，剩下的时间按区域走展馆与游乐设施。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'happy-valley-shenzhen'),
+    'happy-valley-shenzhen-plan',
+    '深圳欢乐谷一日：华侨城同日两园取舍',
+    1, 'mid', '在南山一带安排一天的游客',
+    '欢乐谷与世界之窗相邻，一天通常只够一个园。园区按主题分区，上午玩大型项目，午后转向亲子区与演艺。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'happy-valley-wuhan'),
+    'happy-valley-wuhan-plan',
+    '武汉欢乐谷一日：主园与水公园',
+    1, 'mid', '夏季到东湖一带的游客',
+    '主园区与玛雅海滩水公园相邻但分别运营，一天通常选一个。夏季下午最晒，把大型项目排在上午。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'happy-valley-chengdu'),
+    'happy-valley-chengdu-plan',
+    '成都欢乐谷一日：上午玩项目，下午看演出',
+    1, 'mid', '在成都安排一天游乐的游客',
+    '园区在城西三环附近，上午人相对少，适合先玩大型项目；午后安排演艺与亲子区，晚上若有夜场可以留一会儿。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'happy-valley-chongqing'),
+    'happy-valley-chongqing-plan',
+    '重庆欢乐谷一日：室内外搭配',
+    1, 'mid', '雨天也想安排游乐的游客',
+    '礼嘉一带的主园区以大型机械项目为主，室内项目与演艺可以在雨天顶上，一天的节奏按天气调整。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'hongkong-disneyland'),
+    'hongkong-disneyland-plan',
+    '香港迪士尼一日：全日票走完主要区域',
+    1, 'high', '第一次到香港迪士尼的游客',
+    '园区规模不大，一天可以把主要区域走完。上午玩项目，下午看巡游与剧场，闭园前的夜间演出是收尾。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'shanghai-tower'),
+    'shanghai-tower-plan',
+    '上海中心大厦半日：观光层与陆家嘴',
+    1, 'mid', '想看陆家嘴全景的游客',
+    '观光层在高区，电梯直达，晴天时视野最好。下来后可以在陆家嘴一带把三座塔楼与滨江串起来走。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'citic-tower'),
+    'citic-tower-plan',
+    '国贸半日：看北京最高的一栋楼',
+    1, 'low', '对城市建筑与天际线感兴趣的游客',
+    '建筑以办公为主，看重的是外观与周边天际线。下午到国贸一带，走一圈看它与其他几座塔楼的关系。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'ping-an-finance-center'),
+    'ping-an-finance-center-plan',
+    '福田半日：从塔顶看深圳',
+    1, 'mid', '想看深圳城市格局的游客',
+    '观光层在高区，可以俯瞰福田中心区与香港方向。下来后到市民中心一带，把中轴线上的几处建筑连着看。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'hongya-cave'),
+    'hongya-cave-plan',
+    '洪崖洞半日：从白天等到亮灯',
+    1, 'low', '想看夜景与吊脚楼街区的游客',
+    '白天先走一遍各层，弄清上下的出入口；傍晚亮灯后回到江边看整体轮廓，人流也在这时最密。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'yellow-crane-tower'),
+    'yellow-crane-tower-plan',
+    '黄鹤楼半日：登楼与蛇山',
+    1, 'mid', '想在武汉安排半天的游客',
+    '从山门进园，先到楼前看碑刻，再登楼看长江与大桥，最后沿蛇山走到另一侧的出口。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'tianjin-eye'),
+    'tianjin-eye-plan',
+    '天津之眼半日：傍晚到夜间',
+    1, 'mid', '想看海河夜景的游客',
+    '摩天轮转一圈约半小时，最佳时段是亮灯后。可以把它安排在傍晚，之前沿河岸走一段，之后从三岔河口一带收尾。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'xian-bell-tower'),
+    'xian-bell-tower-plan',
+    '西安钟楼半日：四条大街的中心',
+    1, 'mid', '在城墙内安排半天的游客',
+    '钟楼位于四条大街的交汇点，登楼看中轴最直观。与鼓楼相距不远，两处可以连着走，晚上回来看亮灯。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
+),
+(
+    (SELECT id FROM attraction WHERE slug = 'macau-tower'),
+    'macau-tower-plan',
+    '澳门旅游塔半日：观景与半岛南部',
+    1, 'mid', '在澳门半岛安排半天的游客',
+    '先登观景层看澳门全景，再看是否要参加塔上的户外项目。下来后沿南湖一带走到半岛南部，行程紧凑。',
+    'Have-A-Trip 自采（公开事实信息）', 'MIT', NULL
 )
 ON CONFLICT (slug) DO UPDATE SET
     attraction_id = EXCLUDED.attraction_id,
@@ -2614,7 +3172,81 @@ FROM (VALUES
     ('qinghai-lake-plan',       2, 0, '上午 · 湖西到湖东收尾', '鸟岛等区域在繁殖期会限流或关闭。', 4.0, '湖面海拔约 3200 米，初到者宜留出适应时间。'),
     ('lijiang-river-plan',      1, 0, '上午 · 竹筏或游船启程', '喀斯特峰丛夹岸，桂林至阳朔一段约 83 公里，是最典型的山水景致。', 3.0, NULL),
     ('lijiang-river-plan',      1, 1, '中午 · 兴坪一带', '兴坪是二十元人民币背面图案的取景处，也是常见的下船点。', 1.0, NULL),
-    ('lijiang-river-plan',      1, 2, '下午 · 阳朔收尾', '也可在杨堤、兴坪分段乘竹筏。', 2.0, '枯水期水位偏低，部分航段会调整或改用其他码头。')
+    ('lijiang-river-plan',      1, 2, '下午 · 阳朔收尾', '也可在杨堤、兴坪分段乘竹筏。', 2.0, '枯水期水位偏低，部分航段会调整或改用其他码头。'),
+    ('shanghai-natural-history-museum-plan', 1, 0, '上午 · 起源之谜与生命长河', '从顶层的宇宙与地球起源看起，往下进入生命长河展区，大型恐龙骨架与古生物复原集中在这一段。', 2.0, '展线单向，中途折返要走回头路，先把这段看完。'),
+    ('shanghai-natural-history-museum-plan', 1, 1, '中午 · 馆内休息', '展馆与静安雕塑公园相连，天气好可以到园内坐一会儿再回馆。', 1.0, NULL),
+    ('shanghai-natural-history-museum-plan', 1, 2, '下午 · 演化之道与大地探珍', '这一段以生物演化与矿物标本为主，互动展项集中，孩子停留时间通常最长。', 2.0, NULL),
+    ('shanghai-natural-history-museum-plan', 1, 3, '收尾 · 临展与商店', '临时展按当期主题更换，出馆前看一眼当天还有哪些场次。', 0.5, NULL),
+    ('nanjing-museum-plan',       1, 0, '上午 · 历史馆', '按年代自史前走到明清，江苏一带的出土文物是主线。', 2.0, NULL),
+    ('nanjing-museum-plan',       1, 1, '中午 · 院内休息', '院落里有可以坐下的地方，午间人流比开馆时少。', 0.5, NULL),
+    ('nanjing-museum-plan',       1, 2, '下午 · 民国馆与艺术馆', '民国馆做成街景式展陈，艺术馆以书画与工艺为主。', 2.0, NULL),
+    ('nanjing-museum-plan',       1, 3, '收尾 · 特展馆', '当期特展的主题与档期会变，按现场海报决定是否再看一处。', 1.0, '各馆之间步行有距离，穿舒服的鞋。'),
+    ('hubei-museum-plan',         1, 0, '上午 · 曾侯乙墓展厅', '编钟、尊盘与九鼎八簋集中在这里，是全院的核心。', 2.0, '人多时先从侧面的柜位看起，回头再补正面的展品。'),
+    ('hubei-museum-plan',         1, 1, '中午 · 编钟演奏', '演奏按场次进行，进馆先记下当天的场次时间，按点回到演奏厅。', 0.5, '场次与票价以馆内公告为准。'),
+    ('hubei-museum-plan',         1, 2, '下午 · 楚文化与专题馆', '越王勾践剑、元青花四爱图梅瓶等分散在不同展厅，按导览图顺路走。', 2.0, NULL),
+    ('henan-museum-plan',         1, 0, '上午 · 史前与夏商周', '贾湖骨笛、杜岭方鼎与妇好鸮尊在这一段，青铜器是主体。', 2.0, NULL),
+    ('henan-museum-plan',         1, 1, '中午 · 馆内休息', '馆内有休息区，餐饮集中在农业路一带。', 1.0, NULL),
+    ('henan-museum-plan',         1, 2, '下午 · 汉唐与宋元', '陶瓷、玉器与画像石集中在这一段，与上一段接得上。', 2.0, NULL),
+    ('henan-museum-plan',         1, 3, '收尾 · 临时展', '当期展览的主题会更换，出馆前按海报看一眼。', 0.5, NULL),
+    ('hunan-museum-plan',         1, 0, '上午 · 马王堆汉墓陈列', 'T 形帛画、素纱襌衣与成套漆器集中在这里，墓葬结构在同一区内做了复原。', 2.5, '展厅光线偏暗，看清细节要靠近展柜。'),
+    ('hunan-museum-plan',         1, 1, '中午 · 馆内休息', '馆内有休息区，周边东风路一带餐饮较多。', 1.0, NULL),
+    ('hunan-museum-plan',         1, 2, '下午 · 青铜与长沙窑', '商周青铜器与长沙窑瓷器是另外两条线，可以按兴趣二选一。', 1.5, NULL),
+    ('jinsha-site-museum-plan',   1, 0, '上午 · 遗迹馆', '保留的祭祀区考古现场按原状展示，成堆象牙与祭祀坑的位置都在这里。', 1.5, NULL),
+    ('jinsha-site-museum-plan',   1, 1, '中午 · 园区休息', '两馆之间的绿地可以坐下，天气好时适合放慢节奏。', 0.5, NULL),
+    ('jinsha-site-museum-plan',   1, 2, '下午 · 陈列馆', '太阳神鸟金饰、金面具与玉器是核心展品，太阳神鸟图案后来成为中国文化遗产标志。', 2.0, '展柜反光明显，看金饰的细节要换个角度。'),
+    ('guangdong-museum-plan',     1, 0, '上午 · 广东历史文化陈列', '按时间顺序梳理广东的历史脉络，海上贸易与侨乡是其中的两条线。', 2.0, NULL),
+    ('guangdong-museum-plan',     1, 1, '中午 · 花城广场', '出馆即是花城广场，餐饮与休息都在附近。', 1.0, NULL),
+    ('guangdong-museum-plan',     1, 2, '下午 · 潮州木雕与端砚', '木雕与端砚各占一个展厅，陶瓷陈列在同一层附近，可以连着看。', 1.5, NULL),
+    ('guangdong-museum-plan',     1, 3, '收尾 · 外墙与广场', '各展厅分布在不同楼层，按导览图走可以少走回头路；出馆后可以顺路看建筑外墙。', 0.5, NULL),
+    ('china-science-technology-museum-plan', 1, 0, '上午 · 华夏之光与探索发现', '从古代技术与基础物理看起，机械与光学类的展项集中在这一段。', 2.0, NULL),
+    ('china-science-technology-museum-plan', 1, 1, '中午 · 馆内休息', '馆内有休息区，奥林匹克公园一带餐饮集中在南侧。', 1.0, NULL),
+    ('china-science-technology-museum-plan', 1, 2, '下午 · 科技与生活 · 挑战与未来', '这一段以能源、信息与航天为主，动手展项多，排队时间也更长。', 2.0, '孩子年龄偏小时可以先到儿童科学乐园，那里单独分场。'),
+    ('guangzhou-chimelong-plan',  1, 0, '第一天上午 · 野生动物世界乘车区', '乘园区车辆穿过放养区，之后再换步行路线看展区。', 3.0, '放养区不能下车，拍摄隔着玻璃或栏杆。'),
+    ('guangzhou-chimelong-plan',  1, 1, '第一天下午 · 步行展区与缆车', '步行区按区域分布，缆车可以居高看整片园区。', 3.0, NULL),
+    ('guangzhou-chimelong-plan',  2, 0, '第二天 · 欢乐世界', '大型游乐设施集中在几处片区，热门项目排队时间最长。', 5.0, '节假日排队时间长，开园即入园。'),
+    ('guangzhou-chimelong-plan',  2, 1, '第二天傍晚 · 水乐园或返程', '天气热时可以加玩水乐园，或者提前返程避开散场高峰。', 2.0, NULL),
+    ('happy-valley-beijing-plan', 1, 0, '开园 · 热门项目', '开园后先排排队最长的几项，上午的等待时间明显短于午后。', 3.0, '身高与健康限制按各项目公告执行。'),
+    ('happy-valley-beijing-plan', 1, 1, '午后 · 演艺与室内项目', '剧场与巡游按当日时间表演出，室内项目适合避开最晒的时段。', 2.5, NULL),
+    ('happy-valley-beijing-plan', 1, 2, '傍晚 · 夜场与返程', '部分时段开放夜场，灯光与演出跟白天不同，也可以此时离园避开高峰。', 2.0, NULL),
+    ('shanghai-haichang-park-plan', 1, 0, '开园 · 大型展缸', '开园先看人少的展缸，鲸鲨与企鹅展区通常上午更从容。', 2.0, NULL),
+    ('shanghai-haichang-park-plan', 1, 1, '中午 · 演艺场次', '虎鲸与海豚等演出按场次进行，提前到场才有好位置。', 2.0, '场次与座位以园内公告为准。'),
+    ('shanghai-haichang-park-plan', 1, 2, '下午 · 游乐设施与巡游', '过山车一类的设施集中在部分区域，午后可以按排队情况挑着玩。', 2.5, NULL),
+    ('happy-valley-shenzhen-plan', 1, 0, '上午 · 大型项目', '过山车一类的项目集中在几处片区，上午排队相对短。', 3.0, NULL),
+    ('happy-valley-shenzhen-plan', 1, 1, '午后 · 亲子区与演艺', '面向低龄观众的区域与剧场演出多安排在午后。', 2.5, NULL),
+    ('happy-valley-shenzhen-plan', 1, 2, '傍晚 · 夜场或转场世界之窗', '部分时段有夜场；若不留夜场，可以步行到相邻的世界之窗看夜间灯光。', 1.5, NULL),
+    ('happy-valley-wuhan-plan',   1, 0, '上午 · 主园区大型项目', '开园后先玩排队最长的几项。', 3.0, NULL),
+    ('happy-valley-wuhan-plan',   1, 1, '午后 · 演艺与室内项目', '剧场与室内项目适合避开中午的高温。', 2.0, NULL),
+    ('happy-valley-wuhan-plan',   1, 2, '下午 · 水公园或返程', '想玩水公园需另购票，两园之间的衔接以步行和园内交通为主。', 3.0, '夏季防晒与补水要提前准备。'),
+    ('happy-valley-chengdu-plan', 1, 0, '上午 · 大型项目', '先排最热门的几项，之后按片区顺路走。', 3.0, NULL),
+    ('happy-valley-chengdu-plan', 1, 1, '午后 · 亲子区与剧场', '面向儿童的区域与剧场演出多集中在午后。', 2.5, NULL),
+    ('happy-valley-chengdu-plan', 1, 2, '傍晚 · 夜场或返程', '节假日前后可能安排夜场，按当日公告决定。', 1.5, NULL),
+    ('happy-valley-chongqing-plan', 1, 0, '上午 · 户外大型项目', '天气好时先玩过山车一类的户外项目。', 3.0, NULL),
+    ('happy-valley-chongqing-plan', 1, 1, '午后 · 室内项目与演艺', '雨天上半天可以反过来，先玩室内再看天气。', 2.5, '重庆夏季午后常有阵雨，随身带伞。'),
+    ('happy-valley-chongqing-plan', 1, 2, '傍晚 · 返程', '园区离市区有距离，返程按轨道交通与自驾的末班时间安排。', 1.0, NULL),
+    ('hongkong-disneyland-plan',  1, 0, '开园 · 热门项目', '开园后先进最里面的一片区域，由内往外玩可以少走回头路。', 3.0, '门票按日期分档，需提前在官方渠道购买。'),
+    ('hongkong-disneyland-plan',  1, 1, '午后 · 巡游与剧场', '巡游与剧场演出按当日时间表进行，提前在路线旁占位。', 3.0, NULL),
+    ('hongkong-disneyland-plan',  1, 2, '夜间 · 夜间演出与烟花', '闭园前的夜间演出是固定安排，城堡前的区域人流最密。', 1.5, '散场时地铁与专线都很拥挤，可以晚走一会儿。'),
+    ('shanghai-tower-plan',       1, 0, '下午 · 登观光层', '选在傍晚前上楼，可以在同一场里看到白天与亮灯后的两种景。', 1.5, '能见度低时视野会打折，出发前先看天气。'),
+    ('shanghai-tower-plan',       1, 1, '傍晚 · 滨江步道', '从陆家嘴走到江边，对岸是外滩的历史建筑群，亮灯后与白天差别很大。', 1.5, NULL),
+    ('citic-tower-plan',          1, 0, '下午 · 国贸一带街面', '从光华路一带看楼体的收分轮廓，附近几座塔楼可以一并比较。', 1.0, NULL),
+    ('citic-tower-plan',          1, 1, '傍晚 · 亮灯后的天际线', '入夜后楼体灯光与周边建筑形成一组轮廓，适合拍照。', 1.0, NULL),
+    ('ping-an-finance-center-plan', 1, 0, '下午 · 登观光层', '晴天时能见度高，靠窗一侧可以看清福田的中轴与街道格局。', 1.5, NULL),
+    ('ping-an-finance-center-plan', 1, 1, '傍晚 · 市民中心与中轴', '从塔下步行到市民中心一带，两侧是图书馆与音乐厅等公共建筑。', 1.5, NULL),
+    ('hongya-cave-plan',          1, 0, '下午 · 分层走一遍', '上层临沧白路、下层临江，各层由街道与步道连通，先弄清出入口。', 1.5, NULL),
+    ('hongya-cave-plan',          1, 1, '傍晚 · 江边看亮灯', '灯光亮起后从江边看整片楼体与倒影，是最常被拍的视角。', 1.0, '晚间人流集中，节假日常有限流。'),
+    ('hongya-cave-plan',          1, 2, '晚上 · 周边收尾', '沿滨江路一带可以继续走，附近就是解放碑方向。', 1.0, NULL),
+    ('yellow-crane-tower-plan',   1, 0, '上午 · 登楼', '五层逐层上行，各层陈列碑刻与楹联，向东可以望见长江与武汉长江大桥。', 1.5, NULL),
+    ('yellow-crane-tower-plan',   1, 1, '中午 · 园区其他建筑', '白云阁等建筑在同一片园区内，可以顺路走。', 1.0, NULL),
+    ('yellow-crane-tower-plan',   1, 2, '下午 · 长江大桥步行', '出园后可以上桥步行一段，从桥上回望蛇山与楼体。', 1.5, '桥上风大，注意保暖与安全。'),
+    ('tianjin-eye-plan',          1, 0, '傍晚 · 河岸散步', '沿三岔河口一带的河岸走，两岸是天津的老城方向。', 1.0, NULL),
+    ('tianjin-eye-plan',          1, 1, '入夜 · 乘摩天轮', '封闭座舱转一圈约半小时，最高处可以俯瞰海河两岸。', 0.5, '热门时段需要排队，提前到场取号或购票。'),
+    ('tianjin-eye-plan',          1, 2, '夜 · 沿河收尾', '下轮后沿岸边继续走一段，灯光下的河面是常见的拍摄对象。', 1.0, NULL),
+    ('xian-bell-tower-plan',      1, 0, '下午 · 登钟楼', '楼内陈列钟与鼓，四面看出去是四条大街延伸的方向。', 1.0, NULL),
+    ('xian-bell-tower-plan',      1, 1, '傍晚 · 鼓楼与周边街区', '步行到鼓楼，周边是餐饮集中的街区。', 2.0, NULL),
+    ('xian-bell-tower-plan',      1, 2, '入夜 · 回看亮灯', '夜间亮灯后从街面看楼体，是城墙内常见的拍摄对象。', 0.5, NULL),
+    ('macau-tower-plan',          1, 0, '下午 · 观景层', '高区观景层可以俯瞰澳门半岛、氹仔与珠海方向。', 1.0, NULL),
+    ('macau-tower-plan',          1, 1, '接着 · 户外项目', '高飞跳与空中漫步需另行预约，参加前先确认当日的开放与天气条件。', 1.5, '项目有健康与年龄限制，按现场规定执行。'),
+    ('macau-tower-plan',          1, 2, '傍晚 · 南湾湖一带', '从塔下步行到南湾湖畔，傍晚的湖面与对岸建筑是常见的拍摄场景。', 1.5, NULL)
 ) AS m(plan_slug, day_no, sort, title, detail, duration_hours, tip)
 JOIN attraction_plan p ON p.slug = m.plan_slug;
 

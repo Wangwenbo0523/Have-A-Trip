@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="上海中心大厦">
+  <title>上海中心大厦</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#121d2a"/>
+      <stop offset="1" stop-color="#2b3052"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <rect x="-20.0" y="432.5" width="160.2" height="227.5" fill="#181e33"/>
+  <rect x="166.2" y="538.4" width="116.2" height="121.6" fill="#181e33"/>
+  <rect x="180.2" y="554.4" width="88.2" height="9" fill="#f42522" opacity="0.3"/>
+  <rect x="180.2" y="612.4" width="88.2" height="9" fill="#f42522" opacity="0.3"/>
+  <rect x="308.4" y="539.9" width="140.0" height="120.1" fill="#181e33"/>
+  <rect x="474.5" y="377.6" width="132.4" height="282.4" fill="#181e33"/>
+  <rect x="488.5" y="509.6" width="104.4" height="9" fill="#f42522" opacity="0.3"/>
+  <rect x="488.5" y="567.6" width="104.4" height="9" fill="#f42522" opacity="0.3"/>
+  <rect x="632.9" y="537.6" width="76.5" height="122.4" fill="#181e33"/>
+  <rect x="646.9" y="553.6" width="48.5" height="9" fill="#f42522" opacity="0.3"/>
+  <rect x="646.9" y="611.6" width="48.5" height="9" fill="#f42522" opacity="0.3"/>
+  <rect x="735.4" y="463.8" width="119.8" height="196.2" fill="#181e33"/>
+  <rect x="749.4" y="479.8" width="91.8" height="9" fill="#f42522" opacity="0.3"/>
+  <rect x="749.4" y="537.8" width="91.8" height="9" fill="#f42522" opacity="0.3"/>
+  <rect x="749.4" y="595.8" width="91.8" height="9" fill="#f42522" opacity="0.3"/>
+  <rect x="881.3" y="421.5" width="100.0" height="238.5" fill="#181e33"/>
+  <rect x="895.3" y="611.5" width="72.0" height="9" fill="#f42522" opacity="0.3"/>
+  <rect x="1007.2" y="448.9" width="165.3" height="211.1" fill="#181e33"/>
+  <rect x="1021.2" y="580.9" width="137.3" height="9" fill="#f42522" opacity="0.3"/>
+  <rect x="1198.5" y="520.3" width="160.9" height="139.7" fill="#181e33"/>
+  <rect x="1212.5" y="536.3" width="132.9" height="9" fill="#f42522" opacity="0.3"/>
+  <rect x="557.2" y="442" width="30" height="218.0" fill="#212844"/>
+  <circle cx="572.2" cy="442" r="40" fill="#212844"/>
+  <circle cx="572.2" cy="442" r="40" fill="#f42522" opacity="0.22"/>
+  <rect x="569.2" y="376" width="6" height="30" fill="#212844"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#f42522" letter-spacing="7">城市地标</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">上海中心大厦</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

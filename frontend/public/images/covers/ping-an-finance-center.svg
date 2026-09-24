@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="平安金融中心">
+  <title>平安金融中心</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#14172a"/>
+      <stop offset="1" stop-color="#352e52"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <rect x="-20.0" y="506.2" width="137.5" height="153.8" fill="#1c1a33"/>
+  <rect x="-6.0" y="522.2" width="109.5" height="9" fill="#f47130" opacity="0.3"/>
+  <rect x="-6.0" y="580.2" width="109.5" height="9" fill="#f47130" opacity="0.3"/>
+  <rect x="143.5" y="431.7" width="147.6" height="228.3" fill="#1c1a33"/>
+  <rect x="157.5" y="447.7" width="119.6" height="9" fill="#f47130" opacity="0.3"/>
+  <rect x="157.5" y="505.7" width="119.6" height="9" fill="#f47130" opacity="0.3"/>
+  <rect x="317.1" y="573.6" width="106.1" height="86.4" fill="#1c1a33"/>
+  <rect x="331.1" y="589.6" width="78.1" height="9" fill="#f47130" opacity="0.3"/>
+  <rect x="449.2" y="569.7" width="157.3" height="90.3" fill="#1c1a33"/>
+  <rect x="463.2" y="585.7" width="129.3" height="9" fill="#f47130" opacity="0.3"/>
+  <rect x="632.5" y="393.3" width="164.6" height="266.7" fill="#1c1a33"/>
+  <rect x="646.5" y="467.3" width="136.6" height="9" fill="#f47130" opacity="0.3"/>
+  <rect x="646.5" y="525.3" width="136.6" height="9" fill="#f47130" opacity="0.3"/>
+  <rect x="646.5" y="583.3" width="136.6" height="9" fill="#f47130" opacity="0.3"/>
+  <rect x="823.1" y="446.6" width="81.9" height="213.4" fill="#1c1a33"/>
+  <rect x="837.1" y="462.6" width="53.9" height="9" fill="#f47130" opacity="0.3"/>
+  <rect x="837.1" y="578.6" width="53.9" height="9" fill="#f47130" opacity="0.3"/>
+  <rect x="931.0" y="388.5" width="132.8" height="271.5" fill="#1c1a33"/>
+  <rect x="945.0" y="462.5" width="104.8" height="9" fill="#f47130" opacity="0.3"/>
+  <rect x="945.0" y="578.5" width="104.8" height="9" fill="#f47130" opacity="0.3"/>
+  <rect x="1089.9" y="394.8" width="76.9" height="265.2" fill="#1c1a33"/>
+  <rect x="1103.9" y="526.8" width="48.9" height="9" fill="#f47130" opacity="0.3"/>
+  <rect x="1103.9" y="584.8" width="48.9" height="9" fill="#f47130" opacity="0.3"/>
+  <rect x="1192.7" y="543.8" width="126.7" height="116.2" fill="#1c1a33"/>
+  <rect x="1206.7" y="617.8" width="98.7" height="9" fill="#f47130" opacity="0.3"/>
+  <rect x="574.4" y="442" width="30" height="218.0" fill="#282444"/>
+  <circle cx="589.4" cy="442" r="40" fill="#282444"/>
+  <circle cx="589.4" cy="442" r="40" fill="#f47130" opacity="0.22"/>
+  <rect x="586.4" y="376" width="6" height="30" fill="#282444"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#f47130" letter-spacing="7">城市地标</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">平安金融中心</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

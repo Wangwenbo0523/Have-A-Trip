@@ -7,8 +7,8 @@
 | 文件 | 说明 |
 |---|---|
 | `schema.sql` | 建表 DDL（幂等，可重复执行） |
-| `seed/seed.sql` | 种子数据：9 个分类、31 个标签、90 个景点、362 条标签关联、90 个旅游方案、307 条方案步骤（幂等） |
-| `seed/images.sql` | 景点配图：90 条 `attraction_image`，每条带 `credit` 与 `license`。**由 `scripts/make_attraction_covers.py` 生成，不要手改** |
+| `seed/seed.sql` | 种子数据：9 个分类、31 个标签、114 个景点、432 条标签关联、114 个旅游方案、381 条方案步骤（幂等） |
+| `seed/images.sql` | 景点配图：114 条 `attraction_image`，每条带 `credit` 与 `license`。**由 `scripts/make_attraction_covers.py` 生成，不要手改** |
 
 ## 执行
 
@@ -30,12 +30,12 @@ psql -d attraction_atlas -v ON_ERROR_STOP=1 -f db/seed/images.sql
 验证：
 
 ```bash
-psql -d attraction_atlas -c "select count(*) from attraction;"                  # 90
-psql -d attraction_atlas -c "select count(*) from attraction_plan;"            # 90
+psql -d attraction_atlas -c "select count(*) from attraction;"                  # 114
+psql -d attraction_atlas -c "select count(*) from attraction_plan;"            # 114
 psql -d attraction_atlas -c "select a.slug, p.title, p.days from attraction_plan p join attraction a on a.id = p.attraction_id limit 5;"
 psql -d attraction_atlas -c "select a.name, c.name from attraction a join category c on c.id = a.category_id limit 5;"
 psql -d attraction_atlas -c "select a.name, string_agg(t.name, ' / ') from attraction a join attraction_tag at on at.attraction_id = a.id join tag t on t.id = at.tag_id group by a.id, a.name limit 5;"
-psql -d attraction_atlas -c "select count(*) from attraction_image;"           # 90
+psql -d attraction_atlas -c "select count(*) from attraction_image;"           # 114
 psql -d attraction_atlas -c "select credit, license, count(*) from attraction_image group by 1, 2;"
 psql -d attraction_atlas -c "select * from schema_version;"
 ```
@@ -49,7 +49,7 @@ psql -d attraction_atlas -c "select * from schema_version;"
 | `tag` | 自由标签 |
 | `attraction` | 景点档案主表 |
 | `attraction_tag` | 景点-标签多对多 |
-| `attraction_image` | 图集，每条带 `credit` 与 `license`；目前是 90 条自绘封面 |
+| `attraction_image` | 图集，每条带 `credit` 与 `license`；目前是 114 条自绘封面 |
 | `attraction_plan` | 景点的旅游方案（自采行程建议），一条一个方案 |
 | `attraction_plan_step` | 方案里的有序步骤，按 `day_no` 分组、组内按 `sort` 升序 |
 | `app_user` | 用户（一期只有匿名 `device_id`） |
@@ -96,7 +96,7 @@ psql -d attraction_atlas -c "select * from schema_version;"
 | `attraction.a_level` / `heritage` 可为 `NULL`，且 **`NULL` 表示「未核实」而不是「没有」** | 景区名录与世界遗产名录都会调整，核实不了就留空。`a_level` 只对（中国大陆）景区有意义，境外景点一律留空，它们的「等级」看 `heritage` |
 | `attraction_plan.budget_level` 只给档次不给金额 | 与 `ticket_price` 同理：具体价格是易变信息。四档 `free` / `low` / `mid` / `high` |
 | 一个景点可以有多个方案，方案 slug 恒为 `<景点slug>-plan` | 便于按景点反查，也让 CI 能断言两者一致 |
-| `attraction_embedding` 的 `embedding` 存 JSON 文本，**不用 pgvector** | 本仓库的 ORM 刻意只用可移植类型，测试跑 SQLite 内存库、本地不装 PostgreSQL。引 pgvector 会同时带来「建表要超级用户装扩展」「CI 要换镜像」「SQLite 与 PG 两套代码路径」三份复杂度，而全库 90 条景点用纯 Python 算余弦只要几毫秒。目录过万条时再换，接口不用改（见 `backend/app/search/vectors.py`） |
+| `attraction_embedding` 的 `embedding` 存 JSON 文本，**不用 pgvector** | 本仓库的 ORM 刻意只用可移植类型，测试跑 SQLite 内存库、本地不装 PostgreSQL。引 pgvector 会同时带来「建表要超级用户装扩展」「CI 要换镜像」「SQLite 与 PG 两套代码路径」三份复杂度，而全库 114 条景点用纯 Python 算余弦只要几毫秒。目录过万条时再换，接口不用改（见 `backend/app/search/vectors.py`） |
 | `attraction_embedding` 的联合唯一键是 `(attraction_id, model)`，`model` 形如 `ollama:bge-m3:auto` | 切换模型期间新旧向量可以并存；`dim` 一并存下来，因为「维度」是数据的一部分，只放配置里的话配置一改旧向量就成了静默的垃圾 |
 | `itinerary.status` 的 `rejected` 与 `failed` **必须分开** | `rejected` = 被限额拦下、一分钱没花；`failed` = 调了模型但失败。前端提示语完全不同，混在一起用户会以为是自己输入有问题 |
 | `itinerary` 只存 `request_hash`，**不存需求原文** | 原文里常有同行人、预算这类个人信息。不存就不需要额外背一套保留期与删除机制，而生成并不需要回读原文 |
@@ -106,34 +106,34 @@ psql -d attraction_atlas -c "select * from schema_version;"
 
 ## 种子数据的口径
 
-90 个景点：**中国境内 50 个 + 境外 40 个（覆盖亚洲、欧洲、非洲、北美洲、南美洲、大洋洲）**，
+114 个景点：**中国境内 74 个 + 境外 40 个（覆盖亚洲、欧洲、非洲、北美洲、南美洲、大洋洲）**，
 全部为**自采的公开事实信息**，没有引入任何第三方数据集
 （为什么这一点重要，见 `docs/LICENSE-AUDIT.md` 第三节）。分布：
 
 | 分类 | slug | 个数 |
 |---|---|---|
 | 自然风光 | `nature` | 27 |
-| 城市地标 | `landmark` | 11 |
+| 城市地标 | `landmark` | 19 |
+| 博物馆 | `museum` | 15 |
+| 主题乐园 | `theme-park` | 13 |
 | 历史古迹 | `history` | 10 |
 | 考古遗址 | `archaeology` | 10 |
 | 宗教场所 | `religion` | 9 |
-| 博物馆 | `museum` | 7 |
 | 古镇村落 | `ancient-town` | 7 |
-| 主题乐园 | `theme-park` | 5 |
 | 宫殿城堡 | `palace` | 4 |
-| **合计** | | **90** |
+| **合计** | | **114** |
 
-覆盖 21 个省级行政区与 30 个境外国家（`province` 口径下合计 59 个），共 31 个标签。
-用得最多的是 `world-heritage`（59）、`photography`（47）、`ancient-architecture`（28）、
-`family`（27）、`must-see`（24）、`night-view`（23）。
+覆盖 25 个省级行政区（中国境内）与 30 个境外国家（`province` 口径下合计 63 个），共 31 个标签。
+用得最多的是 `world-heritage`（59）、`photography`（51）、`family`（37）、`night-view`（33）、
+`must-see`（31）、`ancient-architecture`（30）与 `indoor`（30）。
 
-**等级两列填了多少：** `a_level` 40 条（5A 32 + 4A 8），`heritage` 59 条。
+**等级两列填了多少：** `a_level` 42 条（5A 34 + 4A 8），`heritage` 59 条。
 剩下的是**未核实**而不是「没有等级」—— 中国景区质量等级与 UNESCO 名录都只能逐条查证，
 查不到就留空，不猜。境外 40 条 `a_level` 全空，它们的等级看 `heritage`。
 
-**旅游方案：** 90 个景点各一个方案，共 307 条步骤（1 天 73 个、2 天 13 个、3 天 3 个、4 天 1 个）。
+**旅游方案：** 114 个景点各一个方案，共 381 条步骤（1 天 96 个、2 天 14 个、3 天 3 个、4 天 1 个）。
 方案与步骤同样是自采内容（`source` = `Have-A-Trip 自采（公开事实信息）`），
-只给花费档次（`free` 4 / `low` 27 / `mid` 45 / `high` 14），不给金额。
+只给花费档次（`free` 4 / `low` 37 / `mid` 57 / `high` 16），不给金额。
 
 ### 刻意不写的数据
 
@@ -160,7 +160,7 @@ psql -d attraction_atlas -c "select * from schema_version;"
 标签关联与方案步骤被重建。旧版种子用的是 `DO NOTHING`，遇到早期跑过种子的库不会自愈，换写法就是为了这个。
 
 等级那两列不在景点 INSERT 的列清单里，而是单独一块 `UPDATE ... FROM (VALUES ...)`：
-加进列清单会让 50 条老记录每条都要改一遍，而且它们的口径与其它字段不同（留空 = 未核实），单独一块更好核对。
+加进列清单会让每条老记录都要改一遍，而且它们的口径与其它字段不同（留空 = 未核实），单独一块更好核对。
 方案步骤与标签一样是「先按 `source` 认领后删除再重建」，所以从清单里删掉一个方案，库里也会跟着删。
 
 ### 数据来源清单
@@ -180,7 +180,7 @@ order by records desc;
 
 | source | license | 景点数 | 覆盖省份 |
 |---|---|---|---|
-| Have-A-Trip 自采（公开事实信息） | MIT | 90 | 59 |
+| Have-A-Trip 自采（公开事实信息） | MIT | 114 | 63 |
 
 只有一行是**刻意**的：只要将来引入别的来源，这里就会多一行，声明页跟着变。
 任何 ODbL（OpenStreetMap）或 CC BY-SA（Wikipedia / Wikivoyage）数据都必须先隔离在独立的

@@ -67,8 +67,8 @@ jobs:
           # 种子数据规模。改了 db/seed/seed.sql 就要一起改这里的数字, 否则 CI 会拦下来
           expect 9 "$(q "select count(*) from category;")" "category 行数"
           expect 31 "$(q "select count(*) from tag;")" "tag 行数"
-          expect 90 "$(q "select count(*) from attraction;")" "attraction 行数(重跑未重复插入)"
-          expect 362 "$(q "select count(*) from attraction_tag;")" "attraction_tag 行数"
+          expect 114 "$(q "select count(*) from attraction;")" "attraction 行数(重跑未重复插入)"
+          expect 432 "$(q "select count(*) from attraction_tag;")" "attraction_tag 行数"
           expect 1 "$(q "select count(*) from schema_version where version='0001_init';")" "schema_version 0001 记录数"
           expect 1 "$(q "select count(*) from schema_version where version='0002_plans';")" "schema_version 0002 记录数"
           expect 1 "$(q "select count(*) from schema_version where version='0003_ai';")" "schema_version 0003 记录数"
@@ -82,19 +82,19 @@ jobs:
           expect 0 "$(q "select count(*) from attraction where lat is not null or lon is not null;")" "带坐标的种子景点数(一期不做地图与定位)"
           expect 0 "$(q "select count(*) from attraction where rating_avg <> 0 or rating_count <> 0;")" "带评分的种子景点数(评分只能由 behavior_log 聚合)"
           expect 0 "$(q "select count(*) from attraction where ticket_price is not null and ticket_price <> 0;")" "写了票价但不确定免费的景点数"
-          expect 90 "$(q "select count(*) from attraction_image;")" "图片行数"
-          expect 90 "$(q "select count(distinct attraction_id) from attraction_image;")" "有配图的景点数"
+          expect 114 "$(q "select count(*) from attraction_image;")" "图片行数"
+          expect 114 "$(q "select count(distinct attraction_id) from attraction_image;")" "有配图的景点数"
           expect 0 "$(q "select count(*) from attraction_image where credit is null or credit = '' or license is null or license = '';")" "缺 credit/license 的图片数"
           expect 0 "$(q "select count(*) from attraction a where not exists (select 1 from attraction_tag x where x.attraction_id = a.id);")" "没有任何标签的景点数"
           expect 0 "$(q "select count(*) from category c where not exists (select 1 from attraction a where a.category_id = c.id);")" "没有景点的分类数"
           expect 0 "$(q "select count(*) from tag g where not exists (select 1 from attraction_tag x where x.tag_id = g.id);")" "没被用到的标签数"
 
           # v2.0: 景区等级 / 世界遗产 / 旅游方案
-          expect 40 "$(q "select count(*) from attraction where a_level is not null;")" "填了 a_level 的景点数"
+          expect 42 "$(q "select count(*) from attraction where a_level is not null;")" "填了 a_level 的景点数"
           expect 59 "$(q "select count(*) from attraction where heritage is not null;")" "填了 heritage 的景点数"
           expect 0 "$(q "select count(*) from attraction where country_code <> 'CN' and a_level is not null;")" "境外景点带 a_level 的数(A 级只针对中国大陆景区)"
-          expect 90 "$(q "select count(*) from attraction_plan;")" "旅游方案数"
-          expect 307 "$(q "select count(*) from attraction_plan_step;")" "方案步骤数"
+          expect 114 "$(q "select count(*) from attraction_plan;")" "旅游方案数"
+          expect 381 "$(q "select count(*) from attraction_plan_step;")" "方案步骤数"
           expect 0 "$(q "select count(*) from attraction a where not exists (select 1 from attraction_plan p where p.attraction_id = a.id);")" "没有方案的景点数"
           expect 0 "$(q "select count(*) from attraction_plan p where not exists (select 1 from attraction_plan_step s where s.plan_id = p.id);")" "没有步骤的方案数"
           expect 0 "$(q "select count(*) from (select plan_id, day_no, sort from attraction_plan_step group by 1,2,3 having count(*) > 1) x;")" "同一方案同一天内重复的步骤序号数"
@@ -124,8 +124,8 @@ jobs:
           expect "5A" "$(q "select a_level from attraction where slug='west-lake';")" "手工改过的 a_level 被同步回文件里的版本"
           expect "cultural" "$(q "select heritage from attraction where slug='west-lake';")" "手工改过的 heritage 被同步回文件里的版本"
           expect 4 "$(q "select count(*) from attraction_plan_step where plan_id = (select id from attraction_plan where slug='west-lake-plan');")" "被删掉的方案步骤被重建"
-          expect 90 "$(q "select count(*) from attraction;")" "重跑后景点数仍是 90, 没有多出来"
-          expect 90 "$(q "select count(*) from attraction_plan;")" "重跑后方案数仍是 90, 没有多出来"
+          expect 114 "$(q "select count(*) from attraction;")" "重跑后景点数仍是 114, 没有多出来"
+          expect 114 "$(q "select count(*) from attraction_plan;")" "重跑后方案数仍是 114, 没有多出来"
 
       - name: 断言 CHECK 约束真的拦得住
         run: |

@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="武汉欢乐谷">
+  <title>武汉欢乐谷</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a2133"/>
+      <stop offset="1" stop-color="#393a67"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="389.9" cy="500.0" r="138.0" fill="none" stroke="#2b2e50" stroke-width="15"/>
+  <line x1="389.9" y1="500.0" x2="527.9" y2="500.0" stroke="#20233c" stroke-width="5"/>
+  <circle cx="527.9" cy="500.0" r="17" fill="#f45342" opacity="0.85"/>
+  <line x1="389.9" y1="500.0" x2="509.4" y2="569.0" stroke="#20233c" stroke-width="5"/>
+  <circle cx="509.4" cy="569.0" r="17" fill="#f45342" opacity="0.85"/>
+  <line x1="389.9" y1="500.0" x2="458.9" y2="619.5" stroke="#20233c" stroke-width="5"/>
+  <circle cx="458.9" cy="619.5" r="17" fill="#f45342" opacity="0.85"/>
+  <line x1="389.9" y1="500.0" x2="389.9" y2="638.0" stroke="#20233c" stroke-width="5"/>
+  <circle cx="389.9" cy="638.0" r="17" fill="#f45342" opacity="0.85"/>
+  <line x1="389.9" y1="500.0" x2="320.9" y2="619.5" stroke="#20233c" stroke-width="5"/>
+  <circle cx="320.9" cy="619.5" r="17" fill="#f45342" opacity="0.85"/>
+  <line x1="389.9" y1="500.0" x2="270.4" y2="569.0" stroke="#20233c" stroke-width="5"/>
+  <circle cx="270.4" cy="569.0" r="17" fill="#f45342" opacity="0.85"/>
+  <line x1="389.9" y1="500.0" x2="251.9" y2="500.0" stroke="#20233c" stroke-width="5"/>
+  <circle cx="251.9" cy="500.0" r="17" fill="#f45342" opacity="0.85"/>
+  <line x1="389.9" y1="500.0" x2="270.4" y2="431.0" stroke="#20233c" stroke-width="5"/>
+  <circle cx="270.4" cy="431.0" r="17" fill="#f45342" opacity="0.85"/>
+  <line x1="389.9" y1="500.0" x2="320.9" y2="380.5" stroke="#20233c" stroke-width="5"/>
+  <circle cx="320.9" cy="380.5" r="17" fill="#f45342" opacity="0.85"/>
+  <line x1="389.9" y1="500.0" x2="389.9" y2="362.0" stroke="#20233c" stroke-width="5"/>
+  <circle cx="389.9" cy="362.0" r="17" fill="#f45342" opacity="0.85"/>
+  <line x1="389.9" y1="500.0" x2="458.9" y2="380.5" stroke="#20233c" stroke-width="5"/>
+  <circle cx="458.9" cy="380.5" r="17" fill="#f45342" opacity="0.85"/>
+  <line x1="389.9" y1="500.0" x2="509.4" y2="431.0" stroke="#20233c" stroke-width="5"/>
+  <circle cx="509.4" cy="431.0" r="17" fill="#f45342" opacity="0.85"/>
+  <circle cx="389.9" cy="500.0" r="22" fill="#f45342"/>
+  <polygon points="325.9,660.0 389.9,500.0 453.9,660.0" fill="#20233c"/>
+  <polygon points="726.0,660.0 830.0,500.1 934.0,660.0" fill="#2b2e50"/>
+  <rect x="726.0" y="648.0" width="208" height="12" fill="#20233c"/>
+  <polygon points="906.0,660.0 1010.0,520.8 1114.0,660.0" fill="#2b2e50"/>
+  <rect x="906.0" y="648.0" width="208" height="12" fill="#20233c"/>
+  <rect x="1122" y="376" width="7" height="284.0" fill="#20233c"/>
+  <polygon points="1129,384 1196,412 1129,440" fill="#f45342"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#f45342" letter-spacing="7">主题乐园</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">武汉欢乐谷</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>
