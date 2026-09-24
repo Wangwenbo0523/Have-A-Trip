@@ -1,10 +1,10 @@
 /*
- * 首页打开时弹出的随机推荐。
+ * 首页打开时弹出的「景区推荐」。
  *
  * 只从这里取色, 不写死颜色 —— 两套主题共用这一份 (见 src/index.css 的主题变量)。
  * 遮罩与面板都不用 portal: 它跟着 HomePage 一起挂载/卸载, 少一层 DOM 结构要维护。
  */
-.randomPicks {
+.attractionPicks {
   position: fixed;
   inset: 0;
   z-index: 40;
@@ -16,7 +16,7 @@
   background: rgba(0, 0, 0, 0.62);
 }
 
-.randomPicks__dialog {
+.attractionPicks__dialog {
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -30,26 +30,26 @@
   box-shadow: var(--shadow-card);
 }
 
-.randomPicks__head {
+.attractionPicks__head {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
 }
 
-.randomPicks__title {
+.attractionPicks__title {
   margin: 0;
   color: var(--text);
   font-size: 1.25rem;
 }
 
-.randomPicks__lead {
+.attractionPicks__lead {
   margin: 6px 0 0;
   color: var(--muted);
   font-size: 0.9rem;
 }
 
-.randomPicks__close {
+.attractionPicks__close {
   flex: none;
   width: 34px;
   height: 34px;
@@ -62,14 +62,14 @@
   cursor: pointer;
 }
 
-.randomPicks__close:hover,
-.randomPicks__close:focus-visible {
+.attractionPicks__close:hover,
+.attractionPicks__close:focus-visible {
   border-color: var(--accent);
   color: var(--accent);
   outline: none;
 }
 
-.randomPicks__grid {
+.attractionPicks__grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 16px;
@@ -78,7 +78,7 @@
   list-style: none;
 }
 
-.randomPicks__foot {
+.attractionPicks__foot {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -86,7 +86,7 @@
   gap: 12px;
 }
 
-.randomPicks__reroll {
+.attractionPicks__reroll {
   padding: 10px 20px;
   border: 1px solid var(--accent);
   border-radius: 999px;
@@ -96,17 +96,17 @@
   cursor: pointer;
 }
 
-.randomPicks__reroll:hover:not(:disabled) {
+.attractionPicks__reroll:hover:not(:disabled) {
   background: var(--accent);
   color: var(--accent-contrast);
 }
 
-.randomPicks__reroll:disabled {
+.attractionPicks__reroll:disabled {
   opacity: 0.6;
   cursor: progress;
 }
 
-.randomPicks__note {
+.attractionPicks__note {
   margin: 0;
   color: var(--muted);
   font-size: 0.82rem;
@@ -114,7 +114,7 @@
 
 /* 窄屏上顶到最上面: 居中的长内容在小屏里会把标题挤到屏幕外 */
 @media (max-width: 640px) {
-  .randomPicks {
+  .attractionPicks {
     align-items: flex-start;
   }
 }

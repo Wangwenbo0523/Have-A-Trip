@@ -6,25 +6,28 @@ import type { Attraction } from "../types"
 import AttractionCard from "./AttractionCard"
 import StateMessage from "./StateMessage"
 import Loader from "./utils/Loader"
-import "../styles/randomPicks.css"
+import "../styles/attractionPicks.css"
 
 /**
- * 打开首页时弹出来的三个随机地方。
+ * 首页的「景区推荐」—— 打开首页时弹出三个景区。
+ *
+ * 名字叫推荐, 机制是**随机抽取**(后端不缓存), 与浏览记录无关: 首页最先看到的那一块
+ * 不该是「因为你昨天点过什么」, 而是每次都不一样的一扇门。所以标题下与页脚都写明了
+ * 「随机抽取」—— 叫推荐却不说明来源, 就成了一个说不清依据的推荐位。
  *
  * 为什么用 sessionStorage 记「弹过了」而不是每次进首页都弹: 从「全部景点」点回首页
  * 也算打开首页, 每一次都弹会把导航变成一串关窗动作。一次会话弹一次, 重开标签页或
  * 重开应用算新会话 —— 那时会真的再弹一次, 也正是「每次打开都不一样」的意思。
  *
- * 三条完全随机(后端不缓存), 与浏览记录无关。拿不到数据时**不弹**: 这是首页的
- * 锦上添花, 不该因为它没抽出来就给人一个报错弹窗。
+ * 拿不到数据时**不弹**: 这是首页的锦上添花, 不该因为它没抽出来就给人一个报错弹窗。
  */
-export const RANDOM_PICKS_SEEN = "have-a-trip:random-picks-seen"
+export const PICKS_SEEN_KEY = "have-a-trip:attraction-picks-seen"
 
 const PICK_COUNT = 3
 
 function alreadySeen(): boolean {
   try {
-    return window.sessionStorage.getItem(RANDOM_PICKS_SEEN) === "1"
+    return window.sessionStorage.getItem(PICKS_SEEN_KEY) === "1"
   } catch {
     // 无痕模式下 sessionStorage 会直接抛: 当作没弹过, 本次照常弹
     return false
@@ -33,13 +36,13 @@ function alreadySeen(): boolean {
 
 function markSeen(): void {
   try {
-    window.sessionStorage.setItem(RANDOM_PICKS_SEEN, "1")
+    window.sessionStorage.setItem(PICKS_SEEN_KEY, "1")
   } catch {
     // 记不住只影响「同一次会话里会不会重复弹」, 不影响功能
   }
 }
 
-const RandomPicks = () => {
+const AttractionPicks = () => {
   const { t, lang } = useI18n()
   const [open, setOpen] = useState(false)
   const [items, setItems] = useState<Attraction[]>([])
@@ -84,7 +87,7 @@ const RandomPicks = () => {
 
   return (
     <div
-      className="randomPicks"
+      className="attractionPicks"
       role="presentation"
       onClick={(event) => {
         // 点遮罩关掉; 点弹窗内部不关
@@ -92,23 +95,23 @@ const RandomPicks = () => {
       }}
     >
       <div
-        className="randomPicks__dialog"
+        className="attractionPicks__dialog"
         role="dialog"
         aria-modal="true"
-        aria-labelledby="random-picks-title"
+        aria-labelledby="attraction-picks-title"
       >
-        <div className="randomPicks__head">
+        <div className="attractionPicks__head">
           <div>
-            <h2 className="randomPicks__title" id="random-picks-title">
-              {t("home.random.title")}
+            <h2 className="attractionPicks__title" id="attraction-picks-title">
+              {t("home.picks.title")}
             </h2>
-            <p className="randomPicks__lead">{t("home.random.lead")}</p>
+            <p className="attractionPicks__lead">{t("home.picks.lead")}</p>
           </div>
           <button
             ref={closeRef}
             type="button"
-            className="randomPicks__close"
-            aria-label={t("home.random.close")}
+            className="attractionPicks__close"
+            aria-label={t("home.picks.close")}
             onClick={() => setOpen(false)}
           >
             ✕
@@ -119,7 +122,7 @@ const RandomPicks = () => {
 
         {!loading && failure !== null && items.length === 0 ? (
           <StateMessage
-            title={t("home.random.error.title")}
+            title={t("home.picks.error.title")}
             detail={describeError(failure, lang)}
             tone="error"
             onRetry={() => void pick()}
@@ -127,7 +130,7 @@ const RandomPicks = () => {
         ) : null}
 
         {items.length > 0 ? (
-          <ul className="randomPicks__grid">
+          <ul className="attractionPicks__grid">
             {items.map((attraction) => (
               <li key={attraction.slug}>
                 <AttractionCard attraction={attraction} />
@@ -136,20 +139,20 @@ const RandomPicks = () => {
           </ul>
         ) : null}
 
-        <div className="randomPicks__foot">
+        <div className="attractionPicks__foot">
           <button
             type="button"
-            className="randomPicks__reroll"
+            className="attractionPicks__reroll"
             onClick={() => void pick()}
             disabled={loading}
           >
-            {t("home.random.reroll")}
+            {t("home.picks.reroll")}
           </button>
-          <p className="randomPicks__note">{t("home.random.note")}</p>
+          <p className="attractionPicks__note">{t("home.picks.note")}</p>
         </div>
       </div>
     </div>
   )
 }
 
-export default RandomPicks
+export default AttractionPicks

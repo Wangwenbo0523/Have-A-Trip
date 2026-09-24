@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { fetchRandomAttractions } from "../api/client"
 import type { Attraction } from "../types"
-import RandomPicks, { RANDOM_PICKS_SEEN } from "./RandomPicks"
+import AttractionPicks, { PICKS_SEEN_KEY } from "./AttractionPicks"
 
 vi.mock("../api/client", async () => {
   const actual = await vi.importActual<typeof import("../api/client")>("../api/client")
@@ -49,7 +49,7 @@ const secondBatch = [
 const renderPicks = () =>
   render(
     <MemoryRouter>
-      <RandomPicks />
+      <AttractionPicks />
     </MemoryRouter>,
   )
 
@@ -58,13 +58,15 @@ beforeEach(() => {
   window.sessionStorage.clear()
 })
 
-describe("RandomPicks", () => {
-  it("打开首页就弹, 一次要三个随机地点", async () => {
+describe("AttractionPicks", () => {
+  it("打开首页就弹, 标题是「景区推荐」, 一次要三个", async () => {
     mockedRandom.mockResolvedValue(firstBatch)
     renderPicks()
 
     const dialog = await screen.findByRole("dialog")
     expect(dialog).toBeInTheDocument()
+    // 标题是产品名 景区推荐; 机制(随机) 由脚注说明, 两者不能只有其一
+    expect(screen.getByRole("heading", { name: "景区推荐" })).toBeInTheDocument()
     expect(mockedRandom).toHaveBeenCalledWith(3)
     for (const item of firstBatch) {
       expect(screen.getByText(item.name)).toBeInTheDocument()
@@ -72,7 +74,7 @@ describe("RandomPicks", () => {
   })
 
   it("一次会话只弹一次: 记过标记就不再请求, 也不再弹", async () => {
-    window.sessionStorage.setItem(RANDOM_PICKS_SEEN, "1")
+    window.sessionStorage.setItem(PICKS_SEEN_KEY, "1")
     mockedRandom.mockResolvedValue(firstBatch)
     renderPicks()
 
@@ -85,7 +87,7 @@ describe("RandomPicks", () => {
     renderPicks()
 
     await screen.findByRole("dialog")
-    expect(window.sessionStorage.getItem(RANDOM_PICKS_SEEN)).toBe("1")
+    expect(window.sessionStorage.getItem(PICKS_SEEN_KEY)).toBe("1")
   })
 
   it("点关闭按钮就收起来", async () => {

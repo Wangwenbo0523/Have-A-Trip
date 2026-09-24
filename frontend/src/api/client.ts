@@ -92,7 +92,7 @@ export async function fetchAttractions(query: PageQuery = {}): Promise<Page<Attr
 }
 
 /**
- * 随机抽几个景点 —— 首页打开时那个「随机三个地方」的弹窗用。
+ * 随机抽几个景点 —— 首页「景区推荐」弹窗用(名字叫推荐, 机制是随机抽取)。
  *
  * 与 /recommendations 的区别: 那条按 (用户, 条数) 缓存, 同一个人的结果稳定;
  * 这一条后端**不缓存**(响应上写了 no-store), 每次调用都是一组新的 —— 所以
