@@ -17,11 +17,6 @@
 
 施工顺序、依赖关系与每步验收标准见 **[`docs/PLAN.md`](docs/PLAN.md)（施工计划表）**。
 
-## 为什么这样选基底
-
-目标是「现在开源、将来可能闭源」。这条约束直接排除了所有 GPL/AGPL 项目——一旦引入就永久无法闭源。
-两个基底都选了 MIT：
-
 | | 干什么 | 在哪 |
 |---|---|---|
 | [travel-guide](https://github.com/zero-to-mastery/travel-guide) | 前端基底（已 vendor，会改） | `frontend/` |
