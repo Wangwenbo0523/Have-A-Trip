@@ -88,7 +88,7 @@ PostgreSQL   景点档案 / 用户行为日志 / 推荐结果表
 | `backend/` | FastAPI 服务与测试，见 `backend/README.md` |
 | `db/` | `schema.sql` + 种子数据 + 字段口径，见 `db/README.md` |
 | `recsys/` | RecBole 调用层：依赖钉版、训练配置、离线脚本，见 `recsys/README.md` |
-| `scripts/` | 基底钉版记录、许可证卡口、DCO 校验、静态素材生成（`make_favicon.py` 站点图标、`make_attraction_covers.py` 景点配图）、离线工具（`draft_attraction_summaries.py` 生成简介草稿，人审后入库） |
+| `scripts/` | 基底钉版记录、许可证卡口、DCO 校验、静态素材生成（`make_favicon.py` 站点图标、`make_attraction_covers.py` 景点配图）、离线工具（`draft_attraction_summaries.py` 生成简介草稿，人审后入库）、演示脚本（`demo-offline.ps1` 跑出「不配模型也完整可用」的验收报告） |
 | `docs/` | `PLAN.md` 施工计划、`BASES.md` 基底清单、`LICENSE-AUDIT.md` 许可审查、`DEPLOY.md` 部署 |
 
 ## 快速起步
@@ -119,6 +119,16 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/dev-up.ps1 -Down
 | `-NoSeed` | 只灌 schema，不灌种子数据 |
 | `-LlmProvider ollama` | 顺手把 AI 检索开成本地 ollama（其余 `LLM_*` 见 `backend/.env.example`） |
 | `-NoBackend` / `-NoFrontend` | 只起一半 |
+
+### 离线演示（不配模型也完整可用）
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/demo-offline.ps1 -PgBin C:\pgtemp\pginstall\bin -PgPort 55432
+```
+
+`scripts/demo-offline.ps1` 不是第二个启动脚本，而是一份**能跑出来的验收报告**：它自带一个 `attraction_atlas_demo` 库（不碰 `attraction_atlas`），起一个 `LLM_PROVIDER=none` 的后端，把关键接口挨个打一遍并逐条断言，最后给通过率和退出码。16 项里包含「AI 状态如实报不可用」「一句话检索退回关键词仍是 200」「追问降级成档案摘录而不是编」「行程失败必须给出原因」「假 token 一律 404」「超额拒绝带 `reason` 与 `retry_after`」。
+
+默认跑完即关；`-KeepRunning` 留着看 `/docs`，`-Down` 收尾，`-Json` 出机器可读报告。
 
 ### 手工起（对照）
 
