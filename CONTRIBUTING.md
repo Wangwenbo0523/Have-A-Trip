@@ -23,7 +23,19 @@ Signed-off-by: 你的名字 <you@example.com>
 
 含义是你声明：这段代码是你写的，或你有权以本项目许可证提交它。用真名或稳定的常用 ID。
 
-CI 会校验 PR 的每个 commit 是否带 sign-off。
+CI 会校验 push / PR 区间内每个 commit 是否带 sign-off（`.github/workflows/dco.yml`），本地也可以自己跑：
+
+```bash
+python scripts/check_dco.py                 # 只查 HEAD
+python scripts/check_dco.py origin/main..HEAD   # 查一个区间
+```
+
+漏签了不用重写内容，补签名即可：
+
+```bash
+git commit --amend -s --no-edit      # 最新一个
+git rebase --signoff <base>          # 一串
+```
 
 ## 二、许可证红线（PR 会被直接拒绝）
 
@@ -57,5 +69,20 @@ python scripts/license_gate.py --strict
 
 - 前端：沿用 `frontend/` 现有风格（React + TS + 函数组件 + `src/styles/` 下的 CSS）
 - 后端：Python 3.13，FastAPI + SQLAlchemy，类型标注齐全
-- **不要在 API 进程里 `import recbole`**——见 `docs/BASES.md` 的环境隔离说明
-- 提 PR 前跑测试与卡口
+- **不要在 API 进程里 `import recbole`**——见 `docs/BASES.md` 的环境隔离说明，`backend/tests/test_no_recbole.py` 会拦
+
+## 五、提 PR 前请自己先跑一遍
+
+```bash
+# 许可证卡口(用装了 backend/requirements.txt 的解释器, 否则会误报)
+python scripts/license_gate.py --strict
+
+# 后端
+cd backend && python -m pytest -q
+
+# 前端
+cd frontend && npm run typecheck && npm test && npm run build
+```
+
+前端不能碰的三样东西（CI 里有 `grep` 守线）：地图库（`leaflet` / `mapbox-gl` / OpenLayers）、
+`geolocation`、以及旧的 `restcountries.com` 数据源。

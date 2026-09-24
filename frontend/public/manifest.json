@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Have-A-Trip",
+  "name": "Have-A-Trip · 景点大全",
   "icons": [
     {
       "src": "earth.ico",
@@ -8,8 +8,9 @@
       "type": "image/x-icon"
     }
   ],
-  "start_url": "./index.html",
+  "start_url": "/",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#14161a",
+  "background_color": "#14161a",
+  "description": "景点档案、检索与推荐。不含地图与定位。"
 }

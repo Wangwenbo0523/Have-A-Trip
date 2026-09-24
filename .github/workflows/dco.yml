@@ -1,0 +1,29 @@
+name: dco
+
+# DCO 校验: CONTRIBUTING.md 要求每个 commit 都带 Signed-off-by, 这里把要求变成事实。
+# 起因是「现在开源、将来可能闭源」—— 没有版权集中, 闭源要回头找每个贡献者签字。
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  signoff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # 要拿到区间内的全部 commit, 浅克隆不够
+          fetch-depth: 0
+
+      - name: 设置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: 校验 commit 签名
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD: ${{ github.sha }}
+        run: python scripts/check_dco.py "${BASE}..${HEAD}"

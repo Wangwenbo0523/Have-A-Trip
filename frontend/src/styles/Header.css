@@ -1,12 +1,15 @@
 @import url("https://fonts.googleapis.com/css?family=Staatliches&display=swap");
 
+/* 页头背景。上游基底用的是一张来源无从查证的实景照片(src/img/BaganMyanmar.jpg),
+   对一个「将来可能闭源」的项目来说这是许可风险, 已删除。改用纯 CSS 渐变,
+   零外部资产、零许可问题, 也省掉首屏 675 KB。 */
 .header {
   position: relative;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.88)),
-    url(../img/BaganMyanmar.jpg);
-  background-position: 20% 85%;
-  background-repeat: no-repeat;
-  background-size: cover;
+  background-color: #10131a;
+  background-image:
+    radial-gradient(ellipse at 15% 0%, rgba(244, 103, 50, 0.28), transparent 55%),
+    radial-gradient(ellipse at 85% 10%, rgba(70, 120, 200, 0.24), transparent 60%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.9));
 }
 
 .header__bar {

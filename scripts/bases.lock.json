@@ -25,7 +25,12 @@
         "S4 修复上游遗留: index.html 的 cdn.rawgit.com 死链导致 AOS 从未初始化, 带 data-aos 的页头/页脚元素因 aos.css 的初始 opacity:0 一直不可见 —— 改为从 npm 包 import AOS 并 init",
         "S4 重写 index.css: 去掉 body 的 grid/padding-top:10%、全局 img{height:17em;width:17em} 与第三方 CDN 背景图, 改为本地渐变 + 正常文档流",
         "S4 重写 Header/Footer: 去掉 giphy iframe 与上游作者社交账号链接, 导航改为按 /api/v1/categories 动态生成",
-        "S4 删除 @types/react-router-dom@5 (react-router-dom 7 自带类型)"
+        "S4 删除 @types/react-router-dom@5 (react-router-dom 7 自带类型)",
+        "S8 删除来源不明的头图 src/img/BaganMyanmar.jpg (675 KB), Header.css 改用纯 CSS 渐变",
+        "S8 接入 Vitest 5 + jsdom + Testing Library(vitest.config.js 合并 vite.config.js), App.test.js 改写为 App.test.tsx, 新增 21 个用例",
+        "S8 vite.config.js 删掉 esbuild / optimizeDeps.esbuildOptions 两段死配置(为上游写 JSX 的 .js 文件准备的, src/ 里已无 .js), 消除 Vite 8 的废弃告警",
+        "S8 package.json: 补 typecheck/test/test:watch 脚本, 删掉失效的 predeploy/deploy(gh-pages 未安装) 与 CRA 的 eslintConfig",
+        "S8 public/manifest.json 从 Create React App Sample 改名为本项目"
       ],
       "stack": "React 19 + TypeScript + Vite 8 + react-router-dom 7 + axios"
     },

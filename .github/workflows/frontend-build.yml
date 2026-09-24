@@ -1,0 +1,58 @@
+name: frontend-build
+
+# 前端质量门: 类型检查 -> 单元测试 -> 构建 -> 产物存在 -> 守线检查。
+# 之前只有许可证卡口会碰前端, 而那个卡口只解析 package-lock.json, 不跑代码。
+on:
+  push:
+    branches: [main]
+    paths:
+      - "frontend/**"
+      - ".github/workflows/frontend-build.yml"
+  pull_request:
+    paths:
+      - "frontend/**"
+      - ".github/workflows/frontend-build.yml"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 设置 Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      # 用 ci 而不是 install: 严格按 lockfile 装, 顺手验证 lockfile 可用
+      - name: 安装依赖
+        run: npm ci
+
+      - name: 类型检查
+        run: npm run typecheck
+
+      - name: 单元测试
+        run: npm test
+
+      - name: 构建
+        run: npm run build
+
+      - name: 确认产物存在
+        run: |
+          test -f dist/index.html || { echo "::error::dist/index.html 没生成"; exit 1; }
+          du -sh dist
+
+      # 这两条是「不做地图跟踪」与「不再打国家数据源」的守线, 靠 CI 拦而不是靠自觉
+      - name: 守线: 不引入地图/定位, 不再用旧的国家数据源
+        run: |
+          if grep -rInE "restcountries|leaflet|mapbox-gl|components/MapView|WorldMap|geolocation" src; then
+            echo "::error::src 下出现了被排除的地图/定位依赖或旧的国家数据源"
+            exit 1
+          fi
+          echo "守线检查通过: 无地图/定位/restcountries 残留"

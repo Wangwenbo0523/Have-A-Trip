@@ -20,20 +20,10 @@ export default defineConfig({
     },
   },
 
-  esbuild: {
-    loader: 'tsx',
-    include: /src\/.*\.[jt]sx?$/,
-  },
-
-  optimizeDeps: {
-    esbuildOptions: {
-      loader: {
-        '.js': 'jsx',
-        '.ts': 'tsx',
-        '.tsx': 'tsx',
-      },
-    },
-  },
+  // 上游基底里混着写 JSX 的 .js 文件, 所以当年配了 esbuild.loader 兜底。
+  // S4 之后 src/ 下已经没有 .js/.jsx, 这两段是死配置; 而且 Vite 8 改用
+  // Rolldown/oxc 之后 optimizeDeps.esbuildOptions 已废弃, 留着只会每次构建
+  // 打一行告警, 还会把 vite.config.js 自己的 esbuild 选项也一起忽略掉。
 
   css: {
     lightningcss: {

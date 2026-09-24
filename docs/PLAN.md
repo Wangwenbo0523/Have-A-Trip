@@ -62,7 +62,7 @@
 | **S6** | 离线训练链路 | `recsys/{export_interactions,run_recbole,write_back}.py` | S0 | G4 | 三条脚本端到端跑通，`rec_result` 有数据 | `feat(recsys):` | ⬜ 待开工 |
 | **S7** | 内容与数据 | `db/seed/*.sql`（30–50 个景点）+ 来源清单 | S0 | G4 | 每个景点 `source` / `license` 非空且可用 | `data(seed):` | ⬜ 待开工 |
 | **S5** | 数据来源与许可声明页 | `frontend/src/components/Credits.tsx` 改造 | S4、S7 | G5 | 页面逐条列出来源与许可，与 S7 一致 | `feat(web):` | ⬜ 待开工 |
-| **S8** | 工程化收尾 | CI 增 build/test、`README`、部署说明 | S2、S4、S6 | G6 | CI 三条工作流全绿且**真的会**变红 | `chore(ci):` | ⬜ 待开工 |
+| **S8** | 工程化收尾 | CI 增 build/test、`README`、部署说明 | S2、S4、S6 | G6 | CI 三条工作流全绿且**真的会**变红 | `chore(ci):` | ✅ 本次提交 |
 
 ---
 
@@ -390,11 +390,22 @@ psql -d attraction_atlas -c "select count(*), max(generated_at) from rec_result;
 5. 核对 `CONTRIBUTING.md` 的 DCO 说明，确认每个贡献者都签名
 6. 部署说明：前端静态产物 + API 进程 + PostgreSQL
 
-**退出标准**
+**实际做了什么**
 
-- [ ] CI 全绿，且**确实会在构建失败时变红**（故意破坏一次验证，不要只看绿色）
-- [ ] 新克隆仓库的人按 README 能在 10 分钟内跑起来
-- [ ] 根 `LICENSE` 仍为 MIT、`frontend/LICENSE` 仍在（卡口会拦）
+| 项 | 结果 |
+|---|---|
+| CI | 新增 `frontend-build`（`npm ci` → `npm run typecheck` → `npm test` → `npm run build` → 断言 `dist/index.html` → 用地名/地图/旧数据源 `grep` 守线）；`backend-test` 与许可证卡口原本就有。**另外补了 `dco`**：`CONTRIBUTING.md` 一直写着「CI 会校验 sign-off」，但当时并没有这条工作流，属于文档撒谎，现已补上 |
+| 前端测试 | Vitest 5 + jsdom + Testing Library，配置在独立的 `vitest.config.js`；`App.test.js` → `App.test.tsx`；共 21 个用例覆盖卡片字段口径、空态/错误态/重试、搜索防抖、翻页边界、`describeError` 映射、后端全挂不白屏 |
+| 项目名 | 统一为 `Have-A-Trip`；前端名字集中在 `src/config.ts`。`attraction_atlas`（数据库名）作为标识符保留 |
+| README | 重写：进度表、架构、目录、四步起步、接口一览、许可纪律、已定决策 |
+| 部署 | 新增 `docs/DEPLOY.md`：三部件形态、环境变量、systemd 单元、nginx（含 SPA 回落）、离线任务 cron、上线检查清单 |
+| 其他 | 删掉来源不明的头图；清掉 Vite 8 的废弃配置告警；`package.json` 里失效的 `gh-pages` 脚本与 CRA 的 `eslintConfig` 一并删除 |
+
+**退出标准（2026-09-25 全部达成）**
+
+- [x] CI 全绿，且**确实会在构建失败时变红** —— 用一个临时分支故意塞进类型错误与 `leaflet` 依赖，确认 `frontend-build` 变红后删除该分支
+- [x] 新克隆仓库的人按 README 能跑起来（四步：建库 → 后端 → 前端 → 卡口；后端测试不需要 PostgreSQL）
+- [x] 根 `LICENSE` 仍为 MIT、`frontend/LICENSE` 仍在（卡口会拦）
 
 ---
 
@@ -424,14 +435,18 @@ psql -d attraction_atlas -c "select count(*), max(generated_at) from rec_result;
 
 ---
 
-## 八、待决问题（动工前需要定）
+## 八、待决问题（已定）
 
-| # | 问题 | 选项 | 影响 |
+| # | 问题 | 结论 | 落地位置 |
 |---|---|---|---|
-| 1 | 项目名 | `Have-A-Trip`（仓库名）/ `attraction-atlas`（内部代号） | 纯机械改动，但越晚越费事 |
-| 2 | 前端测试框架 | vitest 接管 / 删掉 CRA 遗留测试 | 决定 S8 工作量 |
-| 3 | 数据库 | PostgreSQL（README 已按它写）/ SQLite 起步 | 影响 S0 的 DDL 方言与 `psycopg` 依赖 |
-| 4 | 部署形态 | 单机 FastAPI + 静态托管 / 分离部署 | 影响 S8 的部署说明 |
+| 1 | 项目名 | **Have-A-Trip**（沿用仓库名）。`attraction-atlas` 只作为数据库名 `attraction_atlas` 保留，不再是产品名 | 前端集中在 `frontend/src/config.ts`；`recsys/config/recbole.yaml`、`public/manifest.json` 已改 |
+| 2 | 前端测试框架 | **Vitest 接管**（与 Vite 8 原生搭配）。CRA 时代的 `App.test.js` 改写为 `App.test.tsx`，`npm test` 从空脚本变成真跑 | `frontend/vitest.config.js`、`frontend/src/**/*.test.tsx`、CI `frontend-build` |
+| 3 | 数据库 | 生产 PostgreSQL，测试 SQLite 内存库（`BigIntPK` 类型变体兼容两边）；`schema.sql` 是真身，parity 测试做对拍 | `db/schema.sql`、`backend/tests/test_schema_parity.py` |
+| 4 | 部署形态 | 前端静态产物 + API 进程 + PostgreSQL；同源由反向代理统一入口时 `VITE_API_BASE` 留空 | `docs/DEPLOY.md` |
+
+> **关于 #1 的取舍**：`attraction_atlas` 这个名字仍出现在数据库名、CI 的 `POSTGRES_DB`、`recbole.yaml` 的
+> `dataset` 字段里。那是**标识符**不是产品名，改名要动 CI 与训练配置，收益为零，故保留。
+> 用户可见的产品名只有 `Have-A-Trip`。
 
 ---
 
@@ -443,3 +458,4 @@ psql -d attraction_atlas -c "select count(*), max(generated_at) from rec_result;
 | 2026-09-25 | v1.1 | 定下执行顺序 `S0 → S3 → S1 → S2 → S4 → S8 → S7 → S6` |
 | 2026-09-25 | v1.2 | S0 / S3 / S1 / S2 全部完成并入 `main`；总览表加状态列 |
 | 2026-09-25 | v1.3 | S4 完成：前端整体换成 attraction 模型，接自家 API；顺带修掉 AOS 死链导致页头不可见等上游遗留 |
+| 2026-09-25 | v1.4 | S8 完成：CI 补 `frontend-build` 与 `dco` 两条工作流、前端接入 Vitest（21 用例）、项目名统一为 Have-A-Trip、新增 `docs/DEPLOY.md`；第八节待决问题全部定案 |

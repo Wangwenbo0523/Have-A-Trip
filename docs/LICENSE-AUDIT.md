@@ -9,7 +9,7 @@
 | 项 | 数量 | 说明 |
 |---|---|---|
 | 违禁（GPL / AGPL / SSPL / CC-BY-NC） | **0** | 通过 |
-| 告警（MPL-2.0） | 13 | `certifi`（Python 证书包）与 `lightningcss` 及其 12 个平台包（Vite 8 的 CSS 压缩器，仅构建期）。MPL 是文件级 copyleft，只要不修改这些包的文件就无义务。保持「只用不改」即可。 |
+| 告警（弱 copyleft） | 15 | 13 项 MPL-2.0：`certifi`（Python 证书包）与 `lightningcss` 及其 12 个平台包（Vite 8 的 CSS 压缩器，仅构建期）。2 项 LGPL：`psycopg` / `psycopg-binary`（数据库驱动）。MPL 是文件级 copyleft，LGPL 是动态链接许可，两者只要**只用不改**就无义务。 |
 | 未标注许可 | **0** | 原先那 4 项随 `ol` 依赖一并消失，见下 |
 
 地图库 `ol` 已在 S3 删除（本项目不做地图与定位），它带进来的这条链随之消失：
@@ -96,6 +96,25 @@ ol  ->  ol-mapbox-style  ->  @mapbox/mapbox-gl-style-spec  ->  { @mapbox/jsonlin
 根 `LICENSE` 的署名为 `Copyright (c) 2026 Wangwenbo0523`。
 vendor 进来的 `frontend/LICENSE`（`Copyright (c) 2019 Zero To Mastery`）原样保留——MIT 要求不得删除。
 
+## 五、图片资产
+
+图片和代码一样是资产，而且更容易漏——代码有 lockfile 可以扫，图片只能靠人记。
+
+| 资产 | 来源 | 许可 | 处置 |
+|---|---|---|---|
+| `frontend/src/img/BaganMyanmar.jpg`（675 KB，页头背景） | 上游基底 `zero-to-mastery/travel-guide` 里的实景照片 | **无从查证**。MIT 覆盖的是仓库作者的贡献，不等于贡献者有权授权别人的摄影作品 | **已删除**（2026-09-25，S8）。页头背景改用纯 CSS 渐变，顺带省掉首屏 675 KB |
+| `frontend/public/earth.ico`、`favicon.ico` | 上游基底的占位图标 | 同上，未标注 | 保留但**待替换**：上线前换成自绘图标 |
+| `frontend/src/logo.svg` | 上游基底的 React 标志 | 零引用死资源 | 已删除（2026-09-25，S4） |
+| 景点配图 | 本项目种子数据 | 目前留空（`attraction_image` 为空） | S7 落数据时**每条必须带 `credit` 与 `license` 字段**（数据库层已设为 NOT NULL） |
+
+### 原则
+
+1. **来源查不到出处的图片，一律不进仓库**。一张图的风险比一行依赖代码更隐蔽——没有工具会替你扫。
+2. 景点配图优先自己拍、或用明确标注 CC0 / 公有领域的图库，并在 `attraction_image.credit` 里写明作者与许可。
+3. 图片的署名与许可**是数据库字段**，不是文档里的口头约定。`attraction_image.credit` / `.license` 都是 `NOT NULL`，
+   声明页（`Credits.tsx`）由它们聚合生成——想漏也漏不掉。
+4. 上线前把 `public/` 下的图标换成自绘的。
+
 ## 四、操作清单
 
 - [x] 根许可证存在于 `LICENSE`；两个基底的 LICENSE 随源码保留（`frontend/LICENSE` = MIT）
@@ -103,7 +122,8 @@ vendor 进来的 `frontend/LICENSE`（`Copyright (c) 2019 Zero To Mastery`）原
 - [x] 许可证卡口脚本 + CI 工作流
 - [x] 基底钉版记录（`scripts/bases.lock.json`）含 commit 与许可
 - [x] 两个基底的 LICENSE 随源码保留（`frontend/LICENSE`）
-- [ ] **贡献者启用 DCO 签核**（见 `CONTRIBUTING.md`）——闭源保险的核心，别拖
+- [x] **贡献者 DCO 签核已启用**：`scripts/check_dco.py` + `.github/workflows/dco.yml` 逐个 commit 校验（2026-09-25）
+- [x] 图片资产已单独立节审查（见第五节），来源不明的那张已删除
 - [ ] 上线前完成数据层逐条复核
 - [ ] 定期跑 `python scripts/license_gate.py --strict`
 

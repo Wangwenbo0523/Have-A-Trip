@@ -41,7 +41,10 @@
 
 > **纠正一处早先的误判**：`src/hero-pic.jpg`（7.75 MB）此前被记成「首屏必崩，必须先压缩」，
 > 实际上它**没有被任何代码引用**，属于死资源，已直接删除。
-> 真正进入产物的图片是 `src/img/BaganMyanmar.jpg`（675 KB，构建后原样输出为 `dist/assets/BaganMyanmar-*.jpg`）——这张才需要转 WebP。
+> 真正进入产物的图片是 `src/img/BaganMyanmar.jpg`（675 KB，构建后原样输出为 `dist/assets/BaganMyanmar-*.jpg`）。
+> **该图已于 S8 删除**（2026-09-25）：它的图片许可无从查证，MIT 覆盖的是仓库作者的贡献，
+> 不等于贡献者有权授权别人的摄影作品。页头背景改用纯 CSS 渐变，顺带省掉首屏 675 KB。
+> 详见 `docs/LICENSE-AUDIT.md` 第五节「图片资产」。
 
 ### 文件级复用映射
 
@@ -65,7 +68,8 @@
 | `src/components/CountryCard.tsx` | `CategoryCard` | 分类入口卡 |
 | `src/types/index.ts` | 重写 | `Country` 类型 → `Attraction` 类型（对齐 `db/schema.sql`） |
 | `src/components/Credits.tsx` | **改为数据来源与许可声明页** | 必须做：用了 OSM(ODbL)、CC BY-SA 数据就得署名 |
-| `src/App.tsx`、`App.test.js` | 改造 | 应用外壳、数据获取（现在打的是 `restcountries.com`，要换成本项目 API）与测试 |
+| `src/App.tsx` | 改造 | 应用外壳；不再打 `restcountries.com`，改取本项目 `/api/v1/categories` |
+| `src/App.test.js` | 改写成 `src/App.test.tsx` | CRA 时代的裸渲染冒烟测试；S8 换成 Vitest + Testing Library，见下 |
 
 **删除**
 
@@ -81,9 +85,21 @@
 
 | 文件 | 问题 | 状态 |
 |---|---|---|
-| `src/img/BaganMyanmar.jpg`（675 KB） | 原样进 `dist/assets/`，转 WebP 能显著减小首屏体积 | 待办 |
+| ~~`src/img/BaganMyanmar.jpg`（675 KB）~~ | 许可来源无从查证 | **已删 (S8)**，页头改 CSS 渐变 |
 
 保留的依赖：`react`、`react-dom`、`react-router-dom`、`axios`（用来打我们的 FastAPI）、`react-spinners`、`aos`、`tachyons`。
+
+**S8 工程化收尾（2026-09-25）**
+
+| 改动 | 说明 |
+|---|---|
+| 页面头图 | 删除来源不明的 `BaganMyanmar.jpg`，`Header.css` 改用纯 CSS 渐变 |
+| 测试框架 | Vitest 5 + jsdom + Testing Library，配置在独立的 `vitest.config.js`（合并 `vite.config.js`）；`npm test` 从空脚本变成 `vitest run`，21 个用例 |
+| `App.test.js` → `App.test.tsx` | 顺带覆盖「后端全挂时不白屏」 |
+| `vite.config.js` | 删掉 `esbuild` 与 `optimizeDeps.esbuildOptions` 两段死配置 —— 它们是为上游那些写 JSX 的 `.js` 文件准备的，S4 之后 `src/` 里已无 `.js`；留着只会让 Vite 8 每次构建打废弃告警 |
+| `package.json` | 补 `typecheck` / `test` / `test:watch`；删掉失效的 `predeploy` / `deploy`（`gh-pages` 从来没装）与 CRA 时代的 `eslintConfig`（`react-app` 那套插件也不存在） |
+| `public/manifest.json` | 名字从 `Create React App Sample` 改成本项目 |
+| CI | 新增 `frontend-build`（`npm ci` → typecheck → test → build → 断言产物 → 守线 grep）与 `dco`（逐个 commit 校验 sign-off） |
 
 **S4 实际落地（2026-09-25）**
 
