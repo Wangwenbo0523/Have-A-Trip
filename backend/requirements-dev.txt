@@ -1,0 +1,5 @@
+# 开发/测试依赖。用法: pip install -r requirements-dev.txt
+-r requirements.txt
+
+pytest==9.1.1
+httpx==0.28.1

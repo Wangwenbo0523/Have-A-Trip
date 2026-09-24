@@ -1,0 +1,12 @@
+# backend 运行时依赖 —— 必须跑在 Python 3.13
+#
+# 重要: 本文件绝对不能与 recsys/requirements.txt 混装到同一个环境。
+# RecBole 的 ray<=2.6.3 与 hyperopt==0.2.5 把 Python 上限锁在 3.11, 见 docs/BASES.md。
+# API 进程不 import recbole, 它只读 db/rec_result 表。
+
+fastapi==0.141.1
+uvicorn[standard]==0.53.0
+SQLAlchemy==2.0.54
+psycopg[binary]==3.2.3
+pydantic==2.13.5
+pydantic-settings==2.7.1
