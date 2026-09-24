@@ -1,0 +1,49 @@
+name: license-gate
+
+# 许可证卡口: 防止 GPL/AGPL 或非商用许可混入, 保住「将来可闭源」的退路。
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 设置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      # 装上真实依赖, 卡口才能扫到它们; 只装运行必需的部分
+      - name: 安装后端依赖
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f backend/requirements.txt ]; then
+            pip install -r backend/requirements.txt
+          fi
+
+      - name: 安装前端依赖(生成完整 package-lock 解析)
+        run: |
+          if [ -f frontend/package-lock.json ]; then
+            npm ci --prefix frontend --ignore-scripts
+          fi
+
+      - name: 跑许可证卡口
+        run: python scripts/license_gate.py --strict
+
+      - name: 校验基底 LICENSE 与钉版记录
+        run: |
+          if [ ! -f frontend/LICENSE ]; then
+            echo "::error::frontend/LICENSE 丢失, MIT 要求保留版权声明"
+            exit 1
+          fi
+          python - <<'PY'
+          import json, pathlib
+          lock = json.loads(pathlib.Path("scripts/bases.lock.json").read_text(encoding="utf-8-sig"))
+          for name, info in lock["bases"].items():
+              print(f"{name}: {info['upstream']} @ {info.get('commit') or info.get('version')} [{info['license']}]")
+          PY

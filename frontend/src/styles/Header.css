@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css?family=Abril+Fatface|Staatliches&display=swap');
+
+:root {
+    --text-color: rgba(0, 0, 0, 0.952);
+    --header-background: linear-gradient(rgba(0, 0, 0, 0.075), rgba(0, 0, 0, 0.849)), url(../img/BaganMyanmar.jpg);
+    --header-text-color: transparent;
+    --shadow-color: white;
+}
+
+.header {
+    background-image: var(--header-background);
+    background-position: 20% 85%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-origin: content-box;
+    padding-top: 0;
+}
+
+@media screen and (min-width: 1300px) {
+    .header {
+        background-position: 10% 80%;
+    }
+}
+
+.headertext {
+    background: rgb(0, 0, 0);
+    letter-spacing: 7px;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: var(--header-text-color);
+    font-family: 'Staatliches', cursive;
+    font-size: 6em;
+    text-transform: uppercase;
+    text-shadow: 4px 3px 0px var(--shadow-color);
+    margin-top: 0;
+}
+
+.nav {
+    background-color: var(--text-color);
+    position: relative;
+    bottom: -40px;
+}
+
+iframe {
+    border: none;
+}

@@ -1,0 +1,44 @@
+{
+  "_comment": "两个基底的钉版记录。改基底前先改这里，并在 PR 里说明 LICENSE 影响。",
+  "updatedAt": "2026-09-24",
+  "bases": {
+    "frontend": {
+      "role": "前端基底（要改的代码，已 vendor 进 frontend/）",
+      "upstream": "https://github.com/zero-to-mastery/travel-guide",
+      "commit": "a2c9f2d1c23eded67a0cd68fbec84657aa01d6b6",
+      "commitDate": "2026-09-08T14:09:01-05:00",
+      "license": "MIT",
+      "licenseFile": "frontend/LICENSE",
+      "vendored": true,
+      "vendoredPath": "frontend",
+      "vendoredNote": "已摘除嵌套 .git；仅检出 src/、public/ 与根配置文件，dist/ 未检出（构建产物）。",
+      "stack": "React 19 + TypeScript + Vite 8 + react-router-dom 7 + axios"
+    },
+    "recsys": {
+      "role": "推荐引擎基底（依赖库，不 vendor 源码，不改它）",
+      "upstream": "https://github.com/RUCAIBox/RecBole",
+      "version": "1.2.1",
+      "commit": "7b02be5ec80a88310f2d04a27a82adfcbb5dc211",
+      "commitDate": "2025-02-24T15:16:40+08:00",
+      "license": "MIT",
+      "licenseFile": "LICENSE (仓库根)",
+      "vendored": false,
+      "install": "pip install recbole==1.2.1（必须在独立 Python 3.11 环境）",
+      "stack": "PyTorch 推荐框架，统一 fit/predict/recommend API，35+ 模型"
+    }
+  },
+  "rejected": {
+    "_comment": "因许可证被排除的候选，勿引入",
+    "AGPL-3.0": ["liketrek/TREK"],
+    "GPL-3.0": ["seanmorley15/AdventureLog", "osmandapp/OsmAnd", "yyzwz/s023"],
+    "GPL-2.0": ["1sdv/TripStar"],
+    "NO-LICENSE": [
+      "nanbouking/WeTravel",
+      "dingyuanyind/WeCulture",
+      "dwsera/Tour-AI",
+      "coder-zrl/trip",
+      "1937983507/ai-tourism",
+      "small-bears/travelings"
+    ]
+  }
+}

@@ -1,0 +1,52 @@
+# RecBole 训练配置 · attraction-atlas
+# 字段名需与 backend 导出的交互数据一致
+
+# ---------- 数据 ----------
+dataset: attraction_atlas          # 对应 recsys/dataset/attraction_atlas/
+data_path: ./recsys/dataset/
+
+USER_ID_FIELD: user_id
+ITEM_ID_FIELD: attraction_id
+RATING_FIELD: rating
+TIME_FIELD: timestamp
+
+load_col:
+  inter: [user_id, attraction_id, rating, timestamp]
+  item: [attraction_id, category_id, city_code]   # 侧信息: 冷启动与内容特征用
+
+# 过滤: 交互数过少的行为噪音
+item_inter_num_interval: "[5,inf)"
+user_inter_num_interval: "[5,inf)"
+# 只有明确正向反馈才算兴趣(收藏/浏览时长达标)
+val_interval:
+  rating: "[3,inf)"
+
+# ---------- 评估 ----------
+eval_args:
+  split: {RS: [0.8, 0.1, 0.1]}   # 按时间留出验证/测试
+  order: TO                      # 时序切分, 避免用未来预测过去
+  group_by: user
+  mode: full                     # 全量排序, 更贴近真实推荐场景
+metrics: [Recall, Precision, NDCG, Hit]
+topk: [5, 10, 20]
+valid_metric: NDCG@10
+
+# ---------- 负采样 ----------
+train_neg_sample_args:
+  distribution: uniform
+  sample_num: 1
+
+# ---------- 模型 ----------
+# 起步用 BPR: 交互数据量小的时候, 深度模型只会过拟合。
+# 数据量上来后改 LightGCN(图结构, 适合「相似景点」) 或 SASRec(时序, 适合「最近在看什么」)。
+model: BPR
+
+# ---------- 训练 ----------
+epochs: 100
+train_batch_size: 4096
+eval_batch_size: 409600
+learner: adam
+learning_rate: 0.001
+stopping_step: 10
+eval_step: 1
+seed: 2026

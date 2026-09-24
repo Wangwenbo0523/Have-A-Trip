@@ -1,0 +1,66 @@
+{
+  "name": "travel-guide-app",
+  "version": "v2.00.0",
+  "private": true,
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zero-to-mastery/travel-guide.git"
+  },
+  "author": "ZTM",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zero-to-mastery/travel-guide/issues"
+  },
+  "homepage": "https://zero-to-mastery.github.io/travel-guide/",
+  "dependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^12.1.10",
+    "aos": "^2.3.4",
+    "axios": "^1.18.0",
+    "jquery": "^4.0.0",
+    "ol": "^6.8.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-router-dom": "^7.18.2",
+    "react-spinners": "^0.13.8",
+    "tachyons": "^4.12.0",
+    "web-vitals": "^5.1.0"
+  },
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@types/react-router-dom": "^5.3.3",
+    "@vitejs/plugin-react": "^5.2.0",
+    "typescript": "^5.9.3",
+    "vite": "^8.0.16"
+  }
+}

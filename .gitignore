@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+
+# Node
+node_modules/
+frontend/dist/
+frontend/.vite/
+
+# 环境与密钥
+.env
+.env.local
+*.local
+
+# 数据与产物: 景点原始数据与训练产物不入库(体量大且常带第三方许可)
+data/
+dataset/
+recsys/output/
+recsys/saved/
+*.sqlite
+*.db
+
+# 上游基底缓存(由 scripts/fetch-bases.ps1 生成)
+.cache/
+
+# 编辑器
+.vscode/
+.idea/
+.DS_Store

@@ -1,0 +1,18 @@
+# RecBole 独立环境依赖
+#
+# 必须使用 Python 3.11。原因见 ../docs/BASES.md:
+#   - requirements 里 ray>=1.13.0,<=2.6.3 与 hyperopt==0.2.5 把 Python 上限锁在 3.11
+#   - setup.py 未声明 python_requires, pip 不会拦, 会在运行期才报错
+# 本文件不要与 backend/requirements.txt 混装到同一环境。
+
+# 推荐框架本体 (MIT)。会连带安装 torch / numpy 1.x / pandas / scipy 等
+recbole==1.2.1
+
+# 从业务库导出交互数据、把推荐结果写回
+psycopg[binary]==3.2.3
+
+# 数据整形
+pandas==2.2.3
+
+# 配置校验
+pyyaml==6.0.2
