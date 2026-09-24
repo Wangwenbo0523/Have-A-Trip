@@ -334,7 +334,7 @@ class AttractionEmbedding(Base):
     attraction_id: Mapped[int] = mapped_column(
         ForeignKey("attraction.id", ondelete="CASCADE"), nullable=False
     )
-    # 形如 "ollama:nomic-embed-text:auto", 见 app/llm/embedding.py 的 signature
+    # 形如 "ollama:bge-m3:auto", 见 app/llm/embedding.py 的 signature
     model: Mapped[str] = mapped_column(Text, nullable=False)
     dim: Mapped[int] = mapped_column(Integer, nullable=False)
     # 拼串口径版本, 参与指纹。见 app/search/canonical.py

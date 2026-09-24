@@ -251,6 +251,11 @@ class AISearchOut(BaseModel):
     page: int
     size: int
     total: int
+    # 空结果放宽时被摘掉的条件(字段名)。留着它是为了能如实说明
+    # 「这条结果不是原本那几个条件查出来的」—— 放宽过而不说, 等于骗人。
+    relaxed: list[str] = Field(default_factory=list)
+    # 结构化条件一条都没有时, 结果是向量近邻。与 relaxed 是两种不同的兜底, 分开标。
+    semantic_fallback: bool = False
     # 页面上必须显示这句: 结果全部来自库内档案, AI 只参与理解需求
     disclaimer: str
 

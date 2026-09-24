@@ -203,7 +203,9 @@ def test_numeric_strings_are_accepted_but_booleans_are_not():
 # ------------------------------------------------------------------ 接口
 
 def test_create_then_poll_reaches_succeeded(client, seeded, trip_model):
-    trip_model(FakeClient(payload=reply(seeded)))
+    # 需求里点了杭州, 候选就只从杭州取(见 candidates_for), 所以模型这里必须挑杭州的景点。
+    # 原先这句用的是默认候选池, 排在第一位的是北京的故宫 —— 那正是 R5 报的毛病。
+    trip_model(FakeClient(payload=reply(seeded, ids=[seeded['west_lake'].id])))
     response = client.post(f'{API}/itineraries', json=body('带小孩去杭州玩一天, 不想爬山', days=1))
     assert response.status_code == 202, response.text
     accepted = response.json()
@@ -214,7 +216,7 @@ def test_create_then_poll_reaches_succeeded(client, seeded, trip_model):
     assert polled.status_code == 200, polled.text
     result = polled.json()
     assert result['status'] == 'succeeded'
-    assert [entry['name'] for entry in result['items']] == ['故宫博物院']
+    assert [entry['name'] for entry in result['items']] == ['西湖']
     assert result['usage'] == {'prompt_tokens': 100, 'completion_tokens': 50}
     assert result['max_poll_seconds'] > 0
     assert result['disclaimer']
@@ -409,3 +411,47 @@ def test_openapi_documents_the_new_endpoints(client):
     assert '/api/v1/itineraries' in paths
     assert '/api/v1/itineraries/{token}' in paths
     assert '/api/v1/search/semantic' in paths
+
+
+# ------------------------------------------------- 候选的城市约束 (R5)
+
+def test_city_in_text_reads_the_city_without_calling_the_model(db_session, seeded):
+    """认城市名靠扫库里的城市清单, 不为它多调一次模型。"""
+    assert trip_service.city_in_text(db_session, '杭州三天') == '杭州市'
+    assert trip_service.city_in_text(db_session, '不想爬山') is None
+    # 同时提到两个城市: 认不出, 交回给全库召回 —— 硬挑一个只会更糟
+    assert trip_service.city_in_text(db_session, '杭州和上海都想去') is None
+
+
+def test_candidates_are_restricted_to_the_city_in_the_request(db_session, seeded):
+    """需求点了城市, 候选就只从那座城市里取。"""
+    from app.config import get_settings
+
+    candidates = trip_service.candidates_for(
+        db_session, request_text='带小孩去杭州玩两天', settings=get_settings(), days=2
+    )
+    assert {attraction.slug for attraction in candidates} == {'west-lake', 'lingyin-temple'}
+
+
+def test_candidates_widen_only_when_the_city_cannot_fill_a_day(db_session, seeded):
+    """同城连一天一站都排不满时才放宽, 且同城景点仍然排在最前面。"""
+    from app.config import get_settings
+
+    candidates = trip_service.candidates_for(
+        db_session, request_text='去上海市玩三天', settings=get_settings(), days=3
+    )
+    # 上海市只有海洋世界一个, 3 天排不满 -> 放宽到全库, 但它必须还在首位
+    assert candidates[0].slug == 'ocean-world'
+    assert len(candidates) > 1
+    assert len({attraction.id for attraction in candidates}) == len(candidates)
+
+
+def test_itinerary_never_mixes_cities_when_the_request_names_one(client, seeded, trip_model):
+    """整条链路的验收: 「去杭州」排出来的每一站都在杭州。"""
+    trip_model(
+        FakeClient(payload=reply(seeded, days=2, ids=[seeded['west_lake'].id, seeded['lingyin'].id]))
+    )
+    accepted = client.post(f'{API}/itineraries', json=body('带小孩去杭州玩两天', days=2)).json()
+    result = client.get(f'{API}/itineraries/{accepted["token"]}').json()
+    assert result['status'] == 'succeeded'
+    assert [entry['name'] for entry in result['items']] == ['西湖', '灵隐寺']

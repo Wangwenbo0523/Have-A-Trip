@@ -8,11 +8,16 @@ from __future__ import annotations
 
 import pytest
 
-from llm_stubs import FakeClient
+from sqlalchemy import select
+
+from llm_stubs import FakeClient, FakeEmbeddingClient
 
 from app.config import Settings
 from app.llm import LLMError
 from app.llm.client import LLMClient, extract_json
+from app.models import Attraction, AttractionEmbedding
+from app.search import canonical
+from app.search.vectors import encode
 
 API = "/api/v1"
 
@@ -166,3 +171,88 @@ def test_extract_json_tolerates_code_fence_and_prose():
 def test_extract_json_rejects_non_json():
     with pytest.raises(LLMError):
         extract_json("我不知道该怎么答")
+
+# ------------------------------------------------- 空结果的两种兜底: 放宽 / 语义
+
+def _store_vectors(db_session, *, model='fake-embedding', dim=64):
+    """给已发布景点灌打桩向量。语义兜底那条用例要用, 与 test_semantic_search 同做法。"""
+    fake = FakeEmbeddingClient(dim=dim, model=model)
+    for attraction in db_session.scalars(
+        select(Attraction).where(Attraction.status == 'published')
+    ).all():
+        text = canonical.canonical_text(attraction)
+        db_session.add(
+            AttractionEmbedding(
+                attraction_id=attraction.id,
+                model=model,
+                dim=dim,
+                pipeline_version=canonical.PIPELINE_VERSION,
+                content_hash=canonical.content_hash(text, model),
+                embedding=encode(fake.vector_of(text)),
+            )
+        )
+    db_session.commit()
+
+
+def test_empty_result_relaxes_the_narrowest_condition(client, seeded, use_client):
+    """条件叠到一条都查不出来时, 摘掉「摘了之后剩得最少」的那个再查一次。
+
+    夹具里的景点都没有 a_level, 所以 grade=5A 必然 0 条; 城市还在, 于是摘的是等级。
+    摘城市也能出结果, 但那会剩下一堆别的城市 —— 那才是答非所问。
+    """
+    use_client(FakeClient(payload={'category': 'nature', 'grade': '5A', 'city': '杭州市'}))
+    body = search(client, '杭州的自然风光里的 5A 景点')
+    assert body['relaxed'] == ['grade']
+    assert body['filters']['grade'] is None      # 生效的条件里已经没有它了
+    assert body['filters']['city'] == '杭州市'
+    assert body['semantic_fallback'] is False
+    assert {i['slug'] for i in body['items']} == {'west-lake'}
+    assert '已去掉「等级」再查' in body['note']
+
+
+def test_single_condition_is_never_relaxed(client, seeded, use_client):
+    """只剩一个条件时不再摘: 摘光了就是把整库倒给用户, 那不是放宽, 是答非所问。"""
+    use_client(FakeClient(payload={'grade': '5A'}))
+    body = search(client, '5A 景点')
+    assert body['relaxed'] == []
+    assert body['filters']['grade'] == '5A'      # 条件照旧生效, 只是确实没有结果
+    assert body['items'] == []
+    assert body['total'] == 0
+
+
+def test_semantic_fallback_when_nothing_matches(client, seeded, db_session, use_client, use_embedding):
+    """结构化一条都查不出来时找语义近邻 —— 库里没有「温泉」这个标签, 但意思相近的景点有。"""
+    _store_vectors(db_session)
+    use_embedding(FakeEmbeddingClient(dim=64))
+    use_client(FakeClient(payload={'tag': 'hot-spring'}))
+    body = search(client, '杭州的湖')
+    assert body['semantic_fallback'] is True
+    assert body['total'] > 0
+    assert [i['slug'] for i in body['items']][0] == 'west-lake'
+    assert '按意思找的最接近的几条' in body['note']
+
+
+def test_no_semantic_fallback_without_vectors(client, seeded, use_client):
+    """库内没灌向量时, 空结果就如实是空的 —— 兜底失败不该变成报错, 也不该变成编造。"""
+    use_client(FakeClient(payload={'tag': 'hot-spring'}))
+    body = search(client, '冬天泡温泉')
+    assert body['semantic_fallback'] is False
+    assert body['items'] == []
+    assert body['total'] == 0
+
+
+def test_multi_value_string_is_split_before_whitelisting(client, seeded, use_client):
+    """模型把多个取值写成一整串时, 拆开逐个过白名单, 取命中的第一个 —— 不整条丢掉。"""
+    use_client(FakeClient(payload={'tag': 'free, world-heritage', 'note': '免票或世界遗产'}))
+    body = search(client, '免票或者世界遗产')
+    assert body['filters']['tag'] == 'free'
+    assert {i['slug'] for i in body['items']} == {'west-lake', 'lingyin-temple'}
+    assert '已忽略' not in body['note']          # 不是「不认识的取值」, 是收下了其中一个
+
+
+def test_multi_value_uses_dunhao_and_takes_the_first_hit(client, seeded, use_client):
+    """顿号同样是分隔符, 且取的是「第一个能对上的」而不是「第一个」——SSS 排在前面也不认。"""
+    use_client(FakeClient(payload={'grade': 'SSS、5A'}))
+    body = search(client, '顶级景点')
+    assert body['filters']['grade'] == '5A'
+    assert body['relaxed'] == []

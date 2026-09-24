@@ -97,7 +97,7 @@ psql -d attraction_atlas -c "select * from schema_version;"
 | `attraction_plan.budget_level` 只给档次不给金额 | 与 `ticket_price` 同理：具体价格是易变信息。四档 `free` / `low` / `mid` / `high` |
 | 一个景点可以有多个方案，方案 slug 恒为 `<景点slug>-plan` | 便于按景点反查，也让 CI 能断言两者一致 |
 | `attraction_embedding` 的 `embedding` 存 JSON 文本，**不用 pgvector** | 本仓库的 ORM 刻意只用可移植类型，测试跑 SQLite 内存库、本地不装 PostgreSQL。引 pgvector 会同时带来「建表要超级用户装扩展」「CI 要换镜像」「SQLite 与 PG 两套代码路径」三份复杂度，而全库 90 条景点用纯 Python 算余弦只要几毫秒。目录过万条时再换，接口不用改（见 `backend/app/search/vectors.py`） |
-| `attraction_embedding` 的联合唯一键是 `(attraction_id, model)`，`model` 形如 `ollama:nomic-embed-text:auto` | 切换模型期间新旧向量可以并存；`dim` 一并存下来，因为「维度」是数据的一部分，只放配置里的话配置一改旧向量就成了静默的垃圾 |
+| `attraction_embedding` 的联合唯一键是 `(attraction_id, model)`，`model` 形如 `ollama:bge-m3:auto` | 切换模型期间新旧向量可以并存；`dim` 一并存下来，因为「维度」是数据的一部分，只放配置里的话配置一改旧向量就成了静默的垃圾 |
 | `itinerary.status` 的 `rejected` 与 `failed` **必须分开** | `rejected` = 被限额拦下、一分钱没花；`failed` = 调了模型但失败。前端提示语完全不同，混在一起用户会以为是自己输入有问题 |
 | `itinerary` 只存 `request_hash`，**不存需求原文** | 原文里常有同行人、预算这类个人信息。不存就不需要额外背一套保留期与删除机制，而生成并不需要回读原文 |
 | `itinerary.unit_price` 是**单价快照** | 服务商调价后，历史行程的成本仍然按当时的价算 |

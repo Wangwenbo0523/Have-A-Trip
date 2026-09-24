@@ -23,7 +23,7 @@ from datetime import datetime, timedelta, timezone
 
 from sqlalchemy import func, select, update
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from ..config import Settings
 from ..llm.client import LLMClient, LLMError
@@ -169,15 +169,52 @@ def create(
     return row, "created"
 
 
-def candidates_for(
-    db: Session, *, request_text: str, settings: Settings
-) -> list[Attraction]:
-    """候选召回: 向量近邻优先, 不可用时退回热度。
+def city_in_text(db: Session, text: str) -> str | None:
+    """从需求原文里认出城市名, 不调模型。
+
+    认法很土: 拿库里出现过的城市名去原文里找一遍。用户写「北京」而库里存的是「北京市」,
+    所以去掉后缀再比一次。命中两个以上城市就返回 None —— 那种需求本来就该放宽,
+    硬挑一个只会更糟; 这也顺手把「大同小异」这类误认挡掉了(一旦真出现另一个城市名,
+    命中数就不是 1)。
+
+    为什么不复用 interpret(): 那要再调一次模型。这一步跑在已经限量、限时的后台任务里,
+    多一次调用就多一份钱和一份延迟, 而认城市名这件事用库里的城市清单直接扫就够。
+    """
+    cities = [
+        str(row[0])
+        for row in db.execute(
+            select(Attraction.city).where(Attraction.city.is_not(None)).distinct()
+        ).all()
+        if row[0]
+    ]
+    hits = []
+    for city in cities:
+        stem = city.rstrip("市") or city
+        if city in text or (len(stem) >= 2 and stem in text):
+            hits.append(city)
+    return hits[0] if len(hits) == 1 else None
+
+
+def _city_attractions(db: Session, city: str, limit: int) -> list[Attraction]:
+    """同城的已发布景点, 评分高的在前 —— 排序口径与 content_based 的兜底一致。"""
+    statement = (
+        select(Attraction)
+        .where(Attraction.status == "published", Attraction.city == city)
+        .options(selectinload(Attraction.tags), selectinload(Attraction.images))
+        .order_by(
+            Attraction.rating_avg.desc(), Attraction.rating_count.desc(), Attraction.id.asc()
+        )
+        .limit(limit)
+    )
+    return list(db.scalars(statement).all())
+
+
+def _recall(db: Session, request_text: str, settings: Settings, limit: int) -> list[Attraction]:
+    """全库召回: 向量近邻优先, 不可用时退回热度。
 
     退回热度不是"降级到不能看": 候选只是给模型的挑选范围, 排不出好看的结果
     也比一条都不给强。没有候选才真的没法生成。
     """
-    limit = settings.trip_candidate_limit
     model = semantic.active_model(db)
     if model:
         try:
@@ -189,6 +226,39 @@ def candidates_for(
             if hits:
                 return [attraction for attraction, _ in hits]
     return content_based.popular_attractions(db, limit)
+
+
+def candidates_for(
+    db: Session, *, request_text: str, settings: Settings, days: int = 1
+) -> list[Attraction]:
+    """候选召回: 认得出城市就先按城市收窄, 其余交给向量近邻、再退回热度。
+
+    城市是这里唯一**硬**的约束: 用户说「北京 3 天」, 给他排西安的兵马俑是没有意义的,
+    而这种错在页面上看起来还挺合理, 最容易被当成对的。所以只要认得出城市, 就在那座
+    城市的景点里挑 —— 同城候选本来只有个位数, 池内排序交给模型就够; 按向量跨库找
+    相似正是城市约束要挡掉的东西。
+
+    同城连一天一站都排不满时才放宽: 同城全部留下, 再用全库召回补足。判据与
+    validator 的 candidates_sufficient(len(candidate_ids) >= days) 是同一把尺子。
+    """
+    limit = settings.trip_candidate_limit
+    city = city_in_text(db, request_text)
+    if not city:
+        return _recall(db, request_text, settings, limit)
+
+    local = _city_attractions(db, city, limit)
+    if len(local) >= days:
+        return local
+
+    picked = list(local)
+    seen = {attraction.id for attraction in picked}
+    for attraction in _recall(db, request_text, settings, limit):
+        if len(picked) >= limit:
+            break
+        if attraction.id not in seen:
+            seen.add(attraction.id)
+            picked.append(attraction)
+    return picked
 
 
 def _fail(db: Session, itinerary_id: int, message: str) -> None:
@@ -232,7 +302,9 @@ def _generate(
 
     usage = {"prompt_tokens": 0, "completion_tokens": 0}
     try:
-        candidates = candidates_for(db, request_text=request_text, settings=settings)
+        candidates = candidates_for(
+            db, request_text=request_text, settings=settings, days=row.days
+        )
         if not candidates:
             raise ValidationError("库内没有可编排的已发布景点")
 

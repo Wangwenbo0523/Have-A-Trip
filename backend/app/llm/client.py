@@ -27,7 +27,9 @@ PRESETS: dict[str, dict[str, str]] = {
     "ollama": {
         "base_url": "http://127.0.0.1:11434/v1",
         "model": "qwen2.5:7b-instruct",
-        "embedding_model": "nomic-embed-text",
+        # 中文场景实测比 nomic-embed-text 明显准("泡温泉"能对上温泉景点、"带娃"能对上
+        # 亲子乐园), 代价是 1024 维 + 1.2 GB 模型 —— 见 docs/PLAN.md 的变更日志。
+        "embedding_model": "bge-m3",
     },
     # 云端: 需要 LLM_API_KEY
     "deepseek": {
@@ -106,6 +108,7 @@ class LLMClient:
         self.timeout = settings.llm_timeout_seconds
         self.max_tokens = settings.llm_max_tokens
         self.cache_ttl = settings.llm_cache_ttl_seconds
+        self.seed = settings.llm_seed
 
     @property
     def available(self) -> bool:
@@ -117,8 +120,15 @@ class LLMClient:
         return True
 
     def _payload(
-        self, system: str, user: str, json_mode: bool, max_tokens: int | None = None
+        self,
+        system: str,
+        user: str,
+        json_mode: bool,
+        max_tokens: int | None = None,
+        *,
+        optional: bool = True,
     ) -> dict[str, Any]:
+        """optional=False 是给 400 重试用最小请求体: 不带任何网关可能不认的字段。"""
         payload: dict[str, Any] = {
             "model": self.model,
             "messages": [
@@ -132,6 +142,10 @@ class LLMClient:
         }
         if json_mode:
             payload["response_format"] = {"type": "json_object"}
+        # seed 是"能带就带"的字段: 固定种子配合 temperature=0 才算真的可复现。
+        # 它和 response_format 一样可能被网关拒掉, 所以重试时会一起去掉。
+        if optional and self.seed >= 0:
+            payload["seed"] = self.seed
         return payload
 
     def chat_json(
@@ -167,21 +181,22 @@ class LLMClient:
         if self.api_key:
             headers["Authorization"] = "Bearer " + self.api_key
         last_error = "未知错误"
-        # 先带 response_format 试(JSON 更稳); 有的网关不认这个字段会回 400, 那就去掉再试一次。
+        # 第一次带上全部可选字段(response_format 让 JSON 更稳, seed 让结果可复现);
+        # 有的网关不认这些字段会回 400, 那就退到最小请求体再试一次。
         # 只重试这一种情况 —— 模型调用有用户可感知的延迟, 不能无脑重试。
-        for json_mode in (True, False):
+        for json_mode, optional in ((True, True), (False, False)):
             try:
                 with httpx.Client(timeout=self.timeout) as http:
                     response = http.post(
                         self.base_url + "/chat/completions",
-                        json=self._payload(system, user, json_mode, budget),
+                        json=self._payload(system, user, json_mode, budget, optional=optional),
                         headers=headers,
                     )
             except httpx.HTTPError as exc:
                 raise LLMError("连不上模型: %s" % exc) from exc
 
-            if response.status_code == 400 and json_mode:
-                last_error = "HTTP 400(可能不支持 response_format)"
+            if response.status_code == 400 and (json_mode or optional):
+                last_error = "HTTP 400(可能不支持 response_format / seed)"
                 continue
             if response.status_code >= 400:
                 raise LLMError("模型返回 HTTP %s" % response.status_code)

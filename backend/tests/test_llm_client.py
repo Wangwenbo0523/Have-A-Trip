@@ -66,6 +66,7 @@ def client_for(base_url, **overrides):
         "llm_model": "test-model",
         "llm_api_key": None,
         "llm_cache_ttl_seconds": 0,
+        "llm_seed": 42,
     }
     config.update(overrides)
     settings = Settings(**config)
@@ -155,3 +156,35 @@ def test_unconfigured_client_is_not_available_and_never_calls_out():
     assert client.available is False
     with pytest.raises(LLMError, match="未配置模型"):
         client.chat_json("s", "u")
+
+def test_request_carries_a_fixed_seed():
+    """temperature=0 不够: ollama 每次请求自己抽种子, 固定 seed 才让解析结果可复现。"""
+    with running_server(lambda n: (200, reply('{"a": 1}'))) as (base_url, calls):
+        with client_for(base_url) as client:
+            client.chat_json("s", "u")
+    assert calls[0]["body"]["seed"] == 42
+
+
+def test_negative_seed_omits_the_field():
+    """给负数表示不带这个字段 —— 个别自建网关不认未知字段, 会回 400。"""
+    with running_server(lambda n: (200, reply('{"a": 1}'))) as (base_url, calls):
+        with client_for(base_url, llm_seed=-1) as client:
+            client.chat_json("s", "u")
+    assert "seed" not in calls[0]["body"]
+
+
+def test_retry_on_400_drops_seed_as_well():
+    """400 重试退到最小请求体: response_format 与 seed 一起去掉, 先保住这次调用。"""
+    def responder(n):
+        if n == 1:
+            return 400, {"error": {"message": "unknown field"}}
+        return 200, reply('{"b": 2}')
+
+    with running_server(responder) as (base_url, calls):
+        with client_for(base_url) as client:
+            assert client.chat_json("s", "u") == {"b": 2}
+
+    assert len(calls) == 2
+    assert "seed" in calls[0]["body"]
+    assert "seed" not in calls[1]["body"]
+    assert "response_format" not in calls[1]["body"]

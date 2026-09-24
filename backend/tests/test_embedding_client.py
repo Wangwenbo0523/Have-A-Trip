@@ -274,9 +274,9 @@ def test_cache_can_be_switched_off():
 def test_signature_pins_the_dimension():
     """签名带维度: 同一模型换了维度必须算两套向量, 不能混在一张表里比。"""
     auto = EmbeddingClient(Settings(embedding_provider='ollama', embedding_dim=0))
-    pinned = EmbeddingClient(Settings(embedding_provider='ollama', embedding_dim=768))
-    assert auto.signature == 'ollama:nomic-embed-text:auto'
-    assert pinned.signature == 'ollama:nomic-embed-text:768'
+    pinned = EmbeddingClient(Settings(embedding_provider='ollama', embedding_dim=1024))
+    assert auto.signature == 'ollama:bge-m3:auto'
+    assert pinned.signature == 'ollama:bge-m3:1024'
     assert auto.signature != pinned.signature
 
 
