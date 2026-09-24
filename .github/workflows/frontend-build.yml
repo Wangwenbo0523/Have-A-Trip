@@ -49,7 +49,7 @@ jobs:
           du -sh dist
 
       # 这两条是「不做地图跟踪」与「不再打国家数据源」的守线, 靠 CI 拦而不是靠自觉
-      - name: 守线: 不引入地图/定位, 不再用旧的国家数据源
+      - name: "守线: 不引入地图/定位, 不再用旧的国家数据源"
         run: |
           if grep -rInE "restcountries|leaflet|mapbox-gl|components/MapView|WorldMap|geolocation" src; then
             echo "::error::src 下出现了被排除的地图/定位依赖或旧的国家数据源"

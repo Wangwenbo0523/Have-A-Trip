@@ -33,6 +33,21 @@ jobs:
       - name: 跑许可证卡口
         run: python scripts/license_gate.py --strict
 
+      # 工作流文件本身写坏了的话, GitHub 只会记一次没有 job 的 failure,
+      # 之后每次推送都「看起来跑了, 其实一步没跑」。这里先解析一遍挡住这种静默失效。
+      - name: 校验 CI 配置可解析
+        run: |
+          pip install --quiet pyyaml
+          python - <<'PY'
+          import pathlib, yaml
+          for path in sorted(pathlib.Path(".github/workflows").glob("*.yml")):
+              doc = yaml.safe_load(path.read_text(encoding="utf-8"))
+              jobs = list((doc or {}).get("jobs") or {})
+              if not jobs:
+                  raise SystemExit(f"{path}: 没有解析出任何 job")
+              print(f"{path.name}: name={doc.get('name')!r} jobs={jobs}")
+          PY
+
       - name: 校验基底 LICENSE 与钉版记录
         run: |
           if [ ! -f frontend/LICENSE ]; then
