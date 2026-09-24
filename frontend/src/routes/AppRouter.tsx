@@ -6,7 +6,6 @@ import Header from "../components/Header"
 import Footer from "../components/Footer"
 import Detail from "../components/CountryDetails/Detail"
 import Credits from "../components/Credits"
-import { WorldMap } from "../components/MapView/MapView"
 
 interface AppRouterProps {
   onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void
@@ -66,7 +65,6 @@ function AppRouter({
           />
           {routes}
           <Route path="/detail/:id" element={<Detail />} />
-          <Route path="/map" element={<WorldMap countries={countries} />} />
           <Route path="/credits" element={<Credits />} />
         </Routes>
         <Footer />

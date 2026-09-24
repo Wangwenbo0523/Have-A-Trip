@@ -15,6 +15,7 @@
 *.css     text eol=lf
 *.html    text eol=lf
 *.svg     text eol=lf
+*.sql     text eol=lf
 
 # 许可证与属性文件本身
 LICENSE        text eol=lf

@@ -10,16 +10,18 @@
 |---|---|---|
 | 违禁（GPL / AGPL / SSPL / CC-BY-NC） | **0** | 通过 |
 | 告警（MPL-2.0） | 13 | `certifi`（Python 证书包）与 `lightningcss` 及其 12 个平台包（Vite 8 的 CSS 压缩器，仅构建期）。MPL 是文件级 copyleft，只要不修改这些包的文件就无义务。保持「只用不改」即可。 |
-| 未标注许可 | 4 | `@mapbox/jsonlint-lines-primitives`、`sort-asc`、`sort-object`、`sort-desc` |
+| 未标注许可 | **0** | 原先那 4 项随 `ol` 依赖一并消失，见下 |
 
-那 4 项未标注许可的包来自这条链（已验证）：
+地图库 `ol` 已在 S3 删除（本项目不做地图与定位），它带进来的这条链随之消失：
 
 ```
 ol  ->  ol-mapbox-style  ->  @mapbox/mapbox-gl-style-spec  ->  { @mapbox/jsonlint-lines-primitives, sort-object }
                                                                         sort-object  ->  { sort-asc, sort-desc }
 ```
 
-本项目不需要地图，删掉 `ol` 依赖后整条链连同这 4 个未标注项一起消失。这是「删除地图」的附带收益。
+`scripts/license_gate.py` 里的「已登记未标注许可」白名单因此清空，并新增了 `BANNED_NPM_PACKAGES`：
+一旦 `ol` / `leaflet` / `mapbox-gl` / `ol-mapbox-style` 被加回 `frontend/package.json`，卡口直接失败。
+把「删掉地图」的收益固化成了自动检查，而不是靠人记得。
 
 ## 二、代码层：红线
 

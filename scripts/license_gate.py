@@ -43,13 +43,19 @@ ALLOW_PATTERNS = [
 
 # 已登记的「未标注许可证」依赖: 已知来源与移除计划, 不阻塞 CI。
 # 要求: 每项都要能说清来自哪条依赖链、什么时候会消失。不允许无脑加白。
-# 这 4 项来自前端地图库 `ol` -> `ol-mapbox-style` -> `@mapbox/mapbox-gl-style-spec`,
-# 删除 `ol`(本项目不需要地图)后整条链会一并消失。
-KNOWN_UNLABELED = {
-    "@mapbox/jsonlint-lines-primitives",
-    "sort-asc",
-    "sort-desc",
-    "sort-object",
+#
+# 现在是空的。原先那 4 项(@mapbox/jsonlint-lines-primitives / sort-asc / sort-desc /
+# sort-object)来自前端地图库 `ol` -> `ol-mapbox-style` -> `@mapbox/mapbox-gl-style-spec`;
+# 本项目不做地图与定位, 删除 `ol` 后整条链已一并消失。
+# 将来若真要加, 必须写清来自哪条链、以及移除时间点。
+KNOWN_UNLABELED: set[str] = set()
+
+# 禁止回流的依赖: 它们要么是明确非目标的功能, 要么会拖进未标注许可的传递依赖
+BANNED_NPM_PACKAGES = {
+    "ol": "OpenLayers 地图库: 本项目不做地图, 且它会拖进 4 个未标注许可的传递依赖",
+    "leaflet": "Leaflet 地图库: 本项目不做地图",
+    "mapbox-gl": "Mapbox GL 地图库: 本项目不做地图",
+    "ol-mapbox-style": "地图相关传递依赖",
 }
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -147,6 +153,25 @@ def check_bases() -> list[str]:
     return problems
 
 
+def check_frontend_deps() -> list[str]:
+    """禁止地图类依赖回流: 它们是非目标功能, 且会拖进未标注许可的传递依赖。"""
+    problems = []
+    pkg_path = ROOT / "frontend" / "package.json"
+    if not pkg_path.exists():
+        return problems
+    try:
+        pkg = json.loads(pkg_path.read_text(encoding="utf-8-sig"))
+    except json.JSONDecodeError as exc:
+        return [f"frontend/package.json 解析失败: {exc}"]
+    for section in ("dependencies", "devDependencies", "optionalDependencies"):
+        for name in (pkg.get(section) or {}):
+            if name in BANNED_NPM_PACKAGES:
+                problems.append(
+                    f"frontend/package.json 的 {section} 出现 {name}: {BANNED_NPM_PACKAGES[name]}"
+                )
+    return problems
+
+
 def main() -> int:
     strict = "--strict" in sys.argv
     banned: list[str] = []
@@ -166,7 +191,7 @@ def main() -> int:
             entry = f"[{label}] {name}@{version}  <-- {lic.strip()[:80]}  ({why})"
             (banned if level == "BANNED" else warned).append(entry)
 
-    problems = check_bases()
+    problems = check_bases() + check_frontend_deps()
 
     print("=" * 68)
     print("许可证卡口 · 目标: 保住「将来可闭源」的退路")

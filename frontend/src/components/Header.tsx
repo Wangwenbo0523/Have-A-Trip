@@ -10,7 +10,6 @@ const navLinks = [
   { to: "/europe", label: "Europe" },
   { to: "/oceania", label: "Oceania" },
   { to: "/polar", label: "Polar" },
-  { to: "/map", label: "Map" },
 ]
 
 const Header = () => {

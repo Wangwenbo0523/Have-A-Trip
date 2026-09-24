@@ -3,7 +3,6 @@ import "../../styles/Region.css";
 import Loader from "../utils/Loader";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
-import { CountryMap } from "../MapView/MapView";
 import { Country } from "../../../src/types/index";
 
 const Detail = () => {
@@ -103,13 +102,6 @@ const Detail = () => {
             <h3>Time Zone(s)</h3>
             <p>{details.timezones.join(", ")}</p>
           </div>
-          {details && (
-            <CountryMap
-              countryName={details.name.common}
-              lat={details.latlng[0]}
-              lng={details.latlng[1]}
-            />
-          )}
 
           <Link
             className="f6 link dim br-pill ph4 pv2 mb2 dib white bg-purple"
