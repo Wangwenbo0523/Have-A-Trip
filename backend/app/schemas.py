@@ -262,3 +262,62 @@ class AIStatusOut(BaseModel):
     provider: str
     model: str | None = None
     disclaimer: str
+
+
+class AIAskIn(BaseModel):
+    """就某个景点追问一句。用 slug 而不是 id —— 对外标识符一直是 slug。"""
+
+    slug: str = Field(min_length=1, max_length=200)
+    question: str = Field(min_length=1, max_length=200)
+
+
+class AIAskOut(BaseModel):
+    """追问的回答。
+
+    grounded=false 表示这段答案**没有**用上模型(降级时后端拼的档案摘录),
+    这时答案仍然有档案依据, 只是不是模型写的; degraded=true 表示这次没走成模型。
+    """
+
+    slug: str
+    question: str
+    grounded: bool
+    degraded: bool
+    model: str | None = None
+    answer: str
+    note: str = ""
+    # 模型自报引用了哪些档案字段; dropped 是它报了但档案里不存在的
+    cited: list[str] = Field(default_factory=list)
+    dropped: list[str] = Field(default_factory=list)
+    disclaimer: str
+
+
+class AIRecommendNotesIn(BaseModel):
+    """润色推荐理由的入参。用户解析规则与 /recommendations 完全一致。"""
+
+    user_id: int | None = None
+    device_id: str | None = Field(default=None, max_length=200)
+    limit: int = Field(default=6, ge=1)
+
+
+class AIRefinedReason(BaseModel):
+    slug: str
+    note: str
+
+
+class AIRecommendNotesOut(BaseModel):
+    """slug -> 润色后的理由。
+
+    条目、顺序、分数都由 /recommendations 决定, 这里只多给一层文案 ——
+    模型碰不到推荐结果本身, 只能改写理由的措辞。
+    polished=false 表示这次没润色成(未配置模型 / 说法查不到依据), 此时的 note
+    就是后端原来的理由, 页面照常显示即可。
+    """
+
+    polished: bool
+    degraded: bool
+    model: str | None = None
+    note: str = ""
+    reasons: list[AIRefinedReason] = Field(default_factory=list)
+    # 被丢掉的条目: 模型报了不存在的 slug, 或改写内容查不到依据
+    dropped: list[str] = Field(default_factory=list)
+    disclaimer: str

@@ -19,9 +19,11 @@ BACKEND_ROOT = pathlib.Path(__file__).resolve().parents[1]
 if str(BACKEND_ROOT) not in sys.path:
     sys.path.insert(0, str(BACKEND_ROOT))
 
+from llm_stubs import FakeClient  # noqa: E402
+
 from app.config import get_settings  # noqa: E402
 from app.db import Base, get_db  # noqa: E402
-from app.llm import cache_clear as llm_cache_clear  # noqa: E402
+from app.llm import cache_clear as llm_cache_clear, get_llm_client  # noqa: E402
 from app.main import app  # noqa: E402
 from app.recommend import service as rec_service  # noqa: E402
 from app.models import AppUser, Attraction, BehaviorLog, Category, Tag  # noqa: E402
@@ -141,3 +143,19 @@ def user(db_session):
     db_session.add(person)
     db_session.commit()
     return person
+
+
+@pytest.fixture()
+def use_client():
+    """把打桩的模型客户端装进依赖。用完就摘, 不给别的用例留串味。
+
+    用法: `use_client(FakeClient(payload={...}))`, FakeClient 见 tests/llm_stubs.py;
+    也可以传真的 LLMClient(Settings(...)) 来验配置分支。
+    """
+
+    def install(fake):
+        app.dependency_overrides[get_llm_client] = lambda: fake
+        return fake
+
+    yield install
+    app.dependency_overrides.pop(get_llm_client, None)

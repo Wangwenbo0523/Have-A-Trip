@@ -16,7 +16,7 @@
 | 2 | 浏览与检索 | 列表分页、按分类/城市/标签筛选、关键字搜索 |
 | 3 | 推荐 | 有行为数据时走 RecBole 离线结果；冷启动走内容相似度兜底 |
 | 4 | 行为采集 | 浏览/收藏/评分的埋点入库，作为推荐原料（只记录行为，不做定位） |
-| 5 | AI 一句话检索 | 把自然语言解析成筛选条件后走**既有**检索（S9）；模型不产出景点内容 |
+| 5 | AI 四件套 | 一句话检索 / 详情页追问 / 推荐理由润色：模型只「解析条件」或「复述已有档案」，不产出景点内容；离线简介草稿**人审后入库**（S9） |
 
 ### 明确不做（非目标）
 
@@ -26,6 +26,7 @@
 | 路线规划、导航、订票、支付 | 与「景点大全」无关，且都是长期维护负担 |
 | 浏览器定位权限 | `navigator.geolocation` 已删（commit `2f8ae7f`），后续任何改动都不得引入 |
 | 用户上传 / UGC 内容 | 审核成本高，一期不做 |
+| 模型直写数据库 | 简介草稿只出「待审 SQL」（`db/seed/drafts/`，不入版本库），入的是人核对过的句子 |
 
 > **关于经纬度**：`attraction` 表仍保留 `lat` / `lon`，但它只参与「同城聚合」「同城推荐」这类**静态数据计算**，
 > 与地图渲染和实时定位无关。这是一条刻意划出的边界，不是地图功能的伏笔。
@@ -64,7 +65,7 @@
 | **S7** | 内容与数据 | `db/seed/*.sql`（30–50 个景点）+ 来源清单 | S0 | G4 | 每个景点 `source` / `license` 非空且可用 | `data(seed):` | ✅ 本次提交 |
 | **S5** | 数据来源与许可声明页 | `frontend/src/components/Credits.tsx` 改造 + `GET /api/v1/sources` | S4、S7 | G5 | 页面逐条列出来源与许可，与 S7 一致 | `feat(web):` | ✅ 本次提交 |
 | **S8** | 工程化收尾 | CI 增 build/test、`README`、部署说明 | S2、S4、S6 | G6 | CI 三条工作流全绿且**真的会**变红 | `chore(ci):` | ✅ 本次提交 |
-| **S9** | AI 接入（一句话检索） | `backend/app/llm/*`、`backend/app/api/ai.py`、`tests/test_ai.py` | S1、S4 | G7 | 默认不配模型也能跑；模型只解析需求、不产出景点 | `feat(ai):` | 🚧 第一刀完成 |
+| **S9** | AI 接入（四刀） | `backend/app/llm/*`、`backend/app/api/ai.py`、`tests/test_ai*.py`、`scripts/draft_attraction_summaries.py` | S1、S4 | G7 | 默认不配模型也能跑；模型只解析需求、不产出景点 | `feat(ai):` | ✅ 四刀全部完成 |
 
 ---
 
@@ -474,10 +475,10 @@ npm.cmd run dev                        # 手动过一遍: 首页 -> 分类 -> �
 
 | # | 这一刀 | 产出 | 状态 |
 |---|---|---|---|
-| 1 | **自然语言检索** | `app/llm/{client,interpret}.py`、`app/api/ai.py`、`tests/test_ai.py` | ✅ 本次 |
-| 2 | 详情页追问 | 把「这个景点适合带小孩吗」这类问题，答成**站内字段的复述**（适合人群 / 建议时长 / 最佳季节） | ⏳ 未开工 |
-| 3 | 推荐理由润色 | 把 `recommend` 已给出的 `reason` 说成人话；**推荐结果本身不交给模型** | ⏳ 未开工 |
-| 4 | 离线批量生成 | 用模型给景点补简介草稿，**人审后入库**，产物进 `db/` 而非运行时 | ⏳ 未开工 |
+| 1 | **自然语言检索** | `app/llm/{client,interpret}.py`、`app/api/ai.py`、`tests/test_ai.py` | ✅ `b829094` |
+| 2 | 详情页追问 | 把「这个景点适合带小孩吗」这类问题，答成**站内字段的复述**（适合人群 / 建议时长 / 最佳季节） | ✅ 本次 |
+| 3 | 推荐理由润色 | 把 `recommend` 已给出的 `reason` 说成人话；**推荐结果本身不交给模型** | ✅ 本次 |
+| 4 | 离线批量生成 | 用模型给景点补简介草稿，**人审后入库**，产物进 `db/` 而非运行时 | ✅ 本次 |
 
 **第一刀 · 任务清单**
 
@@ -513,6 +514,49 @@ npm.cmd run dev                        # 手动过一遍: 首页 -> 分类 -> �
 | 依赖修正 | `httpx` 原先只在 `requirements-dev.txt` —— 而它是 AI 客户端的**运行时**依赖，只装 `requirements.txt` 的生产环境会直接 ImportError。已提到运行时依赖 |
 | 实测 | `pytest`：**84 passed / 3 skipped**（后端 65 → 87 条；3 skip 是既有的 parity 用例，需 `TEST_DATABASE_URL`）。前端 Vitest：**50 passed**（41 → 50） |
 | 端到端 | 真起 `uvicorn` + 一个桩模型服务（OpenAI 兼容）逐条验过：正常解析命中；模型故意给 `category=雪山` / `status=draft` / 景点名时全部被丢且 note 如实说明；`LLM_PROVIDER=none` 与「模型连不上」两条路径都是 HTTP 200 + 降级；经 vite 同源代理再跑一遍，链路通 |
+
+**第二刀 · 实际做了什么（详情页追问）**
+
+| 项 | 结果 |
+|---|---|
+| 护栏模块 | `app/llm/ask.py`：`PROMPT_VERSION=ai-ask-v1`；17 个字段白名单（`FIELD_LABELS`），空字段不进提示词 —— 档案里没有的东西，模型看不见就没法编 |
+| 两关机械校验 | `verify()`：① 答案里的**每个数字**都要能在档案里找到同一个数字（票价 / 时长 / 年份 / 人数 / 评分都拦得住）；② 档案里没有依据的主题词（开放时间 / 天气 / 交通 / 预约）不许提，除非档案自己写了或是否定式提及 |
+| 降级 | 模型不可用 / 超时 / 校验没过 → 换成后端拼的**档案摘录**（`fallback_answer`），仍是 HTTP 200；`grounded` / `degraded` / `note` 三个字段把「这句话是谁写的」如实告诉前端 |
+| 接口与契约 | `POST /ai/ask`（slug + question，404 口径与详情页一致）；`app/schemas.py` 增 `AIAskIn` / `AIAskOut`，`disclaimer` 必填 |
+| 前端 | `AiAskBox.tsx`（3 个建议问题、结果 / 降级 / 错误三态）+ 抽出的 `useAIStatus` 共享 hook；`AttractionDetail` 在事实表后挂上 |
+| 测试 | `tests/test_ai_ask.py` 20 用例；前端 `AiAskBox.test.tsx` 8 用例。后端 87 → 117 |
+| 端到端 | 桩模型吐「门票 60 元」被数字溯源拦下并换成档案摘录；问灵隐寺「要逛多久」吐「4 小时」被拦（档案没有），问西湖同样的问题放行；「怎么去」吐「地铁 2 号线」被主题词与数字两道拦下；`draft-spot` 走 404；提示词里只有当前景点的字段 |
+
+**第三刀 · 实际做了什么（推荐理由润色）**
+
+| 项 | 结果 |
+|---|---|
+| 边界 | `app/llm/polish.py`：进来的 N 条推荐是后端**已经算好**的，模型只拿到「景点名 + 模板理由」，返回值只是 `{slug: 文案}` 的映射，条目 / 顺序 / 分数都不经过它 |
+| 护栏 | ① 返回的 slug 必须是输入集合的子集，多出来的丢掉；② 少了的那几条用**原来的理由**兜底，页面不会出现空理由；③ 改写文案同样过数字溯源；④ 超长（>60 字）直接不要，理由位被撑成一段话就失去意义 |
+| 接口与契约 | `POST /ai/recommend-notes`；`AIRecommendNotesIn` / `AIRefinedReason` / `AIRecommendNotesOut`。降级时 `polished=false` 且 `reasons` 就是原来的理由 |
+| 前端 | 新增 `RecommendationGrid.tsx` 接管首页推荐位：模型可用时用润色文案并标出「AI 润色」+ 免责声明，不可用 / 失败时原样显示后端理由；顺手修掉「卡片 + 理由」在同一格子里互相压叠的布局缺陷 |
+| 测试 | `tests/test_ai_polish.py` 13 用例；前端 `RecommendationGrid.test.tsx` 6 用例。后端 117 → 130，前端 58 → 64 |
+| 端到端 | 桩模型给第一条塞「地铁 3 分钟」→ 被拦并回落成原理由（`dropped` 里如实记录）；末尾塞一个不存在的 slug `invented-spot` → 被丢；其余三条正常替换。前端真机看到「AI 润色」标记与免责声明 |
+
+**第四刀 · 实际做了什么（离线批量生成）**
+
+| 项 | 结果 |
+|---|---|
+| 定位 | 这一刀生成的内容**会变成景点档案的一部分**，所以它是离线的：`app/llm/draft.py` + `scripts/draft_attraction_summaries.py`，只出**待审 SQL**，产物落在 `db/seed/drafts/`（`.gitignore` 忽略，只有 README 入版本库） |
+| 不碰运行时 | 脚本对库**只做 SELECT**；渲染出来的语句只有 `UPDATE attraction SET summary = …`，来源 / 许可 / 状态字段不在射程内；有一条测试遍历 OpenAPI 路径，确认没有任何路由通往这个模块 |
+| 护栏 | 输入复用 `ask.facts`（只有已公开字段，来源与许可不给模型）；数字溯源复用 `ask.verify`；超长（>120 字）丢弃；模型未配置时**直接退出 code 2**，不降级凑数 |
+| 人审工作流 | 生成的 SQL 里每条都带「`-- 原: …`」对照行与文件头（生成时间 / 模型 / 提示词版本 / 请勿直接执行）；核对通过的语句手工抄进 `db/seed/seed.sql`，随种子走 CI |
+| 测试 | `tests/test_llm_draft.py` 17 用例：编造数字 / 超长 / 空回答 / 未配置 / 调用失败各一条，`render_sql` 只出 UPDATE 且转义单引号、未通过的草稿不进文件。后端 130 → 137（134 passed + 3 skipped） |
+| 端到端 | 桩模型给「秦始皇兵马俑」编了「1987 年建成」→ 被数字溯源拦下、不进待审 SQL；另外两条正常生成并带「原」对照行 |
+
+**UI 润色（本轮一并做的）**
+
+| 项 | 结果 |
+|---|---|
+| 页头 | 每一页都要重复的页头压扁一档（2.3rem 品牌字、胶囊导航、与页面筛选同一套形状语言），首屏留给内容 |
+| 节奏 | 页面内边距 / 区块间距 / 标题字号统一收一档；详情页标题 2.2 → 1.9rem |
+| 细节 | 卡片 hover 加投影、事实表与面板统一圆角与底色、禁用的 AI 按钮不再是一块褪色橙、`:focus-visible` 键盘描边、深色底下的滚动条压成半透明白 |
+| 修缺陷 | `.attractionGrid > li` 改纵向 flex（卡片不再被 `height:100%` 撑破格子把理由压到下一行）；理由盒给两行的下限高度，同行卡片不再被理由长短顶得参差 |
 
 **第二刀起的护栏（后面几刀同样适用）**
 
@@ -579,4 +623,5 @@ npm.cmd run dev                        # 手动过一遍: 首页 -> 分类 -> �
 | 2026-09-25 | v2.0 | 世界景点与旅游方案：`attraction` 增 `a_level` / `heritage` 两列（各带 CHECK 与部分索引），新增 `attraction_plan` / `attraction_plan_step` 两张表（表数 9 → 11）；种子扩到 90 个景点（境内 50 + 境外 40，覆盖六大洲 30 个国家）、9 个分类、31 个标签、90 个方案 / 307 条步骤，配图 90 张自绘 SVG；`/attractions` 加 `grade=5A\|4A\|3A\|heritage` 筛选（A 级与世界遗产是两套刻度，各占一个取值），详情返回 `plans`；前端加等级徽章、等级筛选与「旅游方案」段，票价改成按国别渲染（不再硬编码人民币）；`db-schema.yml` 断言同步并新增等级 / 方案口径与重跑自愈检查 |
 | 2026-09-25 | v1.8 | 占位图标换成自绘：新增 `scripts/make_favicon.py`（标准库程序化生成 7 档尺寸），`public/earth.ico`（225 KB，出处无从查证）删除，图标落到约定路径 `public/favicon.ico`（8.5 KB）；`index.html`、`manifest.json`、`Credits.tsx`、`docs/LICENSE-AUDIT.md` 同步；`license-gate` 加一道 `make_favicon.py --check` |
 | 2026-09-25 | v2.1 | 详情页加「相关视频」站外入口：新增 `frontend/src/lib/externalSearch.ts`（只拼搜索页地址）与 `ExternalVideoSearch` 组件（4 个用例，前端 37 → 41）。**只给 B 站搜索页外链** —— 不内嵌播放器、不抓取视频、不用对方标识；具体视频一律不链（会死链，且等于替单条内容背书）。`Credits.tsx`「这个应用不做什么」与 `docs/LICENSE-AUDIT.md` 新增第六节同步口径 |
+| 2026-09-25 | v2.3 | **S9 后三刀 + UI 润色**：详情页追问（`/ai/ask`，数字溯源 + 主题词两关）、推荐理由润色（`/ai/recommend-notes`，推荐结果不经过模型）、离线简介草稿（`scripts/draft_attraction_summaries.py`，只出待审 SQL、人审后入库）。后端 87 → 137（134 passed + 3 skipped），前端 50 → 64。前端新增 `AiAskBox` / `RecommendationGrid` 与共享 `useAIStatus`；顺手修掉推荐位「卡片 + 理由」压叠的布局缺陷，并做了一轮 UI 润色（页头瘦身、节奏统一、焦点态与滚动条）。至此 S9 四刀收口 |
 | 2026-09-25 | v2.2 | **S9 第一刀（AI 接入 · 自然语言检索）**：新增 `backend/app/llm/{client,interpret}.py` 与 `GET /api/v1/ai/status`、`POST /api/v1/ai/search`。模型**只产出查询条件、不产出景点条目**，取值白名单 + 库内双向校验，解析失败一律降级成关键词检索（HTTP 200 而非 500）。默认 `LLM_PROVIDER=none`，不配模型应用照常跑。`tests/test_ai.py` 14 用例 + `tests/test_llm_client.py` 8 用例（后端 65 → 87）；前端加「用一句话找景点」面板（41 → 50 用例）。`httpx` 从开发依赖提到运行时依赖（AI 客户端要用）。剩三刀（详情页追问 / 推荐理由润色 / 离线批量生成）待开工 |

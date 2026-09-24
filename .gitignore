@@ -30,6 +30,9 @@ recsys/saved/
 *.sqlite
 *.db
 
+# AI 生成的待审草稿: 只留说明, 产物由人核对后抄进 seed.sql
+db/seed/drafts/*.sql
+
 # 上游基底缓存(由 scripts/fetch-bases.ps1 生成)
 .cache/
 

@@ -66,6 +66,7 @@
 
 .browser__pager button:hover:enabled {
   border-color: var(--accent);
+  background: var(--accent-soft);
   color: var(--text);
 }
 
@@ -83,12 +84,13 @@
   border-radius: 10px;
   background: var(--panel-bg);
   text-align: center;
-  transition: transform 0.2s ease-out, border-color 0.2s;
+  transition: transform 0.2s ease-out, border-color 0.2s, box-shadow 0.2s;
 }
 
 .categoryCard:hover {
-  transform: translateY(-4px);
+  transform: translateY(-3px);
   border-color: var(--accent);
+  box-shadow: var(--shadow-card);
 }
 
 .categoryCard__name {

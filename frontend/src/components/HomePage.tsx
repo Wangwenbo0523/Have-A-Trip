@@ -5,9 +5,9 @@ import { fetchAttractions, fetchRecommendations } from "../api/client"
 import { APP_TAGLINE } from "../config"
 import { useApi } from "../hooks/useApi"
 import type { CategoryWithCount } from "../types"
-import AttractionCard from "./AttractionCard"
 import AttractionList from "./AttractionList"
 import CategoryCard from "./CategoryCard"
+import RecommendationGrid from "./RecommendationGrid"
 import StateMessage from "./StateMessage"
 import Loader from "./utils/Loader"
 
@@ -46,15 +46,7 @@ const HomePage = ({ categories }: HomePageProps) => {
         ) : null}
         {!recommendations.loading && !recommendations.error && recommendations.data ? (
           recommendations.data.length > 0 ? (
-            <ul className="attractionGrid">
-              {recommendations.data.map((item) => (
-                <li key={`${item.rank}-${item.attraction.slug}`}>
-                  <AttractionCard attraction={item.attraction} />
-                  {/* 每条推荐都要能解释「为什么是它」, 这是 S2 的硬性约定 */}
-                  <p className="reason">{item.reason}</p>
-                </li>
-              ))}
-            </ul>
+            <RecommendationGrid items={recommendations.data} />
           ) : (
             <StateMessage title="暂时没有可推荐的景点" detail="多逛几个景点之后推荐会更准" />
           )

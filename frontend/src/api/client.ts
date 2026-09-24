@@ -7,6 +7,8 @@
 import axios from "axios"
 
 import type {
+  AIAskResult,
+  AIRecommendNotes,
   AISearchResult,
   AIStatus,
   Attraction,
@@ -131,6 +133,35 @@ export async function searchByAI(query: string): Promise<AISearchResult> {
   const { data } = await http.post<AISearchResult>(
     "/ai/search",
     { query },
+    { timeout: AI_TIMEOUT_MS },
+  )
+  return data
+}
+
+/**
+ * 就某个景点追问一句。答案只依据这个景点的档案字段;
+ * 模型不可用或说法查不到依据时, 后端降级成档案摘录并返回 200, 不是错误。
+ */
+export async function askAboutAttraction(slug: string, question: string): Promise<AIAskResult> {
+  const { data } = await http.post<AIAskResult>(
+    "/ai/ask",
+    { slug, question },
+    { timeout: AI_TIMEOUT_MS },
+  )
+  return data
+}
+
+/**
+ * 润色推荐位的「为什么推荐它」。条目与顺序仍由 /recommendations 决定 ——
+ * 这里只多拿一层文案, 模型碰不到推荐结果本身。
+ *
+ * 未配置模型或说法查不到依据时后端返回 200 并带 polished=false, 此时 reasons
+ * 就是原来的理由, 调用方照常显示即可, 不是错误。
+ */
+export async function fetchRecommendNotes(limit = 6): Promise<AIRecommendNotes> {
+  const { data } = await http.post<AIRecommendNotes>(
+    "/ai/recommend-notes",
+    { device_id: getDeviceId(), limit },
     { timeout: AI_TIMEOUT_MS },
   )
   return data

@@ -224,3 +224,44 @@ export interface AISearchResult {
   /** 后端给的免责声明, 必须显示 */
   disclaimer: string
 }
+/**
+ * 就某个景点追问一句的回答。
+ *
+ * grounded=false 表示这段答案是后端拼的档案摘录(降级时), 不是模型写的;
+ * degraded=true 表示这次没走成模型。两者都不代表出错 —— 追问失败不该是报错页。
+ */
+export interface AIAskResult {
+  slug: string
+  question: string
+  grounded: boolean
+  degraded: boolean
+  model: string | null
+  answer: string
+  note: string
+  /** 模型自报用了哪些档案字段; dropped 是它报了但档案里没有的 */
+  cited: string[]
+  dropped: string[]
+  disclaimer: string
+}
+
+/**
+ * 推荐位润色的结果。reasons 是 slug -> 文案, 后端保证**每条推荐都一定有文案**
+ * (润色不成功的那几条直接给回原来的理由), 所以页面照常渲染即可。
+ *
+ * polished=false 表示这次没走成模型, 此时 reasons 里就是后端的原理由。
+ */
+export interface AIRefinedNote {
+  slug: string
+  note: string
+}
+
+export interface AIRecommendNotes {
+  polished: boolean
+  degraded: boolean
+  model: string | null
+  note: string
+  reasons: AIRefinedNote[]
+  /** 被丢掉的条目: 模型报了不存在的 slug, 或改写内容查不到依据 */
+  dropped: string[]
+  disclaimer: string
+}

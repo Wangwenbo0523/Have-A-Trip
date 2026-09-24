@@ -8,7 +8,7 @@
   flex: 1;
   width: min(1180px, 100%);
   margin: 0 auto;
-  padding: 32px 16px 64px;
+  padding: 26px 16px 56px;
 }
 
 .page__title {
@@ -22,24 +22,25 @@
 }
 
 .section {
-  margin-bottom: 48px;
+  margin-bottom: 40px;
 }
 
 .section__title {
-  font-size: 1.35rem;
+  font-size: 1.25rem;
+  letter-spacing: 0.02em;
   margin-bottom: 16px;
-  padding-bottom: 8px;
+  padding-bottom: 10px;
   border-bottom: 1px solid var(--panel-border);
 }
 
 .hero {
-  padding: 24px 0 40px;
+  padding: 4px 0 34px;
 }
 
 .hero__title {
-  font-size: 2.4rem;
-  line-height: 1.25;
-  letter-spacing: 2px;
+  font-size: 2.1rem;
+  line-height: 1.3;
+  letter-spacing: 1px;
 }
 
 .hero__lead {
@@ -68,15 +69,26 @@
   gap: 20px;
 }
 
+/* 卡片下面可能还有内容(推荐位的理由), 所以格子里用纵向 flex:
+   卡片自己撑满剩余高度, 理由老老实实待在它下面, 不会压到下一行。 */
+.attractionGrid > li {
+  display: flex;
+  flex-direction: column;
+}
+
 /* 推荐卡片下面那句「为什么推荐它」 */
 .reason {
   margin-top: 8px;
   padding: 8px 12px;
   border-left: 3px solid var(--accent);
   background: var(--accent-soft);
-  border-radius: 0 6px 6px 0;
+  border-radius: 0 8px 8px 0;
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  /* 理由长短不一时, 同一行里卡片的高度会被这句带偏。
+     给两行的下限, 短句子不再把同伴的卡片顶高一截。 */
+  min-height: calc(2 * 1.6em + 16px);
 }
 
 .categoryGrid {
@@ -99,9 +111,9 @@
 .footer__inner {
   width: min(1180px, 100%);
   margin: 0 auto;
-  padding: 28px 16px;
+  padding: 22px 16px;
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
 .footer__brand {

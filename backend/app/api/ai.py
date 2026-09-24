@@ -8,14 +8,31 @@
 """
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ..config import Settings, get_settings
 from ..db import get_db
 from ..llm import LLMClient, get_llm_client
+from ..llm.ask import DISCLAIMER as ASK_DISCLAIMER
+from ..llm.ask import ask
 from ..llm.interpret import interpret
-from ..schemas import AIFilters, AISearchIn, AISearchOut, AIStatusOut
+from ..llm.polish import DISCLAIMER as POLISH_DISCLAIMER
+from ..llm.polish import polish
+from ..models import AppUser
+from ..recommend import service as recommend_service
+from ..schemas import (
+    AIAskIn,
+    AIAskOut,
+    AIFilters,
+    AIRecommendNotesIn,
+    AIRecommendNotesOut,
+    AIRefinedReason,
+    AISearchIn,
+    AISearchOut,
+    AIStatusOut,
+)
 from . import attractions as attractions_api
 
 router = APIRouter(prefix="/ai", tags=["ai"])
@@ -85,4 +102,69 @@ def ai_search(
         size=limit,
         total=total,
         disclaimer=DISCLAIMER,
+    )
+
+@router.post("/ask", response_model=AIAskOut, summary="就某个景点问一句")
+def ai_ask(
+    payload: AIAskIn,
+    db: Session = Depends(get_db),
+    client: LLMClient = Depends(get_llm_client),
+) -> AIAskOut:
+    """答案只依据这个景点的档案字段, 档案里没有的一律不作答。
+
+    模型不可用 / 说法查不到依据时降级成档案摘录, 仍然是 200 —— 追问失败不该表现为报错页。
+    """
+    attraction = attractions_api.find_attraction(db, payload.slug)
+    if attraction is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, detail="景点不存在或未发布")
+
+    outcome = ask(client, attraction, payload.question)
+    return AIAskOut(
+        slug=attraction.slug,
+        question=payload.question,
+        grounded=outcome.grounded,
+        degraded=outcome.degraded,
+        model=outcome.model,
+        answer=outcome.answer,
+        note=outcome.note,
+        cited=outcome.cited,
+        dropped=outcome.dropped,
+        disclaimer=ASK_DISCLAIMER,
+    )
+
+
+@router.post("/recommend-notes", response_model=AIRecommendNotesOut, summary="润色推荐理由")
+def ai_recommend_notes(
+    payload: AIRecommendNotesIn,
+    db: Session = Depends(get_db),
+    client: LLMClient = Depends(get_llm_client),
+) -> AIRecommendNotesOut:
+    """只改写「为什么推荐它」这句话的措辞。
+
+    **推荐结果本身不交给模型**: 条目、顺序、分数都由 /recommendations 决定,
+    这里拿到的只是已定好的那几条, 模型碰不到挑选与排序。模型不可用时沿用原来的理由。
+    """
+    if payload.user_id is not None and payload.device_id is not None:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, detail="user_id 与 device_id 只能传一个")
+
+    user_id = payload.user_id
+    if user_id is None and payload.device_id is not None:
+        # 没见过的设备不是错误, 与 /recommendations 同口径: 按新用户处理
+        user = db.scalar(select(AppUser).where(AppUser.device_id == payload.device_id))
+        user_id = user.id if user else None
+    if user_id is not None and db.get(AppUser, user_id) is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, detail="用户不存在")
+
+    items = recommend_service.get_recommendations(db, user_id, payload.limit)
+    entries = [(item.attraction.slug, item.attraction.name, item.reason) for item in items]
+    outcome = polish(client, entries)
+
+    return AIRecommendNotesOut(
+        polished=outcome.polished,
+        degraded=outcome.degraded,
+        model=outcome.model,
+        note=outcome.note,
+        reasons=[AIRefinedReason(slug=slug, note=text) for slug, text in outcome.notes.items()],
+        dropped=outcome.dropped,
+        disclaimer=POLISH_DISCLAIMER,
     )

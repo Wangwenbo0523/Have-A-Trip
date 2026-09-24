@@ -4,6 +4,7 @@ import { Link, useParams } from "react-router-dom"
 import { fetchAttraction, fetchSimilar, getDeviceId, reportEvent } from "../api/client"
 import { useApi } from "../hooks/useApi"
 import { HERITAGE_LABELS, aLevelText } from "../lib/grade"
+import AiAskBox from "./AiAskBox"
 import AttractionList from "./AttractionList"
 import AttractionPlan from "./AttractionPlan"
 import ExternalVideoSearch from "./ExternalVideoSearch"
@@ -179,6 +180,9 @@ const AttractionDetail = () => {
           </dd>
         </div>
       </dl>
+
+      {/* 追问紧跟在事实表后面: 刚看完票价/时长/季节, 正是想问点什么的时候 */}
+      <AiAskBox slug={data.slug} name={data.name} />
 
       {data.description ? (
         <section className="detail__section">

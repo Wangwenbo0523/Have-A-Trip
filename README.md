@@ -10,8 +10,8 @@
 | 模块 | 状态 | 说明 |
 |---|---|---|
 | `db/` | ✅ | 11 张表 + 视图 + 触发器，幂等可重复执行；90 个景点、31 个标签、90 个旅游方案 |
-| `backend/` | ✅ | 景点列表/详情/搜索、分类标签、来源与许可、行为埋点、推荐接口、一句话检索（AI 默认关闭）；84 用例通过（另有 3 个 schema 对拍用例需 PostgreSQL） |
-| `frontend/` | ✅ | 首页、全部景点（含等级筛选与「用一句话找景点」）、分类页、详情页（含旅游方案、站外视频搜索）、搜索、数据来源与许可页、错误态；50 用例通过 |
+| `backend/` | ✅ | 景点列表/详情/搜索、分类标签、来源与许可、行为埋点、推荐接口、AI 三件套（一句话检索 / 详情页追问 / 推荐理由润色，默认关闭）；134 用例通过（另有 3 个 schema 对拍用例需 PostgreSQL） |
+| `frontend/` | ✅ | 首页（推荐位带理由，可 AI 润色）、全部景点（含等级筛选与「用一句话找景点」）、分类页、详情页（含旅游方案、站外视频搜索、就这个景点追问）、搜索、数据来源与许可页、错误态；64 用例通过 |
 | `recsys/` | ✅ | 三条脚本（导出 → 训练 → 回写）端到端跑通，BPR 离线结果已写回 `rec_result` |
 | 数据量 | ✅ | 90 个景点 / 31 个标签，中国境内 50 + 境外 40（覆盖六大洲 30 个国家），全部自采（`license` 为 MIT）；图片为程序化自绘 |
 
@@ -53,7 +53,7 @@ PostgreSQL   景点档案 / 用户行为日志 / 推荐结果表
 | `backend/` | FastAPI 服务与测试，见 `backend/README.md` |
 | `db/` | `schema.sql` + 种子数据 + 字段口径，见 `db/README.md` |
 | `recsys/` | RecBole 调用层：依赖钉版、训练配置、离线脚本，见 `recsys/README.md` |
-| `scripts/` | 基底钉版记录、许可证卡口、DCO 校验、静态素材生成（`make_favicon.py` 站点图标、`make_attraction_covers.py` 景点配图） |
+| `scripts/` | 基底钉版记录、许可证卡口、DCO 校验、静态素材生成（`make_favicon.py` 站点图标、`make_attraction_covers.py` 景点配图）、离线工具（`draft_attraction_summaries.py` 生成简介草稿，人审后入库） |
 | `docs/` | `PLAN.md` 施工计划、`BASES.md` 基底清单、`LICENSE-AUDIT.md` 许可审查、`DEPLOY.md` 部署 |
 
 ## 快速起步
@@ -98,6 +98,8 @@ npm run start                 # /api 由 vite 代理到 :8000, 本地免跨域
 | GET | `/recommendations` | 为你推荐，`user_id` 与 `device_id` 二选一 |
 | GET | `/ai/status` | AI 入口是否可用。默认配置（`LLM_PROVIDER=none`）返回 `available=false` |
 | POST | `/ai/search` | 用一句话找景点：模型把这句话解析成上面的筛选条件，**条目仍从库里查** |
+| POST | `/ai/ask` | 就某个景点追问一句：答案只复述该景点的档案字段，档案里没有的一律不作答 |
+| POST | `/ai/recommend-notes` | 润色推荐位的理由：**条目、顺序、分数都由 `/recommendations` 决定**，模型只改措辞 |
 
 `grade` 取值 `5A` / `4A` / `3A` / `heritage`。前三个是中国景区的质量等级（GB/T 17775），
 `heritage` 表示「已列入 UNESCO 世界遗产名录」—— 世界遗产没有 A 级，所以它与 A 级各占一个取值，

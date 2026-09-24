@@ -1,0 +1,29 @@
+/* 推荐位的 AI 润色。只改文案不改结果, 所以视觉上只做轻提示。 */
+.reason--ai {
+  color: var(--text);
+}
+
+.recommendNotes__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.recommendNotes__chip {
+  padding: 2px 10px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  color: var(--accent);
+  font-size: 0.75rem;
+}
+
+/* 没润色成时说一句为什么, 不要让这句话悄悄消失 */
+.recommendNotes__fallback {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 0.8rem;
+}

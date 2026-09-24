@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react"
 
-import { describeError, fetchAIStatus, searchByAI } from "../api/client"
-import type { AISearchResult, AIStatus } from "../types"
+import { describeError, searchByAI } from "../api/client"
+import { useAIStatus } from "../hooks/useAIStatus"
+import type { AISearchResult } from "../types"
 import AttractionList from "./AttractionList"
 import StateMessage from "./StateMessage"
 import Loader from "./utils/Loader"
@@ -23,26 +24,11 @@ interface AiSearchPanelProps {
  * 所以这里必须把 degraded 与 note 显示出来 —— 不能让用户以为模型真的听懂了。
  */
 const AiSearchPanel = ({ onActiveChange }: AiSearchPanelProps) => {
-  const [status, setStatus] = useState<AIStatus | null>(null)
+  const status = useAIStatus()
   const [query, setQuery] = useState("")
   const [result, setResult] = useState<AISearchResult | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
-
-  useEffect(() => {
-    let alive = true
-    fetchAIStatus()
-      .then((data) => {
-        if (alive) setStatus(data)
-      })
-      // 拿不到状态就当作不可用: 宁可不显示这个入口, 也不要给一个点了没反应的按钮
-      .catch(() => {
-        if (alive) setStatus({ available: false, provider: "unknown", model: null, disclaimer: "" })
-      })
-    return () => {
-      alive = false
-    }
-  }, [])
 
   useEffect(() => {
     onActiveChange?.(result !== null)

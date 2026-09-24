@@ -8,45 +8,13 @@ from __future__ import annotations
 
 import pytest
 
+from llm_stubs import FakeClient
+
 from app.config import Settings
-from app.llm import LLMError, get_llm_client
+from app.llm import LLMError
 from app.llm.client import LLMClient, extract_json
-from app.main import app
 
 API = "/api/v1"
-
-
-class FakeClient:
-    """打桩客户端。刻意不继承真 LLMClient —— 否则打桩会把真实行为一起继承进来。"""
-
-    def __init__(self, payload=None, error=None, available=True, model="fake-model"):
-        self.payload = payload
-        self.error = error
-        self._available = available
-        self.model = model
-        self.calls: list[tuple[str, str]] = []
-
-    @property
-    def available(self) -> bool:
-        return self._available
-
-    def chat_json(self, system: str, user: str) -> dict:
-        self.calls.append((system, user))
-        if self.error is not None:
-            raise self.error
-        return dict(self.payload or {})
-
-
-@pytest.fixture()
-def use_client():
-    """把打桩客户端装进依赖。用完就摘, 不给别的用例留串味。"""
-
-    def install(fake):
-        app.dependency_overrides[get_llm_client] = lambda: fake
-        return fake
-
-    yield install
-    app.dependency_overrides.pop(get_llm_client, None)
 
 
 def get_json(client, path, **params):
@@ -59,6 +27,7 @@ def search(client, query, **extra):
     response = client.post(f"{API}/ai/search", json={"query": query, **extra})
     assert response.status_code == 200, response.text
     return response.json()
+
 
 # ------------------------------------------------------------------ 可用性
 

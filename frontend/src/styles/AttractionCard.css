@@ -1,17 +1,19 @@
 .attractionCard {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  /* flex-basis 用内容高度, 免得把格子的固有高度算成 0; 多余空间由 grow 补上 */
+  flex: 1 0 auto;
   border: 1px solid var(--panel-border);
   border-radius: 10px;
   background: var(--panel-bg);
   overflow: hidden;
-  transition: transform 0.2s ease-out, border-color 0.2s;
+  transition: transform 0.2s ease-out, border-color 0.2s, box-shadow 0.2s;
 }
 
 .attractionCard:hover {
-  transform: translateY(-4px);
+  transform: translateY(-3px);
   border-color: var(--accent);
+  box-shadow: var(--shadow-card);
 }
 
 .attractionCard__media {
@@ -61,7 +63,8 @@
 }
 
 .attractionCard__name {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
+  line-height: 1.35;
 }
 
 .attractionCard__nameEn {
@@ -97,6 +100,7 @@
   padding: 1px 8px;
   border: 1px solid var(--panel-border);
   border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
   font-size: 0.75rem;
   color: var(--muted);
 }
@@ -108,6 +112,6 @@
   margin-top: 12px;
   padding-top: 10px;
   border-top: 1px solid var(--panel-border);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: var(--muted);
 }

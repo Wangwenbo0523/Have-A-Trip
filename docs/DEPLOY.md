@@ -147,4 +147,6 @@ server {
 - [ ] 刷新 `/attraction/<某个 slug>` 不 404（SPA 回落生效）
 - [ ] 静态素材与生成脚本一致：`python scripts/make_favicon.py --check` 与 `python scripts/make_attraction_covers.py --check` 都通过
 - [ ] 前端产物里没有任何地图 SDK：`grep -rIn "leaflet\|mapbox\|ol/" dist/assets` 应为空
+- [ ] （可选）要用模型补景点简介时, 在**本地**跑 `python scripts/draft_attraction_summaries.py`, 逐条核对生成的待审 SQL 后再抄进 `db/seed/seed.sql`;
+      **不要在部署机上直接执行** `db/seed/drafts/` 里的文件
 - [ ] 备份策略覆盖 PostgreSQL
