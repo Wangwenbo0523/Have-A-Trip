@@ -21,6 +21,12 @@ data/
 dataset/
 recsys/output/
 recsys/saved/
+# RecBole 把日志写进 ./log 与 ./log_tensorboard(硬编码的 cwd 相对路径)。
+# run_recbole.py 已经 chdir 到批次目录, 这里是保险第二道门。
+/log/
+/log_tensorboard/
+/recsys/log/
+/recsys/log_tensorboard/
 *.sqlite
 *.db
 

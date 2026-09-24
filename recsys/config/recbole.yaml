@@ -12,7 +12,13 @@ TIME_FIELD: timestamp
 
 load_col:
   inter: [user_id, attraction_id, rating, timestamp]
-  item: [attraction_id, category_id, city_code]   # 侧信息: 冷启动与内容特征用
+  # 侧信息: 冷启动与内容特征用。列名必须与 export_interactions.py 写出的 .item 表头一致
+  item: [attraction_id, category_id, city]
+
+# 原子文件按 UTF-8 读。**这一行不能省**: RecBole 读原子文件时用 config["encoding"],
+# 而它默认是空的(None), 于是回落到系统 locale —— 中文 Windows 上是 GBK,
+# 城市名里一个中文就 UnicodeDecodeError。
+encoding: utf-8
 
 # 过滤: 交互数过少的行为噪音
 item_inter_num_interval: "[5,inf)"

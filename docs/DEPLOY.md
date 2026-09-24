@@ -118,11 +118,15 @@ server {
 
 ```bash
 # /etc/cron.d/have-a-trip-recsys
-0 3 * * *  cd /srv/have-a-trip && ./recsys/.venv/bin/python recsys/run_recbole.py --config recsys/config/recbole.yaml
+45 2 * * * cd /srv/have-a-trip && ./recsys/.venv/bin/python recsys/export_interactions.py
+0  3 * * * cd /srv/have-a-trip && ./recsys/.venv/bin/python recsys/run_recbole.py
 15 3 * * * cd /srv/have-a-trip && ./recsys/.venv/bin/python recsys/write_back.py
 ```
 
-数据量不足时脚本会明确跳过并留下日志，而不是写入一堆垃圾推荐。
+三步缺一不可：先导出交互，再训练，最后回写。后两步不带参数，各自取上一步最新的一批产出。
+
+数据量不足时脚本会明确跳过并留下日志，**退出码仍是 0** —— 冷启动阶段「还没到火候」不是故障，
+不该让 cron 发告警。
 
 ## 六、上线前检查清单
 

@@ -59,7 +59,7 @@
 | **S1** | 后端骨架 | `backend/app/**`、`requirements.txt`、`tests/**` | S0 | G2 | `uvicorn` 起得来；`pytest` 通过；**不 import recbole** | `feat(api):` | ✅ `2802594` |
 | **S2** | 推荐接口 + 冷启动 | `backend/app/recommend/*` | S1 | G3 | 无行为的新用户也能拿到非空推荐，且每条带 `reason` | `feat(rec):` | ✅ `29069bb` |
 | **S4** | 前端 Attraction 化 | `types/index.ts` 重写、`Attraction*` 组件、`api/client.ts` | S1、S3 | G3 | 首页/分类/详情/搜索可用；无 `Country` 残留 | `feat(web):` | ✅ 本次提交 |
-| **S6** | 离线训练链路 | `recsys/{export_interactions,run_recbole,write_back}.py` | S0 | G4 | 三条脚本端到端跑通，`rec_result` 有数据 | `feat(recsys):` | ⬜ 待开工 |
+| **S6** | 离线训练链路 | `recsys/{common,export_interactions,run_recbole,write_back}.py` | S0 | G4 | 三条脚本端到端跑通，`rec_result` 有数据 | `feat(recsys):` | ✅ 本次提交 |
 | **S7** | 内容与数据 | `db/seed/*.sql`（30–50 个景点）+ 来源清单 | S0 | G4 | 每个景点 `source` / `license` 非空且可用 | `data(seed):` | ✅ 本次提交 |
 | **S5** | 数据来源与许可声明页 | `frontend/src/components/Credits.tsx` 改造 | S4、S7 | G5 | 页面逐条列出来源与许可，与 S7 一致 | `feat(web):` | ⬜ 待开工 |
 | **S8** | 工程化收尾 | CI 增 build/test、`README`、部署说明 | S2、S4、S6 | G6 | CI 三条工作流全绿且**真的会**变红 | `chore(ci):` | ✅ 本次提交 |
@@ -339,23 +339,37 @@ npm.cmd run dev                        # 手动过一遍: 首页 -> 分类 -> �
 4. `recsys/README.md` 补完整命令序列
 5. 交互量不足时（低于 `item_inter_num_interval: [5, inf)`）明确跳过并打印原因，**不要产出垃圾推荐**
 
-**验证命令**
+**实际做了什么**
 
-```bash
-py -3.11 -m venv .venv-recsys
-.venv-recsys\Scripts\pip install -r recsys/requirements.txt
-.venv-recsys\Scripts\python recsys/export_interactions.py
-.venv-recsys\Scripts\python recsys/run_recbole.py --config recsys/config/recbole.yaml
-.venv-recsys\Scripts\python recsys/write_back.py
-psql -d attraction_atlas -c "select count(*), max(generated_at) from rec_result;"
-```
+| 项 | 结果 |
+|---|---|
+| 脚本 | 拆成 4 个文件：`common.py`（连库 / 路径 / 批次号 / 「行为 → 隐式强度」口径）+ 原计划的三条脚本 |
+| 导出 | 每个 `(用户, 景点)` 只取**最后一次**行为（窗口函数），与 `backend/app/aggregates.py` 重算评分的口径一致；只导 `status='published'` 的景点 |
+| 强度口径 | `rate` 用实际分，`favorite` 4.0、`share` 3.0、`view` 按停留是否 ≥ 30s 记 2.0 / 1.0。**这不是评分**，只喂模型，不写回任何用户可见字段 |
+| 训练 | BPR 起步。`run_recbole.py` 不走 `load_data_and_model`（torch ≥ 2.6 的 `weights_only` 默认值会炸），自己 `torch.load(..., weights_only=False)` + 重建 config/dataset/model，再 `full_sort_topk` 打分（自带把该用户历史景点置 `-inf`） |
+| 跳过语义 | 数据量低于门槛（交互 200 / 用户 20 / 景点 20）就打印 `SKIP` 并**以退出码 0 结束** —— 对 cron 来说「没到火候」不是失败 |
+| 回写 | 一个事务：先按 `batch_id` 删掉自己（重跑幂等）→ 整体插入 → 清掉同用户**更旧**的批次。`generated_at` 整批共用一个值，API 的 `max(generated_at)` 才能干净切换 |
+| 死链校验 | 只保留「用户存在」+「景点 `published`」的行，丢掉的打日志。训练完景点被下架是常态，推出去没有意义 |
+| 上游坑 | `setuptools` ≥ 81 删 `pkg_resources` 打到 `ray`；numpy 2 删 `np.bool8` 打到 `ray` 的 tensorboard logger；torch ≥ 2.6 的 `weights_only` 打到 RecBole 的 checkpoint；`config["encoding"]` 默认 `None` 会回落 GBK 打到中文城市名。四个都钉进 `requirements.txt` / `recbole.yaml` 并写明原因 |
+| 野日志 | RecBole 的 `init_logger` 硬编码 `LOGROOT = "./log/"`（完全不看 `config["log_dir"]`），tensorboard 也用 cwd 相对路径。`run_recbole.py` 先 `os.chdir()` 到批次目录，让它们落进 `recsys/output/<batch_id>/`，而不是在仓库根拉出两个野目录 |
 
-**退出标准**
+**实际跑出来的数据**（本机 PostgreSQL 16.2，`--epochs 3` 冒烟；测试行为由临时夹具灌入，不入库）
 
-- [ ] 三条脚本端到端跑通，`rec_result` 有数据且 `batch_id` 是新值
-- [ ] 训练环境为 Python 3.11，API 环境未被污染（两个 venv 的 `pip list` 结果不同）
-- [ ] 数据量不足时给出明确提示，而不是崩溃或写空表
-- [ ] 训练产物（`recsys/output/`、`recsys/saved/`）不进仓库（`.gitignore` 已覆盖）
+| 项 | 结果 |
+|---|---|
+| 导出 | 770 条交互 / 42 用户 / 50 景点；事件构成 `favorite 236, rate 255, share 75, view 204` |
+| 训练集过滤后 | 39 用户 / 50 景点 / 531 交互（`item_inter_num_interval` 与 `user_inter_num_interval` 都生效） |
+| 指标 | 验证集 `NDCG@10 = 0.1995`、`Recall@10 = 0.359`；测试集 `NDCG@10 = 0.0815` |
+| 回写 | `rec_result` 780 行 / 39 用户 / rank 1–20，`v_latest_rec` 行数一致 |
+| 端到端 | 后端 `get_recommendations` 对已知用户返回 `algo = BPR`（离线结果）；未知用户与匿名访客仍走 `popular-fallback`，三级降级链完好 |
+| 幂等 | 同一批次连跑两次：批次内行数不变、旧行被替换；另造一个更旧的假批次，第二次回写把它清掉 |
+
+**退出标准（2026-09-25 全部达成）**
+
+- [x] 三条脚本端到端跑通，`rec_result` 有数据且 `batch_id` 是新值
+- [x] 训练环境为 Python 3.11（`uv` 拉的 `cpython-3.11.16`），API 环境未被污染（`backend/tests/test_no_recbole.py` 用 AST 静态查 + 运行期 `sys.modules` 双查）
+- [x] 数据量不足时打印 `SKIP` 并以退出码 0 结束，不崩溃、不写空表
+- [x] 训练产物（`recsys/dataset/`、`recsys/output/`、`recsys/saved/`、`log/`、`log_tensorboard/`）不进仓库
 
 ---
 
@@ -470,3 +484,4 @@ psql -d attraction_atlas -c "select count(*), max(generated_at) from rec_result;
 | 2026-09-25 | v1.2 | S0 / S3 / S1 / S2 全部完成并入 `main`；总览表加状态列 |
 | 2026-09-25 | v1.3 | S4 完成：前端整体换成 attraction 模型，接自家 API；顺带修掉 AOS 死链导致页头不可见等上游遗留 |
 | 2026-09-25 | v1.4 | S8 完成：CI 补 `frontend-build` 与 `dco` 两条工作流、前端接入 Vitest（21 用例）、项目名统一为 Have-A-Trip、新增 `docs/DEPLOY.md`；第八节待决问题全部定案 |
+| 2026-09-25 | v1.5 | S6 完成：`recsys/` 四个脚本端到端跑通，BPR 离线结果写回 `rec_result`；钉死 4 个上游依赖坑；`run_recbole.py` 改 `chdir` 修掉仓库里的野 `log/` 目录 |

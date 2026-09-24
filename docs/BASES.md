@@ -165,9 +165,13 @@ PostgreSQL   景点档案 / 用户行为日志 / 推荐结果表
 
 | 文件 | 作用 |
 |---|---|
-| `recsys/requirements.txt` | 钉死 RecBole 版本的独立环境依赖 |
+| `recsys/requirements.txt` | 钉死 RecBole 版本的独立环境依赖（含 3 个必须钉的版本与原因） |
 | `recsys/README.md` | 环境搭建与运行步骤 |
 | `recsys/config/recbole.yaml` | 训练配置（数据集、模型、指标） |
+| `recsys/common.py` | 三条脚本的共用部分：连库、路径、批次号、「行为 → 隐式强度」口径 |
+| `recsys/export_interactions.py` | 从业务库导出 RecBole 原子文件（`.inter` / `.item` / `stats.json`） |
+| `recsys/run_recbole.py` | 训练 BPR 并产出 Top-K 预测与 `meta.json` |
+| `recsys/write_back.py` | 预测写回 `rec_result`，整批一个事务 |
 
 ---
 

@@ -1,11 +1,11 @@
 # RecBole 独立环境依赖
 #
 # 必须使用 Python 3.11。原因见 ../docs/BASES.md:
-#   - requirements 里 ray>=1.13.0,<=2.6.3 与 hyperopt==0.2.5 把 Python 上限锁在 3.11
-#   - setup.py 未声明 python_requires, pip 不会拦, 会在运行期才报错
-# 本文件不要与 backend/requirements.txt 混装到同一环境。
+#   - RecBole 的 ray>=1.13.0,<=2.6.3 与 hyperopt 把 Python 上限锁在 3.11
+#   - RecBole 的 setup.py 未声明 python_requires, pip 不拦, 装完到运行期才报错
+# 本文件不要与 backend/requirements.txt 装进同一环境。
 
-# 推荐框架本体 (MIT)。会连带安装 torch / numpy 1.x / pandas / scipy 等
+# 推荐框架本体 (MIT)。会连带装上 torch / pandas / scipy / ray 等。
 recbole==1.2.1
 
 # 从业务库导出交互数据、把推荐结果写回
@@ -16,3 +16,24 @@ pandas==2.2.3
 
 # 配置校验
 pyyaml==6.0.2
+
+# ---------------------------------------------------------------- 四个必须钉死的地方
+# 下面这些不是"锁定更稳"的锦上添花 —— 松开任何一条, 链路都会真的跑不起来。
+# 每条都实测踩过, 写在这里免得下次重装再踩一遍。
+
+# 1) setuptools 81 起删掉了 pkg_resources, 而 ray 2.6.3 在 import 期就要用它:
+#    ModuleNotFoundError: No module named 'pkg_resources' —— 连 --help 都到不了。
+setuptools==80.9.0
+
+# 2) numpy 2 删掉了 np.bool8, 而 ray/tune/logger/tensorboardx.py 还引用着它:
+#    BPR 刚起步就在 logger 初始化处 AttributeError。
+numpy==1.26.4
+
+# 3) torch 2.6 起 torch.load 默认 weights_only=True, 而 RecBole 的 checkpoint 里存着
+#    Config 这类自定义对象, 反序列化会失败 —— 训练能跑完, 到评估/打分阶段才炸。
+#    run_recbole.py 已经显式 weights_only=False, 这里钉版本是为了不让别处的默认值咬到我们。
+torch==2.5.1
+
+# 4) 这条不是版本问题, 但同样致命: recsys/config/recbole.yaml 里的 `encoding: utf-8`
+#    一个字都不能省。RecBole 读原子文件用的是 config["encoding"], 默认是 None, 会回落到
+#    系统 locale —— 中文 Windows 上是 GBK, 城市名里出现一个中文就 UnicodeDecodeError。
