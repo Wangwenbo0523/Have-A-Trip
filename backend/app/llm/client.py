@@ -20,12 +20,27 @@ import httpx
 
 from ..config import Settings, get_settings
 # provider 预设。base_url 与 model 的默认值, 都可以用环境变量覆盖。
+# embedding_model 给的是同一条 OpenAI 兼容路径下的向量模型, 见 app/llm/embedding.py ——
+# 两者常常不是同一个模型, 但通常是同一家供应商、同一个 base_url。
 PRESETS: dict[str, dict[str, str]] = {
     # 本地: 数据不出本机, 零成本, 无需 key
-    "ollama": {"base_url": "http://127.0.0.1:11434/v1", "model": "qwen2.5:7b-instruct"},
+    "ollama": {
+        "base_url": "http://127.0.0.1:11434/v1",
+        "model": "qwen2.5:7b-instruct",
+        "embedding_model": "nomic-embed-text",
+    },
     # 云端: 需要 LLM_API_KEY
-    "deepseek": {"base_url": "https://api.deepseek.com/v1", "model": "deepseek-chat"},
-    "openai": {"base_url": "https://api.openai.com/v1", "model": "gpt-4o-mini"},
+    "deepseek": {
+        "base_url": "https://api.deepseek.com/v1",
+        "model": "deepseek-chat",
+        # DeepSeek 目前没有公开的 embedding 接口, 留空 = 语义检索自动降级
+        "embedding_model": "",
+    },
+    "openai": {
+        "base_url": "https://api.openai.com/v1",
+        "model": "gpt-4o-mini",
+        "embedding_model": "text-embedding-3-small",
+    },
     # 任何 OpenAI 兼容网关(自建 / 其他厂商), 全部靠环境变量给
     "custom": {},
 }
@@ -101,7 +116,9 @@ class LLMClient:
             return bool(self.api_key)
         return True
 
-    def _payload(self, system: str, user: str, json_mode: bool) -> dict[str, Any]:
+    def _payload(
+        self, system: str, user: str, json_mode: bool, max_tokens: int | None = None
+    ) -> dict[str, Any]:
         payload: dict[str, Any] = {
             "model": self.model,
             "messages": [
@@ -110,23 +127,41 @@ class LLMClient:
             ],
             # 要的是稳定的结构化输出, 不是创作
             "temperature": 0,
-            "max_tokens": self.max_tokens,
+            "max_tokens": max_tokens or self.max_tokens,
             "stream": False,
         }
         if json_mode:
             payload["response_format"] = {"type": "json_object"}
         return payload
-    def chat_json(self, system: str, user: str) -> dict[str, Any]:
-        """要一段 JSON。任何失败都抛 LLMError, 由调用方决定怎么降级。"""
+
+    def chat_json(
+        self, system: str, user: str, *, max_tokens: int | None = None
+    ) -> dict[str, Any]:
+        """要一段 JSON。任何失败都抛 LLMError, 由调用方决定怎么降级。
+
+        max_tokens 用于按调用覆盖输出上限: 解析意图只要几个字段(默认 400 够用),
+        行程生成要一整份结构化长文本, 得单独给大值。
+        """
+        parsed, _ = self.chat_json_usage(system, user, max_tokens=max_tokens)
+        return parsed
+
+    def chat_json_usage(
+        self, system: str, user: str, *, max_tokens: int | None = None
+    ) -> tuple[dict[str, Any], dict[str, int]]:
+        """同 chat_json, 但把 token 用量一起返回, 供计费与限额记账。
+
+        缓存命中时用量记 0 —— 这是对的, 那一次确实没花钱。
+        """
         if not self.available:
             raise LLMError("未配置模型(LLM_PROVIDER)")
 
+        budget = max_tokens or self.max_tokens
         digest = hashlib.sha256(
-            ("%s|%s|%s" % (self.model, system, user)).encode("utf-8")
+            ("%s|%s|%s|%s" % (self.model, budget, system, user)).encode("utf-8")
         ).hexdigest()
         hit = _CACHE.get(digest)
         if hit and (self.cache_ttl <= 0 or time.time() - hit[0] < self.cache_ttl):
-            return hit[1]
+            return hit[1], {"prompt_tokens": 0, "completion_tokens": 0}
 
         headers = {"Content-Type": "application/json"}
         if self.api_key:
@@ -139,7 +174,7 @@ class LLMClient:
                 with httpx.Client(timeout=self.timeout) as http:
                     response = http.post(
                         self.base_url + "/chat/completions",
-                        json=self._payload(system, user, json_mode),
+                        json=self._payload(system, user, json_mode, budget),
                         headers=headers,
                     )
             except httpx.HTTPError as exc:
@@ -158,11 +193,31 @@ class LLMClient:
                 raise LLMError("模型响应结构不对: %s" % exc) from exc
 
             parsed = extract_json(content)
+            usage = _read_usage(body)
             if self.cache_ttl != 0:
                 _CACHE[digest] = (time.time(), parsed)
-            return parsed
+            return parsed, usage
 
         raise LLMError(last_error)
+
+
+def _read_usage(body: dict[str, Any]) -> dict[str, int]:
+    """从响应里取 token 用量。
+
+    用量缺失不是错误: 有的网关不回 usage, 这时记 0 并让成本统计偏保守地少算,
+    而不是让整次生成失败。限额靠请求条数兜底, 不完全依赖这个数。
+    """
+    raw = body.get("usage") or {}
+    if not isinstance(raw, dict):
+        return {"prompt_tokens": 0, "completion_tokens": 0}
+    tokens: dict[str, int] = {}
+    for key in ("prompt_tokens", "completion_tokens"):
+        value = raw.get(key)
+        try:
+            tokens[key] = max(0, int(value))
+        except (TypeError, ValueError):
+            tokens[key] = 0
+    return tokens
 
 
 def get_llm_client() -> LLMClient:

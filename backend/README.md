@@ -32,7 +32,7 @@ cd backend
 .venv\Scripts\python -m pytest
 ```
 
-- 默认跑在 **SQLite 内存库**上，本地不需要 PostgreSQL，42 个用例约 1 秒。
+- 默认跑在 **SQLite 内存库**上，本地不需要 PostgreSQL，214 个用例（8 个对拍用例无 PostgreSQL 时跳过）约 25 秒。
 - `pytest.ini` 把 `app.*` 抛出的 DeprecationWarning 提升为 error —— 依赖库的废弃用法不会再悄悄积累。
 - 需要 PostgreSQL 的对拍测试（`tests/test_schema_parity.py`）在没有 `TEST_DATABASE_URL` 时**跳过**，不会假装通过：
 
@@ -54,6 +54,13 @@ TEST_DATABASE_URL=postgresql+psycopg://postgres:postgres@127.0.0.1:5432/attracti
 | GET | `/tags` | 标签 + 数量（只返回有景点的） |
 | POST | `/events` | 行为埋点：`view` / `favorite` / `rate` / `share` |
 | GET | `/recommendations` | 推荐。`user_id` 或 `device_id` 二选一 |
+| GET | `/ai/status` | AI 入口是否可用。**永远 200**，不配模型时 `available=false`，前端据此隐藏入口 |
+| POST | `/ai/search` | 用一句话找景点。模型只产出筛选条件、**不产出景点**，解析失败降级成关键词检索 |
+| POST | `/ai/ask` | 就某个景点问一句。答案受该景点档案约束，数字要能在档案里溯源 |
+| POST | `/ai/recommend-notes` | 润色推荐理由。**推荐顺序不经过模型**，只改措辞 |
+| POST | `/search/semantic` | 按意思找景点。向量不可用 / 没有向量 / 维度不一致时**退回关键词检索**，仍返回 200 |
+| POST | `/itineraries` | 提交一次行程生成。202 受理并返回 token；命中同一 owner 的同一份需求返回 200，不重复计费 |
+| GET | `/itineraries/{token}` | 按**不可枚举** token 取行程：`pending` / `generating` / `succeeded` / `failed` / `rejected` |
 
 ### 列表参数
 

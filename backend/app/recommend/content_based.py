@@ -76,12 +76,25 @@ def score(target: Attraction, other: Attraction) -> float:
     return value
 
 
-def similar_attractions(db: Session, target: Attraction, limit: int = 6) -> list[Attraction]:
-    """与 target 最像的 limit 个已发布景点, 按相似度降序。"""
-    candidates = _candidates(db, target, fetch=max(limit * 10, 50))
+def scored_candidates(
+    db: Session, target: Attraction, fetch: int | None = None
+) -> list[tuple[float, Attraction]]:
+    """候选景点及其结构化分, 按 (分数降序, id 升序) 排好。
+
+    单独暴露出来是给 search/semantic.py 用的: 混合排序需要分数本身, 不只是排好的列表。
+    """
+    if fetch is None:
+        fetch = 50
+    candidates = _candidates(db, target, fetch=fetch)
     scored = [(score(target, c), c) for c in candidates]
     # 同分时按 id 升序, 保证结果稳定可测
     scored.sort(key=lambda pair: (-pair[0], pair[1].id))
+    return scored
+
+
+def similar_attractions(db: Session, target: Attraction, limit: int = 6) -> list[Attraction]:
+    """与 target 最像的 limit 个已发布景点, 按相似度降序。"""
+    scored = scored_candidates(db, target, fetch=max(limit * 10, 50))
     return [c for value, c in scored if value > 0][:limit]
 
 

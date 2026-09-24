@@ -14,7 +14,7 @@ from sqlalchemy.orm import Session
 
 from ..config import Settings, get_settings
 from ..db import get_db
-from ..llm import LLMClient, get_llm_client
+from ..llm import EmbeddingClient, LLMClient, get_embedding_client, get_llm_client
 from ..llm.ask import DISCLAIMER as ASK_DISCLAIMER
 from ..llm.ask import ask
 from ..llm.interpret import interpret
@@ -22,6 +22,7 @@ from ..llm.polish import DISCLAIMER as POLISH_DISCLAIMER
 from ..llm.polish import polish
 from ..models import AppUser
 from ..recommend import service as recommend_service
+from ..search import semantic
 from ..schemas import (
     AIAskIn,
     AIAskOut,
@@ -42,12 +43,22 @@ router = APIRouter(prefix="/ai", tags=["ai"])
 DISCLAIMER = "结果全部来自本站景点档案, AI 只参与理解你这句需求。"
 
 @router.get("/status", response_model=AIStatusOut, summary="AI 入口是否可用")
-def ai_status(client: LLMClient = Depends(get_llm_client)) -> AIStatusOut:
+def ai_status(
+    client: LLMClient = Depends(get_llm_client),
+    embedding: EmbeddingClient = Depends(get_embedding_client),
+    db: Session = Depends(get_db),
+) -> AIStatusOut:
     """前端据此决定要不要显示「用一句话找景点」。未配置模型时 available=false。"""
+    model = semantic.active_model(db)
+    embedded, published = semantic.coverage(db, model)
     return AIStatusOut(
         available=client.available,
         provider=client.provider,
         model=client.model or None,
+        embedding_available=embedding.available and embedded > 0,
+        embedding_model=embedding.model or None,
+        embedded=embedded,
+        published=published,
         disclaimer=DISCLAIMER,
     )
 

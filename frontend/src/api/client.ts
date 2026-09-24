@@ -15,9 +15,13 @@ import type {
   AttractionDetail,
   CategoryWithCount,
   EventPayload,
+  Itinerary,
+  ItineraryAccepted,
+  ItineraryRejection,
   Page,
   PageQuery,
   Recommendation,
+  SemanticSearchResult,
   SourcesResponse,
   TagWithCount,
 } from "../types"
@@ -165,6 +169,51 @@ export async function fetchRecommendNotes(limit = 6): Promise<AIRecommendNotes> 
     { timeout: AI_TIMEOUT_MS },
   )
   return data
+}
+
+/**
+ * 按意思找景点。向量不可用时后端**就地退回关键词检索**并照样返回条目,
+ * 只是会带 degraded=true —— 调用方照常渲染, 只需要决定要不要提示一句。
+ */
+export async function searchSemantic(query: string, limit?: number): Promise<SemanticSearchResult> {
+  const { data } = await http.post<SemanticSearchResult>(
+    "/search/semantic",
+    { query, limit },
+    { timeout: AI_TIMEOUT_MS },
+  )
+  return data
+}
+
+/**
+ * 提交一次行程生成。后端只落一行 pending 就返回, 生成在后台跑 ——
+ * 所以这里拿到的 status 基本一定是 pending, 之后要用 token 轮询。
+ */
+export async function createItinerary(requestText: string, days: number): Promise<ItineraryAccepted> {
+  const { data } = await http.post<ItineraryAccepted>(
+    "/itineraries",
+    { request_text: requestText, days, device_id: getDeviceId() },
+    { timeout: AI_TIMEOUT_MS },
+  )
+  return data
+}
+
+/** 按 token 取行程。token 不匹配一律 404。 */
+export async function fetchItinerary(token: string): Promise<Itinerary> {
+  const { data } = await http.get<Itinerary>(`/itineraries/${encodeURIComponent(token)}`)
+  return data
+}
+
+/**
+ * 把 429 的结构化 detail 抠出来。不是限额拒绝就返回 null, 由调用方走普通报错路径。
+ * 单独一个函数是因为「今日次数用完」需要完全不同的提示语与一个「什么时候再来」的时间。
+ */
+export function itineraryRejection(error: unknown): ItineraryRejection | null {
+  if (!axios.isAxiosError(error)) return null
+  const detail = (error.response?.data as { detail?: unknown } | undefined)?.detail
+  if (detail && typeof detail === "object" && "reason" in detail) {
+    return detail as ItineraryRejection
+  }
+  return null
 }
 
 /** 上报一条行为。埋点失败不该挡住阅读, 调用方自行决定要不要 catch。 */

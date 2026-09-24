@@ -76,6 +76,18 @@ WantedBy=multi-user.target
 | `LLM_API_KEY` | 云端 provider 需要。**只放环境变量**，绝不进仓库 |
 | `LLM_TIMEOUT_SECONDS` | 模型调用超时，默认 20 秒。宁可降级成关键词检索，也不让用户干等 |
 | `LLM_CACHE_TTL_SECONDS` | 同一句话解析结果的进程内缓存，默认 300 秒；`0` 表示不缓存 |
+| `EMBEDDING_PROVIDER` | `inherit`(默认，跟随 `LLM_PROVIDER`) / `none` / `ollama` / `deepseek` / `openai` / `custom`。不配就是跟随 |
+| `EMBEDDING_MODEL`、`EMBEDDING_BASE_URL`、`EMBEDDING_API_KEY` | 留空用 provider 预设；`custom` 必须自己给 `EMBEDDING_BASE_URL` 与 `EMBEDDING_MODEL`。**注意 `deepseek` 预设没有向量模型**，那边只有对话接口 |
+| `EMBEDDING_DIM` | `0`(默认) = 以服务商返回的维度为准；给正数则强校验，不符直接报错 |
+| `EMBEDDING_BATCH_SIZE` | 一次请求塞多少条文本，默认 16。批次太大有的网关会回 413 |
+| `SEMANTIC_DEFAULT_LIMIT`、`SEMANTIC_MAX_LIMIT` | 语义检索默认与上限条数 |
+| `SEMANTIC_VECTOR_WEIGHT`、`SEMANTIC_STRUCTURED_WEIGHT` | 相似景点混合排序里向量分与结构化分的权重 |
+| `TRIP_DAILY_LIMIT` | 每个 owner（登录按用户、匿名按设备）每天能提交几次行程，默认 5；`0` 表示不限 |
+| `TRIP_GLOBAL_DAILY_TOKEN_BUDGET` | 全站合计每天能烧多少 token，默认 200000；超了新请求返回 429。`0` 表示不限 |
+| `TRIP_CANDIDATE_LIMIT` | 交给模型的候选景点条数，默认 40。**这是成本的主要旋钮** |
+| `TRIP_MAX_TOKENS`、`TRIP_TIMEOUT_SECONDS` | 行程生成的输出上限与调用超时（默认 2000 / 60 秒） |
+| `TRIP_POLL_MAX_SECONDS` | 前端轮询上限（秒），随响应下发，默认 90 |
+| `TRIP_STALE_AFTER_SECONDS` | `generating` 超过这么久没心跳视为进程已死，默认 180 |
 
 健康检查用 `GET /api/v1/healthz`：数据库连不上时它返回 `degraded` 而不是 500，
 所以不要拿 HTTP 200 当「一切正常」，要读 `status` 字段。
@@ -134,6 +146,41 @@ server {
 数据量不足时脚本会明确跳过并留下日志，**退出码仍是 0** —— 冷启动阶段「还没到火候」不是故障，
 不该让 cron 发告警。
 
+## 五·五、向量与行程
+
+**景点向量**由 `scripts/build_embeddings.py` 灌，它和 API 跑在**同一个环境**里
+（不引 torch，走服务商的 `/embeddings`，所以没有第二套依赖要维护）：
+
+```bash
+export DATABASE_URL=postgresql+psycopg://user:pw@host:5432/attraction_atlas
+
+# 灌之前先看要做什么
+python scripts/build_embeddings.py --dry-run
+python scripts/build_embeddings.py            # 增量: 只补缺的与指纹变了的
+python scripts/build_embeddings.py --report   # 只看覆盖率
+```
+
+建议在 `seed.sql` 之后、首次对外之前跑一次，之后挂在 cron 上（景点档案改了就重跑，
+脚本按 `content_hash` 判断，没变的不重算）。
+
+**换向量模型**：改 `EMBEDDING_PROVIDER` / `EMBEDDING_MODEL` 之后必须重跑一次
+`build_embeddings.py`。指纹里含模型标识，所以增量更新会**自动重建全部行** ——
+不重建的话新查询向量与旧库存向量不可比，表现是语义检索整体返回空。旧模型的向量
+可以留着（不会参与检索）也可以删掉，检索只认行数最多的那个模型。
+
+**行程回收**：用户提交完就关页面的话，后台生成可能留下卡住的行。读取路径会自愈，
+批量清理用：
+
+```bash
+python scripts/reclaim_itineraries.py --dry-run
+python scripts/reclaim_itineraries.py
+```
+
+判据是**心跳过期**而不是「跑了多久」——多 worker 下按耗时一刀切会误杀别人正在跑的任务。
+
+**限额按东八区自然日结算**，计数器在 `trip_quota` 表里，不依赖 Redis。
+多实例部署时它天然是全局的（同一张表、同一条 `UPDATE ... WHERE used < :limit`）。
+
 ## 六、上线前检查清单
 
 - [ ] `python scripts/license_gate.py --strict` 通过（**用装了 `backend/requirements.txt` 的解释器跑**）
@@ -144,6 +191,11 @@ server {
 - [ ] `/api/v1/sources` 的 `needs_attention` 是 `false`（库里有 share-alike 来源却没登记修改状态时为 `true`，声明页会出红色告警）
 - [ ] 配了 `LLM_PROVIDER` 时 `/api/v1/ai/status` 的 `available` 是 `true`；**没配时它必须是 `false`**（否则说明密钥或地址写错了，AI 入口会以不可用的状态对外，页面不显示）
 - [ ] 若 `LLM_PROVIDER` 指向云端：确认数据出境已过合规，且 `LLM_API_KEY` 只存在于环境变量里（`git log -p -- .env` 应为空）
+- [ ] 语义检索：`python scripts/build_embeddings.py --report` 的「已向量化」等于「已发布景点」；`/api/v1/ai/status` 的 `embedding_available` 与 `embedded` 与它一致
+- [ ] **换过向量模型或改过拼串口径**：已重跑 `build_embeddings.py`，且 `--report` 里没有多种维度（同一模型出现两种维度会让检索整体退回关键词）
+- [ ] 行程限额与预算按预期生效：`TRIP_DAILY_LIMIT` / `TRIP_GLOBAL_DAILY_TOKEN_BUDGET` 压到 1 试一次，第 2 次应返回 429 且 `detail.reason` 对得上
+- [ ] `python scripts/reclaim_itineraries.py --dry-run` 没有长期积压的 `generating`
+- [ ] 若 `EMBEDDING_PROVIDER` 指向云端：确认**景点档案文本**出境已过合规（离线向量化会把景点描述发给服务商，见 `docs/LICENSE-AUDIT.md` 第七节）
 - [ ] 刷新 `/attraction/<某个 slug>` 不 404（SPA 回落生效）
 - [ ] 静态素材与生成脚本一致：`python scripts/make_favicon.py --check` 与 `python scripts/make_attraction_covers.py --check` 都通过
 - [ ] 前端产物里没有任何地图 SDK：`grep -rIn "leaflet\|mapbox\|ol/" dist/assets` 应为空

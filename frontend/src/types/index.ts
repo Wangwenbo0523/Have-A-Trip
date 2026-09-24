@@ -201,6 +201,15 @@ export interface AIStatus {
   available: boolean
   provider: string
   model: string | null
+  /**
+   * 语义检索是否可用。与 available 分开: 只配了向量模型、没配对话模型时,
+   * 「用一句话找景点」不可用而语义检索可用 —— 合成一个状态位会把能用的入口一起藏起来。
+   */
+  embedding_available?: boolean
+  embedding_model?: string | null
+  /** 已向量化的已发布景点数 / 已发布景点总数 */
+  embedded?: number
+  published?: number
   disclaimer: string
 }
 
@@ -264,4 +273,89 @@ export interface AIRecommendNotes {
   /** 被丢掉的条目: 模型报了不存在的 slug, 或改写内容查不到依据 */
   dropped: string[]
   disclaimer: string
+}
+
+// ---------------------------------------------------------------- 语义检索
+//
+// 与「一句话检索」的分工: 那条路是模型把句子解析成筛选条件, 这条路是把句子向量化
+// 与景点描述比相似度 —— 不需要对话模型, 只配了向量模型也能用。
+
+export interface SemanticHit {
+  attraction: Attraction
+  /** 余弦相似度 0..1; 关键词兜底时为 null */
+  score: number | null
+  /** semantic = 向量近邻; keyword = 向量不可用时的关键词兜底 */
+  match: "semantic" | "keyword"
+}
+
+/**
+ * 语义检索结果。
+ *
+ * degraded=true 表示这次没走成向量(未配置 / 库内没向量 / 维度不一致 / 服务不可用),
+ * 后端**已经就地退回关键词检索**并照样返回条目 —— 所以 items 仍然可以用。
+ */
+export interface SemanticSearchResult {
+  query: string
+  degraded: boolean
+  model: string | null
+  note: string
+  embedded: number
+  published: number
+  items: SemanticHit[]
+  total: number
+  disclaimer: string
+}
+
+// ---------------------------------------------------------------- 行程生成
+
+export type ItineraryStatus =
+  | "pending"
+  | "generating"
+  | "succeeded"
+  | "failed"
+  | "rejected"
+
+/** 提交成功后的受理凭据。之后一律用 token 取, 不用 id —— id 可枚举。 */
+export interface ItineraryAccepted {
+  token: string
+  status: ItineraryStatus
+}
+
+export interface ItineraryItem {
+  day_index: number
+  seq: number
+  attraction_id: number
+  /** 生成当时的景点名快照, 景点改名或下架后仍显示当时那一刻 */
+  name: string
+  note: string
+  reason: string
+}
+
+export interface ItineraryUsage {
+  prompt_tokens: number
+  completion_tokens: number
+}
+
+export interface Itinerary {
+  token: string
+  status: ItineraryStatus
+  days: number
+  items: ItineraryItem[]
+  error: string | null
+  note: string | null
+  model: string | null
+  usage: ItineraryUsage | null
+  generated_at: string | null
+  created_at: string
+  /** 轮询上限(秒)。超过它就该停, 不要一直转圈 */
+  max_poll_seconds: number
+  disclaimer: string
+}
+
+/** 被限额拦下时后端给的结构化原因(HTTP 429 的 detail)。 */
+export interface ItineraryRejection {
+  status: "rejected"
+  reason: string
+  retry_after: string
+  limit?: number
 }

@@ -8,7 +8,8 @@ from sqlalchemy.orm import Session
 from ..config import Settings, get_settings
 from ..db import get_db
 from ..models import Attraction, Category, Tag, attraction_tag
-from ..recommend.content_based import similar_attractions
+from ..recommend.content_based import popular_attractions
+from ..search import semantic
 from ..schemas import AttractionDetail, AttractionListItem, GradeFilter, Page, SortKey
 
 router = APIRouter(prefix="/attractions", tags=["attractions"])
@@ -125,14 +126,30 @@ def get_attraction(id_or_slug: str, db: Session = Depends(get_db)) -> Attraction
 @router.get(
     "/{id_or_slug}/similar",
     response_model=list[AttractionListItem],
-    summary="相似景点(内容相似度, 不需要用户行为)",
+    summary="相似景点(向量与结构化字段混合, 不需要用户行为)",
 )
 def get_similar(
     id_or_slug: str,
     limit: int = Query(6, ge=1, le=20),
     db: Session = Depends(get_db),
+    settings: Settings = Depends(get_settings),
 ) -> list[AttractionListItem]:
+    """向量可用时用「向量 + 标签/分类/同城」混合排序, 否则退回纯结构化。
+
+    两条路都会返回非空结果, 最后还有热度兜底 —— 详情页的这一块塌掉会很难看,
+    而"相似景点"本来就是个锦上添花的位置, 宁可给几个热门也不能空着。
+    """
     attraction = find_attraction(db, id_or_slug)
     if attraction is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail="景点不存在或未发布")
-    return [AttractionListItem.model_validate(a) for a in similar_attractions(db, attraction, limit)]
+
+    model = semantic.active_model(db)
+    if model and semantic.model_dim(db, model) is None:
+        # 维度混了就是个坏数据, 别拿它参与排序
+        model = None
+    rows = semantic.similar_attractions(
+        db, attraction, limit=limit, model=model, settings=settings
+    )
+    if not rows:
+        rows = popular_attractions(db, limit)
+    return [AttractionListItem.model_validate(a) for a in rows]

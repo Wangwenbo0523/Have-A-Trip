@@ -55,6 +55,26 @@ psql -d attraction_atlas -c "select * from schema_version;"
 | `app_user` | 用户（一期只有匿名 `device_id`） |
 | `behavior_log` | 行为日志，推荐原料 |
 | `rec_result` | 推荐结果，**API 只读这一张** |
+| `attraction_embedding` | 景点描述的向量，语义检索用。**存 JSON 文本，不引 pgvector** |
+| `itinerary` | LLM 生成的用户行程（一次生成一行），见下面与 `attraction_plan` 的区别 |
+| `itinerary_item` | 行程里的一站，按 `(day_index, seq)` 排序 |
+| `trip_quota` | 行程的限额与 token 预算计数器，按 `(owner_key, day)` 原子自增 |
+
+### `itinerary` 与 `attraction_plan` 的区别
+
+两个名字都叫「计划」，但**不是一类东西**，改哪个之前先认清：
+
+| | `attraction_plan` | `itinerary` |
+|---|---|---|
+| 是谁的 | 景点自带的，全网共用一份 | **某个用户的一次请求**产出的 |
+| 谁写的 | 人（`db/seed/seed.sql` 里审过的） | LLM 编排，人没看过 |
+| 能不能有假的 | 不能，是档案的一部分 | 可能排得不合适，所以前端标注「出行前请核实」 |
+| 生命周期 | 跟景点走 | 跟请求走，可以重生成 |
+| 对外标识 | `slug`（可读） | `public_token`（随机，因为按 id 取会泄漏别人的需求） |
+
+`itinerary_item.attraction_name` 是**快照**：景点改名或下架（`status='archived'`）之后，
+回看历史行程仍然显示当时的那一刻。它的外键是 `ON DELETE RESTRICT` —— 景点硬删前
+要想清楚这些历史行程怎么办。
 
 另有视图 `v_latest_rec`：每个用户最近一次生成的推荐结果，方便用 psql 直接查。
 注意 API 用的是语义等价的子查询而不是这个视图 —— 视图只在 PostgreSQL 里存在，
@@ -76,6 +96,13 @@ psql -d attraction_atlas -c "select * from schema_version;"
 | `attraction.a_level` / `heritage` 可为 `NULL`，且 **`NULL` 表示「未核实」而不是「没有」** | 景区名录与世界遗产名录都会调整，核实不了就留空。`a_level` 只对（中国大陆）景区有意义，境外景点一律留空，它们的「等级」看 `heritage` |
 | `attraction_plan.budget_level` 只给档次不给金额 | 与 `ticket_price` 同理：具体价格是易变信息。四档 `free` / `low` / `mid` / `high` |
 | 一个景点可以有多个方案，方案 slug 恒为 `<景点slug>-plan` | 便于按景点反查，也让 CI 能断言两者一致 |
+| `attraction_embedding` 的 `embedding` 存 JSON 文本，**不用 pgvector** | 本仓库的 ORM 刻意只用可移植类型，测试跑 SQLite 内存库、本地不装 PostgreSQL。引 pgvector 会同时带来「建表要超级用户装扩展」「CI 要换镜像」「SQLite 与 PG 两套代码路径」三份复杂度，而全库 90 条景点用纯 Python 算余弦只要几毫秒。目录过万条时再换，接口不用改（见 `backend/app/search/vectors.py`） |
+| `attraction_embedding` 的联合唯一键是 `(attraction_id, model)`，`model` 形如 `ollama:nomic-embed-text:auto` | 切换模型期间新旧向量可以并存；`dim` 一并存下来，因为「维度」是数据的一部分，只放配置里的话配置一改旧向量就成了静默的垃圾 |
+| `itinerary.status` 的 `rejected` 与 `failed` **必须分开** | `rejected` = 被限额拦下、一分钱没花；`failed` = 调了模型但失败。前端提示语完全不同，混在一起用户会以为是自己输入有问题 |
+| `itinerary` 只存 `request_hash`，**不存需求原文** | 原文里常有同行人、预算这类个人信息。不存就不需要额外背一套保留期与删除机制，而生成并不需要回读原文 |
+| `itinerary.unit_price` 是**单价快照** | 服务商调价后，历史行程的成本仍然按当时的价算 |
+| `trip_quota` 的限额靠单条 `UPDATE ... WHERE used < :limit` + `rowcount` | 「先查条数再写入」在任何隔离级别下都不是原子的，两个并发请求会同时通过检查。单条语句的读-改-写在 PostgreSQL 与 SQLite 上都原子，所以限额不需要 Redis |
+| 限额按**东八区自然日**结算，`day` 存 `YYYY-MM-DD` 文本 | 用文本而不是 `DATE`：两种数据库的时区处理不一样，这里要的只是「哪个自然日」这个分组键 |
 
 ## 种子数据的口径
 

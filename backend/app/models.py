@@ -35,6 +35,10 @@ BigIntPK = BigInteger().with_variant(Integer, "sqlite")
 
 STATUSES = ("draft", "published", "archived")
 EVENT_TYPES = ("view", "favorite", "rate", "share")
+# 行程的状态机。pending/generating 是过程态, 后面三个是终态。
+#   rejected  = 没花过钱就被限额挡住, 与 failed(调用了但失败)必须分开 ——
+#               前端提示语完全不同, 混在一起用户会以为是自己输入有问题。
+ITINERARY_STATUSES = ("pending", "generating", "succeeded", "failed", "rejected")
 # 景区质量等级(GB/T 17775), 只适用于中国大陆景区
 A_LEVELS = ("5A", "4A", "3A")
 # 世界遗产类别
@@ -311,3 +315,175 @@ class RecResult(Base):
     generated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )
+
+
+# ---------------------------------------------------------------- 语义检索
+
+
+class AttractionEmbedding(Base):
+    """一个景点在一个模型下的一条向量。
+
+    联合主键 (attraction_id, model) —— 同一个景点可以同时存在多套模型的向量(切换期间),
+    但同一模型只能有一条。dim 一并存下来: 维度是数据的一部分, 不能只放在配置里,
+    否则配置一改, 库里那批旧维度的向量就成了静默的垃圾。
+    """
+
+    __tablename__ = "attraction_embedding"
+
+    id: Mapped[int] = mapped_column(BigIntPK, primary_key=True)
+    attraction_id: Mapped[int] = mapped_column(
+        ForeignKey("attraction.id", ondelete="CASCADE"), nullable=False
+    )
+    # 形如 "ollama:nomic-embed-text:auto", 见 app/llm/embedding.py 的 signature
+    model: Mapped[str] = mapped_column(Text, nullable=False)
+    dim: Mapped[int] = mapped_column(Integer, nullable=False)
+    # 拼串口径版本, 参与指纹。见 app/search/canonical.py
+    pipeline_version: Mapped[str] = mapped_column(Text, nullable=False)
+    # sha256(model + pipeline_version + 规范化文本), 用于判断要不要重算
+    content_hash: Mapped[str] = mapped_column(Text, nullable=False)
+    # PostgreSQL 与 SQLite 都存 JSON 数组文本, 见 app/search/vectors.py 的取舍说明
+    embedding: Mapped[str] = mapped_column(Text, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+
+    __table_args__ = (
+        CheckConstraint("dim > 0", name="embedding_dim_check"),
+        UniqueConstraint("attraction_id", "model", name="uq_embedding_item_model"),
+        Index("idx_embedding_model_item", "model", "attraction_id"),
+    )
+
+    attraction: Mapped[Attraction] = relationship()
+
+
+# ---------------------------------------------------------------- 行程生成
+
+
+class TripQuota(Base):
+    """按 (owner, 天) 的计数器。限额与预算靠它做成原子操作。
+
+    为什么单独一张表而不是 count(itinerary): 「先查条数再写入」在任何隔离级别下
+    都不是原子的, 两个并发请求会同时通过检查。这里用一条
+    `UPDATE ... WHERE used < :limit` 拿到行锁并自增 —— 单条语句的读-改-写在
+    PostgreSQL 与 SQLite 上都是原子的, 靠 rowcount 判断有没有抢到名额。
+    owner_key = '__global__' 的那一行是全站 token 预算。
+    """
+
+    __tablename__ = "trip_quota"
+
+    id: Mapped[int] = mapped_column(BigIntPK, primary_key=True)
+    owner_key: Mapped[str] = mapped_column(Text, nullable=False)
+    # 日期字符串 YYYY-MM-DD。用文本而不是 DATE: 两种数据库的时区处理不一样,
+    # 这里要的是「哪个自然日」这个纯粹的分组键, 由应用算好再传进来。
+    day: Mapped[str] = mapped_column(Text, nullable=False)
+    used: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    tokens_used: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+
+    __table_args__ = (
+        CheckConstraint("used >= 0", name="quota_used_check"),
+        CheckConstraint("tokens_used >= 0", name="quota_tokens_check"),
+        UniqueConstraint("owner_key", "day", name="uq_quota_owner_day"),
+        Index("idx_quota_day", "day"),
+    )
+
+
+class Itinerary(Base):
+    """一次「自然语言需求 -> 按天行程」的生成任务。
+
+    表名叫 itinerary 而不是 trip_plan: 库里已经有一个 attraction_plan(景点自带的
+    静态游玩方案), 两个 plan 并排会让「改哪个」永远要回去查定义。
+    """
+
+    __tablename__ = "itinerary"
+    __table_args__ = (
+        CheckConstraint(
+            "status IN ('pending', 'generating', 'succeeded', 'failed', 'rejected')",
+            name="itinerary_status_check",
+        ),
+        CheckConstraint("days >= 1 AND days <= 14", name="itinerary_days_check"),
+        CheckConstraint(
+            "prompt_tokens IS NULL OR prompt_tokens >= 0", name="itinerary_prompt_tokens_check"
+        ),
+        CheckConstraint(
+            "completion_tokens IS NULL OR completion_tokens >= 0",
+            name="itinerary_completion_tokens_check",
+        ),
+        # 并发抢锁点: 同一个 owner 的同一份需求只能有一行。后到的请求撞唯一键失败,
+        # 直接复用既有行程 —— 既不重复调模型, 也不重复计费。
+        UniqueConstraint("owner_key", "cache_key", name="uq_itinerary_owner_cache"),
+        Index("idx_itinerary_owner_time", "owner_key", "created_at"),
+        Index("idx_itinerary_status_heartbeat", "status", "heartbeat_at"),
+    )
+
+    id: Mapped[int] = mapped_column(BigIntPK, primary_key=True)
+    # 对外只用 token。自增 id 可枚举 —— 递增就能读到别人的需求原文, 见 app/api/itineraries.py
+    public_token: Mapped[str] = mapped_column(Text, unique=True, nullable=False)
+    # user_id 有就给 "u:<id>", 否则 "d:<device_id>"。缓存与限额都以它为作用域。
+    owner_key: Mapped[str] = mapped_column(Text, nullable=False)
+    days: Mapped[int] = mapped_column(Integer, nullable=False)
+    # 只存 hash, 不存需求原文: 原文里常有同行人、预算这类个人信息,
+    # 存下来就要额外背一套保留期与删除机制, 而生成并不需要回读原文。
+    request_hash: Mapped[str] = mapped_column(Text, nullable=False)
+    # 解析出来的约束(城市/预算/同行人等)的 JSON 文本, 供展示与缓存键使用
+    constraints: Mapped[str | None] = mapped_column(Text)
+    status: Mapped[str] = mapped_column(Text, nullable=False, default="pending")
+    error: Mapped[str | None] = mapped_column(Text)
+    note: Mapped[str | None] = mapped_column(Text)
+    model: Mapped[str | None] = mapped_column(Text)
+    prompt_tokens: Mapped[int | None] = mapped_column(Integer)
+    completion_tokens: Mapped[int | None] = mapped_column(Integer)
+    # 单价快照: 服务商调价后, 历史行程的成本仍然按当时的价算
+    unit_price: Mapped[Decimal | None] = mapped_column(Numeric(10, 6))
+    cache_key: Mapped[str] = mapped_column(Text, nullable=False)
+    # 回收判据。多 worker 下只看「generating 超时」会误杀别人正在跑的任务,
+    # 必须认领 + 心跳, 见 app/trip/service.py
+    worker_id: Mapped[str | None] = mapped_column(Text)
+    started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    heartbeat_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    generated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+
+    items: Mapped[list[ItineraryItem]] = relationship(
+        back_populates="itinerary",
+        lazy="selectin",
+        order_by="(ItineraryItem.day_index, ItineraryItem.seq)",
+        cascade="all, delete-orphan",
+    )
+
+
+class ItineraryItem(Base):
+    """行程里的一站。attraction_id 一定落在生成时的候选集内, 由 validator 保证。"""
+
+    __tablename__ = "itinerary_item"
+    __table_args__ = (
+        CheckConstraint("day_index >= 1", name="item_day_check"),
+        CheckConstraint("seq >= 1", name="item_seq_check"),
+        UniqueConstraint("itinerary_id", "day_index", "seq", name="uq_itinerary_item_order"),
+        Index("idx_itinerary_item_order", "itinerary_id", "day_index", "seq"),
+    )
+
+    id: Mapped[int] = mapped_column(BigIntPK, primary_key=True)
+    itinerary_id: Mapped[int] = mapped_column(
+        ForeignKey("itinerary.id", ondelete="CASCADE"), nullable=False
+    )
+    # RESTRICT 而不是 CASCADE: 行程是用户产出, 不因为景点被删就悄悄少一站。
+    # 景点下架走 status='archived' 软删, 硬删要走显式的数据清理流程。
+    attraction_id: Mapped[int] = mapped_column(
+        ForeignKey("attraction.id", ondelete="RESTRICT"), nullable=False
+    )
+    # 名称快照: 景点改名或下架后, 回看历史行程仍然显示当时的那一刻
+    attraction_name: Mapped[str] = mapped_column(Text, nullable=False)
+    day_index: Mapped[int] = mapped_column(Integer, nullable=False)
+    seq: Mapped[int] = mapped_column(Integer, nullable=False)
+    note: Mapped[str] = mapped_column(Text, nullable=False)
+    reason: Mapped[str] = mapped_column(Text, nullable=False)
+
+    itinerary: Mapped[Itinerary] = relationship(back_populates="items")

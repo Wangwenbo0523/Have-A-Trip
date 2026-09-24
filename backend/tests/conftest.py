@@ -22,8 +22,10 @@ if str(BACKEND_ROOT) not in sys.path:
 from llm_stubs import FakeClient  # noqa: E402
 
 from app.config import get_settings  # noqa: E402
-from app.db import Base, get_db  # noqa: E402
-from app.llm import cache_clear as llm_cache_clear, get_llm_client  # noqa: E402
+from app.db import Base, get_db, get_session_factory  # noqa: E402
+from app.llm import embedding_cache_clear  # noqa: E402
+from app.llm import cache_clear as llm_cache_clear  # noqa: E402
+from app.llm import get_embedding_client, get_llm_client  # noqa: E402
 from app.main import app  # noqa: E402
 from app.recommend import service as rec_service  # noqa: E402
 from app.models import AppUser, Attraction, BehaviorLog, Category, Tag  # noqa: E402
@@ -48,16 +50,22 @@ def db_session():
 @pytest.fixture()
 def client(db_session):
     app.dependency_overrides[get_db] = lambda: db_session
+    # 行程生成在后台任务里跑, 那时请求自己的会话已经关了。不覆盖这个工厂,
+    # 后台任务会连到真实的 PostgreSQL, 测试写完的结果就再也读不到。
+    app.dependency_overrides[get_session_factory] = lambda: (lambda: db_session)
     # 推荐缓存是进程级的, 而每个用例的库都是全新的(id 会从 1 重新开始),
     # 不清就可能读到上一个用例的结果。
     rec_service.get_cache(get_settings()).clear()
     # 模型解析结果也是进程级缓存, 同样要清 —— 否则用例之间会读到彼此的那句话。
     llm_cache_clear()
+    # 向量缓存同理: 打桩向量是按文本算的, 缓存不清会跨用例串。
+    embedding_cache_clear()
     with TestClient(app) as test_client:
         yield test_client
     app.dependency_overrides.clear()
     rec_service.get_cache(get_settings()).clear()
     llm_cache_clear()
+    embedding_cache_clear()
 
 
 @pytest.fixture()
@@ -159,3 +167,15 @@ def use_client():
 
     yield install
     app.dependency_overrides.pop(get_llm_client, None)
+
+
+@pytest.fixture()
+def use_embedding():
+    """把打桩的向量客户端装进依赖。用法与 use_client 相同。"""
+
+    def install(fake):
+        app.dependency_overrides[get_embedding_client] = lambda: fake
+        return fake
+
+    yield install
+    app.dependency_overrides.pop(get_embedding_client, None)

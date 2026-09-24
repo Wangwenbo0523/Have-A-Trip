@@ -31,6 +31,9 @@ const Header = ({ categories }: { categories: CategoryWithCount[] }) => {
           <NavLink className={navClass} to="/attractions">
             全部景点
           </NavLink>
+          <NavLink className={navClass} to="/planner">
+            帮我排行程
+          </NavLink>
           {topCategories.map((category) => (
             <NavLink key={category.slug} className={navClass} to={`/category/${category.slug}`}>
               {category.name}

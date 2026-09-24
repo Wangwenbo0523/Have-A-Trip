@@ -261,6 +261,13 @@ class AIStatusOut(BaseModel):
     available: bool
     provider: str
     model: str | None = None
+    # 语义检索单独报可用性。只配了向量模型、没配对话模型时, 「用一句话找景点」不可用,
+    # 但语义检索可用 —— 合成一个状态位会让前端把本来能用的入口一起藏起来。
+    embedding_available: bool = False
+    embedding_model: str | None = None
+    # 已向量化的已发布景点数 / 已发布景点总数。前端据此说明检索覆盖范围。
+    embedded: int = 0
+    published: int = 0
     disclaimer: str
 
 
@@ -320,4 +327,99 @@ class AIRecommendNotesOut(BaseModel):
     reasons: list[AIRefinedReason] = Field(default_factory=list)
     # 被丢掉的条目: 模型报了不存在的 slug, 或改写内容查不到依据
     dropped: list[str] = Field(default_factory=list)
+    disclaimer: str
+
+
+# ---------------------------------------------------------------- 语义检索
+#
+# 与 AI 检索的区别: 那条路是「模型把一句话解析成筛选条件, 结果来自结构化查询」,
+# 这条路是「把一句话向量化, 与景点描述的向量比相似度」。前者靠模型解析,
+# 后者完全不需要对话模型 —— 只配了 embedding 也能用。
+
+
+class SemanticSearchIn(BaseModel):
+    query: str = Field(min_length=1, max_length=200)
+    limit: int | None = Field(default=None, ge=1)
+
+
+class SemanticHit(BaseModel):
+    attraction: AttractionListItem
+    # 余弦相似度, 0..1。只用来排序与展示, 不是「匹配度百分比」; 关键词兜底时为 null
+    score: float | None = None
+    # semantic = 向量近邻; keyword = 向量不可用时的关键词兜底
+    match: Literal["semantic", "keyword"] = "semantic"
+
+
+class SemanticSearchOut(BaseModel):
+    query: str
+    # 向量不可用时为真: 已退回关键词检索, 仍然是 200, 不是错误
+    degraded: bool
+    model: str | None = None
+    note: str
+    # 已向量化的已发布景点数 / 已发布景点总数。前端据此说明检索覆盖范围
+    embedded: int = 0
+    published: int = 0
+    items: list[SemanticHit] = Field(default_factory=list)
+    total: int = 0
+    disclaimer: str
+
+
+# ---------------------------------------------------------------- 行程生成
+
+ItineraryStatus = Literal["pending", "generating", "succeeded", "failed", "rejected"]
+
+
+class ItineraryIn(BaseModel):
+    """提交一次行程生成。user_id 与 device_id 只能给一个, 与 /ai/recommend-notes 同口径。"""
+
+    request_text: str = Field(min_length=1, max_length=300)
+    days: int = Field(ge=1, le=14)
+    user_id: int | None = None
+    device_id: str | None = Field(default=None, max_length=200)
+
+    @model_validator(mode="after")
+    def _one_owner(self) -> "ItineraryIn":
+        if self.user_id is not None and self.device_id is not None:
+            raise ValueError("user_id 与 device_id 只能传一个")
+        return self
+
+
+class ItineraryAccepted(BaseModel):
+    """202 的响应。之后用 token 轮询, 不再用 id。"""
+
+    token: str
+    status: ItineraryStatus
+
+
+class ItineraryItemOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    day_index: int
+    seq: int
+    attraction_id: int
+    name: str
+    note: str
+    reason: str
+
+
+class ItineraryUsageOut(BaseModel):
+    prompt_tokens: int = 0
+    completion_tokens: int = 0
+
+
+class ItineraryOut(BaseModel):
+    token: str
+    status: ItineraryStatus
+    days: int
+    items: list[ItineraryItemOut] = Field(default_factory=list)
+    # 失败时的可读原因; rejected 时说明是被限额拦下的
+    error: str | None = None
+    # 生成过程中的说明, 比如"库内景点不足, 只排出了 2 天"
+    note: str | None = None
+    model: str | None = None
+    usage: ItineraryUsageOut | None = None
+    generated_at: datetime | None = None
+    created_at: datetime
+    # 轮询上限(秒)。前端据此停轮询, 而不是各写各的超时
+    max_poll_seconds: int
     disclaimer: str

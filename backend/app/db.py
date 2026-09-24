@@ -5,7 +5,7 @@ schema 的权威定义在 db/schema.sql; 这里的 ORM 模型与它一一对应,
 """
 from __future__ import annotations
 
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
@@ -43,3 +43,13 @@ def get_db() -> Iterator[Session]:
         yield db
     finally:
         db.close()
+
+
+def get_session_factory() -> Callable[[], Session]:
+    """后台任务用的会话工厂。
+
+    后台任务在响应发出之后才跑, 那时请求自己的会话已经关了, 必须另开一个。
+    做成依赖是为了**测试能覆盖它** —— 否则后台任务会连到真实的库, 而测试用的是
+    SQLite 内存库, 写完就再也看不到。
+    """
+    return SessionLocal

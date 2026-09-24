@@ -8,6 +8,7 @@ import Credits from "../components/Credits"
 import Footer from "../components/Footer"
 import Header from "../components/Header"
 import HomePage from "../components/HomePage"
+import ItineraryPlanner from "../components/ItineraryPlanner"
 import StateMessage from "../components/StateMessage"
 import type { CategoryWithCount } from "../types"
 
@@ -25,6 +26,16 @@ const NotFound = () => (
   </main>
 )
 
+const Planner = () => (
+  <main className="page">
+    <h2 className="page__title">帮我排行程</h2>
+    <p className="page__subtitle">
+      说一句你想怎么玩, AI 从本站景点档案里挑出合适的, 按天排好
+    </p>
+    <ItineraryPlanner />
+  </main>
+)
+
 interface AppRouterProps {
   categories: CategoryWithCount[]
 }
@@ -38,6 +49,7 @@ const AppRouter = ({ categories }: AppRouterProps) => (
         <Route path="/attractions" element={<AllAttractions />} />
         <Route path="/category/:slug" element={<CategoryPage categories={categories} />} />
         <Route path="/attraction/:slug" element={<AttractionDetail />} />
+        <Route path="/planner" element={<Planner />} />
         <Route path="/credits" element={<Credits />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

@@ -60,7 +60,7 @@ jobs:
             echo "OK: $3 = $2"
           }
 
-          expect 11 "$(q "select count(*) from information_schema.tables where table_schema='public' and table_type='BASE TABLE';")" "表数量"
+          expect 15 "$(q "select count(*) from information_schema.tables where table_schema='public' and table_type='BASE TABLE';")" "表数量"
           expect 1 "$(q "select count(*) from information_schema.views where table_schema='public';")" "视图数量"
           expect 1 "$(q "select count(*) from information_schema.triggers where trigger_name='trg_attraction_updated_at';")" "updated_at 触发器"
 
@@ -71,6 +71,9 @@ jobs:
           expect 362 "$(q "select count(*) from attraction_tag;")" "attraction_tag 行数"
           expect 1 "$(q "select count(*) from schema_version where version='0001_init';")" "schema_version 0001 记录数"
           expect 1 "$(q "select count(*) from schema_version where version='0002_plans';")" "schema_version 0002 记录数"
+          expect 1 "$(q "select count(*) from schema_version where version='0003_ai';")" "schema_version 0003 记录数"
+          # 新增的两张表都带 updated_at, 触发器必须真的挂上 —— 配额计数器是靠 UPDATE 自增的
+          expect 2 "$(q "select count(*) from information_schema.triggers where trigger_name in ('trg_attraction_embedding_updated_at','trg_trip_quota_updated_at');")" "向量与配额表的 updated_at 触发器"
 
           # 种子数据的口径, 见 db/README.md「种子数据的口径」
           # 这几条是把「不编造、不夸大」变成机器能拦的检查
@@ -185,6 +188,20 @@ jobs:
             exit 1
           fi
           echo "OK: budget_level=luxury 被拒绝"
+
+          # itinerary.status 只允许五态。rejected(被限额拦下, 没花钱)与 failed(调了模型但失败)必须分开
+          if q "insert into itinerary (public_token, owner_key, days, request_hash, cache_key, status) values ('ci-token', 'd:ci-probe', 2, 'h', 'k', 'live');" > /dev/null 2>&1; then
+            echo "::error::itinerary_status_check 约束没有生效"
+            exit 1
+          fi
+          echo "OK: itinerary.status=live 被拒绝"
+
+          # 限额计数器不能为负
+          if q "insert into trip_quota (owner_key, day, used) values ('d:ci-probe', '2026-01-01', -1);" > /dev/null 2>&1; then
+            echo "::error::quota_used_check 约束没有生效"
+            exit 1
+          fi
+          echo "OK: trip_quota.used=-1 被拒绝"
 
       - name: 断言 v_latest_rec 只取最近一批
         run: |

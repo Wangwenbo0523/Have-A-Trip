@@ -1,0 +1,161 @@
+.planner {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 18px 20px;
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  background: var(--panel-bg);
+}
+
+.planner__form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.planner__label {
+  color: var(--muted);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+}
+
+.planner__input {
+  padding: 12px 16px;
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  background: var(--panel-bg-strong);
+  color: var(--text);
+  font-size: 1rem;
+  font-family: inherit;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.planner__input:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.planner__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.planner__days {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.planner__days select {
+  padding: 8px 12px;
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  background: var(--panel-bg-strong);
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.planner__submit,
+.planner__clear {
+  padding: 10px 22px;
+  border: 1px solid var(--panel-border);
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-contrast, #fff);
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.planner__clear {
+  background: transparent;
+  color: var(--muted);
+}
+
+.planner__submit:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.planner__result {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.planner__note {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.planner__day {
+  padding: 14px 16px;
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  background: var(--panel-bg-strong);
+}
+
+.planner__dayTitle {
+  font-size: 1.05rem;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.planner__stops {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: stop;
+}
+
+.planner__stop {
+  position: relative;
+  padding-left: 30px;
+}
+
+/* 站序用计数器画出来: 顺序本身就是行程的信息, 不该只靠 DOM 结构暗示 */
+.planner__stop::before {
+  counter-increment: stop;
+  content: counter(stop);
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-contrast, #fff);
+  font-size: 0.75rem;
+  line-height: 20px;
+  text-align: center;
+}
+
+.planner__stopName {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.planner__stopNote {
+  margin-top: 4px;
+  line-height: 1.6;
+}
+
+.planner__stopReason {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.planner__disclaimer {
+  color: var(--muted);
+  font-size: 0.82rem;
+}

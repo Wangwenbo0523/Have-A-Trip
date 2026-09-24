@@ -66,6 +66,7 @@
 | **S5** | 数据来源与许可声明页 | `frontend/src/components/Credits.tsx` 改造 + `GET /api/v1/sources` | S4、S7 | G5 | 页面逐条列出来源与许可，与 S7 一致 | `feat(web):` | ✅ 本次提交 |
 | **S8** | 工程化收尾 | CI 增 build/test、`README`、部署说明 | S2、S4、S6 | G6 | CI 三条工作流全绿且**真的会**变红 | `chore(ci):` | ✅ 本次提交 |
 | **S9** | AI 接入（四刀） | `backend/app/llm/*`、`backend/app/api/ai.py`、`tests/test_ai*.py`、`scripts/draft_attraction_summaries.py` | S1、S4 | G7 | 默认不配模型也能跑；模型只解析需求、不产出景点 | `feat(ai):` | ✅ 四刀全部完成 |
+| **S10** | 语义检索 + 行程生成 | `backend/app/search/*`、`backend/app/trip/*`、`backend/app/llm/embedding.py`、`app/api/{search,itineraries}.py`、`scripts/build_embeddings.py` | S9 | G8 | 向量可用时按语义召回、不可用时退回关键词；行程只能从候选集里挑景点 | `feat(ai):` | ✅ 本次提交 |
 
 ---
 
@@ -113,7 +114,7 @@ G6         +----------+------------------+--> S8 (工程化收尾)
 2. `db/seed/seed.sql`：分类、标签、3 个示例景点（够跑通接口，不追求内容量；S7 已扩到 50 个）
 3. `db/README.md`：怎么建库、怎么执行、字段口径说明
 
-**表设计**
+**表设计**（S0 冻结的是下面这 9 张；后续各步新增的见 `db/README.md`，目前共 15 张）
 
 | 表 | 作用 | 关键字段 |
 |---|---|---|
@@ -566,6 +567,80 @@ npm.cmd run dev                        # 手动过一遍: 首页 -> 分类 -> �
 - 任何一刀都不得让「模型不可用」变成用户可见的报错页
 
 ---
+### S10 · 语义检索 + LLM 行程生成
+
+**上下文**
+
+S9 把「一句话」变成了筛选条件。但那只能听懂**能写成 SQL 的需求**：「杭州的古迹」可以，
+「适合发呆一下午的地方」不行。这一刀补两件事：
+
+| 能力 | 一句话 |
+|---|---|
+| 语义检索 | 把文本向量化，按描述的相似度召回 —— 不需要对话模型，只配向量模型也能用 |
+| 行程生成 | 自然语言需求 -> 按天编排的行程。模型只做**编排与措辞**，景点必须落在候选集内 |
+
+**这一刀最重要的一条**（与 S9 同源）：模型**不产出景点**。行程里的每个 `attraction_id`
+必须落在候选项里，越界**整份拒掉**而不是丢掉那一条 —— 越界说明模型在编景点，
+那么它没越界的那几条也没有可信度。
+
+**任务清单**
+
+1. 向量客户端（`app/llm/embedding.py`）：与 `client.py` 同构的薄封装，走 OpenAI 兼容的 `/embeddings`；
+   默认 `EMBEDDING_PROVIDER=inherit` 跟随 `LLM_PROVIDER`
+2. 向量存储（`db/schema.sql` 的 `attraction_embedding`）：**JSON 文本，不引 pgvector**
+3. 检索层（`app/search/`）：`canonical.py` 拼规范化文本 + 指纹；`semantic.py` 语义检索与混合相似度
+4. 行程生成（`app/trip/`）：`prompt.py` 候选集约束、`validator.py` 规则表、`service.py` 异步三段式
+5. 限额（`app/trip/quota.py`）：`trip_quota` 表按 (owner, 自然日) 原子计数，管次数与全站 token 预算
+6. 接口：`POST /api/v1/search/semantic`、`POST|GET /api/v1/itineraries`；`/attractions/{id}/similar` 升级为混合排序
+7. 离线任务：`scripts/build_embeddings.py`（增量、指纹失效、`--dry-run` / `--report`）、
+   `scripts/reclaim_itineraries.py`
+8. 前端：`ItineraryPlanner` 三段式页面（提交 -> 轮询 -> 展示），四态分开显示
+
+**与原蓝图（`Have-A-Trip-LLM升级方案.md`）的关键偏差**（都是有意的，原因写在这里）
+
+| 原计划 | 实际做法 | 为什么改 |
+|---|---|---|
+| `pgvector` + `vector(n)` + HNSW，CI 换 `pgvector/pgvector:pg16` 镜像 | `attraction_embedding.embedding` 存 **JSON 文本**，余弦在应用层算 | 本仓库的 ORM 刻意只用可移植类型、测试跑 SQLite；引 pgvector 会同时带来「建表要超级用户装扩展」「CI 换镜像」「SQLite 与 PG 两套路径」三份复杂度。全库 90 条景点算全量余弦只要几毫秒，ANN 索引是过早优化。过万条时再换，`canonical`/`content_hash`/`cosine` 的接口不用动 |
+| 「向量化批量任务走独立环境」 | 与 API **同一个 venv** | 那个前提是向量化要用 torch。这里走 HTTP 调服务商，依赖与 API 完全一样，独立环境没有任何东西可隔离 |
+| 「表名改 `itinerary`；`CREATE EXTENSION` 与建表解耦」 | 采纳（表名与解耦都照做，只是不再需要扩展） | 与既有 `attraction_plan` 的区别写进了 `db/README.md` |
+| 「指纹纳入 `model + dim + pipeline_version`」 | 采纳 | 见 `app/search/canonical.py`：**换模型必须让全部指纹失效** |
+| 「行程用 `public_token` 对外」 | 采纳 | `GET` 只按 token 取；自增 id 递增就能读到别人的需求原文 |
+| 「独立事务写 item / 独立事务写 succeeded」 | 合成**一个事务** | 分两个事务会造出「有条目但状态还是 generating」的中间态。合成一个后：要么成功的行程有全部条目，要么什么都不留；失败时先 rollback 再另起事务写 `failed` |
+| 「另起心跳线程」 | 认领时写一次心跳，判死看 `coalesce(heartbeat_at, started_at)` | 生成是一次 60 秒内的同步调用，阈值 180 秒远大于调用超时，心跳线程是多余的活动部件 |
+| 「请求原文不入库，只存 hash」 | 采纳 | `itinerary.request_hash`；原文只在内存里传给后台任务 |
+| 「多轮对话式 Agent」「语音/图片输入」 | 仍然不做 | 一期只做单次「需求 -> 行程」 |
+
+**验收标准**
+
+- [x] 向量不可用 / 库内没向量 / 维度不一致 / 服务报错时，`/search/semantic` **一律退回关键词检索并照样返回条目**，HTTP 200
+- [x] `/search/semantic` 与 `/attractions/{id}/similar` 都不会返回 `draft` 景点；`/similar` 任何情况下都不为空（热度兜底）
+- [x] 同一模型下混了两种维度时检索拒绝使用这批数据（退回关键词而不是给乱序结果）
+- [x] `content_hash` 含模型标识：换模型后增量任务会重建全部行（有测试断言）
+- [x] 行程里每个 `attraction_id` 都在候选集内，越界整份拒掉（有专门测试）
+- [x] validator 规则表**每条都有对应测试**：天数覆盖、`seq` 连续、每天上限、总条数上限、空行程按失败处理
+- [x] 生成失败时不留半截条目，且 `failed` 确实落库（有测试断言最终状态）
+- [x] 同一 owner 的同一份需求只调一次模型、只占一个名额（有测试断言调用次数）
+- [x] 超额返回 429 且 `detail.reason` 是固定取值（`daily_limit_exceeded` / `global_budget_exhausted`）+ `retry_after`
+- [x] `GET /itineraries/{token}` 用不可枚举 token；用数字 id 取不到任何东西
+- [x] 心跳过期才回收，**正在跑的任务不被误杀**（两条测试：一条过期、一条新鲜）
+- [x] 模型挂了 `/itineraries/{token}` 仍然 200，`status=failed` 带可读原因
+- [x] 前端四态分开显示：生成中 / 失败 / 被限额 / 成功；超过 `max_poll_seconds` 停止轮询
+- [x] 不引入任何新依赖（`httpx` 已在运行时依赖里），`license_gate.py --strict` 通过
+
+**实际做了什么**
+
+| 项 | 结果 |
+|---|---|
+| 向量客户端 | `app/llm/embedding.py`：provider 预设含 `embedding_model`、按 `index` 还原顺序、批次切分、维度校验（`EMBEDDING_DIM=0` 为自动）、TTL 缓存、`embedding_api_key` 可回退到 `llm_api_key` |
+| 检索层 | `app/search/canonical.py`（拼串口径 `PIPELINE_VERSION` + 指纹）、`vectors.py`（编解码 + 余弦）、`semantic.py`（`active_model` / `model_dim` / `coverage` / 混合排序） |
+| 候选召回 | 向量近邻优先，不可用时退回 `content_based.popular_attractions` —— 候选只是给模型的挑选范围，没有候选才真的排不出来 |
+| 行程服务 | `app/trip/service.py`：`UNIQUE(owner_key, cache_key)` 当并发抢锁点、条件更新认领（`WHERE status='pending'`）、候选集约束、token 计量、`reclaim_one` 自愈 |
+| 限额 | `app/trip/quota.py`：单条 `UPDATE ... WHERE used < :limit` + `rowcount` 判断，不引 Redis；限额按东八区自然日 |
+| 前端 | `ItineraryPlanner.tsx` + `itinerary.css` + 6 个用例；导航加「帮我排行程」；`types/index.ts` 与 `api/client.ts` 按 `schemas.py` 补齐 |
+| 测试 | 后端新增 77 个用例（`test_semantic_search.py` 22、`test_itinerary.py` 31、`test_embedding_client.py` 19，另在 `test_schema_parity.py` 补 5 条对拍断言），合计 214 个用例（**206 通过 / 8 跳过**，对拍需 PostgreSQL）；前端 64 → 70 |
+
+---
+
 ## 六、每一步都必须满足的护栏
 
 | 护栏 | 检查方式 |
@@ -627,3 +702,4 @@ npm.cmd run dev                        # 手动过一遍: 首页 -> 分类 -> �
 | 2026-09-25 | v2.2 | **S9 第一刀（AI 接入 · 自然语言检索）**：新增 `backend/app/llm/{client,interpret}.py` 与 `GET /api/v1/ai/status`、`POST /api/v1/ai/search`。模型**只产出查询条件、不产出景点条目**，取值白名单 + 库内双向校验，解析失败一律降级成关键词检索（HTTP 200 而非 500）。默认 `LLM_PROVIDER=none`，不配模型应用照常跑。`tests/test_ai.py` 14 用例 + `tests/test_llm_client.py` 8 用例（后端 65 → 87）；前端加「用一句话找景点」面板（41 → 50 用例）。`httpx` 从开发依赖提到运行时依赖（AI 客户端要用）。剩三刀（详情页追问 / 推荐理由润色 / 离线批量生成）待开工 |
 | 2026-09-25 | v2.4 | 本地一键起环境：新增 `scripts/dev-up.ps1`（连库 → 灌 schema 与种子 → 起前后端，幂等；不装东西、不写 `.env`，日志与 pid 落 `.dev/`；`-Down` 按 pid 连同子进程收尾）。为此 `frontend/vite.config.js` 的代理目标改为读进程环境变量 `DEV_API_PROXY`（默认 `http://127.0.0.1:8000`），换后端端口时前端不再打空。README「快速起步」改成一键起为主、手工三步为对照 |
 | 2026-09-25 | v2.5 | 装依赖的坑写进文档：Windows 中文控制台（代码页 936）下 `pip` 按 GBK 解码 UTF-8 的 `requirements*.txt` 会报 `UnicodeDecodeError`，README 与 `backend/README.md` 都写明先 `$env:PYTHONUTF8 = 1`；安装命令统一到 `requirements-dev.txt`（含运行时 + pytest） |
+| 2026-09-25 | v3.0 | **S10 收口（语义检索 + LLM 行程生成）**：新增 `backend/app/llm/embedding.py`（走 OpenAI 兼容的 `/embeddings`，`EMBEDDING_PROVIDER=inherit` 默认跟随对话模型，`EMBEDDING_DIM=0` 表示自动）与 `backend/app/search/{canonical,vectors,semantic}.py`；向量**存 JSON 文本、不引 pgvector**（ORM 保持可移植、测试仍跑 SQLite 内存库，90 条景点算全量余弦只要几毫秒），`content_hash` 纳入模型标识，换模型即全量失效。行程走「提交 → 轮询 → 取结果」三个接口，模型只做**编排与措辞**：每个 `attraction_id` 必须落在候选集内，越界**整份拒掉**；限额靠单条 `UPDATE ... WHERE used < :limit` 按东八区自然日原子计数（每人每日次数 + 全站 token 预算），`rejected` 与 `failed` 分开，对外只用不可枚举 `public_token`、需求原文只存 hash。前端新增 `/planner` 三段式页面（四态分开显示，超过 `max_poll_seconds` 停止轮询）。后端 137 → 214（206 通过 / 8 跳过），前端 64 → 70；不引入任何新依赖 |
