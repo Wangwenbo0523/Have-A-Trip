@@ -136,6 +136,33 @@ describe("ComparePage", () => {
     expect(screen.getByTestId("search")).toHaveTextContent("?a=palace-museum&b=west-lake")
   })
 
+  it("景点多到一页装不下时把后面几页也取回来 —— 下拉里要能选到全部", async () => {
+    // 后端 max_page_size = 100, 所以 156 个景点不可能一页取完
+    const firstPage = Array.from({ length: 100 }, (_, index) =>
+      listItem(index + 1, `first-${index + 1}`, `第一页第 ${index + 1} 个`),
+    )
+    const deepCut = listItem(101, "deep-cut", "第 101 个景点")
+    mockedList.mockImplementation(async (query = {}) =>
+      (query.page ?? 1) === 1
+        ? { items: firstPage, page: 1, size: 100, total: 101 }
+        : { items: [deepCut], page: 2, size: 100, total: 101 },
+    )
+    mockedDetail.mockImplementation(async (slug) => detail({ slug, name: slug }))
+
+    renderCompare("/compare?a=deep-cut&b=first-1")
+
+    // 第二页的景点要出现在候选里, 链接里给的选择也不能被改写成第一页的。
+    // 两个下拉框都铺全部选项, 所以断言要收在 A 那个 select 里, 否则同名 option 会有两个
+    const pickerA = await screen.findByLabelText("景点 A")
+    expect(await within(pickerA).findByRole("option", { name: "第 101 个景点" })).toBeInTheDocument()
+    expect(pickerA).toHaveValue("deep-cut")
+    expect(await screen.findByRole("columnheader", { name: "deep-cut" })).toBeInTheDocument()
+
+    // 翻页是串行的: 第二页的请求要等第一页回来才知道有没有, 所以断言放在等待之后
+    expect(mockedList).toHaveBeenCalledWith(expect.objectContaining({ page: 1 }))
+    expect(mockedList).toHaveBeenCalledWith(expect.objectContaining({ page: 2 }))
+  })
+
   it("对调是同一份档案换边显示, 不重新取数据", async () => {
     renderCompare("/compare?a=west-lake&b=palace-museum")
     await screen.findByRole("columnheader", { name: "西湖" })

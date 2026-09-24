@@ -6,11 +6,39 @@ import { useApi } from "../hooks/useApi"
 import { useI18n, type MessageKey } from "../i18n"
 import { localizedName, namesFor } from "../lib/display"
 import { HERITAGE_TEXT } from "../lib/grade"
-import type { AttractionDetail } from "../types"
+import type { Attraction, AttractionDetail } from "../types"
 import StateMessage from "./StateMessage"
 import Loader from "./utils/Loader"
 
 import "../styles/compare.css"
+
+/**
+ * 后端 `max_page_size` 是 100 —— 请求再大也会被压回这个数, 所以一次取不完整个库。
+ * 这里跟 backend/app/config.py 对齐, 只用来减少往返次数, 不承担正确性。
+ */
+const PAGE_SIZE = 100
+
+/**
+ * 取回**全部**已发布景点。
+ *
+ * 对比页的下拉必须能选到全库。早先只取第一页, 于是排在第 100 名之后的景点既不在下拉里,
+ * 别人发来的 `?a=<slug>` 链接还会被 known() 判成「已下架」, 静默换成别的景点 ——
+ * 发出去的一条对比链接会悄悄变成另一条对比。
+ *
+ * 页数按响应里的 `size` 推, 而不是按上面请求的值: 服务端有权把 size 压小。
+ */
+async function fetchAllAttractions(): Promise<Attraction[]> {
+  const first = await fetchAttractions({ page: 1, size: PAGE_SIZE, sort: "name" })
+  const pages = first.size > 0 ? Math.ceil(first.total / first.size) : 1
+  if (pages <= 1) return first.items
+
+  const rest = await Promise.all(
+    Array.from({ length: pages - 1 }, (_, index) =>
+      fetchAttractions({ page: index + 2, size: PAGE_SIZE, sort: "name" }),
+    ),
+  )
+  return [...first.items, ...rest.flatMap((page) => page.items)]
+}
 
 interface CompareRow {
   label: MessageKey
@@ -34,12 +62,12 @@ const ComparePage = () => {
   const [params, setParams] = useSearchParams()
 
   const {
-    data: list,
+    data: items,
     loading: listLoading,
     error: listError,
     reload: reloadList,
-  } = useApi(() => fetchAttractions({ size: 100, sort: "name" }), [])
-  const options = useMemo(() => list?.items ?? [], [list])
+  } = useApi(fetchAllAttractions, [])
+  const options = useMemo(() => items ?? [], [items])
 
   const leftSlug = params.get("a") ?? ""
   const rightSlug = params.get("b") ?? ""
