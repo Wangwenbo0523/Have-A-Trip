@@ -17,11 +17,31 @@
 
 ## 基底 A：travel-guide（前端）
 
-已 vendor 到 `frontend/`，41 个文件 / 8.81 MB，嵌套 `.git` 已摘除。只检出了 `src/`、`public/` 和根配置文件，`dist/` 是构建产物未检出。
+已 vendor 到 `frontend/`，**38 个文件 / 1.01 MB**，嵌套 `.git` 已摘除。只检出了 `src/`、`public/` 和根配置文件，`dist/` 是构建产物未检出。
 
 ### 它原本是什么
 
 一个「目的地 → 活动」的浏览型站点：`CountryCard` 列国家，`Detail` 看详情，`MapView` 在地图上打点，`Credits` 声明数据来源。形态和我们的「景点大全」几乎一致，所以骨架可直接用。
+
+### 本地已做的改造（相对上游 commit `a2c9f2d1`）
+
+上游那个 commit 拿到手是**跑不起来**的。下面这些是落位时已经改掉的，升级基底时别把它们冲掉。
+
+| 改动 | 原因 |
+|---|---|
+| `package.json`：`@testing-library/react` 13.4.0 → 16.3.3、`@testing-library/user-event` → 14.6.7、`react-spinners` 0.13.8 → 0.17.1 | 前两个声明 `react@^18`，而项目用 `react@19`，`npm ci` 直接 `ERESOLVE` 失败 |
+| `vite.config.js`：`base` 由 `/travel-guide/` 改为 `/` | 上游是部署在 GitHub Pages 子路径，本项目独立部署 |
+| `vite.config.js`：新增 `css.lightningcss.errorRecovery: true` | `tachyons@4.12`（2017 年的库）含 IE 时代的 `*zoom` hack，Vite 8 默认的 LightningCSS 压缩器视其为非法语法，直接让构建失败。剥离该声明无副作用，现代浏览器本来就忽略它 |
+| `index.html`：删掉指向 `cdn.rawgit.com` 的 AOS 样式链接 | `rawgit.com` 2019 年已关停，是死链。改为从 npm 包引入（`src/index.tsx` 里 `import 'aos/dist/aos.css'`） |
+| 路由前缀 `/travel-guide/*` → `/*` | 与 `base: '/'` 保持一致。涉及 `AppRouter.tsx`、`Header.tsx`、`Footer.tsx`、`Region.tsx`、`RegionCard.tsx`、`Detail.tsx` |
+| `src/App.tsx`：删掉 `navigator.geolocation.getCurrentPosition(...)` | 它会让首屏加载时弹出定位授权请求，与「不需要地图跟踪」直接冲突，且原调用签名本身是错的 |
+| 删除 `src/hero-pic.jpg`、`src/Google_Earth_Logo.svg`、`src/changed/Globe.svg` | 死资源，`src/` 内零引用（详见下方说明） |
+| `package.json`：删 `jquery` | CRA 时代遗留，`src/` 内零引用 |
+| 项目元信息 `name` / `description` / `repository` / `author` / `homepage` / `bugs` | 原本仍是上游的 `travel-guide-app` / `zero-to-mastery` |
+
+> **纠正一处早先的误判**：`src/hero-pic.jpg`（7.75 MB）此前被记成「首屏必崩，必须先压缩」，
+> 实际上它**没有被任何代码引用**，属于死资源，已直接删除。
+> 真正进入产物的图片是 `src/img/BaganMyanmar.jpg`（675 KB，构建后原样输出为 `dist/assets/BaganMyanmar-*.jpg`）——这张才需要转 WebP。
 
 ### 文件级复用映射
 
@@ -45,24 +65,23 @@
 | `src/components/CountryCard.tsx` | `CategoryCard` | 分类入口卡 |
 | `src/types/index.ts` | 重写 | `Country` 类型 → `Attraction` 类型（对齐 `db/schema.sql`） |
 | `src/components/Credits.tsx` | **改为数据来源与许可声明页** | 必须做：用了 OSM(ODbL)、CC BY-SA 数据就得署名 |
-| `src/App.tsx`、`App.test.js` | 改造 | 应用外壳与测试 |
+| `src/App.tsx`、`App.test.js` | 改造 | 应用外壳、数据获取（现在打的是 `restcountries.com`，要换成本项目 API）与测试 |
 
 **删除**
 
-| 文件/依赖 | 原因 |
-|---|---|
-| `src/components/MapView/MapView.tsx` + `.css` | 明确不需要地图 |
-| `package.json` 里的 `ol`（OpenLayers 6） | 只有 MapView 用。删掉它连带移除 `ol-mapbox-style` -> `@mapbox/mapbox-gl-style-spec` -> `@mapbox/jsonlint-lines-primitives` / `sort-object` -> `sort-asc`/`sort-desc` 整条链（此链已验证），许可证扫描里的 4 个「未标注许可」项一并消失 |
-| `package.json` 里的 `jquery`（4.0.0） | CRA 时代遗留，无引用 |
-| `src/changed/Globe.svg`（206 KB）、`src/Google_Earth_Logo.svg` | 地图/地球相关素材 |
-| `src/registerServiceWorker.js` | CRA 遗留；要做 PWA 再单独加 |
+| 文件/依赖 | 原因 | 状态 |
+|---|---|---|
+| `src/components/MapView/MapView.tsx` + `.css` | 明确不需要地图 | 待办 |
+| `package.json` 里的 `ol`（OpenLayers 6） | 只有 MapView 用。删掉它连带移除 `ol-mapbox-style` -> `@mapbox/mapbox-gl-style-spec` -> `@mapbox/jsonlint-lines-primitives` / `sort-object` -> `sort-asc`/`sort-desc` 整条链（此链已验证），许可证扫描里的 4 个「未标注许可」项一并消失 | 待办 |
+| `package.json` 里的 `jquery`（4.0.0） | CRA 时代遗留，无引用 | **已删** |
+| `src/hero-pic.jpg`（7.75 MB）、`src/changed/Globe.svg`（200 KB）、`src/Google_Earth_Logo.svg` | 死资源，零引用 | **已删** |
+| `src/registerServiceWorker.js` | CRA 遗留；要做 PWA 再单独加 | 待办 |
 
 **替换**
 
-| 文件 | 问题 |
-|---|---|
-| `src/hero-pic.jpg` | **7.9 MB**，必须先压缩，否则首屏必崩 |
-| `src/img/BaganMyanmar.jpg`（675 KB） | 同上，转 WebP |
+| 文件 | 问题 | 状态 |
+|---|---|---|
+| `src/img/BaganMyanmar.jpg`（675 KB） | 原样进 `dist/assets/`，转 WebP 能显著减小首屏体积 | 待办 |
 
 保留的依赖：`react`、`react-dom`、`react-router-dom`、`axios`（用来打我们的 FastAPI）、`react-spinners`、`aos`、`tachyons`。
 

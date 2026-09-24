@@ -9,7 +9,7 @@
 | 项 | 数量 | 说明 |
 |---|---|---|
 | 违禁（GPL / AGPL / SSPL / CC-BY-NC） | **0** | 通过 |
-| 告警（MPL-2.0） | 13 | `certifi`、`tqdm`、`lightningcss` 及其平台包。MPL 是文件级 copyleft，只要不修改这些包的文件就无义务。保持「只用不改」即可。 |
+| 告警（MPL-2.0） | 13 | `certifi`（Python 证书包）与 `lightningcss` 及其 12 个平台包（Vite 8 的 CSS 压缩器，仅构建期）。MPL 是文件级 copyleft，只要不修改这些包的文件就无义务。保持「只用不改」即可。 |
 | 未标注许可 | 4 | `@mapbox/jsonlint-lines-primitives`、`sort-asc`、`sort-object`、`sort-desc` |
 
 那 4 项未标注许可的包来自这条链（已验证）：
@@ -76,25 +76,28 @@ ol  ->  ol-mapbox-style  ->  @mapbox/mapbox-gl-style-spec  ->  { @mapbox/jsonlin
 3. 数据层与代码层解耦——`data/`、`dataset/` 已在 `.gitignore` 中，第三方数据不进代码仓库。
 4. 闭源前逐条复核本表，而不是假设它没变。
 
-## 三·五、根许可证：MIT 还是 Unlicense
+## 三·五、根许可证：已由 Unlicense 改为 MIT
 
-仓库根 `LICENSE` 当前是 **Unlicense**（GitHub 建仓时选的模板），内容是将版权奉献给公有领域。两种选择对「将来闭源」的影响完全不同：
+建仓时 GitHub 默认选中的是 **Unlicense**，它把版权奉献给公有领域，与「将来可能闭源」直接冲突。
+已于 2026-09-25 换成 **MIT**。两种许可对「将来闭源」的影响差别：
 
-| | MIT | Unlicense（当前） |
+| | MIT（当前） | Unlicense（原状） |
 |---|---|---|
 | 版权归属 | 作者保留版权，授予宽泛许可 | **永久放弃版权** |
 | 将来闭源 | 可以：新版本可换许可 | 勉强可以，但**无法对已发布版本行使任何权利** |
 | 再许可 / 双许可 | 可以 | 不能 |
 | 署名要求 | 要求保留版权声明 | 不要求 |
 
-因为项目里有 vendor 进来的 MIT 代码（`frontend/`，来自 travel-guide），整体改成 Unlicense 会造成
-「主体宣称公有领域、内部却含要求保留署名的 MIT 代码」这种不一致。**建议改用 MIT。**
+另外还有一处不一致：`frontend/` 里 vendor 了上游要求保留署名的 MIT 代码，
+若整体宣称公有领域，等于「对外放弃权利、对内却负有署名义务」。改成 MIT 后两者自洽。
 
-要切换的话，替换根 `LICENSE` 为 MIT 全文（版权署名人写你自己的名字），然后跑一次许可证卡口确认。
+根 `LICENSE` 的署名为 `Copyright (c) 2026 Wangwenbo0523`。
+vendor 进来的 `frontend/LICENSE`（`Copyright (c) 2019 Zero To Mastery`）原样保留——MIT 要求不得删除。
+
 ## 四、操作清单
 
 - [x] 根许可证存在于 `LICENSE`；两个基底的 LICENSE 随源码保留（`frontend/LICENSE` = MIT）
-- [ ] **决定根许可证**：当前为 **Unlicense（公有领域放弃）**。它会**永久放弃版权**，无法再对新版本行使版权或做再许可；若想保留「将来闭源」的主动权和双许可空间，应改用 MIT。见下节
+- [x] **根许可证已定为 MIT**（2026-09-25 由 Unlicense 换入），保住版权与再许可空间。见下节
 - [x] 许可证卡口脚本 + CI 工作流
 - [x] 基底钉版记录（`scripts/bases.lock.json`）含 commit 与许可
 - [x] 两个基底的 LICENSE 随源码保留（`frontend/LICENSE`）

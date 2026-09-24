@@ -126,6 +126,16 @@ def check_bases() -> list[str]:
     except json.JSONDecodeError as exc:
         return [f"bases.lock.json 解析失败: {exc}"]
     bases = lock.get("bases", {})
+    root_license = ROOT / "LICENSE"
+    if not root_license.exists():
+        problems.append("缺少根 LICENSE")
+    else:
+        head = root_license.read_text(encoding="utf-8", errors="ignore")[:200].upper()
+        if "MIT" not in head:
+            problems.append(
+                "根 LICENSE 不是 MIT。旧版曾是 Unlicense(永久放弃版权), "
+                "与「将来可闭源」冲突, 不要改回去"
+            )
     if "frontend" in bases:
         candidates = sorted(ROOT.glob("frontend/LICENSE*"))
         if not candidates:

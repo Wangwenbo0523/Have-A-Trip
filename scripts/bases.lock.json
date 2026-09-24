@@ -1,6 +1,6 @@
 {
   "_comment": "两个基底的钉版记录。改基底前先改这里，并在 PR 里说明 LICENSE 影响。",
-  "updatedAt": "2026-09-24",
+  "updatedAt": "2026-09-25",
   "bases": {
     "frontend": {
       "role": "前端基底（要改的代码，已 vendor 进 frontend/）",
@@ -11,7 +11,16 @@
       "licenseFile": "frontend/LICENSE",
       "vendored": true,
       "vendoredPath": "frontend",
-      "vendoredNote": "已摘除嵌套 .git；仅检出 src/、public/ 与根配置文件，dist/ 未检出（构建产物）。",
+      "vendoredNote": "已摘除嵌套 .git；仅检出 src/、public/ 与根配置文件，dist/ 未检出（构建产物）。localChanges 里的改造已落地，frontend/ 不再与上游逐文件一致，勿整目录覆盖。",
+      "localChanges": [
+        "依赖修正: @testing-library/react -> 16.3.3, @testing-library/user-event -> 14.6.7, react-spinners -> 0.17.1 (上游声明 react@^18, 与项目的 react@19 冲突, npm ci 会 ERESOLVE 失败)",
+        "vite.config.js: base 由 /travel-guide/ 改为 '/', 新增 css.lightningcss.errorRecovery (tachyons@4.12 的 *zoom hack 会让 Vite 8 构建失败)",
+        "index.html: 移除已关停的 cdn.rawgit.com 死链, AOS 样式改由 src/index.tsx 从 npm 包引入",
+        "路由前缀 /travel-guide/* 改为 /*, 与 base 保持一致",
+        "App.tsx: 移除 navigator.geolocation 调用 (会在首屏请求定位授权, 与「不做地图跟踪」冲突)",
+        "删除零引用死资源 src/hero-pic.jpg, src/changed/Globe.svg, src/Google_Earth_Logo.svg; 删除零引用依赖 jquery",
+        "package.json 元信息改为本项目 (name/description/repository/author/homepage/bugs)"
+      ],
       "stack": "React 19 + TypeScript + Vite 8 + react-router-dom 7 + axios"
     },
     "recsys": {

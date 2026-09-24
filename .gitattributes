@@ -16,6 +16,10 @@
 *.html    text eol=lf
 *.svg     text eol=lf
 
+# 许可证与属性文件本身
+LICENSE        text eol=lf
+.gitattributes text eol=lf
+
 # PowerShell 脚本在 Windows 上运行
 *.ps1     text eol=crlf
 
