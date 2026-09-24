@@ -30,6 +30,11 @@ python scripts/check_dco.py                 # 只查 HEAD
 python scripts/check_dco.py origin/main..HEAD   # 查一个区间
 ```
 
+**为什么 push 到 main 只告警、PR 却硬失败**：GitHub 网页编辑器里改文件产生的 commit 加不上签名
+（网页编辑器不提供 `-s`）。DCO 真正要挡的是外部贡献，而外部贡献走 PR，所以 PR 一律拦截；
+维护者自己在主干上的提交只提示不拦。想在网页编辑时也带上签名，就在 commit message 里手打一行
+`Signed-off-by: 你的名字 <you@example.com>`。
+
 漏签了不用重写内容，补签名即可：
 
 ```bash

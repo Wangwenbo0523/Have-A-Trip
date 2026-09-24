@@ -17,6 +17,8 @@
 
 施工顺序、依赖关系与每步验收标准见 **[`docs/PLAN.md`](docs/PLAN.md)（施工计划表）**。
 
+## 基底
+
 | | 干什么 | 在哪 |
 |---|---|---|
 | [travel-guide](https://github.com/zero-to-mastery/travel-guide) | 前端基底（已 vendor，会改） | `frontend/` |

@@ -11,6 +11,10 @@ on:
 jobs:
   signoff:
     runs-on: ubuntu-latest
+    # 维护者通过 GitHub 网页编辑产生的 commit 加不上 Signed-off-by(网页编辑器
+    # 不提供 `-s`)。DCO 真正要挡的是**外部贡献**, 那条路径是 PR —— 所以 PR 上
+    # 硬失败, push 到 main 只告警, 免得主干长期挂一个红叉。检查本身照跑。
+    continue-on-error: ${{ github.event_name == 'push' }}
     steps:
       - uses: actions/checkout@v4
         with:
