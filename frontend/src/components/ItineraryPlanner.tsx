@@ -195,6 +195,12 @@ const ItineraryPlanner = () => {
 
       {!busy && itinerary && itinerary.status === "succeeded" ? (
         <div className="planner__result">
+          <div className="planner__printRow">
+            <button className="planner__print" type="button" onClick={() => window.print()}>
+              {t("print.itinerary")}
+            </button>
+            <span className="planner__printHint">{t("print.hint")}</span>
+          </div>
           {itinerary.note ? <p className="planner__note">{itinerary.note}</p> : null}
           {groupByDay(itinerary.items).map(([day, items]) => (
             <article className="planner__day" key={day}>

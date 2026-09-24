@@ -209,6 +209,40 @@ class SourcesOut(BaseModel):
     needs_attention: bool
 
 
+# ---------------------------------------------------------------- 看板
+
+
+class StatSlice(BaseModel):
+    """分布里的一档。
+
+    key 是机器可读的取值(country_code / 5A / cultural / 分类 slug), label 是展示名
+    —— 分类的 label 是库里的分类名(内容, 不翻译), 其余取值的 label 与 key 相同。
+    前端按 key 决定怎么显示。**没填的取值归到 key='unknown'**, 不丢, 见 api/stats.py。
+    """
+
+    key: str
+    label: str
+    count: int
+
+
+class StatsOut(BaseModel):
+    """景点库总览。只统计已发布景点, 与 /sources 同一口径。"""
+
+    attraction_total: int
+    image_total: int
+    plan_total: int
+    # 覆盖的省级行政区数。省份为空的景点不计入(COUNT 天然忽略 NULL)
+    province_total: int
+    # 境内/境外由 country_code 分, 前端按 key == "CN" 判断, 后端不预设国别清单
+    by_country: list[StatSlice]
+    by_category: list[StatSlice]
+    by_a_level: list[StatSlice]
+    by_heritage: list[StatSlice]
+    # 与 /sources 同一份聚合, 直接复用, 见 api/stats.py
+    sources: list[SourceRecord]
+    needs_attention: bool
+
+
 # ---------------------------------------------------------------- AI 检索
 #
 # 契约真身同样在这里, 前端类型按它写。

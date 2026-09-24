@@ -1,0 +1,142 @@
+/* 数据看板。只有一种图形语言: 水平条。不引图表库, 条形是手写的 SVG(见 StatsPage.tsx)。 */
+
+.stats__kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px;
+  margin-bottom: 34px;
+}
+
+.stats__kpi {
+  padding: 16px 18px;
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  background: var(--panel-bg);
+}
+
+.stats__kpiValue {
+  display: block;
+  font-size: 1.9rem;
+  line-height: 1.2;
+  color: var(--accent);
+}
+
+.stats__kpiLabel {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.stats__detail {
+  margin-bottom: 14px;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.stats__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* 三列: 名称定宽、条形吃掉剩余、数字定宽。名称与数字定宽, 条形才不会因为
+   标签长短不一而左右抖动 —— 一组条形的左端必须对齐才比得出来。 */
+.stats__row {
+  display: grid;
+  grid-template-columns: minmax(5rem, 9rem) 1fr minmax(4rem, auto);
+  align-items: center;
+  gap: 12px;
+}
+
+.stats__rowLabel {
+  color: var(--text);
+  font-size: 0.92rem;
+  overflow-wrap: anywhere;
+}
+
+.stats__rowCount {
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.stats__bar {
+  display: block;
+}
+
+.stats__barTrack {
+  fill: var(--panel-bg-strong);
+}
+
+.stats__barFill {
+  fill: var(--accent);
+}
+
+.stats__empty {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* 表格给个下限宽度, 窄屏整体横向滚动 —— 与声明页同一套处理 */
+.stats__scroll {
+  overflow-x: auto;
+}
+
+.stats__table {
+  width: 100%;
+  min-width: 420px;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.stats__caption {
+  caption-side: top;
+  text-align: left;
+  color: var(--muted);
+  padding-bottom: 10px;
+}
+
+.stats__table th,
+.stats__table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--panel-border);
+  word-break: break-word;
+}
+
+.stats__table th {
+  color: var(--muted);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.stats__table tbody tr:hover {
+  background: var(--panel-bg);
+}
+
+/* share-alike 是个义务标记, 不是装饰: 它意味着这一行的许可要求署名与相同方式共享 */
+.stats__flag {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 8px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.stats__more {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.stats__link {
+  color: var(--accent);
+  text-decoration: underline;
+}

@@ -14,6 +14,8 @@ const Footer = () => {
           {APP_NAME} · {t("app.tagline")}
         </p>
         <nav className="footer__nav" aria-label={t("footer.navAria")}>
+          <Link to="/stats">{t("nav.stats")}</Link>
+          <Link to="/compare">{t("nav.compare")}</Link>
           <Link to="/credits">{t("footer.dataSources")}</Link>
           <a href={APP_REPO_URL} target="_blank" rel="noreferrer noopener">
             {t("footer.repo")}

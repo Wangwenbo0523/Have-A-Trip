@@ -74,7 +74,7 @@
 
 .detail__action:hover:enabled {
   background: var(--accent);
-  color: #fff;
+  color: var(--accent-contrast);
 }
 
 .detail__action:disabled {
@@ -94,7 +94,7 @@
 .detail__star {
   border: none;
   background: transparent;
-  color: #f5c518;
+  color: var(--star);
   font-size: 1.4rem;
   line-height: 1;
   padding: 0 2px;

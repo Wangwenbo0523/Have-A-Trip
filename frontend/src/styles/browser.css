@@ -43,7 +43,7 @@
 .browser__sort.is-active {
   background: var(--accent);
   border-color: var(--accent);
-  color: #fff;
+  color: var(--accent-contrast);
 }
 
 .browser__pager {
@@ -112,7 +112,7 @@
 }
 
 .stateMessage--error {
-  border-color: rgba(244, 103, 50, 0.6);
+  border-color: var(--accent);
   background: var(--accent-soft);
 }
 
@@ -137,5 +137,5 @@
 
 .stateMessage__retry:hover {
   background: var(--accent);
-  color: #fff;
+  color: var(--accent-contrast);
 }

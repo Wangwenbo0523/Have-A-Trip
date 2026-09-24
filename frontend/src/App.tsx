@@ -3,6 +3,7 @@ import React from "react"
 import { fetchCategories } from "./api/client"
 import { useApi } from "./hooks/useApi"
 import { LanguageProvider } from "./i18n"
+import { ThemeProvider } from "./theme"
 import AppRouter from "./routes/AppRouter"
 import "./App.css"
 
@@ -19,12 +20,14 @@ function AppShell() {
   return <AppRouter categories={categories ?? []} />
 }
 
-/** 语种状态包在最外层: 页头(含切换按钮)、页脚与所有页面共用同一份。 */
+/** 主题与语种状态包在最外层: 页头(含两个切换按钮)、页脚与所有页面共用同一份。 */
 function App() {
   return (
-    <LanguageProvider>
-      <AppShell />
-    </LanguageProvider>
+    <ThemeProvider>
+      <LanguageProvider>
+        <AppShell />
+      </LanguageProvider>
+    </ThemeProvider>
   )
 }
 

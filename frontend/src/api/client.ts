@@ -24,6 +24,7 @@ import type {
   Recommendation,
   SemanticSearchResult,
   SourcesResponse,
+  StatsResponse,
   TagWithCount,
 } from "../types"
 
@@ -117,6 +118,12 @@ export async function fetchRecommendations(limit = 6): Promise<Recommendation[]>
 /** 数据来源与许可声明页的原料。后端从 attraction / attraction_image 聚合, 前端不写死。 */
 export async function fetchSources(): Promise<SourcesResponse> {
   const { data } = await http.get<SourcesResponse>("/sources")
+  return data
+}
+
+/** 看板原料。后端现算, 前端不写死任何一个数字。 */
+export async function fetchStats(): Promise<StatsResponse> {
+  const { data } = await http.get<StatsResponse>("/stats")
   return data
 }
 

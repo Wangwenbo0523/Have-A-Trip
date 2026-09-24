@@ -1,0 +1,6 @@
+/* 主题切换。胶囊外形与定位在 Header.css 的 .header__tool / .header__tools 里,
+   与语种按钮共用一套 —— 这里只管图标。 */
+.themeSwitch__icon {
+  font-size: 0.95em;
+  line-height: 1;
+}

@@ -7,11 +7,62 @@
    页头是每一页都要重复的固定成本, 所以整体压扁了一档: 首屏留给内容, 而不是品牌墙。 */
 .header {
   position: relative;
-  background-color: #10131a;
+  background-color: var(--header-bg);
   background-image:
-    radial-gradient(ellipse at 15% 0%, rgba(244, 103, 50, 0.28), transparent 55%),
-    radial-gradient(ellipse at 85% 10%, rgba(70, 120, 200, 0.24), transparent 60%),
-    linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.9));
+    radial-gradient(ellipse at 15% 0%, var(--header-glow-warm), transparent 55%),
+    radial-gradient(ellipse at 85% 10%, var(--header-glow-cool), transparent 60%),
+    linear-gradient(180deg, var(--header-veil-from), var(--header-veil-to));
+}
+
+/* 语种与主题两个按钮固定在页头右上角。
+   装在一个容器里而不是各自绝对定位 —— 两个各自定位的按钮迟早会互相压住,
+   而且窄屏下要各写一遍媒体查询。 */
+.header__tools {
+  position: absolute;
+  top: 18px;
+  right: 16px;
+  display: flex;
+  gap: 8px;
+}
+
+/* 页头小胶囊的公共外形, 语种与主题按钮共用。
+   独立成类而不是各自复制一份: 两个按钮必须长得一模一样, 复制出来就会慢慢跑偏。 */
+.header__tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--panel-border);
+  border-radius: 999px;
+  background: var(--tool-bg);
+  color: var(--tool-text);
+  font-size: 0.86rem;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.header__tool:hover {
+  background: var(--header-link-hover-bg);
+  color: var(--accent-contrast);
+}
+
+.header__tool:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 560px) {
+  .header__tools {
+    top: 10px;
+    right: 10px;
+    gap: 6px;
+  }
+
+  .header__tool {
+    padding: 5px 9px;
+    font-size: 0.78rem;
+  }
 }
 
 .header__bar {
@@ -31,8 +82,8 @@
   font-size: 2.3rem;
   letter-spacing: 5px;
   text-transform: uppercase;
-  color: #fff;
-  text-shadow: 3px 2px 0 rgba(0, 0, 0, 0.6);
+  color: var(--header-text);
+  text-shadow: var(--header-title-shadow);
 }
 
 .header__tagline {
@@ -53,24 +104,24 @@
   padding: 6px 0;
   border-top: 1px solid var(--panel-border);
   border-bottom: 1px solid var(--panel-border);
-  background: rgba(0, 0, 0, 0.55);
+  background: var(--header-nav-bg);
 }
 
 .header__link {
   padding: 6px 14px;
   border-radius: 999px;
-  color: rgba(255, 255, 255, 0.82);
+  color: var(--header-link);
   font-size: 0.92rem;
   transition: background-color 0.2s, color 0.2s;
 }
 
 .header__link:hover {
-  background: rgba(244, 103, 50, 0.85);
-  color: #fff;
+  background: var(--header-link-hover-bg);
+  color: var(--accent-contrast);
 }
 
 .header__link.is-active {
   background: var(--accent-soft);
-  box-shadow: inset 0 0 0 1px rgba(244, 103, 50, 0.55);
-  color: #fff;
+  box-shadow: inset 0 0 0 1px var(--header-link-active-ring);
+  color: var(--header-link-active-text);
 }

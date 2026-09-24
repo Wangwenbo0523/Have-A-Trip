@@ -1,0 +1,105 @@
+/* 景点对比。一列字段 + 两列内容, 所以只是张两列并排的表, 不需要另造一套布局语言。 */
+
+.compare__pickers {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.compare__pick {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+.compare__pickLabel {
+  color: var(--muted);
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+}
+
+.compare__select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  background: var(--panel-bg-strong);
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.compare__select:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.compare__swap {
+  padding: 10px 20px;
+  border: 1px solid var(--panel-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.compare__swap:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+/* 表格给个下限宽度, 窄屏整体横向滚动 —— 与声明页、看板同一套处理 */
+.compare__scroll {
+  overflow-x: auto;
+}
+
+.compare__table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+}
+
+.compare__table th,
+.compare__table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 12px;
+  border-bottom: 1px solid var(--panel-border);
+  word-break: break-word;
+}
+
+.compare__table thead th {
+  font-size: 1.05rem;
+}
+
+/* 字段列定宽, 两列内容才等宽 —— 否则名字长的那个景点会把自己的列撑大 */
+.compare__table tbody th {
+  width: 8.5rem;
+  color: var(--muted);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* 只有评分会被标上「更高」(见 ComparePage.tsx 的 rowsFor) */
+.compare__cell.is-better {
+  color: var(--accent);
+}
+
+.compare__better {
+  margin-left: 8px;
+  padding: 1px 8px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: var(--accent-soft);
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.compare__note {
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}

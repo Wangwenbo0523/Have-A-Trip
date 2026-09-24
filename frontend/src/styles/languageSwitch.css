@@ -1,44 +1,6 @@
-/* 语种切换。放在页头右上角, 与导航胶囊同一套形状语言(圆角 + 悬停变橙)。
-   绝对定位是为了不动原有的居中品牌区 —— 页头是每页重复的固定成本, 布局不该被
-   一个按钮带偏。 */
-.langSwitch {
-  position: absolute;
-  top: 18px;
-  right: 16px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border: 1px solid var(--panel-border);
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.4);
-  color: rgba(255, 255, 255, 0.82);
-  font-size: 0.86rem;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
-}
-
-.langSwitch:hover {
-  background: rgba(244, 103, 50, 0.85);
-  color: #fff;
-}
-
-.langSwitch:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
+/* 语种切换。胶囊外形与定位在 Header.css 的 .header__tool / .header__tools 里,
+   与主题按钮共用一套 —— 这里只管那颗地球。 */
 .langSwitch__globe {
   font-size: 0.95em;
   line-height: 1;
-}
-
-@media (max-width: 560px) {
-  .langSwitch {
-    top: 10px;
-    right: 10px;
-    padding: 5px 9px;
-    font-size: 0.78rem;
-  }
 }

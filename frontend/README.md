@@ -14,7 +14,10 @@
 | `/attractions` | `AttractionBrowser` | 全部景点：关键字搜索、排序、分页 |
 | `/category/:slug` | `CategoryPage` | 按分类浏览（复用 `AttractionBrowser`） |
 | `/attraction/:slug` | `AttractionDetail` | 详情、图集、标签、评分、相似景点 |
-| `/credits` | `Credits` | 数据来源与致谢（S5 会重做） |
+| `/planner` | `ItineraryPlanner` | 帮我排行程：提交 → 轮询 → 结果，可打印行程单 |
+| `/stats` | `StatsPage` | 数据看板：数字全部由 `GET /api/v1/stats` 现算，条形是手写 SVG |
+| `/compare` | `ComparePage` | 景点对比：两个下拉各挑一个景点，选择记在 URL 查询串里 |
+| `/credits` | `Credits` | 数据来源与许可声明，由 `GET /api/v1/sources` 从库里聚合 |
 | 其它 | — | 404 兜底 |
 
 ## 起开发环境
@@ -63,9 +66,11 @@ src/
 │   ├── AttractionDetail.tsx  AttractionList.tsx  AttractionCard.tsx
 │   ├── CategoryCard.tsx  StateMessage.tsx  SearchBox.tsx
 │   ├── Header.tsx  Footer.tsx  Credits.tsx
+│   ├── StatsPage.tsx  ComparePage.tsx  ItineraryPlanner.tsx
+│   ├── ThemeSwitch.tsx  LanguageSwitch.tsx
 │   └── utils/Loader.tsx
 ├── routes/AppRouter.tsx # 路由表
-├── styles/              # 各组件样式；全局变量在 index.css 的 :root
+├── styles/              # 各组件样式；全局变量与两套主题的调色板在 index.css 的 :root
 └── index.tsx            # 入口（含 AOS 初始化）
 ```
 
@@ -90,7 +95,29 @@ src/
 实现是一张消息表（`src/i18n/messages.ts`）+ 一个 `t()`，**没有引入 i18n 依赖**（本仓库对新增依赖有许可证卡口）。
 英文表缺键时回退中文串，`src/i18n/i18n.test.ts` 会校验两张表的键与占位符一一对应。
 
+## 深浅色主题
+
+页头右上角与语种按钮并排，按钮上写的是**目标主题**的名字（深色界面上显示「浅色」）。
+默认**深色**，**不嗅探 `prefers-color-scheme`** —— 本站的视觉是围绕深色设计的，跟着系统走会让
+同一台机器上的两个人看到两副样子（与语种不嗅探 `navigator.language` 是同一个口径）。
+选择存在 `localStorage["have-a-trip:theme"]`。
+
+两套主题**共用同一份组件样式**：浅色只覆盖 `src/index.css` 里 `:root[data-theme="light"]` 的一组变量，
+不碰尺寸、间距与布局。所以**新组件只要用变量取色，浅色主题就自动成立**，不要在组件里写死颜色；
+确实与主题无关的（等级徽章的金色渐变压在封面上）才允许硬编码。
+
+`index.html` 里有一段内联脚本，在 React 挂载前读一次 `localStorage` 并把 `data-theme` 写到 `<html>` 上 ——
+不这么做，选了浅色的用户每次刷新都会先看到一闪的深色底。那是**唯一**一处与 `src/theme` 重复
+storage key 的地方，改 key 时两处都要改。
+
+## 打印行程单
+
+`/planner` 排好之后有「打印行程单」。`src/index.css` 的 `@media print` 把调色板整体换成白底黑字
+（深色主题直接打印会把整页涂黑），并摘掉页头、页脚、表单与按钮；`styles/itinerary.css` 只管分页 ——
+一个景点别被拆到两页，天标题别孤零零留在页尾。
+
 ## 契约
 
 前端类型以 `backend/app/schemas.py` 为准，字段口径见 `db/README.md`。
 改接口时两边一起改。
+├── theme/               # 深浅色主题 + ThemeProvider / useTheme（无第三方依赖）

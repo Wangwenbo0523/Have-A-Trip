@@ -67,7 +67,7 @@
   border: 1px solid var(--panel-border);
   border-radius: 999px;
   background: var(--accent);
-  color: var(--accent-contrast, #fff);
+  color: var(--accent-contrast);
   font-size: 0.95rem;
   cursor: pointer;
 }
@@ -86,6 +86,34 @@
   display: flex;
   flex-direction: column;
   gap: 18px;
+}
+
+/* 打印行程单。行程单是要带出门的, 所以给一个按钮; 打印时这个按钮自己也会被摘掉
+   (摘除规则在 index.css 的 @media print 里, 与页头、页脚一起处理)。 */
+.planner__printRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.planner__print {
+  padding: 8px 20px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--accent);
+  font-size: 0.9rem;
+}
+
+.planner__print:hover {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.planner__printHint {
+  color: var(--muted);
+  font-size: 0.82rem;
 }
 
 .planner__note {
@@ -133,7 +161,7 @@
   height: 20px;
   border-radius: 50%;
   background: var(--accent);
-  color: var(--accent-contrast, #fff);
+  color: var(--accent-contrast);
   font-size: 0.75rem;
   line-height: 20px;
   text-align: center;
@@ -158,4 +186,35 @@
 .planner__disclaimer {
   color: var(--muted);
   font-size: 0.82rem;
+}
+
+/* 打印: 页头、页脚、表单与按钮由上层的统一规则摘掉, 这里只处理行程自身的分页 ——
+   一个景点被拆到两页、或者「第 2 天」的标题孤零零留在上一页末尾, 都不好读。 */
+@media print {
+  .planner {
+    gap: 12px;
+    padding: 0;
+    border: none;
+    background: none;
+  }
+
+  .planner__result {
+    gap: 12px;
+  }
+
+  .planner__day {
+    padding: 0;
+    border: none;
+    background: none;
+  }
+
+  .planner__day,
+  .planner__stop {
+    break-inside: avoid;
+  }
+
+  /* 标题与它下面的内容必须同页, 否则页尾会孤零零挂一句「第 2 天」 */
+  .planner__dayTitle {
+    break-after: avoid;
+  }
 }

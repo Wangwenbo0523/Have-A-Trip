@@ -4,11 +4,13 @@ import { BrowserRouter, Route, Routes } from "react-router-dom"
 import AttractionBrowser from "../components/AttractionBrowser"
 import AttractionDetail from "../components/AttractionDetail"
 import CategoryPage from "../components/CategoryPage"
+import ComparePage from "../components/ComparePage"
 import Credits from "../components/Credits"
 import Footer from "../components/Footer"
 import Header from "../components/Header"
 import HomePage from "../components/HomePage"
 import ItineraryPlanner from "../components/ItineraryPlanner"
+import StatsPage from "../components/StatsPage"
 import StateMessage from "../components/StateMessage"
 import { useI18n } from "../i18n"
 import type { CategoryWithCount } from "../types"
@@ -58,6 +60,8 @@ const AppRouter = ({ categories }: AppRouterProps) => (
         <Route path="/category/:slug" element={<CategoryPage categories={categories} />} />
         <Route path="/attraction/:slug" element={<AttractionDetail />} />
         <Route path="/planner" element={<Planner />} />
+        <Route path="/stats" element={<StatsPage />} />
+        <Route path="/compare" element={<ComparePage />} />
         <Route path="/credits" element={<Credits />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

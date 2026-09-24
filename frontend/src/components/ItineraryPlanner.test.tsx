@@ -137,4 +137,16 @@ describe("ItineraryPlanner", () => {
     await waitFor(() => expect(mockedCreate).toHaveBeenCalled())
     expect(screen.queryByText("第 1 天")).not.toBeInTheDocument()
   })
+
+  it("排好之后给一个打印行程单的入口, 并说明打印会去掉哪些东西", async () => {
+    mockedCreate.mockResolvedValue(ACCEPTED)
+    mockedFetch.mockResolvedValue(itinerary())
+    renderPlanner()
+
+    await submit()
+
+    await waitFor(() => expect(screen.getByText("第 1 天")).toBeInTheDocument())
+    expect(screen.getByRole("button", { name: "打印行程单" })).toBeInTheDocument()
+    expect(screen.getByText("打印时自动去掉页头、页脚与表单, 只留行程正文")).toBeInTheDocument()
+  })
 })

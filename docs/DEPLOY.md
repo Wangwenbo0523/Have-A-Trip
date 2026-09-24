@@ -202,3 +202,4 @@ python scripts/reclaim_itineraries.py
 - [ ] （可选）要用模型补景点简介时, 在**本地**跑 `python scripts/draft_attraction_summaries.py`, 逐条核对生成的待审 SQL 后再抄进 `db/seed/seed.sql`;
       **不要在部署机上直接执行** `db/seed/drafts/` 里的文件
 - [ ] 备份策略覆盖 PostgreSQL
+- [ ] `/api/v1/stats` 的 `attraction_total` 与 `/api/v1/sources` 的一致，`needs_attention` 同为一个值 —— 看板与声明页看的是同一份聚合，两边对不上说明有人改了一边

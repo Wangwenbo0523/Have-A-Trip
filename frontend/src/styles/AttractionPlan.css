@@ -40,7 +40,7 @@
 .plan__summary {
   margin-top: 10px;
   font-size: 0.92rem;
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--text-soft);
 }
 
 .plan__day {
@@ -83,7 +83,7 @@
 .plan__detail {
   margin-top: 4px;
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--text-soft);
 }
 
 .plan__tip {

@@ -18,7 +18,7 @@ const LanguageSwitch = () => {
   return (
     <button
       type="button"
-      className="langSwitch"
+      className="header__tool langSwitch"
       onClick={toggle}
       aria-label={label}
       title={label}

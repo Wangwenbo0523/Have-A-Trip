@@ -19,7 +19,7 @@
 .attractionCard__media {
   position: relative;
   height: 160px;
-  background: linear-gradient(135deg, #2f3540, #1b1e24);
+  background: var(--media-bg);
 }
 
 .attractionCard__image {
@@ -34,7 +34,7 @@
   justify-content: center;
   height: 100%;
   font-size: 3rem;
-  color: rgba(255, 255, 255, 0.25);
+  color: var(--media-icon);
 }
 
 /* 等级徽章钉在封面右上角, 与左下角的分类角标分开 */
@@ -50,8 +50,8 @@
   bottom: 10px;
   padding: 2px 10px;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.7);
-  color: #fff;
+  background: var(--surface-overlay);
+  color: var(--on-overlay);
   font-size: 0.78rem;
 }
 
@@ -82,7 +82,7 @@
   flex: 1;
   margin-top: 8px;
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--text-soft);
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -100,7 +100,7 @@
   padding: 1px 8px;
   border: 1px solid var(--panel-border);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--chip-bg);
   font-size: 0.75rem;
   color: var(--muted);
 }

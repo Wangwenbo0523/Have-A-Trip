@@ -178,6 +178,36 @@ export interface SourcesResponse {
   needs_attention: boolean
 }
 
+/**
+ * 看板分布里的一档。
+ *
+ * key 是机器可读的取值(country_code / 5A / cultural / 分类 slug), label 是展示名
+ * —— 分类的 label 是库里的分类名(内容, 不翻译), 其余取值的 label 与 key 相同。
+ * key === "unknown" 表示档案里没填, 页面显示成「未核实」, 不显示成「无等级」。
+ */
+export interface StatSlice {
+  key: string
+  label: string
+  count: number
+}
+
+/** 景点库总览。后端只统计已发布景点, 与 /sources 同一口径。 */
+export interface StatsResponse {
+  attraction_total: number
+  image_total: number
+  plan_total: number
+  /** 覆盖的省级行政区数; 省份为空的景点不计入 */
+  province_total: number
+  /** 境内/境外按 country_code 分, 前端按 key === "CN" 判断 */
+  by_country: StatSlice[]
+  by_category: StatSlice[]
+  by_a_level: StatSlice[]
+  by_heritage: StatSlice[]
+  /** 与 /sources 同一份聚合 */
+  sources: SourceRecord[]
+  needs_attention: boolean
+}
+
 // ---------------------------------------------------------------- AI 一句话检索
 //
 // 契约真身是 backend/app/schemas.py。模型只把这句话解析成筛选条件,

@@ -19,6 +19,7 @@ from .api import (
     recommendations,
     search,
     sources,
+    stats,
 )
 from .config import get_settings
 
@@ -51,6 +52,7 @@ for module in (
     events,
     recommendations,
     sources,
+    stats,
 ):
     app.include_router(module.router, prefix=settings.api_prefix)
 

@@ -22,3 +22,21 @@
 </body>
 
 </html>
+    <script>
+        /*
+         * 首屏定主题。React 挂载之前先把 data-theme 写到 <html> 上, 否则选了浅色的
+         * 用户会先看到一闪的深色底 —— 这一下闪烁比多几行内联脚本难看得多。
+         * **这是唯一一处与 src/theme 重复 storage key 的地方**: 为了不闪, 只能在这里
+         * 同步读一次; 改 key 时两处都要改。读不到就什么都不写, CSS 的 :root 默认是深色。
+         */
+        (function () {
+            try {
+                var saved = window.localStorage.getItem("have-a-trip:theme");
+                if (saved === "light" || saved === "dark") {
+                    document.documentElement.dataset.theme = saved;
+                }
+            } catch (error) {
+                /* 无痕模式下读 localStorage 会抛, 走默认深色 */
+            }
+        })();
+    </script>
