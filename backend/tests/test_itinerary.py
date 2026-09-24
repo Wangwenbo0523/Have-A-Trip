@@ -14,7 +14,7 @@ from datetime import datetime, timedelta, timezone
 import pytest
 from sqlalchemy import select, update
 
-from llm_stubs import FakeClient, FakeEmbeddingClient
+from llm_stubs import FakeClient, FakeEmbeddingClient, ScriptedClient
 
 from app.llm import LLMError
 from app.models import Attraction, Itinerary, TripQuota
@@ -242,7 +242,9 @@ def test_same_request_is_reused_and_calls_the_model_once(client, seeded, trip_mo
 
 
 def test_whitespace_only_difference_counts_as_the_same_request(client, seeded, trip_model):
-    fake = trip_model(FakeClient(payload=reply(seeded)))
+    # 这份输出必须是合法的: 不合法会走重试, 那就变成在数重试的次数, 而不是在测
+    # 「压掉空白之后还是不是同一份需求」了
+    fake = trip_model(FakeClient(payload=reply(seeded, days=1, ids=[seeded['west_lake'].id])))
     client.post(f'{API}/itineraries', json=body('杭州  三天  不爬山', days=1))
     client.post(f'{API}/itineraries', json=body('杭州 三天 不爬山', days=1))
     assert len(fake.calls) == 1
@@ -305,6 +307,70 @@ def test_hallucinated_attraction_fails_the_whole_itinerary(client, seeded, trip_
     assert result['status'] == 'failed'
     assert '候选集' in result['error']
 
+
+def _short_reply(seeded, days=2, only_day=1):
+    """漏排了其余天数的不合法输出 —— 线上那次「只要 3 天却只给第 3 天」就是这个形态。"""
+    return {
+        'items': [
+            {
+                'day_index': only_day,
+                'seq': 1,
+                'attraction_id': seeded['west_lake'].id,
+                'note': '只排了一天',
+                'reason': '漏排',
+            }
+        ]
+    }
+
+
+def test_invalid_output_is_retried_with_the_failure_reason(client, seeded, trip_model):
+    """输出不合法先别判失败: 带上失败原因再要一次, 第二次通常就对了。"""
+    fake = trip_model(
+        ScriptedClient(
+            [
+                _short_reply(seeded, days=2),
+                reply(seeded, days=2, ids=[seeded['west_lake'].id, seeded['lingyin'].id]),
+            ]
+        )
+    )
+    accepted = client.post(f'{API}/itineraries', json=body('带小孩去杭州玩两天', days=2)).json()
+    result = client.get(f'{API}/itineraries/{accepted["token"]}').json()
+
+    assert result['status'] == 'succeeded'
+    assert [entry['day_index'] for entry in result['items']] == [1, 2]
+    assert len(fake.calls) == 2, '第一次不合法必须再要一次'
+    assert '上一次的输出不合法' in fake.calls[1][1], '重试要把失败原因回灌给模型'
+    assert '覆盖' in fake.calls[1][1], '回灌的必须是真原因, 不是一句「再试一次」'
+    # 重试花的 token 也算这一次生成的开销, 否则限额会漏记
+    assert result['usage'] == {'prompt_tokens': 200, 'completion_tokens': 100}
+
+
+def test_retry_gives_up_and_says_how_many_attempts(client, seeded, trip_model):
+    """两次都不合法才判失败, 且错误里说清重试过 —— 否则用户看到的报错与第一次毫无区别。"""
+    fake = trip_model(ScriptedClient([_short_reply(seeded, days=2), _short_reply(seeded, days=2)]))
+    accepted = client.post(f'{API}/itineraries', json=body('带小孩去杭州玩两天', days=2)).json()
+    result = client.get(f'{API}/itineraries/{accepted["token"]}').json()
+
+    assert result['status'] == 'failed'
+    assert len(fake.calls) == 2, '重试次数用完就收手, 不无限重发'
+    assert '重试' in result['error']
+    assert result['items'] == []
+
+
+def test_zero_retries_keeps_the_single_attempt_behaviour(seeded):
+    """trip_generate_retries=0 时就是老行为: 一次不合法即失败, 不重复花钱。"""
+    fake = ScriptedClient([_short_reply(seeded, days=2)])
+    with pytest.raises(ValidationError, match='覆盖'):
+        trip_service._draft(
+            fake,
+            request_text='杭州两天',
+            days=2,
+            max_per_day=6,
+            max_tokens=200,
+            retries=0,
+            candidates=[seeded['west_lake'], seeded['lingyin']],
+        )
+    assert len(fake.calls) == 1
 
 def test_draft_attraction_is_never_a_candidate(client, seeded, trip_model):
     """未发布景点不可能被模型选中, 因为候选集里压根没有它。"""

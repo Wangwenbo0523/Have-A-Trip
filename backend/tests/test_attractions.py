@@ -111,6 +111,56 @@ def test_detail_404_for_draft_by_id(client, seeded):
     assert client.get(f"{API}/attractions/{seeded['draft'].id}").status_code == 404
 
 
+# ------------------------------------------------------------ 随机抽取(首页弹窗)
+
+def test_random_is_not_swallowed_by_the_detail_route(client, seeded):
+    """路由顺序的回归护栏: /random 必须排在 /{id_or_slug} 前面。
+
+    排到后面的话会被详情路由先接走 —— 它把 "random" 当 slug 查一次, 然后 404。
+    """
+    response = client.get(f"{API}/attractions/random")
+    assert response.status_code == 200, response.text
+    assert len(response.json()) == 3
+
+
+def test_random_returns_published_only_and_without_duplicates(client, seeded):
+    """随机不该把 draft 抽出来, 也不该同一条重复出现。"""
+    for _ in range(10):
+        body = get_json(client, f"{API}/attractions/random", limit=3)
+        ids = [item["id"] for item in body]
+        assert len(ids) == 3
+        assert len(set(ids)) == 3, "同一个景点在一批里出现两次就不叫三个地方了"
+        assert seeded["draft"].id not in ids
+
+
+def test_random_is_actually_random(client, seeded):
+    """同一组参数连着调, 抽到的组合必须会变 —— 否则「随机」只是个幌子。
+
+    已发布 5 条里抽 3 条有 10 种组合, 30 次全抽到同一组的概率是 (1/10)^29, 可以忽略。
+    """
+    seen = {
+        tuple(sorted(item["id"] for item in get_json(client, f"{API}/attractions/random", limit=3)))
+        for _ in range(30)
+    }
+    assert len(seen) > 1
+
+
+def test_random_declares_itself_uncacheable(client, seeded):
+    """被任何一层缓存按住, 随机就成了固定 —— 响应上必须说明。"""
+    response = client.get(f"{API}/attractions/random")
+    assert "no-store" in response.headers["cache-control"]
+
+
+def test_random_limit_is_bounded(client, seeded):
+    assert client.get(f"{API}/attractions/random", params={"limit": 0}).status_code == 422
+    assert client.get(f"{API}/attractions/random", params={"limit": 13}).status_code == 422
+
+
+def test_random_returns_the_whole_catalogue_when_limit_exceeds_it(client, seeded):
+    body = get_json(client, f"{API}/attractions/random", limit=12)
+    assert len(body) == 5, "只有 5 条已发布, 要 12 条就给 5 条, 不报错也不重复"
+    assert len({item["id"] for item in body}) == 5
+
 def test_similar_is_deterministic_and_relevant(client, seeded):
     body = get_json(client, f"{API}/attractions/west-lake/similar")
     slugs = [i["slug"] for i in body]

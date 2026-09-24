@@ -33,7 +33,7 @@ from ..recommend import content_based
 from ..search import semantic
 from . import quota
 from .prompt import build_prompt
-from .validator import ValidationError, validate
+from .validator import ValidatedItem, ValidationError, validate
 
 # 提示词口径。改了 system prompt 或输出格式就必须 +1 —— 它进缓存键,
 # 否则新旧两种格式的行程会被当成同一份复用。
@@ -291,6 +291,72 @@ def _claim(db: Session, itinerary_id: int, worker_id: str) -> bool:
     return result.rowcount == 1
 
 
+def _draft(
+    client: LLMClient,
+    *,
+    request_text: str,
+    days: int,
+    max_per_day: int,
+    max_tokens: int,
+    retries: int,
+    candidates: list[Attraction],
+) -> tuple[list[ValidatedItem], str | None, dict[str, int]]:
+    """调模型并校验; 输出不合法就带着失败原因重来。返回 (条目, 说明, 累计用量)。
+
+    为什么要重试: 模型偶尔会漏排某一天(要 3 天却只给出第 3 天), 而 validator 对这种
+    输出的处置是**整份拒掉** —— 直接判失败对用户不公平, 因为同一份需求再问一次往往
+    就对了。重试时把上次的失败原因回灌进提示词(见 prompt.build_prompt 的 feedback),
+    提示词因此与上一次不同, 顺带避开了 LLMClient 那份按 (system, user) 做键的内存
+    缓存 —— 否则第二次拿到的就是同一份坏输出。
+
+    重试花的 token 一并累加: 它确实是这次生成的开销, 漏记的话限额就形同虚设。
+    只对「输出不合法」重试; 连不上模型 / 服务报错一律直接失败, 那种情况重发一遍
+    只是把同一份钱再花一次。
+    """
+    candidate_ids = {attraction.id for attraction in candidates}
+    sufficient = len(candidate_ids) >= days
+    usage = {"prompt_tokens": 0, "completion_tokens": 0}
+    feedback: str | None = None
+    attempt = 0
+
+    while True:
+        system, user = build_prompt(
+            request_text=request_text,
+            days=days,
+            max_per_day=max_per_day,
+            candidates=candidates,
+            feedback=feedback,
+        )
+        raw, call_usage = client.chat_json_usage(system, user, max_tokens=max_tokens)
+        usage["prompt_tokens"] += int(call_usage.get("prompt_tokens") or 0)
+        usage["completion_tokens"] += int(call_usage.get("completion_tokens") or 0)
+
+        try:
+            items, degraded_note = validate(
+                raw,
+                candidate_ids=candidate_ids,
+                days=days,
+                max_per_day=max_per_day,
+                candidates_sufficient=sufficient,
+            )
+        except ValidationError as exc:
+            if attempt >= retries:
+                if attempt:
+                    # 把「试过几次」写进错误里: 用户看到一个能解释的原因, 而不是一句
+                    # 与第一次一模一样的报错
+                    raise ValidationError("%s(已重试 %d 次)" % (exc, attempt)) from exc
+                raise
+            attempt += 1
+            feedback = str(exc)
+            continue
+
+        note = degraded_note
+        raw_note = raw.get("note")
+        if isinstance(raw_note, str) and raw_note.strip():
+            note = " ".join(raw_note.split())[:200]
+        return items, note, usage
+
+
 def _generate(
     db: Session, *, itinerary_id: int, settings: Settings, request_text: str, worker_id: str
 ) -> None:
@@ -308,27 +374,16 @@ def _generate(
         if not candidates:
             raise ValidationError("库内没有可编排的已发布景点")
 
-        system, user = build_prompt(
+        client = build_llm(settings)
+        items, note, usage = _draft(
+            client,
             request_text=request_text,
             days=row.days,
             max_per_day=settings.trip_max_items_per_day,
+            max_tokens=settings.trip_max_tokens,
+            retries=max(0, settings.trip_generate_retries),
             candidates=candidates,
         )
-        client = build_llm(settings)
-        raw, usage = client.chat_json_usage(system, user, max_tokens=settings.trip_max_tokens)
-
-        candidate_ids = {attraction.id for attraction in candidates}
-        items, degraded_note = validate(
-            raw,
-            candidate_ids=candidate_ids,
-            days=row.days,
-            max_per_day=settings.trip_max_items_per_day,
-            candidates_sufficient=len(candidate_ids) >= row.days,
-        )
-        note = degraded_note
-        raw_note = raw.get("note")
-        if isinstance(raw_note, str) and raw_note.strip():
-            note = " ".join(raw_note.split())[:200]
 
         # 条目与终态在**同一个事务**里提交: 要么"成功的行程有全部条目", 要么什么都不留。
         # 分两个事务反而会造出"有条目但状态还是 generating"的中间态, 只能靠回收器收拾。

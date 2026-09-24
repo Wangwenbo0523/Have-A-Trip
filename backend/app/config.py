@@ -93,6 +93,10 @@ class Settings(BaseSettings):
     # generating 状态超过这么久没心跳, 视为进程已死, 允许被回收
     trip_stale_after_seconds: int = 180
     trip_request_max_chars: int = 300
+    # 输出不合法时的重试次数。模型偶尔会漏排某一天(例如要 3 天却只给第 3 天), 而
+    # validator 对这种输出是**整份拒掉** —— 直接判失败对用户不公平, 带上失败原因
+    # 再要一次通常就对了。0 表示不重试
+    trip_generate_retries: int = 1
 
     @property
     def cors_origin_list(self) -> list[str]:

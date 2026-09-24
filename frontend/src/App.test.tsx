@@ -2,7 +2,12 @@ import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { fetchAttractions, fetchCategories, fetchRecommendations } from "./api/client"
+import {
+  fetchAttractions,
+  fetchCategories,
+  fetchRandomAttractions,
+  fetchRecommendations,
+} from "./api/client"
 import App from "./App"
 import { LANG_STORAGE_KEY } from "./i18n"
 
@@ -13,22 +18,27 @@ vi.mock("./api/client", async () => {
     fetchCategories: vi.fn(),
     fetchAttractions: vi.fn(),
     fetchRecommendations: vi.fn(),
+    fetchRandomAttractions: vi.fn(),
   }
 })
 
 const mockedCategories = vi.mocked(fetchCategories)
 const mockedAttractions = vi.mocked(fetchAttractions)
 const mockedRecommendations = vi.mocked(fetchRecommendations)
+const mockedRandom = vi.mocked(fetchRandomAttractions)
 
 beforeEach(() => {
   mockedCategories.mockReset()
   mockedAttractions.mockReset()
   mockedRecommendations.mockReset()
+  mockedRandom.mockReset()
   // 语种存在 localStorage 里, 清掉才不会让上一个用例的选择串到下一个
   window.localStorage.clear()
   // 首页会同时打这三个接口, 给一组空数据当默认值, 免得未 mock 的 promise 变成 undefined
   mockedAttractions.mockResolvedValue({ items: [], page: 1, size: 6, total: 0 })
   mockedRecommendations.mockResolvedValue([])
+  // 随机弹窗不进这些用例: 给空列表, 它就不弹(空窗没有意义)
+  mockedRandom.mockResolvedValue([])
 })
 
 describe("App", () => {

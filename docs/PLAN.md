@@ -624,6 +624,7 @@ S9 把「一句话」变成了筛选条件。但那只能听懂**能写成 SQL �
 - [x] `GET /itineraries/{token}` 用不可枚举 token；用数字 id 取不到任何东西
 - [x] 心跳过期才回收，**正在跑的任务不被误杀**（两条测试：一条过期、一条新鲜）
 - [x] 模型挂了 `/itineraries/{token}` 仍然 200，`status=failed` 带可读原因
+- [x] 模型输出不合法（如漏排某一天）时**带着失败原因重试一次**再判失败，重试的 token 也计入限额（`TRIP_GENERATE_RETRIES`，有测试断言调用次数与用量累加）
 - [x] 前端四态分开显示：生成中 / 失败 / 被限额 / 成功；超过 `max_poll_seconds` 停止轮询
 - [x] 不引入任何新依赖（`httpx` 已在运行时依赖里），`license_gate.py --strict` 通过
 
@@ -634,7 +635,7 @@ S9 把「一句话」变成了筛选条件。但那只能听懂**能写成 SQL �
 | 向量客户端 | `app/llm/embedding.py`：provider 预设含 `embedding_model`、按 `index` 还原顺序、批次切分、维度校验（`EMBEDDING_DIM=0` 为自动）、TTL 缓存、`embedding_api_key` 可回退到 `llm_api_key` |
 | 检索层 | `app/search/canonical.py`（拼串口径 `PIPELINE_VERSION` + 指纹）、`vectors.py`（编解码 + 余弦）、`semantic.py`（`active_model` / `model_dim` / `coverage` / 混合排序） |
 | 候选召回 | 向量近邻优先，不可用时退回 `content_based.popular_attractions` —— 候选只是给模型的挑选范围，没有候选才真的排不出来 |
-| 行程服务 | `app/trip/service.py`：`UNIQUE(owner_key, cache_key)` 当并发抢锁点、条件更新认领（`WHERE status='pending'`）、候选集约束、token 计量、`reclaim_one` 自愈 |
+| 行程服务 | `app/trip/service.py`：`UNIQUE(owner_key, cache_key)` 当并发抢锁点、条件更新认领（`WHERE status='pending'`）、候选集约束、token 计量、`reclaim_one` 自愈；`_draft()` 在 validator 拒掉输出时把失败原因回灌进提示词重来（`TRIP_GENERATE_RETRIES`，默认 1 次），只在「输出不合法」重试 —— 连不上模型重发一遍只是把同一份钱再花一次 |
 | 限额 | `app/trip/quota.py`：单条 `UPDATE ... WHERE used < :limit` + `rowcount` 判断，不引 Redis；限额按东八区自然日 |
 | 前端 | `ItineraryPlanner.tsx` + `itinerary.css` + 6 个用例；导航加「帮我排行程」；`types/index.ts` 与 `api/client.ts` 按 `schemas.py` 补齐 |
 | 测试 | 后端新增 77 个用例（`test_semantic_search.py` 22、`test_itinerary.py` 31、`test_embedding_client.py` 19，另在 `test_schema_parity.py` 补 5 条对拍断言），合计 214 个用例（**206 通过 / 8 跳过**，对拍需 PostgreSQL）；前端 64 → 70 |
@@ -712,4 +713,5 @@ S9 把「一句话」变成了筛选条件。但那只能听懂**能写成 SQL �
 | 2026-09-25 | v3.7 | **海南 · 台湾（种子扩到 156，境内省级行政区收满 34）**：补 16 条景点，把最后两处空白填上 —— 海南 8（三亚南山文化旅游区（5A）、天涯海角游览区、蜈支洲岛、呀诺达雨林文化旅游区、海口骑楼老街、海南省博物馆、博鳌亚洲论坛永久会址、五公祠）、台湾 8（台北故宫博物院、日月潭、阿里山、太鲁阁峡谷、九份老街、野柳地质公园、台北 101、安平古堡）。新增标签 `beach`（海滩）—— 两地的海滨是主要看点，原有的 `island` / `reef` 覆盖不到沙滩。口径不变：坐标全 `NULL`、评分全 0、`a_level` 只填能核实的（本批 1 条 5A），票价只在确定免费时写 0（骑楼老街、九份老街、太鲁阁、日月潭、海南省博物馆 5 条）。境内 100 → 116、总数 140 → 156；境内省级行政区 32 → **34（全满）**、`province` 口径 70 → 72；标签 31 → 32、标签关联 506 → 552、方案 140 → 156、步骤 459 → 506、封面 140 → 156、`a_level` 49 → 50（5A 42 + 4A 8）、`heritage` 仍 63。`db-schema.yml` 的断言同步，顺带修掉 v3.5 漏改的 `heritage` 断言（`expect 59` → 63，否则 CI 必红）；`docs/LICENSE-AUDIT.md` 里停在 v2.0 的规模数字一并刷新。本地实测：种子在临时库连跑两遍 exit 0、`make_attraction_covers.py --check` 通过 |
 | 2026-09-25 | v3.8 | **修好 frontend-build 的守线卡口（它一直红着）**：`src` 里那三条界面文案 —— 「no maps or geolocation」—— 正是声明「不做定位」的句子，而守线用裸词 `grep`，于是把自己拦了下来；这一步在 `e82700b`、`3e41b93` 等**每个**提交上都失败，属既有问题而不是某次改动引入的。改法是把匹配收到**代码**上：只认 `import` / `require` / `from` 后面的依赖名（含 `react-leaflet`、`@mapbox/*` 这类带前缀的写法）、旧组件名与 `navigator.geolocation` 这类真实 API，注释与文案里的同名词一律放行。本地用 Git 自带的 bash 把该步骤原样跑了 9 个用例：7 个注入用例全部被拦下（含无括号的副作用导入 `import 'leaflet'` 与动态 `import()`），文案与注释里的同名词放行 |
 | 2026-09-25 | v3.9 | **README 演示 GIF**：新增 `docs/demo.gif` —— 1000×625、19 帧、约 29 秒、3.4 MB，把真模型跑出来的十个界面串成一条循环演示挂在 README 顶部。**用 PIL 合成而不是 ffmpeg**（这台机器上没有 ffmpeg，PIL 是现成的）；录屏走 Edge headless + CDP，帧序按**状态流**排（功能 → 换语言 → 换主题），行程页从末尾提到换语言之前，否则切回深色中文会跳。两个坑记在这里免得下次再踩：受控 `input` 上直接改 `value` **不触发 React 的 `onChange`**（得走 `Input.insertText`），以及**字幕不参与交叉淡化**（否则两条字幕叠印）。 |
+| 2026-09-25 | v3.10 | **输出不合法就重试 + 首页三个随机地方**：两件事。① 行程生成原先模型漏排某一天就直接判失败（`validator` 对天数没覆盖 1..N 是整份拒掉），现在 `_draft()` 把失败原因回灌进提示词再要一次，仍是「一次调用 = 一段对话」而不是多轮 Agent；重试的 token 一并累加进限额，只有「输出不合法」才重试（`TRIP_GENERATE_RETRIES`，默认 1，0 即老行为），两次都不行才判失败且错误里写明重试次数。② 新增 `GET /attractions/random`（默认 3 条、上限 12、**不缓存并回 `Cache-Control: no-store`**）：先数总数再随机取不重复下标，用 `ORDER BY id + OFFSET` 逐个取，比 `ORDER BY random()` 更可移植（SQLite 与 PG 的 `random()` 语义不同）；前端 `RandomPicks` 在打开首页时弹出三个地方，可「换一批」，`sessionStorage` 记账保证一次会话只弹一次、抽不到数据就不弹。测试：后端 236 → **245**（重试 3 条、随机接口 6 条），前端 108 → **116**（`RandomPicks` 8 条，按同一口径重数；此前几行记的 107 差 1）；`tsc --noEmit` exit 0，真机用内置浏览器验过弹窗、换一批与「重载不再弹、新标签页重新弹」 |
 | 2026-09-25 | v3.10 | **修掉对比页「只认前 100 个景点」**：`ComparePage` 取候选时写死 `size: 100`，而后端 `max_page_size` 就是 100 —— 库里 156 条有 56 条进不了下拉。更糟的是别人发来的 `?a=<slug>` 链接会被 `known()` 判成「已下架」，静默换成第一页的景点：一条发出去的对比链接会悄悄变成另一条，而且**没有任何提示**。改成按响应里的 `total` / `size` 翻页取全（页数从**响应**推而不是从请求值推 —— 服务端有权把 size 压小），下拉与 `known()` 这才拿到全量；slug 真不存在时的自动补默认行为不变（实测 `forbidden-city` 不在库里，仍照旧兜底）。回归测试先红后绿：mock 出 100 + 1 两页，断言第二页的景点进得了下拉、且 URL 里的选择不被改写。本地实测真实接口：page1 = 100、page2 = 56、page3 = 0，并集 156 无重复；`west-lake`、`taipei-101`、`taroko-gorge` 原本都落在第一页之外。 |

@@ -91,6 +91,18 @@ export async function fetchAttractions(query: PageQuery = {}): Promise<Page<Attr
   return data
 }
 
+/**
+ * 随机抽几个景点 —— 首页打开时那个「随机三个地方」的弹窗用。
+ *
+ * 与 /recommendations 的区别: 那条按 (用户, 条数) 缓存, 同一个人的结果稳定;
+ * 这一条后端**不缓存**(响应上写了 no-store), 每次调用都是一组新的 —— 所以
+ * 「换一批」直接再调一次即可, 不需要什么刷新参数。
+ */
+export async function fetchRandomAttractions(limit = 3): Promise<Attraction[]> {
+  const { data } = await http.get<Attraction[]>("/attractions/random", { params: { limit } })
+  return data
+}
+
 export async function fetchAttraction(slug: string): Promise<AttractionDetail> {
   const { data } = await http.get<AttractionDetail>(`/attractions/${encodeURIComponent(slug)}`)
   return data

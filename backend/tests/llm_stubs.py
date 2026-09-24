@@ -31,6 +31,35 @@ class FakeClient:
         return self.chat_json(system, user), {"prompt_tokens": 100, "completion_tokens": 50}
 
 
+class ScriptedClient:
+    """按调用次序吐不同结果。用来测「第一次不合法 -> 重试 -> 第二次修好了」。
+
+    payloads 里可以混 Exception, 那条会被抛出来(测「重试只针对校验失败, 连不上直接失败」)。
+    次数用完就重复最后一个 —— 免得写用例时还要数清模型会被调几次。
+    """
+
+    def __init__(self, payloads, usage=None, model="fake-model", available=True):
+        self.payloads = list(payloads)
+        self.usage = usage or {"prompt_tokens": 100, "completion_tokens": 50}
+        self.model = model
+        self._available = available
+        self.calls: list[tuple[str, str]] = []
+
+    @property
+    def available(self) -> bool:
+        return self._available
+
+    def chat_json(self, system: str, user: str) -> dict:
+        return self.chat_json_usage(system, user)[0]
+
+    def chat_json_usage(self, system: str, user: str, *, max_tokens=None):
+        self.calls.append((system, user))
+        index = min(len(self.calls) - 1, len(self.payloads) - 1)
+        payload = self.payloads[index]
+        if isinstance(payload, Exception):
+            raise payload
+        return dict(payload), dict(self.usage)
+
 class FakeEmbeddingClient:
     """确定性的打桩向量: 同一段文本永远得到同一根向量, 文本越像向量越近。
 

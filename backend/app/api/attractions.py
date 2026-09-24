@@ -1,7 +1,9 @@
 """景点列表 / 详情 / 相似推荐。"""
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+import random
+
+from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from sqlalchemy import Select, func, or_, select
 from sqlalchemy.orm import Session
 
@@ -113,6 +115,42 @@ def list_attractions(
     items = page_of(db, statement, page=page, limit=limit, sort=sort)
 
     return Page[AttractionListItem](items=items, page=page, size=limit, total=total)
+
+
+@router.get(
+    "/random",
+    response_model=list[AttractionListItem],
+    summary="随机抽几个已发布景点",
+)
+def random_attractions(
+    response: Response,
+    limit: int = Query(3, ge=1, le=12, description="抽几个, 默认 3"),
+    db: Session = Depends(get_db),
+) -> list[AttractionListItem]:
+    """完全随机 —— 首页那三个「随手挑的地方」用这个。
+
+    与 /recommendations 的分工: 那边按 (用户, 条数) 缓存, 为的是同一个人的推荐稳定;
+    这一块恰恰相反, 每次打开首页都该是新的三个, 所以**不缓存**, 并在响应上显式写
+    Cache-Control: no-store —— 否则浏览器或中间层一按, 随机就成了固定。
+
+    怎么随机: 先数出已发布景点总数 N, 再随机取 limit 个互不相同的下标, 按
+    ORDER BY id + OFFSET 逐个取。不用 ORDER BY random(): 那要对全表排序, 而且
+    SQLite 与 PostgreSQL 的 random() 语义并不一样(前者返回 64 位整数)。OFFSET 两边
+    都认。limit 上限 12, 所以最多 12 次走索引的小查询。
+    """
+    total = count_of(db, published())
+    if total == 0:
+        return []
+
+    statement = published().order_by(Attraction.id.asc())
+    picked: list[Attraction] = []
+    for offset in random.sample(range(total), min(limit, total)):
+        found = db.scalars(statement.offset(offset).limit(1)).first()
+        if found is not None:
+            picked.append(found)
+
+    response.headers["Cache-Control"] = "no-store"
+    return [AttractionListItem.model_validate(attraction) for attraction in picked]
 
 
 @router.get("/{id_or_slug}", response_model=AttractionDetail, summary="景点详情")

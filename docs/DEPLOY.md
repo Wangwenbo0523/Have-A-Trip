@@ -86,6 +86,7 @@ WantedBy=multi-user.target
 | `TRIP_GLOBAL_DAILY_TOKEN_BUDGET` | 全站合计每天能烧多少 token，默认 200000；超了新请求返回 429。`0` 表示不限 |
 | `TRIP_CANDIDATE_LIMIT` | 交给模型的候选景点条数，默认 40。**这是成本的主要旋钮** |
 | `TRIP_MAX_TOKENS`、`TRIP_TIMEOUT_SECONDS` | 行程生成的输出上限与调用超时（默认 2000 / 60 秒） |
+| `TRIP_GENERATE_RETRIES` | 模型输出不合法(如漏排某一天)时带着失败原因重试几次，默认 1；`0` 表示不重试。重试花的 token 照样计入限额 |
 | `TRIP_POLL_MAX_SECONDS` | 前端轮询上限（秒），随响应下发，默认 90 |
 | `TRIP_STALE_AFTER_SECONDS` | `generating` 超过这么久没心跳视为进程已死，默认 180 |
 

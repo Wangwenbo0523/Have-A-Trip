@@ -7,6 +7,7 @@ import { useI18n } from "../i18n"
 import type { CategoryWithCount } from "../types"
 import AttractionList from "./AttractionList"
 import CategoryCard from "./CategoryCard"
+import RandomPicks from "./RandomPicks"
 import RecommendationGrid from "./RecommendationGrid"
 import StateMessage from "./StateMessage"
 import Loader from "./utils/Loader"
@@ -22,6 +23,9 @@ const HomePage = ({ categories }: HomePageProps) => {
 
   return (
     <main className="page">
+      {/* 打开首页就弹的三个随机地方; 一次会话只弹一次, 关掉后本次不再出现 */}
+      <RandomPicks />
+
       <section className="hero">
         <h2 className="hero__title">{t("app.tagline")}</h2>
         <p className="hero__lead">{t("home.lead")}</p>

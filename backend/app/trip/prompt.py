@@ -49,9 +49,20 @@ def _candidate_line(attraction: Attraction) -> dict:
 
 
 def build_prompt(
-    *, request_text: str, days: int, max_per_day: int, candidates: list[Attraction]
+    *,
+    request_text: str,
+    days: int,
+    max_per_day: int,
+    candidates: list[Attraction],
+    feedback: str | None = None,
 ) -> tuple[str, str]:
-    """返回 (system, user)。策略与 app/llm/interpret.py 一致: 候选来自库, 不由模型猜。"""
+    """返回 (system, user)。策略与 app/llm/interpret.py 一致: 候选来自库, 不由模型猜。
+
+    feedback 是上一次输出被拒的原因。重试时把它写进 user, 模型才有机会改 —— 原样再发
+    一遍同一份提示词, 拿回来的多半还是同一份坏输出(而且客户端那份按 (system, user)
+    做键的缓存会直接把上次的结果还给你)。system 与输出格式一个字没动, 所以缓存的
+    行程仍然有效, PROMPT_VERSION 不需要跟着动。
+    """
     system = SYSTEM_PROMPT.format(days=days, max_per_day=max_per_day)
     listing = json.dumps(
         [_candidate_line(attraction) for attraction in candidates],
@@ -64,4 +75,11 @@ def build_prompt(
         "候选景点清单(共 %d 个, attraction_id 只能从这里取):\n%s"
         % (request_text, days, len(candidates), listing)
     )
+    if feedback:
+        user += (
+            "\n\n上一次的输出不合法, 已被拒绝: %s\n"
+            "请重新输出一份完整 JSON: day_index 必须覆盖 1..%d 的每一天, "
+            "同一天内 seq 从 1 连续编号, attraction_id 只能取自上面的候选清单。"
+            % (feedback, days)
+        )
     return system, user
