@@ -260,6 +260,13 @@ export interface AISearchResult {
   page: number
   size: number
   total: number
+  /**
+   * 空结果放宽时被摘掉的条件(字段名)。非空表示这条结果不是原本那几个条件
+   * 查出来的 —— 放宽过就得说, 所以 note 里也会带一句人话说明。
+   */
+  relaxed: string[]
+  /** 结构化条件一条都没有时, 结果是向量近邻。与 relaxed 是两种兜底, 分开标。 */
+  semantic_fallback: boolean
   /** 后端给的免责声明, 必须显示 */
   disclaimer: string
 }

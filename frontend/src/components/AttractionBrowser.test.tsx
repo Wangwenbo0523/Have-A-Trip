@@ -174,6 +174,8 @@ describe("AttractionBrowser", () => {
       page: 1,
       size: 20,
       total: 1,
+      relaxed: [],
+      semantic_fallback: false,
       disclaimer,
     }
     mockedAISearch.mockResolvedValue(aiResult)
