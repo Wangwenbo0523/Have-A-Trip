@@ -64,7 +64,8 @@ PostgreSQL   景点档案 / 用户行为日志 / 推荐结果表
 
 ```powershell
 # 依赖只装一次
-cd backend;  python -m venv .venv;  .venv\Scripts\pip install -r requirements.txt;  cd ..
+$env:PYTHONUTF8 = 1   # 中文控制台(代码页 936)下 pip 按 GBK 解码 UTF-8 的 requirements 会报 UnicodeDecodeError
+cd backend;  python -m venv .venv;  .venv\Scripts\pip install -r requirements-dev.txt;  cd ..
 cd frontend; npm install; cd ..
 
 # 连库 → 灌 schema 与种子 → 起后端(8000) → 起前端(5173)
@@ -95,7 +96,8 @@ psql -d attraction_atlas -f db/seed/images.sql
 
 # 2. 后端 (http://127.0.0.1:8000, 文档 /docs)
 cd backend
-python -m venv .venv && .venv/Scripts/pip install -r requirements.txt
+set PYTHONUTF8=1              # 同上: 中文控制台下装依赖前必须设
+python -m venv .venv && .venv/Scripts/pip install -r requirements-dev.txt
 cp .env.example .env          # 按需改 DATABASE_URL
 #                               想开 AI 检索就在 .env 里配 LLM_PROVIDER(见 .env.example)
 .venv/Scripts/uvicorn app.main:app --reload

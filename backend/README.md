@@ -22,6 +22,9 @@ copy .env.example .env            # 按需改 DATABASE_URL
 # 文档: http://127.0.0.1:8000/docs
 ```
 
+> Windows 中文控制台（代码页 936）下 `pip` 会用 GBK 去解 `requirements*.txt`（UTF-8，含中文注释），
+> 直接报 `UnicodeDecodeError`。装依赖前先 `$env:PYTHONUTF8 = 1`（或 `chcp 65001`）。
+
 ## 测试
 
 ```bash
