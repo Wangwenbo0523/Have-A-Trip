@@ -64,3 +64,8 @@ jobs:
       # 这里都会红。图标同样是版权资产, 让它保持可复现。
       - name: 校验站点图标与生成脚本一致
         run: python scripts/make_favicon.py --check
+
+      # 景点封面也是脚本生成的。改了 seed.sql 的景点清单却忘了重跑生成脚本,
+      # 靠这一条拦; 手改 public/ 下的 SVG 同样会红。
+      - name: 校验景点配图与生成脚本一致
+        run: python scripts/make_attraction_covers.py --check

@@ -16,8 +16,8 @@
 --   * lat / lon 一律为 NULL —— 种子数据不编造坐标; 一期不做地图与定位, 也用不到。
 --   * ticket_price 只在**确定免费**时写 0, 其余为 NULL —— 票价是易变信息,
 --     写进种子的数字迟早会过期, 应由导入或运营流程维护。
---   * attraction_image 一条都不插 —— 没有可靠出处的图不进仓库; 有出处时逐条带
---     credit 与 license(两列均为 NOT NULL)。
+--   * attraction_image 不在这里 —— 配图连同 credit 与 license 都在 db/seed/images.sql,
+--     由 scripts/make_attraction_covers.py 生成(自绘 SVG, 与仓库同许可)。
 --
 -- 执行:
 --   psql -d attraction_atlas -v ON_ERROR_STOP=1 -f db/seed/seed.sql

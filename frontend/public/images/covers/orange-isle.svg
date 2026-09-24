@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="橘子洲">
+  <title>橘子洲</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#12112a"/>
+      <stop offset="1" stop-color="#382952"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <rect x="-20.0" y="446.6" width="161.7" height="213.4" fill="#1e1733"/>
+  <rect x="-6.0" y="462.6" width="133.7" height="9" fill="#f48319" opacity="0.3"/>
+  <rect x="-6.0" y="520.6" width="133.7" height="9" fill="#f48319" opacity="0.3"/>
+  <rect x="167.7" y="408.2" width="138.9" height="251.8" fill="#1e1733"/>
+  <rect x="181.7" y="424.2" width="110.9" height="9" fill="#f48319" opacity="0.3"/>
+  <rect x="181.7" y="598.2" width="110.9" height="9" fill="#f48319" opacity="0.3"/>
+  <rect x="332.6" y="376.0" width="133.5" height="284.0" fill="#1e1733"/>
+  <rect x="346.6" y="392.0" width="105.5" height="9" fill="#f48319" opacity="0.3"/>
+  <rect x="346.6" y="450.0" width="105.5" height="9" fill="#f48319" opacity="0.3"/>
+  <rect x="346.6" y="508.0" width="105.5" height="9" fill="#f48319" opacity="0.3"/>
+  <rect x="346.6" y="566.0" width="105.5" height="9" fill="#f48319" opacity="0.3"/>
+  <rect x="492.1" y="422.3" width="105.7" height="237.7" fill="#1e1733"/>
+  <rect x="506.1" y="554.3" width="77.7" height="9" fill="#f48319" opacity="0.3"/>
+  <rect x="506.1" y="612.3" width="77.7" height="9" fill="#f48319" opacity="0.3"/>
+  <rect x="623.9" y="452.9" width="118.7" height="207.1" fill="#1e1733"/>
+  <rect x="637.9" y="584.9" width="90.7" height="9" fill="#f48319" opacity="0.3"/>
+  <rect x="768.6" y="384.6" width="81.9" height="275.4" fill="#1e1733"/>
+  <rect x="782.6" y="400.6" width="53.9" height="9" fill="#f48319" opacity="0.3"/>
+  <rect x="782.6" y="458.6" width="53.9" height="9" fill="#f48319" opacity="0.3"/>
+  <rect x="876.6" y="445.0" width="77.2" height="215.0" fill="#1e1733"/>
+  <rect x="890.6" y="577.0" width="49.2" height="9" fill="#f48319" opacity="0.3"/>
+  <rect x="979.8" y="507.0" width="144.7" height="153.0" fill="#1e1733"/>
+  <rect x="993.8" y="581.0" width="116.7" height="9" fill="#f48319" opacity="0.3"/>
+  <rect x="1150.5" y="528.2" width="98.9" height="131.8" fill="#1e1733"/>
+  <rect x="1164.5" y="544.2" width="70.9" height="9" fill="#f48319" opacity="0.3"/>
+  <rect x="1164.5" y="602.2" width="70.9" height="9" fill="#f48319" opacity="0.3"/>
+  <rect x="636.4" y="442" width="30" height="218.0" fill="#2a2044"/>
+  <circle cx="651.4" cy="442" r="40" fill="#2a2044"/>
+  <circle cx="651.4" cy="442" r="40" fill="#f48319" opacity="0.22"/>
+  <rect x="648.4" y="376" width="6" height="30" fill="#2a2044"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#f48319" letter-spacing="7">城市地标</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">橘子洲</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

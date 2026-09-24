@@ -128,7 +128,7 @@ const Credits = () => {
       return (
         <StateMessage
           title="目前一张配图都没有"
-          detail="查不到出处的图一律不进仓库, 所以 attraction_image 是 0 行。落图时每条都会带署名与许可, 数据库字段已经设成 NOT NULL。"
+          detail="库里的图每条都必须带 credit 与 license(两列都是 NOT NULL), 查不到出处的图不进仓库。现在一张都没有, 说明配图还没落库。"
         />
       )
     }

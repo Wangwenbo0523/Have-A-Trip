@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="天坛">
+  <title>天坛</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#151c2a"/>
+      <stop offset="1" stop-color="#2f3052"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <rect x="-20.0" y="430.9" width="127.8" height="229.1" fill="#1b1e33"/>
+  <rect x="133.8" y="411.3" width="158.4" height="248.7" fill="#1b1e33"/>
+  <rect x="147.8" y="601.3" width="130.4" height="9" fill="#f44e39" opacity="0.3"/>
+  <rect x="318.2" y="554.0" width="140.7" height="106.0" fill="#1b1e33"/>
+  <rect x="332.2" y="570.0" width="112.7" height="9" fill="#f44e39" opacity="0.3"/>
+  <rect x="484.9" y="391.7" width="89.5" height="268.3" fill="#1b1e33"/>
+  <rect x="498.9" y="465.7" width="61.5" height="9" fill="#f44e39" opacity="0.3"/>
+  <rect x="498.9" y="581.7" width="61.5" height="9" fill="#f44e39" opacity="0.3"/>
+  <rect x="600.4" y="533.6" width="116.9" height="126.4" fill="#1b1e33"/>
+  <rect x="614.4" y="549.6" width="88.9" height="9" fill="#f44e39" opacity="0.3"/>
+  <rect x="743.4" y="469.3" width="109.7" height="190.7" fill="#1b1e33"/>
+  <rect x="757.4" y="485.3" width="81.7" height="9" fill="#f44e39" opacity="0.3"/>
+  <rect x="879.1" y="562.7" width="76.2" height="97.3" fill="#1b1e33"/>
+  <rect x="981.3" y="542.3" width="158.8" height="117.7" fill="#1b1e33"/>
+  <rect x="995.3" y="616.3" width="130.8" height="9" fill="#f44e39" opacity="0.3"/>
+  <rect x="1166.0" y="513.3" width="81.2" height="146.7" fill="#1b1e33"/>
+  <rect x="1180.0" y="529.3" width="53.2" height="9" fill="#f44e39" opacity="0.3"/>
+  <rect x="551.7" y="442" width="30" height="218.0" fill="#252844"/>
+  <circle cx="566.7" cy="442" r="40" fill="#252844"/>
+  <circle cx="566.7" cy="442" r="40" fill="#f44e39" opacity="0.22"/>
+  <rect x="563.7" y="376" width="6" height="30" fill="#252844"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#f44e39" letter-spacing="7">城市地标</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">天坛</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="东方明珠广播电视塔">
+  <title>东方明珠广播电视塔</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#14132a"/>
+      <stop offset="1" stop-color="#3b2c52"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <rect x="-20.0" y="416.8" width="141.8" height="243.2" fill="#201933"/>
+  <rect x="-6.0" y="432.8" width="113.8" height="9" fill="#f4922a" opacity="0.3"/>
+  <rect x="-6.0" y="490.8" width="113.8" height="9" fill="#f4922a" opacity="0.3"/>
+  <rect x="-6.0" y="606.8" width="113.8" height="9" fill="#f4922a" opacity="0.3"/>
+  <rect x="147.8" y="504.6" width="96.7" height="155.4" fill="#201933"/>
+  <rect x="270.6" y="409.7" width="147.2" height="250.3" fill="#201933"/>
+  <rect x="284.6" y="483.7" width="119.2" height="9" fill="#f4922a" opacity="0.3"/>
+  <rect x="443.8" y="504.6" width="107.6" height="155.4" fill="#201933"/>
+  <rect x="457.8" y="578.6" width="79.6" height="9" fill="#f4922a" opacity="0.3"/>
+  <rect x="577.3" y="560.3" width="139.3" height="99.7" fill="#201933"/>
+  <rect x="591.3" y="576.3" width="111.3" height="9" fill="#f4922a" opacity="0.3"/>
+  <rect x="742.7" y="434.8" width="111.2" height="225.2" fill="#201933"/>
+  <rect x="756.7" y="450.8" width="83.2" height="9" fill="#f4922a" opacity="0.3"/>
+  <rect x="756.7" y="508.8" width="83.2" height="9" fill="#f4922a" opacity="0.3"/>
+  <rect x="879.8" y="533.6" width="105.7" height="126.4" fill="#201933"/>
+  <rect x="893.8" y="607.6" width="77.7" height="9" fill="#f4922a" opacity="0.3"/>
+  <rect x="1011.6" y="503.1" width="106.8" height="156.9" fill="#201933"/>
+  <rect x="1144.4" y="507.8" width="122.3" height="152.2" fill="#201933"/>
+  <rect x="586.2" y="442" width="30" height="218.0" fill="#2d2344"/>
+  <circle cx="601.2" cy="442" r="40" fill="#2d2344"/>
+  <circle cx="601.2" cy="442" r="40" fill="#f4922a" opacity="0.22"/>
+  <rect x="598.2" y="376" width="6" height="30" fill="#2d2344"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#f4922a" letter-spacing="7">城市地标</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">东方明珠广播电视塔</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

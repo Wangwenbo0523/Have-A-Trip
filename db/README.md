@@ -8,6 +8,7 @@
 |---|---|
 | `schema.sql` | 建表 DDL（幂等，可重复执行） |
 | `seed/seed.sql` | 种子数据：7 个分类、19 个标签、50 个景点、175 条标签关联（幂等） |
+| `seed/images.sql` | 景点配图：50 条 `attraction_image`，每条带 `credit` 与 `license`。**由 `scripts/make_attraction_covers.py` 生成，不要手改** |
 
 ## 执行
 
@@ -15,13 +16,15 @@
 createdb attraction_atlas
 psql -d attraction_atlas -v ON_ERROR_STOP=1 -f db/schema.sql
 psql -d attraction_atlas -v ON_ERROR_STOP=1 -f db/seed/seed.sql
+psql -d attraction_atlas -v ON_ERROR_STOP=1 -f db/seed/images.sql
 ```
 
-两个文件都写成幂等的，重跑不会报错也不会重复插数据：
+三个文件都写成幂等的，重跑不会报错也不会重复插数据：
 
 ```bash
-psql -d attraction_atlas -v ON_ERROR_STOP=1 -f db/schema.sql   # 再跑一次
+psql -d attraction_atlas -v ON_ERROR_STOP=1 -f db/schema.sql    # 再跑一次
 psql -d attraction_atlas -v ON_ERROR_STOP=1 -f db/seed/seed.sql
+psql -d attraction_atlas -v ON_ERROR_STOP=1 -f db/seed/images.sql
 ```
 
 验证：
@@ -30,6 +33,8 @@ psql -d attraction_atlas -v ON_ERROR_STOP=1 -f db/seed/seed.sql
 psql -d attraction_atlas -c "select count(*) from attraction;"                  # 50
 psql -d attraction_atlas -c "select a.name, c.name from attraction a join category c on c.id = a.category_id limit 5;"
 psql -d attraction_atlas -c "select a.name, string_agg(t.name, ' / ') from attraction a join attraction_tag at on at.attraction_id = a.id join tag t on t.id = at.tag_id group by a.id, a.name limit 5;"
+psql -d attraction_atlas -c "select count(*) from attraction_image;"           # 50
+psql -d attraction_atlas -c "select credit, license, count(*) from attraction_image group by 1, 2;"
 psql -d attraction_atlas -c "select * from schema_version;"
 ```
 
@@ -42,7 +47,7 @@ psql -d attraction_atlas -c "select * from schema_version;"
 | `tag` | 自由标签 |
 | `attraction` | 景点档案主表 |
 | `attraction_tag` | 景点-标签多对多 |
-| `attraction_image` | 图集，每条带 `credit` 与 `license` |
+| `attraction_image` | 图集，每条带 `credit` 与 `license`；目前是 50 条自绘封面 |
 | `app_user` | 用户（一期只有匿名 `device_id`） |
 | `behavior_log` | 行为日志，推荐原料 |
 | `rec_result` | 推荐结果，**API 只读这一张** |
@@ -91,7 +96,7 @@ psql -d attraction_atlas -c "select * from schema_version;"
 | 评分 `rating_avg` / `rating_count` 一律为 0 | 评分只能由 `behavior_log` 聚合得出。种子里写死一个好看的分数就是伪造，前端要会处理「暂无评分」 |
 | 坐标 `lat` / `lon` 一律为 `NULL` | 不编造坐标。一期不做地图与定位，这两个字段只留给将来的同城聚合 |
 | 票价只在**确定免费**时写 `0`，其余为 `NULL` | 票价是易变信息，写进种子的数字迟早会过期。目前只有 5 条写了 `0`（西湖、中国国家博物馆、苏州博物馆、外滩、橘子洲） |
-| `attraction_image` 一条都没有 | 没有可靠出处的图不进仓库。图片是 S7 之后单独一项工作，落一条就要带 `credit` 与 `license`（两列均为 `NOT NULL`） |
+| 配图是**自绘**的，不是照片 | 原打算用 CC0 / 公有领域图库。实测 Wikimedia Commons 与 Openverse 在本机网络下不可达，Unsplash / Pixabay 又各有各的专有许可（不是 CC0），且对中国具体景点覆盖很薄。于是改成程序化生成 SVG（`scripts/make_attraction_covers.py`），出处就是脚本本身。每条仍走 `credit` 与 `license`（两列均为 `NOT NULL`），声明页会聚合出来 |
 | `source_url` 为 `NULL` | 内容是逐条整理的公开事实，没有单一可引的页面；等有了再补，不为填空而填 |
 
 ### 幂等与自愈

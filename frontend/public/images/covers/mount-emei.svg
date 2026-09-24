@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="峨眉山">
+  <title>峨眉山</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#241a20"/>
+      <stop offset="1" stop-color="#523a33"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <rect x="538.0" y="626.0" width="124.0" height="34.0" fill="#2d1c1c"/>
+  <polygon points="472.0,626.0 600.0,600.0 728.0,626.0" fill="#3e2927"/>
+  <rect x="529.0" y="620.0" width="142.0" height="7" fill="#3e2927"/>
+  <rect x="546.0" y="574.0" width="108.0" height="34.0" fill="#2d1c1c"/>
+  <polygon points="480.0,574.0 600.0,548.0 720.0,574.0" fill="#3e2927"/>
+  <rect x="537.0" y="568.0" width="126.0" height="7" fill="#3e2927"/>
+  <rect x="554.0" y="522.0" width="92.0" height="34.0" fill="#2d1c1c"/>
+  <polygon points="488.0,522.0 600.0,496.0 712.0,522.0" fill="#3e2927"/>
+  <rect x="545.0" y="516.0" width="110.0" height="7" fill="#3e2927"/>
+  <rect x="562.0" y="470.0" width="76.0" height="34.0" fill="#2d1c1c"/>
+  <polygon points="496.0,470.0 600.0,444.0 704.0,470.0" fill="#3e2927"/>
+  <rect x="553.0" y="464.0" width="94.0" height="7" fill="#3e2927"/>
+  <rect x="570.0" y="418.0" width="60.0" height="34.0" fill="#2d1c1c"/>
+  <polygon points="504.0,418.0 600.0,392.0 696.0,418.0" fill="#3e2927"/>
+  <rect x="561.0" y="412.0" width="78.0" height="7" fill="#3e2927"/>
+  <rect x="596.0" y="370.0" width="8" height="34" fill="#e0cf5c"/>
+  <circle cx="600.0" cy="360.0" r="10" fill="#e0cf5c"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0cf5c" letter-spacing="7">宗教场所</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">峨眉山</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="三星堆博物馆">
+  <title>三星堆博物馆</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b1e2c"/>
+      <stop offset="1" stop-color="#383f57"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <rect x="110" y="636.0" width="980" height="164.0" fill="#141722"/>
+  <rect x="80" y="612.0" width="1040" height="24" fill="#202536"/>
+  <rect x="149.0" y="492.0" width="42" height="120.0" fill="#2b3146"/>
+  <rect x="141.0" y="492.0" width="58" height="16" fill="#202536"/>
+  <rect x="292.3" y="492.0" width="42" height="120.0" fill="#2b3146"/>
+  <rect x="284.3" y="492.0" width="58" height="16" fill="#202536"/>
+  <rect x="435.7" y="492.0" width="42" height="120.0" fill="#2b3146"/>
+  <rect x="427.7" y="492.0" width="58" height="16" fill="#202536"/>
+  <rect x="579.0" y="492.0" width="42" height="120.0" fill="#2b3146"/>
+  <rect x="571.0" y="492.0" width="58" height="16" fill="#202536"/>
+  <rect x="722.3" y="492.0" width="42" height="120.0" fill="#2b3146"/>
+  <rect x="714.3" y="492.0" width="58" height="16" fill="#202536"/>
+  <rect x="865.7" y="492.0" width="42" height="120.0" fill="#2b3146"/>
+  <rect x="857.7" y="492.0" width="58" height="16" fill="#202536"/>
+  <rect x="1009.0" y="492.0" width="42" height="120.0" fill="#2b3146"/>
+  <rect x="1001.0" y="492.0" width="58" height="16" fill="#202536"/>
+  <rect x="110" y="426" width="980" height="46" fill="#202536"/>
+  <polygon points="310.0,426 600.0,382 890.0,426" fill="#2b3146"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#879ac8" letter-spacing="7">博物馆</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">三星堆博物馆</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

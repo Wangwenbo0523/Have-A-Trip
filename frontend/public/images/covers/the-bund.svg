@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="外滩">
+  <title>外滩</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#14162a"/>
+      <stop offset="1" stop-color="#372e52"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <rect x="-20.0" y="556.4" width="164.2" height="103.6" fill="#1e1a33"/>
+  <rect x="-6.0" y="572.4" width="136.2" height="9" fill="#f47b31" opacity="0.3"/>
+  <rect x="170.2" y="384.6" width="93.1" height="275.4" fill="#1e1a33"/>
+  <rect x="184.2" y="516.6" width="65.1" height="9" fill="#f47b31" opacity="0.3"/>
+  <rect x="184.2" y="574.6" width="65.1" height="9" fill="#f47b31" opacity="0.3"/>
+  <rect x="289.3" y="465.4" width="83.0" height="194.6" fill="#1e1a33"/>
+  <rect x="303.3" y="481.4" width="55.0" height="9" fill="#f47b31" opacity="0.3"/>
+  <rect x="303.3" y="539.4" width="55.0" height="9" fill="#f47b31" opacity="0.3"/>
+  <rect x="303.3" y="597.4" width="55.0" height="9" fill="#f47b31" opacity="0.3"/>
+  <rect x="398.3" y="441.1" width="111.2" height="218.9" fill="#1e1a33"/>
+  <rect x="412.3" y="457.1" width="83.2" height="9" fill="#f47b31" opacity="0.3"/>
+  <rect x="535.5" y="376.8" width="117.3" height="283.2" fill="#1e1a33"/>
+  <rect x="549.5" y="392.8" width="89.3" height="9" fill="#f47b31" opacity="0.3"/>
+  <rect x="678.8" y="492.1" width="155.9" height="167.9" fill="#1e1a33"/>
+  <rect x="692.8" y="508.1" width="127.9" height="9" fill="#f47b31" opacity="0.3"/>
+  <rect x="860.7" y="521.9" width="165.6" height="138.1" fill="#1e1a33"/>
+  <rect x="1052.3" y="495.2" width="136.1" height="164.8" fill="#1e1a33"/>
+  <rect x="1066.3" y="511.2" width="108.1" height="9" fill="#f47b31" opacity="0.3"/>
+  <rect x="1066.3" y="569.2" width="108.1" height="9" fill="#f47b31" opacity="0.3"/>
+  <rect x="528.9" y="442" width="30" height="218.0" fill="#292444"/>
+  <circle cx="543.9" cy="442" r="40" fill="#292444"/>
+  <circle cx="543.9" cy="442" r="40" fill="#f47b31" opacity="0.22"/>
+  <rect x="540.9" y="376" width="6" height="30" fill="#292444"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#f47b31" letter-spacing="7">城市地标</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">外滩</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

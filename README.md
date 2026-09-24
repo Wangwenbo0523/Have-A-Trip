@@ -52,7 +52,7 @@ PostgreSQL   景点档案 / 用户行为日志 / 推荐结果表
 | `backend/` | FastAPI 服务与测试，见 `backend/README.md` |
 | `db/` | `schema.sql` + 种子数据 + 字段口径，见 `db/README.md` |
 | `recsys/` | RecBole 调用层：依赖钉版、训练配置、离线脚本，见 `recsys/README.md` |
-| `scripts/` | 基底钉版记录、许可证卡口、DCO 校验、站点图标生成（`make_favicon.py`） |
+| `scripts/` | 基底钉版记录、许可证卡口、DCO 校验、静态素材生成（`make_favicon.py` 站点图标、`make_attraction_covers.py` 景点配图） |
 | `docs/` | `PLAN.md` 施工计划、`BASES.md` 基底清单、`LICENSE-AUDIT.md` 许可审查、`DEPLOY.md` 部署 |
 
 ## 快速起步
@@ -64,6 +64,7 @@ PostgreSQL   景点档案 / 用户行为日志 / 推荐结果表
 createdb attraction_atlas
 psql -d attraction_atlas -f db/schema.sql
 psql -d attraction_atlas -f db/seed/seed.sql
+psql -d attraction_atlas -f db/seed/images.sql
 
 # 2. 后端 (http://127.0.0.1:8000, 文档 /docs)
 cd backend

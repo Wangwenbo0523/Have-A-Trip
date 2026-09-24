@@ -28,11 +28,12 @@
 
 ```bash
 createdb attraction_atlas
-psql -d attraction_atlas -f db/schema.sql     # 幂等: 重复执行不报错
-psql -d attraction_atlas -f db/seed/seed.sql  # 种子数据, 生产按需
+psql -d attraction_atlas -f db/schema.sql      # 幂等: 重复执行不报错
+psql -d attraction_atlas -f db/seed/seed.sql   # 种子数据, 生产按需
+psql -d attraction_atlas -f db/seed/images.sql # 配图元数据, 生产按需
 ```
 
-`schema.sql` 与 `db/seed/seed.sql` 都是 `CREATE ... IF NOT EXISTS` / `ON CONFLICT` 写法，
+这三个文件都是 `CREATE ... IF NOT EXISTS` / `ON CONFLICT` 写法，
 所以可以直接放进部署脚本重复执行，不需要单独的迁移框架。
 `db/schema_version` 表记录了已应用的版本。
 
@@ -137,5 +138,6 @@ server {
 - [ ] `/api/v1/healthz` 的 `status` 是 `ok`
 - [ ] `/api/v1/sources` 的 `needs_attention` 是 `false`（库里有 share-alike 来源却没登记修改状态时为 `true`，声明页会出红色告警）
 - [ ] 刷新 `/attraction/<某个 slug>` 不 404（SPA 回落生效）
+- [ ] 静态素材与生成脚本一致：`python scripts/make_favicon.py --check` 与 `python scripts/make_attraction_covers.py --check` 都通过
 - [ ] 前端产物里没有任何地图 SDK：`grep -rIn "leaflet\|mapbox\|ol/" dist/assets` 应为空
 - [ ] 备份策略覆盖 PostgreSQL

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="广州塔">
+  <title>广州塔</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#161e2a"/>
+      <stop offset="1" stop-color="#313352"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <rect x="-20.0" y="543.8" width="100.0" height="116.2" fill="#1c2033"/>
+  <rect x="-6.0" y="617.8" width="72.0" height="9" fill="#f44f42" opacity="0.3"/>
+  <rect x="106.0" y="387.8" width="88.4" height="272.2" fill="#1c2033"/>
+  <rect x="120.0" y="577.8" width="60.4" height="9" fill="#f44f42" opacity="0.3"/>
+  <rect x="220.4" y="549.3" width="88.8" height="110.7" fill="#1c2033"/>
+  <rect x="234.4" y="565.3" width="60.8" height="9" fill="#f44f42" opacity="0.3"/>
+  <rect x="335.2" y="569.7" width="92.4" height="90.3" fill="#1c2033"/>
+  <rect x="453.6" y="394.0" width="108.6" height="266.0" fill="#1c2033"/>
+  <rect x="467.6" y="410.0" width="80.6" height="9" fill="#f44f42" opacity="0.3"/>
+  <rect x="588.2" y="573.6" width="133.2" height="86.4" fill="#1c2033"/>
+  <rect x="747.4" y="467.0" width="79.1" height="193.0" fill="#1c2033"/>
+  <rect x="761.4" y="483.0" width="51.1" height="9" fill="#f44f42" opacity="0.3"/>
+  <rect x="852.5" y="536.0" width="76.9" height="124.0" fill="#1c2033"/>
+  <rect x="866.5" y="610.0" width="48.9" height="9" fill="#f44f42" opacity="0.3"/>
+  <rect x="955.3" y="561.9" width="90.2" height="98.1" fill="#1c2033"/>
+  <rect x="1071.6" y="446.6" width="155.9" height="213.4" fill="#1c2033"/>
+  <rect x="1085.6" y="520.6" width="127.9" height="9" fill="#f44f42" opacity="0.3"/>
+  <rect x="447.4" y="442" width="30" height="218.0" fill="#272b44"/>
+  <circle cx="462.4" cy="442" r="40" fill="#272b44"/>
+  <circle cx="462.4" cy="442" r="40" fill="#f44f42" opacity="0.22"/>
+  <rect x="459.4" y="376" width="6" height="30" fill="#272b44"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#f44f42" letter-spacing="7">城市地标</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">广州塔</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

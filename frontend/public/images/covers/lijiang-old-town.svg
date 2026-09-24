@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="丽江古城">
+  <title>丽江古城</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#192426"/>
+      <stop offset="1" stop-color="#384e4a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <rect x="-30.0" y="490.5" width="204.0" height="113.5" fill="#1e2f2f"/>
+  <polygon points="-46.0,490.5 72.0,440.5 190.0,490.5" fill="#2a3e3d"/>
+  <rect x="-42.0" y="466.5" width="34.0" height="24" fill="#2a3e3d"/>
+  <rect x="-42.0" y="442.5" width="28.0" height="24" fill="#2a3e3d"/>
+  <rect x="-42.0" y="418.5" width="22.0" height="24" fill="#2a3e3d"/>
+  <rect x="204.0" y="499.1" width="166.9" height="104.9" fill="#1e2f2f"/>
+  <polygon points="188.0,499.1 287.5,449.1 386.9,499.1" fill="#2a3e3d"/>
+  <rect x="192.0" y="475.1" width="34.0" height="24" fill="#2a3e3d"/>
+  <rect x="192.0" y="451.1" width="28.0" height="24" fill="#2a3e3d"/>
+  <rect x="192.0" y="427.1" width="22.0" height="24" fill="#2a3e3d"/>
+  <rect x="400.9" y="487.8" width="169.1" height="116.2" fill="#1e2f2f"/>
+  <polygon points="384.9,487.8 485.5,437.8 586.0,487.8" fill="#2a3e3d"/>
+  <rect x="388.9" y="463.8" width="34.0" height="24" fill="#2a3e3d"/>
+  <rect x="388.9" y="439.8" width="28.0" height="24" fill="#2a3e3d"/>
+  <rect x="388.9" y="415.8" width="22.0" height="24" fill="#2a3e3d"/>
+  <rect x="600.0" y="458.0" width="177.0" height="146.0" fill="#1e2f2f"/>
+  <polygon points="584.0,458.0 688.5,408.0 793.1,458.0" fill="#2a3e3d"/>
+  <rect x="588.0" y="434.0" width="34.0" height="24" fill="#2a3e3d"/>
+  <rect x="588.0" y="410.0" width="28.0" height="24" fill="#2a3e3d"/>
+  <rect x="588.0" y="386.0" width="22.0" height="24" fill="#2a3e3d"/>
+  <rect x="807.1" y="463.4" width="174.6" height="140.6" fill="#1e2f2f"/>
+  <polygon points="791.1,463.4 894.3,413.4 997.6,463.4" fill="#2a3e3d"/>
+  <rect x="795.1" y="439.4" width="34.0" height="24" fill="#2a3e3d"/>
+  <rect x="795.1" y="415.4" width="28.0" height="24" fill="#2a3e3d"/>
+  <rect x="795.1" y="391.4" width="22.0" height="24" fill="#2a3e3d"/>
+  <rect x="1011.6" y="485.3" width="186.2" height="118.7" fill="#1e2f2f"/>
+  <polygon points="995.6,485.3 1104.8,435.3 1213.9,485.3" fill="#2a3e3d"/>
+  <rect x="999.6" y="461.3" width="34.0" height="24" fill="#2a3e3d"/>
+  <rect x="999.6" y="437.3" width="28.0" height="24" fill="#2a3e3d"/>
+  <rect x="999.6" y="413.3" width="22.0" height="24" fill="#2a3e3d"/>
+  <rect x="0" y="604.0" width="1200" height="196.0" fill="#121e1f"/>
+  <path d="M202.0,638.0 Q320.0,664.0 438.0,638.0 Z" fill="#2a3e3d"/>
+  <path d="M276.0,635.0 Q320.0,596.0 364.0,635.0 Z" fill="#1e2f2f"/>
+  <path d="M783.2,638.0 Q880.0,659.3 976.8,638.0 Z" fill="#2a3e3d"/>
+  <path d="M843.9,635.0 Q880.0,603.6 916.1,635.0 Z" fill="#1e2f2f"/>
+  <rect x="0" y="700.0" width="1200" height="3" fill="#e86d52" opacity="0.22"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e86d52" letter-spacing="7">古镇村落</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">丽江古城</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

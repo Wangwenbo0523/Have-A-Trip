@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="宏村">
+  <title>宏村</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b2126"/>
+      <stop offset="1" stop-color="#3b4b4e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <rect x="-30.0" y="500.5" width="164.7" height="103.5" fill="#202a2f"/>
+  <polygon points="-46.0,500.5 52.4,450.5 150.7,500.5" fill="#2d393e"/>
+  <rect x="-42.0" y="476.5" width="34.0" height="24" fill="#2d393e"/>
+  <rect x="-42.0" y="452.5" width="28.0" height="24" fill="#2d393e"/>
+  <rect x="-42.0" y="428.5" width="22.0" height="24" fill="#2d393e"/>
+  <rect x="164.7" y="481.4" width="157.2" height="122.6" fill="#202a2f"/>
+  <polygon points="148.7,481.4 243.3,431.4 338.0,481.4" fill="#2d393e"/>
+  <rect x="152.7" y="457.4" width="34.0" height="24" fill="#2d393e"/>
+  <rect x="152.7" y="433.4" width="28.0" height="24" fill="#2d393e"/>
+  <rect x="152.7" y="409.4" width="22.0" height="24" fill="#2d393e"/>
+  <rect x="352.0" y="498.0" width="195.9" height="106.0" fill="#202a2f"/>
+  <polygon points="336.0,498.0 449.9,448.0 563.9,498.0" fill="#2d393e"/>
+  <rect x="340.0" y="474.0" width="34.0" height="24" fill="#2d393e"/>
+  <rect x="340.0" y="450.0" width="28.0" height="24" fill="#2d393e"/>
+  <rect x="340.0" y="426.0" width="22.0" height="24" fill="#2d393e"/>
+  <rect x="577.9" y="477.7" width="164.5" height="126.3" fill="#202a2f"/>
+  <polygon points="561.9,477.7 660.1,427.7 758.4,477.7" fill="#2d393e"/>
+  <rect x="565.9" y="453.7" width="34.0" height="24" fill="#2d393e"/>
+  <rect x="565.9" y="429.7" width="28.0" height="24" fill="#2d393e"/>
+  <rect x="565.9" y="405.7" width="22.0" height="24" fill="#2d393e"/>
+  <rect x="772.4" y="504.4" width="187.1" height="99.6" fill="#202a2f"/>
+  <polygon points="756.4,504.4 865.9,454.4 975.5,504.4" fill="#2d393e"/>
+  <rect x="760.4" y="480.4" width="34.0" height="24" fill="#2d393e"/>
+  <rect x="760.4" y="456.4" width="28.0" height="24" fill="#2d393e"/>
+  <rect x="760.4" y="432.4" width="22.0" height="24" fill="#2d393e"/>
+  <rect x="989.5" y="472.5" width="186.2" height="131.5" fill="#202a2f"/>
+  <polygon points="973.5,472.5 1082.6,422.5 1191.7,472.5" fill="#2d393e"/>
+  <rect x="977.5" y="448.5" width="34.0" height="24" fill="#2d393e"/>
+  <rect x="977.5" y="424.5" width="28.0" height="24" fill="#2d393e"/>
+  <rect x="977.5" y="400.5" width="22.0" height="24" fill="#2d393e"/>
+  <rect x="0" y="604.0" width="1200" height="196.0" fill="#141b1f"/>
+  <path d="M202.0,638.0 Q320.0,664.0 438.0,638.0 Z" fill="#2d393e"/>
+  <path d="M276.0,635.0 Q320.0,596.0 364.0,635.0 Z" fill="#202a2f"/>
+  <path d="M783.2,638.0 Q880.0,659.3 976.8,638.0 Z" fill="#2d393e"/>
+  <path d="M843.9,635.0 Q880.0,603.6 916.1,635.0 Z" fill="#202a2f"/>
+  <rect x="0" y="700.0" width="1200" height="3" fill="#e8a666" opacity="0.22"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e8a666" letter-spacing="7">古镇村落</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">宏村</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

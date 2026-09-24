@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="呼伦贝尔草原">
+  <title>呼伦贝尔草原</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1d283a"/>
+      <stop offset="1" stop-color="#405b5c"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="628.6" cy="459.1" r="40.8" fill="#f48740" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,425.5 216.0,537.9 344.0,453.1 472.0,543.4 600.0,465.2 728.0,545.8 856.0,476.4 984.0,548.1 1112.0,434.0 1240.0,539.6 1368.0,425.8 1496.0,538.0 1240.0,800.0" fill="#2f4150"/>
+  <polygon points="-40.0,800.0 120.0,550.1 280.0,610.8 440.0,523.1 600.0,605.4 760.0,529.4 920.0,606.7 1080.0,524.1 1240.0,605.6 1400.0,518.8 1560.0,604.6 1240.0,800.0" fill="#243342"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#18232f"/>
+  <polygon points="-40.0,800.0 66.7,620.1 173.3,684.0 280.0,615.7 386.7,683.1 493.3,611.3 600.0,682.3 706.7,636.9 813.3,687.4 920.0,633.8 1026.7,686.8 1133.3,616.0 1240.0,683.2 1346.7,644.3 1453.3,688.9 1240.0,800.0" fill="#18232f" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#f48740" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#f48740" letter-spacing="7">自然风光</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">呼伦贝尔草原</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

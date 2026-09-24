@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="珠海长隆海洋王国">
+  <title>珠海长隆海洋王国</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#141d33"/>
+      <stop offset="1" stop-color="#2e2f67"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="419.5" cy="500.0" r="138.0" fill="none" stroke="#232650" stroke-width="15"/>
+  <line x1="419.5" y1="500.0" x2="557.5" y2="500.0" stroke="#191c3c" stroke-width="5"/>
+  <circle cx="557.5" cy="500.0" r="17" fill="#f42f17" opacity="0.85"/>
+  <line x1="419.5" y1="500.0" x2="539.0" y2="569.0" stroke="#191c3c" stroke-width="5"/>
+  <circle cx="539.0" cy="569.0" r="17" fill="#f42f17" opacity="0.85"/>
+  <line x1="419.5" y1="500.0" x2="488.5" y2="619.5" stroke="#191c3c" stroke-width="5"/>
+  <circle cx="488.5" cy="619.5" r="17" fill="#f42f17" opacity="0.85"/>
+  <line x1="419.5" y1="500.0" x2="419.5" y2="638.0" stroke="#191c3c" stroke-width="5"/>
+  <circle cx="419.5" cy="638.0" r="17" fill="#f42f17" opacity="0.85"/>
+  <line x1="419.5" y1="500.0" x2="350.5" y2="619.5" stroke="#191c3c" stroke-width="5"/>
+  <circle cx="350.5" cy="619.5" r="17" fill="#f42f17" opacity="0.85"/>
+  <line x1="419.5" y1="500.0" x2="300.0" y2="569.0" stroke="#191c3c" stroke-width="5"/>
+  <circle cx="300.0" cy="569.0" r="17" fill="#f42f17" opacity="0.85"/>
+  <line x1="419.5" y1="500.0" x2="281.5" y2="500.0" stroke="#191c3c" stroke-width="5"/>
+  <circle cx="281.5" cy="500.0" r="17" fill="#f42f17" opacity="0.85"/>
+  <line x1="419.5" y1="500.0" x2="300.0" y2="431.0" stroke="#191c3c" stroke-width="5"/>
+  <circle cx="300.0" cy="431.0" r="17" fill="#f42f17" opacity="0.85"/>
+  <line x1="419.5" y1="500.0" x2="350.5" y2="380.5" stroke="#191c3c" stroke-width="5"/>
+  <circle cx="350.5" cy="380.5" r="17" fill="#f42f17" opacity="0.85"/>
+  <line x1="419.5" y1="500.0" x2="419.5" y2="362.0" stroke="#191c3c" stroke-width="5"/>
+  <circle cx="419.5" cy="362.0" r="17" fill="#f42f17" opacity="0.85"/>
+  <line x1="419.5" y1="500.0" x2="488.5" y2="380.5" stroke="#191c3c" stroke-width="5"/>
+  <circle cx="488.5" cy="380.5" r="17" fill="#f42f17" opacity="0.85"/>
+  <line x1="419.5" y1="500.0" x2="539.0" y2="431.0" stroke="#191c3c" stroke-width="5"/>
+  <circle cx="539.0" cy="431.0" r="17" fill="#f42f17" opacity="0.85"/>
+  <circle cx="419.5" cy="500.0" r="22" fill="#f42f17"/>
+  <polygon points="355.5,660.0 419.5,500.0 483.5,660.0" fill="#191c3c"/>
+  <polygon points="726.0,660.0 830.0,530.4 934.0,660.0" fill="#232650"/>
+  <rect x="726.0" y="648.0" width="208" height="12" fill="#191c3c"/>
+  <polygon points="906.0,660.0 1010.0,529.8 1114.0,660.0" fill="#232650"/>
+  <rect x="906.0" y="648.0" width="208" height="12" fill="#191c3c"/>
+  <rect x="1122" y="376" width="7" height="284.0" fill="#191c3c"/>
+  <polygon points="1129,384 1196,412 1129,440" fill="#f42f17"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#f42f17" letter-spacing="7">主题乐园</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">珠海长隆海洋王国</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

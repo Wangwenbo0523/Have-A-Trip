@@ -43,11 +43,12 @@ jobs:
             psql -h 127.0.0.1 -U postgres -d attraction_atlas -v ON_ERROR_STOP=1 -q -f db/schema.sql
           done
 
-      - name: 应用 seed.sql 两次(验证幂等)
+      - name: 应用 seed.sql 与 images.sql 各两次(验证幂等)
         run: |
           for i in 1 2; do
-            echo "--- seed.sql 第 $i 次 ---"
+            echo "--- 第 $i 次 ---"
             psql -h 127.0.0.1 -U postgres -d attraction_atlas -v ON_ERROR_STOP=1 -q -f db/seed/seed.sql
+            psql -h 127.0.0.1 -U postgres -d attraction_atlas -v ON_ERROR_STOP=1 -q -f db/seed/images.sql
           done
 
       - name: 断言结构与数据
@@ -77,7 +78,9 @@ jobs:
           expect 0 "$(q "select count(*) from attraction where lat is not null or lon is not null;")" "带坐标的种子景点数(一期不做地图与定位)"
           expect 0 "$(q "select count(*) from attraction where rating_avg <> 0 or rating_count <> 0;")" "带评分的种子景点数(评分只能由 behavior_log 聚合)"
           expect 0 "$(q "select count(*) from attraction where ticket_price is not null and ticket_price <> 0;")" "写了票价但不确定免费的景点数"
-          expect 0 "$(q "select count(*) from attraction_image;")" "图片行数(没有可靠出处的图不进仓库)"
+          expect 50 "$(q "select count(*) from attraction_image;")" "图片行数"
+          expect 50 "$(q "select count(distinct attraction_id) from attraction_image;")" "有配图的景点数"
+          expect 0 "$(q "select count(*) from attraction_image where credit is null or credit = '' or license is null or license = '';")" "缺 credit/license 的图片数"
           expect 0 "$(q "select count(*) from attraction a where not exists (select 1 from attraction_tag x where x.attraction_id = a.id);")" "没有任何标签的景点数"
           expect 0 "$(q "select count(*) from category c where not exists (select 1 from attraction a where a.category_id = c.id);")" "没有景点的分类数"
           expect 0 "$(q "select count(*) from tag g where not exists (select 1 from attraction_tag x where x.tag_id = g.id);")" "没被用到的标签数"

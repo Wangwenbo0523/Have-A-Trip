@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="周庄">
+  <title>周庄</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a1f26"/>
+      <stop offset="1" stop-color="#39484e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <rect x="-30.0" y="503.7" width="191.9" height="100.3" fill="#1f282f"/>
+  <polygon points="-46.0,503.7 66.0,453.7 177.9,503.7" fill="#2b373e"/>
+  <rect x="-42.0" y="479.7" width="34.0" height="24" fill="#2b373e"/>
+  <rect x="-42.0" y="455.7" width="28.0" height="24" fill="#2b373e"/>
+  <rect x="-42.0" y="431.7" width="22.0" height="24" fill="#2b373e"/>
+  <rect x="191.9" y="464.1" width="154.2" height="139.9" fill="#1f282f"/>
+  <polygon points="175.9,464.1 269.0,414.1 362.1,464.1" fill="#2b373e"/>
+  <rect x="179.9" y="440.1" width="34.0" height="24" fill="#2b373e"/>
+  <rect x="179.9" y="416.1" width="28.0" height="24" fill="#2b373e"/>
+  <rect x="179.9" y="392.1" width="22.0" height="24" fill="#2b373e"/>
+  <rect x="376.1" y="485.5" width="167.8" height="118.5" fill="#1f282f"/>
+  <polygon points="360.1,485.5 460.0,435.5 559.9,485.5" fill="#2b373e"/>
+  <rect x="364.1" y="461.5" width="34.0" height="24" fill="#2b373e"/>
+  <rect x="364.1" y="437.5" width="28.0" height="24" fill="#2b373e"/>
+  <rect x="364.1" y="413.5" width="22.0" height="24" fill="#2b373e"/>
+  <rect x="573.9" y="475.9" width="203.1" height="128.1" fill="#1f282f"/>
+  <polygon points="557.9,475.9 675.5,425.9 793.1,475.9" fill="#2b373e"/>
+  <rect x="561.9" y="451.9" width="34.0" height="24" fill="#2b373e"/>
+  <rect x="561.9" y="427.9" width="28.0" height="24" fill="#2b373e"/>
+  <rect x="561.9" y="403.9" width="22.0" height="24" fill="#2b373e"/>
+  <rect x="807.1" y="464.8" width="197.0" height="139.2" fill="#1f282f"/>
+  <polygon points="791.1,464.8 905.5,414.8 1020.0,464.8" fill="#2b373e"/>
+  <rect x="795.1" y="440.8" width="34.0" height="24" fill="#2b373e"/>
+  <rect x="795.1" y="416.8" width="28.0" height="24" fill="#2b373e"/>
+  <rect x="795.1" y="392.8" width="22.0" height="24" fill="#2b373e"/>
+  <rect x="1034.0" y="471.4" width="150.9" height="132.6" fill="#1f282f"/>
+  <polygon points="1018.0,471.4 1109.5,421.4 1200.9,471.4" fill="#2b373e"/>
+  <rect x="1022.0" y="447.4" width="34.0" height="24" fill="#2b373e"/>
+  <rect x="1022.0" y="423.4" width="28.0" height="24" fill="#2b373e"/>
+  <rect x="1022.0" y="399.4" width="22.0" height="24" fill="#2b373e"/>
+  <rect x="0" y="604.0" width="1200" height="196.0" fill="#13191f"/>
+  <path d="M202.0,638.0 Q320.0,664.0 438.0,638.0 Z" fill="#2b373e"/>
+  <path d="M276.0,635.0 Q320.0,596.0 364.0,635.0 Z" fill="#1f282f"/>
+  <path d="M783.2,638.0 Q880.0,659.3 976.8,638.0 Z" fill="#2b373e"/>
+  <path d="M843.9,635.0 Q880.0,603.6 916.1,635.0 Z" fill="#1f282f"/>
+  <rect x="0" y="700.0" width="1200" height="3" fill="#e8b15b" opacity="0.22"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e8b15b" letter-spacing="7">古镇村落</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">周庄</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

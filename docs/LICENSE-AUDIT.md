@@ -125,12 +125,13 @@ vendor 进来的 `frontend/LICENSE`（`Copyright (c) 2019 Zero To Mastery`）原
 | `frontend/src/img/BaganMyanmar.jpg`（675 KB，页头背景） | 上游基底 `zero-to-mastery/travel-guide` 里的实景照片 | **无从查证**。MIT 覆盖的是仓库作者的贡献，不等于贡献者有权授权别人的摄影作品 | **已删除**（2026-09-25，S8）。页头背景改用纯 CSS 渐变，顺带省掉首屏 675 KB |
 | `frontend/public/favicon.ico` | **自绘**，无第三方素材 | MIT（与仓库同许可） | **已换掉**（2026-09-25）。上游的 `earth.ico`（225 KB）与 `favicon.ico` 出处无从查证，已删除；现由 `scripts/make_favicon.py` 用标准库程序化生成（7 档尺寸、8.5 KB），改常量重跑即可复现 |
 | `frontend/src/logo.svg` | 上游基底的 React 标志 | 零引用死资源 | 已删除（2026-09-25，S4） |
-| 景点配图 | 本项目种子数据 | 目前留空（`attraction_image` 为 0 行） | S7 已落 50 条景点，**配图仍然一张都没有**。落图时每条必须带 `credit` 与 `license`（数据库层已设为 NOT NULL），且来源要能查证 |
+| 景点配图（50 张，`frontend/public/images/covers/*.svg`） | **自绘**，由 `scripts/make_attraction_covers.py` 程序化生成 | MIT（与仓库同许可） | 原计划用 CC0 / 公有领域图库（2026-09-25）：**Wikimedia Commons 与 Openverse 在本机网络下不可达**（连接超时），Unsplash / Pixabay 用的是各自的专有许可而非 CC0，且对中国具体景点的覆盖很薄。于是改为自绘——出处就是仓库里的脚本。每条仍走 `attraction_image.credit` / `.license`（NOT NULL），声明页会聚合出来 |
 
 ### 原则
 
 1. **来源查不到出处的图片，一律不进仓库**。一张图的风险比一行依赖代码更隐蔽——没有工具会替你扫。
-2. 景点配图优先自己拍、或用明确标注 CC0 / 公有领域的图库，并在 `attraction_image.credit` 里写明作者与许可。
+2. 景点配图优先自己拍或自绘，其次才是明确标注 CC0 / 公有领域的图库，并在 `attraction_image.credit` 里写明作者与许可。
+   **不要**为了「有图」而放进许可不明或带相同方式共享义务的照片——前者是法律风险，后者给将来闭源添一道手续。
 3. 图片的署名与许可**是数据库字段**，不是文档里的口头约定。`attraction_image.credit` / `.license` 都是 `NOT NULL`，
    声明页（`Credits.tsx`）由它们聚合生成——想漏也漏不掉。
 4. `public/` 下的图标是**自绘**的（`scripts/make_favicon.py`）。换图形要改那个脚本再重跑，
@@ -146,6 +147,7 @@ vendor 进来的 `frontend/LICENSE`（`Copyright (c) 2019 Zero To Mastery`）原
 - [x] **贡献者 DCO 签核已启用**：`scripts/check_dco.py` + `.github/workflows/dco.yml` 逐个 commit 校验（2026-09-25）
 - [x] 图片资产已单独立节审查（见第五节），来源不明的那张已删除
 - [x] `public/` 下的占位图标已换成自绘（2026-09-25）：`scripts/make_favicon.py` 生成，上游 `earth.ico` 已删除
+- [x] 景点配图已落（2026-09-25）：50 张自绘封面，由 `scripts/make_attraction_covers.py` 生成；声明页显示「Have-A-Trip 自绘 · MIT · 50 张」
 - [x] 一期数据层已定案（2026-09-25，S7）：50 条全部自采、`license` 为 MIT，无第三方数据集，无图片
 - [ ] 接入新数据源或图片时，回来更新第三、第五节并逐条复核
 - [ ] 定期跑 `python scripts/license_gate.py --strict`
