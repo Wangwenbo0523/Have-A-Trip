@@ -48,10 +48,15 @@ jobs:
           test -f dist/index.html || { echo "::error::dist/index.html 没生成"; exit 1; }
           du -sh dist
 
-      # 这两条是「不做地图跟踪」与「不再打国家数据源」的守线, 靠 CI 拦而不是靠自觉
+      # 「不做地图跟踪」与「不再打国家数据源」这两条守线, 靠 CI 拦而不是靠自觉。
+      # 匹配只落在**代码**上: 界面文案里就有「no maps or geolocation」这类声明, 裸词匹配会把
+      # 「声明自己不做定位」的句子本身拦下来 —— 这一步因此在每次提交上都是红的。
+      # 所以只认 import/require 的依赖名、旧组件名与真实的定位 API。
       - name: "守线: 不引入地图/定位, 不再用旧的国家数据源"
         run: |
-          if grep -rInE "restcountries|leaflet|mapbox-gl|components/MapView|WorldMap|geolocation" src; then
+          pat="(from|require|import)[[:space:]]*\(?[[:space:]]*['\"][^'\"]*(restcountries|leaflet|mapbox-gl)"
+          pat="$pat|components/MapView|WorldMap|navigator\.geolocation|geolocation\.(getCurrentPosition|watchPosition)"
+          if grep -rInE "$pat" src; then
             echo "::error::src 下出现了被排除的地图/定位依赖或旧的国家数据源"
             exit 1
           fi
