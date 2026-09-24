@@ -6,6 +6,7 @@ import { useApi } from "../hooks/useApi"
 import { HERITAGE_LABELS, aLevelText } from "../lib/grade"
 import AttractionList from "./AttractionList"
 import AttractionPlan from "./AttractionPlan"
+import ExternalVideoSearch from "./ExternalVideoSearch"
 import StateMessage from "./StateMessage"
 import Loader from "./utils/Loader"
 import "../styles/detail.css"
@@ -219,6 +220,8 @@ const AttractionDetail = () => {
           </ul>
         </section>
       ) : null}
+
+      <ExternalVideoSearch keyword={data.name} />
 
       {/* source / license 每个景点必填, 直接展示 —— 这是将来闭源时的数据层保险 */}
       <p className="detail__source">
