@@ -52,9 +52,10 @@ const CODE_ASSETS: CodeAsset[] = [
     link: "https://github.com/RUCAIBox/RecBole",
   },
   {
-    name: "站点图标 public/favicon.ico、public/earth.ico",
-    license: "未标注",
-    note: "沿用上游基底的占位图标, 出处无从查证, 上线前替换成自绘图标",
+    name: "站点图标 public/favicon.ico",
+    license: "MIT",
+    note: "自绘: 由 scripts/make_favicon.py 程序化生成, 与仓库同许可, 不含第三方素材",
+    link: `${APP_REPO_URL}/blob/main/scripts/make_favicon.py`,
   },
 ]
 

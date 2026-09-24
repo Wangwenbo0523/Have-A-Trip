@@ -506,3 +506,4 @@ npm.cmd run dev                        # 手动过一遍: 首页 -> 分类 -> �
 | 2026-09-25 | v1.5 | S6 完成：`recsys/` 四个脚本端到端跑通，BPR 离线结果写回 `rec_result`；钉死 4 个上游依赖坑；`run_recbole.py` 改 `chdir` 修掉仓库里的野 `log/` 目录 |
 | 2026-09-25 | v1.6 | S5 完成：`Credits.tsx` 重写成数据来源与许可声明页，数据由新增的 `GET /api/v1/sources` 从库里现算；share-alike 来源未登记修改状态会在页面标红。全部计划步骤 S0–S8 至此收口 |
 | 2026-09-25 | v1.7 | 收尾：`docs/DEPLOY.md` 检查清单补 `/api/v1/sources` 的 `needs_attention` 必须为 `false`；按既定顺序最后安装 `ecc-universal`（全局 npm `ecc-universal@2.2.1`，`ecc` CLI 可用；Codex 侧的 skill 仍由 `ecc@ecc` 插件提供，未重复落一份到 `~/.codex/`） |
+| 2026-09-25 | v1.8 | 占位图标换成自绘：新增 `scripts/make_favicon.py`（标准库程序化生成 7 档尺寸），`public/earth.ico`（225 KB，出处无从查证）删除，图标落到约定路径 `public/favicon.ico`（8.5 KB）；`index.html`、`manifest.json`、`Credits.tsx`、`docs/LICENSE-AUDIT.md` 同步；`license-gate` 加一道 `make_favicon.py --check` |

@@ -60,3 +60,7 @@ jobs:
           for name, info in lock["bases"].items():
               print(f"{name}: {info['upstream']} @ {info.get('commit') or info.get('version')} [{info['license']}]")
           PY
+      # 站点图标是脚本生成的, 不是手绘文件。改了脚本忘了重跑、或者有人直接手改那个 .ico,
+      # 这里都会红。图标同样是版权资产, 让它保持可复现。
+      - name: 校验站点图标与生成脚本一致
+        run: python scripts/make_favicon.py --check

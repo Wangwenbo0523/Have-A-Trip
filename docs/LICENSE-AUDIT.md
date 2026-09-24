@@ -123,7 +123,7 @@ vendor 进来的 `frontend/LICENSE`（`Copyright (c) 2019 Zero To Mastery`）原
 | 资产 | 来源 | 许可 | 处置 |
 |---|---|---|---|
 | `frontend/src/img/BaganMyanmar.jpg`（675 KB，页头背景） | 上游基底 `zero-to-mastery/travel-guide` 里的实景照片 | **无从查证**。MIT 覆盖的是仓库作者的贡献，不等于贡献者有权授权别人的摄影作品 | **已删除**（2026-09-25，S8）。页头背景改用纯 CSS 渐变，顺带省掉首屏 675 KB |
-| `frontend/public/earth.ico`、`favicon.ico` | 上游基底的占位图标 | 同上，未标注 | 保留但**待替换**：上线前换成自绘图标 |
+| `frontend/public/favicon.ico` | **自绘**，无第三方素材 | MIT（与仓库同许可） | **已换掉**（2026-09-25）。上游的 `earth.ico`（225 KB）与 `favicon.ico` 出处无从查证，已删除；现由 `scripts/make_favicon.py` 用标准库程序化生成（7 档尺寸、8.5 KB），改常量重跑即可复现 |
 | `frontend/src/logo.svg` | 上游基底的 React 标志 | 零引用死资源 | 已删除（2026-09-25，S4） |
 | 景点配图 | 本项目种子数据 | 目前留空（`attraction_image` 为 0 行） | S7 已落 50 条景点，**配图仍然一张都没有**。落图时每条必须带 `credit` 与 `license`（数据库层已设为 NOT NULL），且来源要能查证 |
 
@@ -133,7 +133,8 @@ vendor 进来的 `frontend/LICENSE`（`Copyright (c) 2019 Zero To Mastery`）原
 2. 景点配图优先自己拍、或用明确标注 CC0 / 公有领域的图库，并在 `attraction_image.credit` 里写明作者与许可。
 3. 图片的署名与许可**是数据库字段**，不是文档里的口头约定。`attraction_image.credit` / `.license` 都是 `NOT NULL`，
    声明页（`Credits.tsx`）由它们聚合生成——想漏也漏不掉。
-4. 上线前把 `public/` 下的图标换成自绘的。
+4. `public/` 下的图标是**自绘**的（`scripts/make_favicon.py`）。换图形要改那个脚本再重跑，
+   不要手工往 `public/` 里塞文件——脚本在，出处就查得到。`license-gate` 工作流会跑 `--check`，图标与脚本对不上就直接红。
 
 ## 四、操作清单
 
@@ -144,6 +145,7 @@ vendor 进来的 `frontend/LICENSE`（`Copyright (c) 2019 Zero To Mastery`）原
 - [x] 两个基底的 LICENSE 随源码保留（`frontend/LICENSE`）
 - [x] **贡献者 DCO 签核已启用**：`scripts/check_dco.py` + `.github/workflows/dco.yml` 逐个 commit 校验（2026-09-25）
 - [x] 图片资产已单独立节审查（见第五节），来源不明的那张已删除
+- [x] `public/` 下的占位图标已换成自绘（2026-09-25）：`scripts/make_favicon.py` 生成，上游 `earth.ico` 已删除
 - [x] 一期数据层已定案（2026-09-25，S7）：50 条全部自采、`license` 为 MIT，无第三方数据集，无图片
 - [ ] 接入新数据源或图片时，回来更新第三、第五节并逐条复核
 - [ ] 定期跑 `python scripts/license_gate.py --strict`
