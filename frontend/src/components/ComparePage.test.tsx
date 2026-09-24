@@ -132,7 +132,7 @@ describe("ComparePage", () => {
     renderCompare("/compare?a=palace-museum&b=west-lake")
 
     expect(await screen.findByRole("columnheader", { name: "故宫博物院" })).toBeInTheDocument()
-    expect(screen.getByLabelText("景点 A")).toHaveValue("palace-museum")
+    expect(screen.getByLabelText("景点 A")).toHaveValue("故宫博物院")
     expect(screen.getByTestId("search")).toHaveTextContent("?a=palace-museum&b=west-lake")
   })
 
@@ -151,11 +151,12 @@ describe("ComparePage", () => {
 
     renderCompare("/compare?a=deep-cut&b=first-1")
 
-    // 第二页的景点要出现在候选里, 链接里给的选择也不能被改写成第一页的。
-    // 两个下拉框都铺全部选项, 所以断言要收在 A 那个 select 里, 否则同名 option 会有两个
+    // 第二页的景点要出现在候选里, 链接里给的选择也不能被改写成第一页的
     const pickerA = await screen.findByLabelText("景点 A")
-    expect(await within(pickerA).findByRole("option", { name: "第 101 个景点" })).toBeInTheDocument()
-    expect(pickerA).toHaveValue("deep-cut")
+    // 输入框显示名称, 写回 URL 的才是 slug
+    expect(pickerA).toHaveValue("第 101 个景点")
+    await userEvent.click(pickerA)
+    expect(await screen.findByRole("option", { name: "第 101 个景点" })).toBeInTheDocument()
     expect(await screen.findByRole("columnheader", { name: "deep-cut" })).toBeInTheDocument()
 
     // 翻页是串行的: 第二页的请求要等第一页回来才知道有没有, 所以断言放在等待之后
@@ -170,7 +171,7 @@ describe("ComparePage", () => {
 
     await userEvent.click(screen.getByRole("button", { name: "对调" }))
 
-    await waitFor(() => expect(screen.getByLabelText("景点 A")).toHaveValue("palace-museum"))
+    await waitFor(() => expect(screen.getByLabelText("景点 A")).toHaveValue("故宫博物院"))
     const headers = screen.getAllByRole("columnheader")
     expect(headers[1]).toHaveTextContent("故宫博物院")
     expect(headers[2]).toHaveTextContent("西湖")
@@ -182,7 +183,8 @@ describe("ComparePage", () => {
     renderCompare("/compare?a=west-lake&b=palace-museum")
     await screen.findByRole("columnheader", { name: "西湖" })
 
-    await userEvent.selectOptions(screen.getByLabelText("景点 A"), "terracotta-army")
+    await userEvent.click(screen.getByLabelText("景点 A"))
+    await userEvent.click(await screen.findByRole("option", { name: "秦始皇兵马俑" }))
 
     await waitFor(() => expect(mockedDetail).toHaveBeenCalledWith("terracotta-army"))
     expect(screen.getByTestId("search")).toHaveTextContent("a=terracotta-army")

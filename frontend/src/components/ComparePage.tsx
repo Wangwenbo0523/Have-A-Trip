@@ -4,9 +4,10 @@ import { useSearchParams } from "react-router-dom"
 import { fetchAttraction, fetchAttractions } from "../api/client"
 import { useApi } from "../hooks/useApi"
 import { useI18n, type MessageKey } from "../i18n"
-import { localizedName, namesFor } from "../lib/display"
+import { namesFor } from "../lib/display"
 import { HERITAGE_TEXT } from "../lib/grade"
 import type { Attraction, AttractionDetail } from "../types"
+import AttractionPicker from "./AttractionPicker"
 import StateMessage from "./StateMessage"
 import Loader from "./utils/Loader"
 
@@ -116,11 +117,10 @@ const ComparePage = () => {
     [ready, slugPair],
   )
 
-  const pick = (side: "a" | "b") => (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = event.target.value
+  const pick = (side: "a" | "b") => (slug: string) => {
     setParams((current) => {
       const next = new URLSearchParams(current)
-      next.set(side, value)
+      next.set(side, slug)
       return next
     })
   }
@@ -200,17 +200,20 @@ const ComparePage = () => {
   const leftItem = profiles?.[leftSlug] ?? null
   const rightItem = profiles?.[rightSlug] ?? null
 
+  /**
+   * 用可搜索的组合框而不是 `<select>`: 候选是**全库**(见 fetchAllAttractions), 156 行
+   * 一次铺开既搜不了也扫不动。选中后写回 URL 的仍是 slug, 契约没变。
+   */
   const picker = (side: "a" | "b", value: string, label: string) => (
-    <label className="compare__pick">
-      <span className="compare__pickLabel">{label}</span>
-      <select className="compare__select" value={value} onChange={pick(side)}>
-        {options.map((item) => (
-          <option key={item.slug} value={item.slug}>
-            {localizedName(lang, item)}
-          </option>
-        ))}
-      </select>
-    </label>
+    <div className="compare__pick">
+      <AttractionPicker
+        id={`compare-pick-${side}`}
+        label={label}
+        value={value}
+        options={options}
+        onChange={pick(side)}
+      />
+    </div>
   )
 
   return (

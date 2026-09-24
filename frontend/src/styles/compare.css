@@ -8,33 +8,10 @@
   margin-bottom: 24px;
 }
 
+/* 只管两边的占位宽度; 控件内部的布局与配色归 picker.css */
 .compare__pick {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
   flex: 1 1 220px;
   min-width: 0;
-}
-
-.compare__pickLabel {
-  color: var(--muted);
-  font-size: 0.82rem;
-  letter-spacing: 0.08em;
-}
-
-.compare__select {
-  width: 100%;
-  padding: 10px 14px;
-  border: 1px solid var(--panel-border);
-  border-radius: 8px;
-  background: var(--panel-bg-strong);
-  color: var(--text);
-  font-size: 0.95rem;
-}
-
-.compare__select:focus {
-  border-color: var(--accent);
-  outline: none;
 }
 
 .compare__swap {

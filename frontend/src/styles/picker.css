@@ -1,0 +1,91 @@
+/* 可搜索的景点选择器。变量沿用 index.css 那一套, 所以深浅色主题自动跟着走。 */
+
+.picker {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.picker__label {
+  color: var(--muted);
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+}
+
+.picker__field {
+  position: relative;
+}
+
+.picker__input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  background: var(--panel-bg-strong);
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.picker__input:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+/*
+ * 浮层而不是撑开布局: 展开时页面不该跟着跳一下。
+ *
+ * 底色必须是**实色** var(--page-bg): 这里浮在表格正上方, 而 --panel-bg-strong 是
+ * 半透明的(rgba 白 7%), 用它会透出底下的表格文字, 156 行挤在一起根本读不出来。
+ * 实色 + --panel-border-strong + --shadow-card 与首页弹窗同一套写法。
+ */
+.picker__list {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 264px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  border: 1px solid var(--panel-border-strong);
+  border-radius: 8px;
+  background: var(--page-bg);
+  box-shadow: var(--shadow-card);
+}
+
+.picker__option {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* 键盘与鼠标共用同一个高亮, 所以是 is-active 而不是 :hover */
+.picker__option.is-active {
+  background: var(--accent-soft);
+}
+
+.picker__optionName {
+  font-size: 0.92rem;
+  color: var(--text);
+}
+
+.picker__optionAlt {
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.picker__option[aria-selected="true"] .picker__optionName {
+  color: var(--accent);
+}
+
+.picker__empty {
+  padding: 10px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
