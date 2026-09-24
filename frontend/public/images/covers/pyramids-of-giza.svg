@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="吉萨金字塔群">
+  <title>吉萨金字塔群</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b1f29"/>
+      <stop offset="1" stop-color="#4c5344"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <rect x="196.0" y="610.0" width="430.0" height="46" fill="#716c4b"/>
+  <rect x="230.0" y="564.0" width="362.0" height="46" fill="#555138"/>
+  <rect x="264.0" y="518.0" width="294.0" height="46" fill="#716c4b"/>
+  <rect x="298.0" y="472.0" width="226.0" height="46" fill="#555138"/>
+  <rect x="332.0" y="426.0" width="158.0" height="46" fill="#716c4b"/>
+  <rect x="344.0" y="392.0" width="74" height="34" fill="#2f2c20" opacity="0.9"/>
+  <rect x="733.0" y="435.2" width="54" height="220.8" fill="#716c4b"/>
+  <rect x="724.0" y="435.2" width="72" height="17" fill="#555138"/>
+  <rect x="724.0" y="639.0" width="72" height="17" fill="#555138"/>
+  <rect x="839.0" y="444.3" width="54" height="211.7" fill="#716c4b"/>
+  <rect x="830.0" y="444.3" width="72" height="17" fill="#555138"/>
+  <rect x="830.0" y="639.0" width="72" height="17" fill="#555138"/>
+  <rect x="945.0" y="417.2" width="54" height="238.8" fill="#716c4b"/>
+  <rect x="936.0" y="417.2" width="72" height="17" fill="#555138"/>
+  <rect x="936.0" y="639.0" width="72" height="17" fill="#555138"/>
+  <rect x="1051.0" y="449.5" width="54" height="206.5" fill="#716c4b"/>
+  <rect x="1042.0" y="449.5" width="72" height="17" fill="#555138"/>
+  <rect x="1042.0" y="639.0" width="72" height="17" fill="#555138"/>
+  <rect x="733" y="409.2" width="160" height="26" fill="#555138" opacity="0.92"/>
+  <rect x="939" y="391.2" width="160" height="26" fill="#555138" opacity="0.92"/>
+  <rect x="0" y="656.0" width="1200" height="144.0" fill="#2f2c20"/>
+  <rect x="169.2" y="634.7" width="53.5" height="20" rx="5" fill="#555138" opacity="0.7"/>
+  <rect x="366.9" y="629.3" width="57.5" height="20" rx="5" fill="#555138" opacity="0.7"/>
+  <rect x="580.7" y="634.1" width="53.8" height="20" rx="5" fill="#555138" opacity="0.7"/>
+  <rect x="759.6" y="628.8" width="65.5" height="20" rx="5" fill="#555138" opacity="0.7"/>
+  <rect x="1013.2" y="628.6" width="39.4" height="20" rx="5" fill="#555138" opacity="0.7"/>
+  <rect x="0" y="653.0" width="1200" height="3" fill="#e0c457" opacity="0.25"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0c457" letter-spacing="7">考古遗址</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">吉萨金字塔群</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

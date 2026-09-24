@@ -7,8 +7,8 @@
 | 文件 | 说明 |
 |---|---|
 | `schema.sql` | 建表 DDL（幂等，可重复执行） |
-| `seed/seed.sql` | 种子数据：7 个分类、19 个标签、50 个景点、175 条标签关联（幂等） |
-| `seed/images.sql` | 景点配图：50 条 `attraction_image`，每条带 `credit` 与 `license`。**由 `scripts/make_attraction_covers.py` 生成，不要手改** |
+| `seed/seed.sql` | 种子数据：9 个分类、31 个标签、90 个景点、362 条标签关联、90 个旅游方案、307 条方案步骤（幂等） |
+| `seed/images.sql` | 景点配图：90 条 `attraction_image`，每条带 `credit` 与 `license`。**由 `scripts/make_attraction_covers.py` 生成，不要手改** |
 
 ## 执行
 
@@ -30,10 +30,12 @@ psql -d attraction_atlas -v ON_ERROR_STOP=1 -f db/seed/images.sql
 验证：
 
 ```bash
-psql -d attraction_atlas -c "select count(*) from attraction;"                  # 50
+psql -d attraction_atlas -c "select count(*) from attraction;"                  # 90
+psql -d attraction_atlas -c "select count(*) from attraction_plan;"            # 90
+psql -d attraction_atlas -c "select a.slug, p.title, p.days from attraction_plan p join attraction a on a.id = p.attraction_id limit 5;"
 psql -d attraction_atlas -c "select a.name, c.name from attraction a join category c on c.id = a.category_id limit 5;"
 psql -d attraction_atlas -c "select a.name, string_agg(t.name, ' / ') from attraction a join attraction_tag at on at.attraction_id = a.id join tag t on t.id = at.tag_id group by a.id, a.name limit 5;"
-psql -d attraction_atlas -c "select count(*) from attraction_image;"           # 50
+psql -d attraction_atlas -c "select count(*) from attraction_image;"           # 90
 psql -d attraction_atlas -c "select credit, license, count(*) from attraction_image group by 1, 2;"
 psql -d attraction_atlas -c "select * from schema_version;"
 ```
@@ -47,7 +49,9 @@ psql -d attraction_atlas -c "select * from schema_version;"
 | `tag` | 自由标签 |
 | `attraction` | 景点档案主表 |
 | `attraction_tag` | 景点-标签多对多 |
-| `attraction_image` | 图集，每条带 `credit` 与 `license`；目前是 50 条自绘封面 |
+| `attraction_image` | 图集，每条带 `credit` 与 `license`；目前是 90 条自绘封面 |
+| `attraction_plan` | 景点的旅游方案（自采行程建议），一条一个方案 |
+| `attraction_plan_step` | 方案里的有序步骤，按 `day_no` 分组、组内按 `sort` 升序 |
 | `app_user` | 用户（一期只有匿名 `device_id`） |
 | `behavior_log` | 行为日志，推荐原料 |
 | `rec_result` | 推荐结果，**API 只读这一张** |
@@ -69,25 +73,40 @@ psql -d attraction_atlas -c "select * from schema_version;"
 | 时间统一 `TIMESTAMPTZ`，默认值由数据库给 | 应用层不传时间，避免时区混乱 |
 | 文本统一 `TEXT`，不用 `VARCHAR(n)` | 长度限制在内容整理阶段只会带来迁移 |
 | 经纬度只用于同城聚合 | 本项目**不做地图与定位**，`lat` / `lon` 不参与任何渲染 |
+| `attraction.a_level` / `heritage` 可为 `NULL`，且 **`NULL` 表示「未核实」而不是「没有」** | 景区名录与世界遗产名录都会调整，核实不了就留空。`a_level` 只对（中国大陆）景区有意义，境外景点一律留空，它们的「等级」看 `heritage` |
+| `attraction_plan.budget_level` 只给档次不给金额 | 与 `ticket_price` 同理：具体价格是易变信息。四档 `free` / `low` / `mid` / `high` |
+| 一个景点可以有多个方案，方案 slug 恒为 `<景点slug>-plan` | 便于按景点反查，也让 CI 能断言两者一致 |
 
 ## 种子数据的口径
 
-一期 50 个景点，全部为**自采的公开事实信息**，没有引入任何第三方数据集
+90 个景点：**中国境内 50 个 + 境外 40 个（覆盖亚洲、欧洲、非洲、北美洲、南美洲、大洋洲）**，
+全部为**自采的公开事实信息**，没有引入任何第三方数据集
 （为什么这一点重要，见 `docs/LICENSE-AUDIT.md` 第三节）。分布：
 
 | 分类 | slug | 个数 |
 |---|---|---|
-| 自然风光 | `nature` | 12 |
+| 自然风光 | `nature` | 27 |
+| 城市地标 | `landmark` | 11 |
 | 历史古迹 | `history` | 10 |
-| 博物馆 | `museum` | 6 |
-| 城市地标 | `landmark` | 6 |
-| 古镇村落 | `ancient-town` | 6 |
-| 宗教场所 | `religion` | 5 |
+| 考古遗址 | `archaeology` | 10 |
+| 宗教场所 | `religion` | 9 |
+| 博物馆 | `museum` | 7 |
+| 古镇村落 | `ancient-town` | 7 |
 | 主题乐园 | `theme-park` | 5 |
-| **合计** | | **50** |
+| 宫殿城堡 | `palace` | 4 |
+| **合计** | | **90** |
 
-覆盖 21 个省级行政区。19 个标签里用得最多的是 `photography`（23）、`world-heritage`（23）、
-`family`（21）、`night-view`（17）、`ancient-architecture`（17）。
+覆盖 21 个省级行政区与 30 个境外国家（`province` 口径下合计 59 个），共 31 个标签。
+用得最多的是 `world-heritage`（59）、`photography`（47）、`ancient-architecture`（28）、
+`family`（27）、`must-see`（24）、`night-view`（23）。
+
+**等级两列填了多少：** `a_level` 40 条（5A 32 + 4A 8），`heritage` 59 条。
+剩下的是**未核实**而不是「没有等级」—— 中国景区质量等级与 UNESCO 名录都只能逐条查证，
+查不到就留空，不猜。境外 40 条 `a_level` 全空，它们的等级看 `heritage`。
+
+**旅游方案：** 90 个景点各一个方案，共 307 条步骤（1 天 73 个、2 天 13 个、3 天 3 个、4 天 1 个）。
+方案与步骤同样是自采内容（`source` = `Have-A-Trip 自采（公开事实信息）`），
+只给花费档次（`free` 4 / `low` 27 / `mid` 45 / `high` 14），不给金额。
 
 ### 刻意不写的数据
 
@@ -95,7 +114,9 @@ psql -d attraction_atlas -c "select * from schema_version;"
 |---|---|
 | 评分 `rating_avg` / `rating_count` 一律为 0 | 评分只能由 `behavior_log` 聚合得出。种子里写死一个好看的分数就是伪造，前端要会处理「暂无评分」 |
 | 坐标 `lat` / `lon` 一律为 `NULL` | 不编造坐标。一期不做地图与定位，这两个字段只留给将来的同城聚合 |
-| 票价只在**确定免费**时写 `0`，其余为 `NULL` | 票价是易变信息，写进种子的数字迟早会过期。目前只有 5 条写了 `0`（西湖、中国国家博物馆、苏州博物馆、外滩、橘子洲） |
+| 票价只在**确定免费**时写 `0`，其余为 `NULL` | 票价是易变信息，写进种子的数字迟早会过期。目前只有 9 条写了 `0`（西湖、中国国家博物馆、苏州博物馆、外滩、橘子洲，以及查理大桥、大堡礁、米尔福德峡湾、圣托里尼这几处不收费的开放区域） |
+| 景区等级 `a_level` 与世界遗产 `heritage` 只填能查证的 | `NULL` 是**未核实**。名录会调整，宁可空着也不猜；前端把两者都为空处理成「不显示徽章」 |
+| 方案只给 `budget_level` 档次，不给金额 | 与票价同理，具体价格随季节浮动，写死就会过期 |
 | 配图是**自绘**的，不是照片 | 原打算用 CC0 / 公有领域图库。实测 Wikimedia Commons 与 Openverse 在本机网络下不可达，Unsplash / Pixabay 又各有各的专有许可（不是 CC0），且对中国具体景点覆盖很薄。于是改成程序化生成 SVG（`scripts/make_attraction_covers.py`），出处就是脚本本身。每条仍走 `credit` 与 `license`（两列均为 `NOT NULL`），声明页会聚合出来 |
 | `source_url` 为 `NULL` | 内容是逐条整理的公开事实，没有单一可引的页面；等有了再补，不为填空而填 |
 
@@ -107,9 +128,13 @@ psql -d attraction_atlas -c "select * from schema_version;"
 - `rating_avg` / `rating_count` **不在** `DO UPDATE` 的列里 —— 那是用户行为攒出来的，重跑种子不许把它们抹掉；
 - 景点标签先按 `source` 认领后 `DELETE` 再重建，所以把某个标签从清单里删掉，库里也会跟着删。
 
-这条链路 CI 会真的验一遍：`db-schema.yml` 里先手工把一行改坏、再删掉它的标签关联，然后重跑种子，
-断言内容被修回来、坐标清回 `NULL`、标签关联被重建。旧版种子用的是 `DO NOTHING`，
-遇到早期跑过种子的库不会自愈，换写法就是为了这个。
+这条链路 CI 会真的验一遍：`db-schema.yml` 里先手工把一行改坏（改名称、塞坐标与票价、改 `a_level` 与 `heritage`），
+再删掉它的标签关联与方案步骤，然后重跑种子，断言内容被修回来、坐标清回 `NULL`、`a_level` / `heritage` 回到文件里的值、
+标签关联与方案步骤被重建。旧版种子用的是 `DO NOTHING`，遇到早期跑过种子的库不会自愈，换写法就是为了这个。
+
+等级那两列不在景点 INSERT 的列清单里，而是单独一块 `UPDATE ... FROM (VALUES ...)`：
+加进列清单会让 50 条老记录每条都要改一遍，而且它们的口径与其它字段不同（留空 = 未核实），单独一块更好核对。
+方案步骤与标签一样是「先按 `source` 认领后删除再重建」，所以从清单里删掉一个方案，库里也会跟着删。
 
 ### 数据来源清单
 
@@ -128,7 +153,7 @@ order by records desc;
 
 | source | license | 景点数 | 覆盖省份 |
 |---|---|---|---|
-| Have-A-Trip 自采（公开事实信息） | MIT | 50 | 21 |
+| Have-A-Trip 自采（公开事实信息） | MIT | 90 | 59 |
 
 只有一行是**刻意**的：只要将来引入别的来源，这里就会多一行，声明页跟着变。
 任何 ODbL（OpenStreetMap）或 CC BY-SA（Wikipedia / Wikivoyage）数据都必须先隔离在独立的

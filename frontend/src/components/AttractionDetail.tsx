@@ -3,7 +3,9 @@ import { Link, useParams } from "react-router-dom"
 
 import { fetchAttraction, fetchSimilar, getDeviceId, reportEvent } from "../api/client"
 import { useApi } from "../hooks/useApi"
+import { HERITAGE_LABELS, aLevelText } from "../lib/grade"
 import AttractionList from "./AttractionList"
+import AttractionPlan from "./AttractionPlan"
 import StateMessage from "./StateMessage"
 import Loader from "./utils/Loader"
 import "../styles/detail.css"
@@ -11,8 +13,15 @@ import "../styles/detail.css"
 const ratingText = (average: number, count: number) =>
   count > 0 ? `${average.toFixed(1)} 分 · ${count} 人评` : "暂无评分"
 
-const priceText = (price: number | null) =>
-  price === null || price === undefined ? "待补" : price === 0 ? "免费" : `¥${price}`
+/**
+ * 票价。库里只有 ticket_price 没有币种字段, 所以只对境内写人民币符号 —— 境外景点
+ * 按数据口径只会写 0(确定免费), 真出现金额时也不替它编一个币种。
+ */
+const priceText = (price: number | null, countryCode: string) => {
+  if (price === null || price === undefined) return "待补"
+  if (price === 0) return "免费"
+  return countryCode === "CN" ? `¥${price}` : "需购票"
+}
 
 const hoursText = (hours: number | null) =>
   hours === null || hours === undefined ? "待补" : `约 ${hours} 小时`
@@ -136,7 +145,7 @@ const AttractionDetail = () => {
         </div>
         <div>
           <dt>票价</dt>
-          <dd>{priceText(data.ticket_price)}</dd>
+          <dd>{priceText(data.ticket_price, data.country_code)}</dd>
         </div>
         <div>
           <dt>建议游览</dt>
@@ -146,6 +155,18 @@ const AttractionDetail = () => {
           <dt>最佳季节</dt>
           <dd>{data.best_season || "待补"}</dd>
         </div>
+        {data.a_level ? (
+          <div>
+            <dt>景区等级</dt>
+            <dd>{aLevelText(data.a_level)}</dd>
+          </div>
+        ) : null}
+        {data.heritage ? (
+          <div>
+            <dt>世界遗产</dt>
+            <dd>{HERITAGE_LABELS[data.heritage].full}</dd>
+          </div>
+        ) : null}
         <div>
           <dt>地址</dt>
           <dd>{data.address || "待补"}</dd>
@@ -166,6 +187,22 @@ const AttractionDetail = () => {
       ) : (
         <StateMessage title="这个景点还没有详细介绍" detail="资料正在补录中" />
       )}
+
+      {data.plans.length > 0 ? (
+        <section className="detail__section">
+          <h3 className="section__title">旅游方案</h3>
+          <div className="planList">
+            {[...data.plans]
+              .sort((a, b) => a.days - b.days)
+              .map((plan) => (
+                <AttractionPlan key={plan.slug} plan={plan} />
+              ))}
+          </div>
+          <p className="plan__disclaimer">
+            方案按公开信息自采, 是行程建议而不是官方线路; 花费只给档次, 具体价格随季节浮动。
+          </p>
+        </section>
+      ) : null}
 
       {data.images.length > 0 ? (
         <section className="detail__section">

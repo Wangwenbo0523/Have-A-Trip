@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="泰姬陵">
+  <title>泰姬陵</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#251b2c"/>
+      <stop offset="1" stop-color="#5e4f38"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <rect x="70" y="620.0" width="1060" height="22" fill="#6a5931"/>
+  <rect x="104" y="642.0" width="992" height="158.0" fill="#382f1b"/>
+  <rect x="172.0" y="556" width="250.0" height="64.0" fill="#8c7a45"/>
+  <polygon points="152.0,556 297.0,502 442.0,556" fill="#6a5931"/>
+  <rect x="206.0" y="568" width="40" height="44" rx="19" fill="#382f1b" opacity="0.75"/>
+  <rect x="292.0" y="568" width="40" height="44" rx="19" fill="#382f1b" opacity="0.75"/>
+  <rect x="378.0" y="568" width="40" height="44" rx="19" fill="#382f1b" opacity="0.75"/>
+  <rect x="778.0" y="556" width="250.0" height="64.0" fill="#8c7a45"/>
+  <polygon points="758.0,556 903.0,502 1048.0,556" fill="#6a5931"/>
+  <rect x="812.0" y="568" width="40" height="44" rx="19" fill="#382f1b" opacity="0.75"/>
+  <rect x="898.0" y="568" width="40" height="44" rx="19" fill="#382f1b" opacity="0.75"/>
+  <rect x="984.0" y="568" width="40" height="44" rx="19" fill="#382f1b" opacity="0.75"/>
+  <rect x="424" y="550.0" width="352" height="70.0" fill="#8c7a45"/>
+  <rect x="470.0" y="562" width="52" height="46" rx="21" fill="#382f1b" opacity="0.7"/>
+  <rect x="566.0" y="562" width="52" height="46" rx="21" fill="#382f1b" opacity="0.7"/>
+  <rect x="662.0" y="562" width="52" height="46" rx="21" fill="#382f1b" opacity="0.7"/>
+  <rect x="462" y="474.0" width="276" height="76.0" fill="#6a5931"/>
+  <path d="M506,474.0 A94,94 0 0 1 694,474.0 Z" fill="#8c7a45"/>
+  <rect x="580.0" y="396.0" width="40" height="12" fill="#e8dd62" opacity="0.8"/>
+  <rect x="500.0" y="642.0" width="200.0" height="15" fill="#382f1b" opacity="0.85"/>
+  <rect x="466.0" y="657.0" width="268.0" height="15" fill="#382f1b" opacity="0.85"/>
+  <rect x="432.0" y="672.0" width="336.0" height="15" fill="#382f1b" opacity="0.85"/>
+  <rect x="0" y="620.0" width="1200" height="4" fill="#e8dd62" opacity="0.4"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e8dd62" letter-spacing="7">宫殿城堡</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">泰姬陵</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

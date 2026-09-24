@@ -24,7 +24,7 @@ SHARE_ALIKE_MARKERS = ("odbl", "cc by-sa", "cc-by-sa", "ccbysa", "share-alike")
 # 引入 share-alike 来源时**必须**在这里登记「是否修改过」。
 # ODbL 与 CC BY-SA 都明确要求标注修改状态, 这不是可选项; 没登记的会返回 unregistered,
 # 页面上标出来 —— 宁可见红, 也不要含糊过去。
-# 目前是空的: 一期 50 条景点全部自采, 一条第三方数据都没进(docs/LICENSE-AUDIT.md 第三节)。
+# 目前是空的: 90 条景点全部自采, 一条第三方数据都没进(docs/LICENSE-AUDIT.md 第三节)。
 SOURCE_MODIFICATIONS: dict[tuple[str, str], str] = {}
 
 

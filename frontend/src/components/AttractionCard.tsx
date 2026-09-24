@@ -2,14 +2,20 @@ import React from "react"
 import { Link } from "react-router-dom"
 
 import type { Attraction } from "../types"
+import AttractionGradeBadge from "./AttractionGradeBadge"
 import "../styles/AttractionCard.css"
 
 const ratingText = (average: number, count: number) =>
   count > 0 ? `${average.toFixed(1)} 分 · ${count} 人评` : "暂无评分"
 
-const priceText = (price: number | null) => {
+/**
+ * 票价。库里只有 ticket_price 没有币种字段, 所以只对境内写人民币符号 —— 境外景点
+ * 按数据口径只会写 0(确定免费), 真出现金额时也不替它编一个币种。
+ */
+const priceText = (price: number | null, countryCode: string) => {
   if (price === null || price === undefined) return "票价待补"
-  return price === 0 ? "免费" : `¥${price}`
+  if (price === 0) return "免费"
+  return countryCode === "CN" ? `¥${price}` : "需购票"
 }
 
 const locationText = (attraction: Attraction) =>
@@ -32,6 +38,7 @@ const AttractionCard = ({ attraction }: { attraction: Attraction }) => (
         </span>
       )}
       <span className="attractionCard__category">{attraction.category.name}</span>
+      <AttractionGradeBadge aLevel={attraction.a_level} heritage={attraction.heritage} />
     </div>
 
     <div className="attractionCard__body">
@@ -50,7 +57,7 @@ const AttractionCard = ({ attraction }: { attraction: Attraction }) => (
 
       <p className="attractionCard__foot">
         <span>{ratingText(attraction.rating_avg, attraction.rating_count)}</span>
-        <span>{priceText(attraction.ticket_price)}</span>
+        <span>{priceText(attraction.ticket_price, attraction.country_code)}</span>
       </p>
     </div>
   </Link>

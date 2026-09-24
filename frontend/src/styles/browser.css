@@ -12,8 +12,17 @@
   gap: 16px;
 }
 
+.browser__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 20px;
+}
+
+.browser__grades,
 .browser__sorts {
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
 }
 

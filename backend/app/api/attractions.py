@@ -11,7 +11,7 @@ from ..config import Settings, get_settings
 from ..db import get_db
 from ..models import Attraction, Category, Tag, attraction_tag
 from ..recommend.content_based import similar_attractions
-from ..schemas import AttractionDetail, AttractionListItem, Page
+from ..schemas import AttractionDetail, AttractionListItem, GradeFilter, Page
 
 router = APIRouter(prefix="/attractions", tags=["attractions"])
 
@@ -48,6 +48,10 @@ def list_attractions(
     category: str | None = Query(None, description="分类 slug"),
     city: str | None = Query(None, description="城市, 精确匹配"),
     tag: str | None = Query(None, description="标签 slug"),
+    grade: GradeFilter | None = Query(
+        None,
+        description="等级: 5A/4A/3A 是中国景区质量等级; heritage 表示已列入世界遗产名录",
+    ),
     q: str | None = Query(None, description="关键字, 匹配中英文名称与简介"),
     sort: SortKey = Query("rating"),
     db: Session = Depends(get_db),
@@ -68,6 +72,11 @@ def list_attractions(
             .join(Tag, Tag.id == attraction_tag.c.tag_id)
             .where(Tag.slug == tag)
         )
+    if grade == "heritage":
+        # 世界遗产没有 A 级, 所以这是一个独立的取值, 不是 a_level 的某个档位
+        statement = statement.where(Attraction.heritage.is_not(None))
+    elif grade:
+        statement = statement.where(Attraction.a_level == grade)
     if q and q.strip():
         needle = f"%{q.strip().lower()}%"
         statement = statement.where(

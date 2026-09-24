@@ -9,7 +9,7 @@ Pixabay 一类可访问的图库用的是各自的专有许可(不是 CC0), 且�
 
 产出两个东西:
   1. frontend/public/images/covers/<slug>.svg   每个景点一张, 按 slug 确定性生成
-  2. db/seed/images.sql                         50 条 attraction_image 的幂等种子
+  2. db/seed/images.sql                         每个景点一条 attraction_image 的幂等种子
 
 同一个 slug 永远生成同一张图(颜色与构图都由 sha256(slug) 推导), 所以可以拿 --check
 校验仓库里的文件有没有被手改过。
@@ -86,12 +86,21 @@ PALETTES = {
         (0x18, 0x1B, 0x33), (0x3D, 0x35, 0x67), (0x2C, 0x28, 0x50),
         (0x1F, 0x1D, 0x3C), (0x12, 0x11, 0x26), (0xF4, 0x67, 0x32),
     ],
+    "palace": [
+        (0x22, 0x1C, 0x2C), (0x5E, 0x47, 0x3A), (0x8C, 0x6B, 0x49),
+        (0x6A, 0x4E, 0x35), (0x38, 0x29, 0x1D), (0xE8, 0xC0, 0x6A),
+    ],
+    "archaeology": [
+        (0x1A, 0x21, 0x29), (0x4E, 0x53, 0x43), (0x71, 0x65, 0x49),
+        (0x55, 0x4B, 0x36), (0x2F, 0x29, 0x1F), (0xE0, 0xA8, 0x4E),
+    ],
 }
 
 CATEGORY_LABELS = {
     "nature": "自然风光", "history": "历史古迹", "museum": "博物馆",
     "landmark": "城市地标", "religion": "宗教场所",
     "ancient-town": "古镇村落", "theme-park": "主题乐园",
+    "palace": "宫殿城堡", "archaeology": "考古遗址",
 }
 
 FONT_STACK = "'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif"
@@ -326,6 +335,68 @@ def scene_theme_park(r, c):
     return "\n  ".join(out)
 
 
+def scene_palace(r, c):
+    """宫殿城堡: 台基 + 两翼 + 中央主殿带穹顶 + 窗列 + 台阶。
+
+    整组建筑压在 y 380 以下 —— 上面的标题面板是 162~350, 越过就会被挡住。
+    """
+    dome_apex, dome_base = 380.0, 474.0
+    block_top, base_top = 550.0, 620.0
+    out = [f'<rect x="70" y="{f(base_top)}" width="{W - 140}" height="22" fill="{c[3]}"/>']
+    out.append(f'<rect x="104" y="{f(base_top + 22)}" width="{W - 208}" height="{f(H - base_top - 22)}" fill="{c[4]}"/>')
+    # 两翼
+    for x0, w in ((172.0, 250.0), (778.0, 250.0)):
+        out.append(f'<rect x="{f(x0)}" y="556" width="{f(w)}" height="{f(base_top - 556)}" fill="{c[2]}"/>')
+        out.append(f'<polygon points="{f(x0 - 20)},556 {f(x0 + w / 2)},502 {f(x0 + w + 20)},556" fill="{c[3]}"/>')
+        for k in range(3):
+            wx = x0 + 34 + k * 86
+            out.append(f'<rect x="{f(wx)}" y="568" width="40" height="44" rx="19" fill="{c[4]}" opacity="0.75"/>')
+    # 中央主殿
+    out.append(f'<rect x="424" y="{f(block_top)}" width="352" height="{f(base_top - block_top)}" fill="{c[2]}"/>')
+    for k in range(3):
+        wx = 470 + k * 96
+        out.append(f'<rect x="{f(wx)}" y="562" width="52" height="46" rx="21" fill="{c[4]}" opacity="0.7"/>')
+    out.append(f'<rect x="462" y="{f(dome_base)}" width="276" height="{f(block_top - dome_base)}" fill="{c[3]}"/>')
+    out.append(f'<path d="M506,{f(dome_base)} A94,94 0 0 1 694,{f(dome_base)} Z" fill="{c[2]}"/>')
+    out.append(f'<rect x="{f(W / 2 - 20)}" y="{f(dome_apex + 16)}" width="40" height="12" fill="{c[5]}" opacity="0.8"/>')
+    # 台阶
+    for k in range(3):
+        out.append(f'<rect x="{f(500 - k * 34)}" y="{f(base_top + 22 + k * 15)}" width="{f(200 + k * 68)}" height="15" fill="{c[4]}" opacity="0.85"/>')
+    out.append(f'<rect x="0" y="{f(base_top)}" width="{W}" height="4" fill="{c[5]}" opacity="0.4"/>')
+    return "\n  ".join(out)
+
+
+def scene_ruins(r, c):
+    """考古遗址: 阶梯台 + 残柱 + 断梁。"""
+    out = []
+    # 左侧: 阶梯台
+    base_y = 656.0
+    tiers = 5
+    for k in range(tiers):
+        tw = 430 - k * 68
+        ty = base_y - (k + 1) * 46
+        out.append(f'<rect x="{f(196 + k * 34)}" y="{f(ty)}" width="{f(tw)}" height="46" fill="{c[3] if k % 2 else c[2]}"/>')
+    out.append(f'<rect x="{f(196 + (tiers - 1) * 34 + 12)}" y="{f(base_y - tiers * 46 - 34)}" width="74" height="34" fill="{c[4]}" opacity="0.9"/>')
+    # 右侧: 残柱, 高度不一, 其中两根顶着一段残梁
+    tops = []
+    for k, cx in enumerate((760.0, 866.0, 972.0, 1078.0)):
+        col_h = 150 + 96 * r(k + 6)
+        top = base_y - col_h
+        tops.append(top)
+        out.append(f'<rect x="{f(cx - 27)}" y="{f(top)}" width="54" height="{f(col_h)}" fill="{c[2]}"/>')
+        out.append(f'<rect x="{f(cx - 36)}" y="{f(top)}" width="72" height="17" fill="{c[3]}"/>')
+        out.append(f'<rect x="{f(cx - 36)}" y="{f(base_y - 17)}" width="72" height="17" fill="{c[3]}"/>')
+    out.append(f'<rect x="733" y="{f(tops[0] - 26)}" width="160" height="26" fill="{c[3]}" opacity="0.92"/>')
+    out.append(f'<rect x="939" y="{f(tops[2] - 26)}" width="160" height="26" fill="{c[3]}" opacity="0.92"/>')
+    # 地面与散落石块
+    out.append(f'<rect x="0" y="{f(base_y)}" width="{W}" height="{f(H - base_y)}" fill="{c[4]}"/>')
+    for k in range(5):
+        bx = 120 + 210 * k + 60 * r(k + 21)
+        out.append(f'<rect x="{f(bx)}" y="{f(base_y - 20 - 8 * r(k + 31))}" width="{f(30 + 40 * r(k + 41))}" height="20" rx="5" fill="{c[3]}" opacity="0.7"/>')
+    out.append(f'<rect x="0" y="{f(base_y - 3)}" width="{W}" height="3" fill="{c[5]}" opacity="0.25"/>')
+    return "\n  ".join(out)
+
+
 SCENES = {
     "nature": scene_nature,
     "history": scene_history,
@@ -334,6 +405,8 @@ SCENES = {
     "religion": scene_religion,
     "ancient-town": scene_ancient_town,
     "theme-park": scene_theme_park,
+    "palace": scene_palace,
+    "archaeology": scene_ruins,
 }
 
 
@@ -401,6 +474,15 @@ ON CONFLICT (attraction_id, url) DO UPDATE SET
     credit  = EXCLUDED.credit,
     license = EXCLUDED.license,
     sort    = EXCLUDED.sort;
+
+-- 列表卡片的封面就是这张 sort = 0 的图。放在这里同步, 免得 attraction.cover_image
+-- 和 attraction_image 指向两张不同的图(seed.sql 的 DO UPDATE 不碰 cover_image)。
+UPDATE attraction a
+SET cover_image = i.url
+FROM attraction_image i
+WHERE i.attraction_id = a.id
+  AND i.sort = 0
+  AND a.cover_image IS DISTINCT FROM i.url;
 
 COMMIT;
 '''

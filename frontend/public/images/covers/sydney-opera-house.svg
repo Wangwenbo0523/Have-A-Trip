@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="悉尼歌剧院">
+  <title>悉尼歌剧院</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#16172a"/>
+      <stop offset="1" stop-color="#393152"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <rect x="-20.0" y="533.6" width="150.8" height="126.4" fill="#201c33"/>
+  <rect x="-6.0" y="549.6" width="122.8" height="9" fill="#f48841" opacity="0.3"/>
+  <rect x="-6.0" y="607.6" width="122.8" height="9" fill="#f48841" opacity="0.3"/>
+  <rect x="156.8" y="489.7" width="110.1" height="170.3" fill="#201c33"/>
+  <rect x="292.9" y="469.3" width="93.5" height="190.7" fill="#201c33"/>
+  <rect x="306.9" y="601.3" width="65.5" height="9" fill="#f48841" opacity="0.3"/>
+  <rect x="412.4" y="420.7" width="94.2" height="239.3" fill="#201c33"/>
+  <rect x="426.4" y="494.7" width="66.2" height="9" fill="#f48841" opacity="0.3"/>
+  <rect x="532.6" y="389.3" width="154.1" height="270.7" fill="#201c33"/>
+  <rect x="546.6" y="579.3" width="126.1" height="9" fill="#f48841" opacity="0.3"/>
+  <rect x="712.7" y="492.9" width="99.6" height="167.1" fill="#201c33"/>
+  <rect x="726.7" y="508.9" width="71.6" height="9" fill="#f48841" opacity="0.3"/>
+  <rect x="838.3" y="542.3" width="109.0" height="117.7" fill="#201c33"/>
+  <rect x="852.3" y="558.3" width="81.0" height="9" fill="#f48841" opacity="0.3"/>
+  <rect x="852.3" y="616.3" width="81.0" height="9" fill="#f48841" opacity="0.3"/>
+  <rect x="973.3" y="532.1" width="145.4" height="127.9" fill="#201c33"/>
+  <rect x="1144.8" y="514.0" width="159.9" height="146.0" fill="#201c33"/>
+  <rect x="1158.8" y="530.0" width="131.9" height="9" fill="#f48841" opacity="0.3"/>
+  <rect x="1158.8" y="588.0" width="131.9" height="9" fill="#f48841" opacity="0.3"/>
+  <rect x="528.1" y="442" width="30" height="218.0" fill="#2c2644"/>
+  <circle cx="543.1" cy="442" r="40" fill="#2c2644"/>
+  <circle cx="543.1" cy="442" r="40" fill="#f48841" opacity="0.22"/>
+  <rect x="540.1" y="376" width="6" height="30" fill="#2c2644"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#f48841" letter-spacing="7">城市地标</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">悉尼歌剧院</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

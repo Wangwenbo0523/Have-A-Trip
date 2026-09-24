@@ -1,6 +1,6 @@
 # Have-A-Trip · 景点大全
 
-一个以「景点档案 + 推荐」为核心的旅游应用。**只做景点介绍、检索与推荐——不做地图，不做定位。**
+一个以「景点档案 + 推荐」为核心的旅游应用。**只做景点介绍、旅游方案、检索与推荐——不做地图，不做定位。**
 
 前端是 React 单页应用，后端是 FastAPI，数据在 PostgreSQL，推荐结果由离线任务（RecBole）批量算好写回。
 没有地图 SDK，没有地理围栏，没有轨迹上报。
@@ -9,11 +9,11 @@
 
 | 模块 | 状态 | 说明 |
 |---|---|---|
-| `db/` | ✅ | 9 张表 + 视图 + 触发器，幂等可重复执行；50 个景点、19 个标签 |
+| `db/` | ✅ | 11 张表 + 视图 + 触发器，幂等可重复执行；90 个景点、31 个标签、90 个旅游方案 |
 | `backend/` | ✅ | 景点列表/详情/搜索、分类标签、来源与许可、行为埋点、推荐接口；65 用例通过 |
-| `frontend/` | ✅ | 首页、全部景点、分类页、详情页、搜索、数据来源与许可页、错误态；28 用例通过 |
+| `frontend/` | ✅ | 首页、全部景点（含等级筛选）、分类页、详情页（含旅游方案）、搜索、数据来源与许可页、错误态；37 用例通过 |
 | `recsys/` | ✅ | 三条脚本（导出 → 训练 → 回写）端到端跑通，BPR 离线结果已写回 `rec_result` |
-| 数据量 | ✅ | 50 个景点 / 19 个标签，覆盖 21 个省级行政区，全部自采（`license` 为 MIT） |
+| 数据量 | ✅ | 90 个景点 / 31 个标签，中国境内 50 + 境外 40（覆盖六大洲 30 个国家），全部自采（`license` 为 MIT）；图片为程序化自绘 |
 
 施工顺序、依赖关系与每步验收标准见 **[`docs/PLAN.md`](docs/PLAN.md)（施工计划表）**。
 
@@ -87,13 +87,17 @@ npm run start                 # /api 由 vite 代理到 :8000, 本地免跨域
 | 方法 | 路径 | 说明 |
 |---|---|---|
 | GET | `/healthz` | 健康检查（无库时返回 `degraded` 而不是 500） |
-| GET | `/attractions` | 列表：`page` `size` `category` `city` `tag` `q` `sort=rating\|newest\|name` |
-| GET | `/attractions/{id_or_slug}` | 详情（含图集、标签、来源与许可） |
+| GET | `/attractions` | 列表：`page` `size` `category` `city` `tag` `grade` `q` `sort=rating\|newest\|name` |
+| GET | `/attractions/{id_or_slug}` | 详情（含旅游方案、图集、标签、来源与许可） |
 | GET | `/attractions/{id_or_slug}/similar` | 相似景点（内容相似度，不需要用户行为） |
 | GET | `/categories`、`/tags` | 分类与标签（只统计已发布景点） |
 | GET | `/sources` | 数据来源与许可：从 `attraction` / `attraction_image` 聚合，声明页据此渲染 |
 | POST | `/events` | 行为埋点：`view` / `favorite` / `rate` / `share` |
 | GET | `/recommendations` | 为你推荐，`user_id` 与 `device_id` 二选一 |
+
+`grade` 取值 `5A` / `4A` / `3A` / `heritage`。前三个是中国景区的质量等级（GB/T 17775），
+`heritage` 表示「已列入 UNESCO 世界遗产名录」—— 世界遗产没有 A 级，所以它与 A 级各占一个取值，
+不合并成一条刻度。`a_level` / `heritage` 为空的景点表示该项**未核实**，不是「没有等级」。
 
 `status != published` 的景点不会出现在任何接口与推荐里。`/recommendations` 保证非空：
 离线结果 → 内容相似度 → 热门兜底，三级降级，每条都带 `reason`。

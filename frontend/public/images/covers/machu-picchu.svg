@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="马丘比丘">
+  <title>马丘比丘</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#181e29"/>
+      <stop offset="1" stop-color="#4b5341"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <rect x="196.0" y="610.0" width="430.0" height="46" fill="#716944"/>
+  <rect x="230.0" y="564.0" width="362.0" height="46" fill="#554e32"/>
+  <rect x="264.0" y="518.0" width="294.0" height="46" fill="#716944"/>
+  <rect x="298.0" y="472.0" width="226.0" height="46" fill="#554e32"/>
+  <rect x="332.0" y="426.0" width="158.0" height="46" fill="#716944"/>
+  <rect x="344.0" y="392.0" width="74" height="34" fill="#2f2a1d" opacity="0.9"/>
+  <rect x="733.0" y="438.2" width="54" height="217.8" fill="#716944"/>
+  <rect x="724.0" y="438.2" width="72" height="17" fill="#554e32"/>
+  <rect x="724.0" y="639.0" width="72" height="17" fill="#554e32"/>
+  <rect x="839.0" y="497.0" width="54" height="159.0" fill="#716944"/>
+  <rect x="830.0" y="497.0" width="72" height="17" fill="#554e32"/>
+  <rect x="830.0" y="639.0" width="72" height="17" fill="#554e32"/>
+  <rect x="945.0" y="488.3" width="54" height="167.7" fill="#716944"/>
+  <rect x="936.0" y="488.3" width="72" height="17" fill="#554e32"/>
+  <rect x="936.0" y="639.0" width="72" height="17" fill="#554e32"/>
+  <rect x="1051.0" y="475.5" width="54" height="180.5" fill="#716944"/>
+  <rect x="1042.0" y="475.5" width="72" height="17" fill="#554e32"/>
+  <rect x="1042.0" y="639.0" width="72" height="17" fill="#554e32"/>
+  <rect x="733" y="412.2" width="160" height="26" fill="#554e32" opacity="0.92"/>
+  <rect x="939" y="462.3" width="160" height="26" fill="#554e32" opacity="0.92"/>
+  <rect x="0" y="656.0" width="1200" height="144.0" fill="#2f2a1d"/>
+  <rect x="157.4" y="628.6" width="42.7" height="20" rx="5" fill="#554e32" opacity="0.7"/>
+  <rect x="384.6" y="630.3" width="68.0" height="20" rx="5" fill="#554e32" opacity="0.7"/>
+  <rect x="579.5" y="629.9" width="67.6" height="20" rx="5" fill="#554e32" opacity="0.7"/>
+  <rect x="761.3" y="631.0" width="45.7" height="20" rx="5" fill="#554e32" opacity="0.7"/>
+  <rect x="1012.0" y="630.3" width="50.7" height="20" rx="5" fill="#554e32" opacity="0.7"/>
+  <rect x="0" y="653.0" width="1200" height="3" fill="#e0b43b" opacity="0.25"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0b43b" letter-spacing="7">考古遗址</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">马丘比丘</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

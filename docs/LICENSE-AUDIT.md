@@ -64,7 +64,7 @@ ol  ->  ol-mapbox-style  ->  @mapbox/mapbox-gl-style-spec  ->  { @mapbox/jsonlin
 |---|---|---|---|
 | OpenStreetMap（`tourism=attraction`） | ODbL 1.0 | 署名 + **数据库层相同方式共享** | 慎用。闭源前必须评估 |
 | Wikipedia / Wikivoyage 文本 | CC BY-SA 4.0 | 署名 + 相同方式共享 | 慎用 |
-| `tuansuwu/china-5a-scenic-areas`（373 个 5A 景区） | CC-BY-SA-4.0 | 署名 + 相同方式共享 | 慎用 |
+| `tuansuwu/china-5a-scenic-areas`（373 个 5A 景区） | CC-BY-SA-4.0 | 署名 + 相同方式共享 | **不用**。v2.0 评估过：这一份正好覆盖我们要的等级字段，但 share-alike 会顺着数据传染，与「将来可闭源」冲突，宁可把 `a_level` 留空也不引入 |
 | `Iter-X/open-poi-datasets` | **MIT** | 保留版权声明 | **可用** |
 | `Cathy-wang132/travel-guide-sharing-dataset` | 无 | — | **不可用** |
 | `peterpan23/SenTARev-`（景点评论情感） | 无 | — | **不可用** |
@@ -74,12 +74,14 @@ ol  ->  ol-mapbox-style  ->  @mapbox/mapbox-gl-style-spec  ->  { @mapbox/jsonlin
 
 | 项 | 现状 |
 |---|---|
-| 种子数据 | 50 个景点、19 个标签、175 条标签关联，全部自采 |
-| `source` | `Have-A-Trip 自采（公开事实信息）`（50 / 50 条） |
-| `license` | `MIT`（50 / 50 条） |
-| 第三方数据集 | **一个都没有** —— 本节表格里那些源，一期全部没用 |
-| 图片 | `attraction_image` **0 行** —— 没有可靠出处的图不进仓库 |
-| share-alike | **无**。ODbL / CC BY-SA 义务目前不沾这个库，也没有可传染的衍生物 |
+| 种子数据 | 90 个景点（中国境内 50 + 境外 40，覆盖六大洲 30 个国家）、31 个标签、362 条标签关联，全部自采 |
+| 旅游方案 | 90 个方案、307 条步骤，同样是自采的行程建议（不是官方或旅行社线路） |
+| 等级字段 | `a_level` 40 条、`heritage` 59 条，**逐条查证后才填**，查不到就留空 |
+| `source` | `Have-A-Trip 自采（公开事实信息）`（90 / 90 条） |
+| `license` | `MIT`（90 / 90 条） |
+| 第三方数据集 | **一个都没有** —— 本节表格里那些源，至今一个没用；v2.0 还主动放弃了一份 CC BY-SA 的 5A 名录（见上表） |
+| 图片 | `attraction_image` 90 行，全部是 `scripts/make_attraction_covers.py` 自绘的 SVG |
+| share-alike | **无**。ODbL / CC BY-SA 义务不沾这个库，也没有可传染的衍生物 |
 
 聚合口径与查询语句在 `db/README.md` 的「数据来源清单」一节。声明页 `/credits` 已经上线，
 它读 `GET /api/v1/sources`，而后端每次都是从 `attraction` / `attraction_image` 现算的 ——
@@ -125,7 +127,7 @@ vendor 进来的 `frontend/LICENSE`（`Copyright (c) 2019 Zero To Mastery`）原
 | `frontend/src/img/BaganMyanmar.jpg`（675 KB，页头背景） | 上游基底 `zero-to-mastery/travel-guide` 里的实景照片 | **无从查证**。MIT 覆盖的是仓库作者的贡献，不等于贡献者有权授权别人的摄影作品 | **已删除**（2026-09-25，S8）。页头背景改用纯 CSS 渐变，顺带省掉首屏 675 KB |
 | `frontend/public/favicon.ico` | **自绘**，无第三方素材 | MIT（与仓库同许可） | **已换掉**（2026-09-25）。上游的 `earth.ico`（225 KB）与 `favicon.ico` 出处无从查证，已删除；现由 `scripts/make_favicon.py` 用标准库程序化生成（7 档尺寸、8.5 KB），改常量重跑即可复现 |
 | `frontend/src/logo.svg` | 上游基底的 React 标志 | 零引用死资源 | 已删除（2026-09-25，S4） |
-| 景点配图（50 张，`frontend/public/images/covers/*.svg`） | **自绘**，由 `scripts/make_attraction_covers.py` 程序化生成 | MIT（与仓库同许可） | 原计划用 CC0 / 公有领域图库（2026-09-25）：**Wikimedia Commons 与 Openverse 在本机网络下不可达**（连接超时），Unsplash / Pixabay 用的是各自的专有许可而非 CC0，且对中国具体景点的覆盖很薄。于是改为自绘——出处就是仓库里的脚本。每条仍走 `attraction_image.credit` / `.license`（NOT NULL），声明页会聚合出来 |
+| 景点配图（90 张，`frontend/public/images/covers/*.svg`） | **自绘**，由 `scripts/make_attraction_covers.py` 程序化生成 | MIT（与仓库同许可） | 原计划用 CC0 / 公有领域图库（2026-09-25）：**Wikimedia Commons 与 Openverse 在本机网络下不可达**（连接超时），Unsplash / Pixabay 用的是各自的专有许可而非 CC0，且对中国具体景点的覆盖很薄。于是改为自绘——出处就是仓库里的脚本。每条仍走 `attraction_image.credit` / `.license`（NOT NULL），声明页会聚合出来 |
 
 ### 原则
 
@@ -147,7 +149,8 @@ vendor 进来的 `frontend/LICENSE`（`Copyright (c) 2019 Zero To Mastery`）原
 - [x] **贡献者 DCO 签核已启用**：`scripts/check_dco.py` + `.github/workflows/dco.yml` 逐个 commit 校验（2026-09-25）
 - [x] 图片资产已单独立节审查（见第五节），来源不明的那张已删除
 - [x] `public/` 下的占位图标已换成自绘（2026-09-25）：`scripts/make_favicon.py` 生成，上游 `earth.ico` 已删除
-- [x] 景点配图已落（2026-09-25）：50 张自绘封面，由 `scripts/make_attraction_covers.py` 生成；声明页显示「Have-A-Trip 自绘 · MIT · 50 张」
+- [x] 景点配图已落（2026-09-25）：90 张自绘封面，由 `scripts/make_attraction_covers.py` 生成；声明页显示「Have-A-Trip 自绘 · MIT · 90 张」
+- [x] 境外 40 个景点同样自采（v2.0），没有引入任何第三方数据集；评估过一份 CC BY-SA 4.0 的 5A 名录，因 share-alike 与闭源路线冲突而放弃
 - [x] 一期数据层已定案（2026-09-25，S7）：50 条全部自采、`license` 为 MIT，无第三方数据集，无图片
 - [ ] 接入新数据源或图片时，回来更新第三、第五节并逐条复核
 - [ ] 定期跑 `python scripts/license_gate.py --strict`

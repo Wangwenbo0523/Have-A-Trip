@@ -408,10 +408,10 @@ npm.cmd run dev                        # 手动过一遍: 首页 -> 分类 -> �
 
 | 项 | 结果 |
 |---|---|
-| 数据来源 | **全部自采**，没有引入任何第三方数据集。50 条的 `source` 都是「Have-A-Trip 自采（公开事实信息）」、`license` 为 `MIT`，因此**不存在 share-alike 传染到数据库**的问题 |
-| 内容规模 | 50 个景点覆盖 21 个省级行政区；7 个分类（自然 12 / 历史 10 / 博物馆 6 / 地标 6 / 古镇 6 / 宗教 5 / 乐园 5）、19 个标签、175 条标签关联 |
+| 数据来源 | **全部自采**，没有引入任何第三方数据集。90 条的 `source` 都是「Have-A-Trip 自采（公开事实信息）」、`license` 为 `MIT`，因此**不存在 share-alike 传染到数据库**的问题（S7 时 50 条，v2.0 扩到 90 条） |
+| 内容规模 | S7 时 50 个景点覆盖 21 个省级行政区；7 个分类（自然 12 / 历史 10 / 博物馆 6 / 地标 6 / 古镇 6 / 宗教 5 / 乐园 5）、19 个标签、175 条标签关联。**v2.0 扩到 90 个景点（境内 50 + 境外 40，六大洲 30 个国家）、9 个分类、31 个标签、362 条标签关联，并新增 90 个旅游方案 / 307 条步骤**；`a_level` 40 条、`heritage` 59 条，其余留空表示未核实 |
 | 幂等写法 | `seed.sql` 改成**声明式**：分类 / 标签 / 景点用 `ON CONFLICT (slug) DO UPDATE`，标签关联按 `source` 认领后删掉重建。旧版的 `DO NOTHING` 不会修好早期跑过种子的库 |
-| 不造假 | 坐标全 `NULL`、评分全 0、票价只在**确定免费**时写 `0`（5 条）、`attraction_image` 一条不插 |
+| 不造假 | 坐标全 `NULL`、评分全 0、票价只在**确定免费**时写 `0`（v2.0 为 9 条）、`attraction_image` 一条不插（v1.9 起改为自绘封面，v2.0 为 90 张）；旅游方案只给 `budget_level` 档次不给金额 |
 | CI | `db-schema.yml` 把口径变成断言：行数、无坐标、无评分、无「不确定免费」的票价、无图片、无孤立标签；另加一步**先改坏再重跑**，证明种子确实会自愈 |
 | 来源清单 | `db/README.md` 新增「数据来源清单」一节：给出聚合 SQL 与当前结果，S5 的声明页从库里聚合，不在前端写死 |
 
@@ -507,4 +507,5 @@ npm.cmd run dev                        # 手动过一遍: 首页 -> 分类 -> �
 | 2026-09-25 | v1.6 | S5 完成：`Credits.tsx` 重写成数据来源与许可声明页，数据由新增的 `GET /api/v1/sources` 从库里现算；share-alike 来源未登记修改状态会在页面标红。全部计划步骤 S0–S8 至此收口 |
 | 2026-09-25 | v1.7 | 收尾：`docs/DEPLOY.md` 检查清单补 `/api/v1/sources` 的 `needs_attention` 必须为 `false`；按既定顺序最后安装 `ecc-universal`（全局 npm `ecc-universal@2.2.1`，`ecc` CLI 可用；Codex 侧的 skill 仍由 `ecc@ecc` 插件提供，未重复落一份到 `~/.codex/`） |
 | 2026-09-25 | v1.9 | 景点配图落地：新增 `scripts/make_attraction_covers.py` 按 slug 确定性生成 50 张自绘 SVG 封面（共 134 KB）与 `db/seed/images.sql`；每条 `attraction_image` 带 `credit` = Have-A-Trip 自绘、`license` = MIT。第三方图库路线（Wikimedia Commons / Openverse）实测本机不可达，故改为自绘，理由记在 `docs/LICENSE-AUDIT.md` 第五节。`db-schema.yml` 加跑 images.sql 与三条图片断言，`license-gate` 加 `--check` 闸 |
+| 2026-09-25 | v2.0 | 世界景点与旅游方案：`attraction` 增 `a_level` / `heritage` 两列（各带 CHECK 与部分索引），新增 `attraction_plan` / `attraction_plan_step` 两张表（表数 9 → 11）；种子扩到 90 个景点（境内 50 + 境外 40，覆盖六大洲 30 个国家）、9 个分类、31 个标签、90 个方案 / 307 条步骤，配图 90 张自绘 SVG；`/attractions` 加 `grade=5A\|4A\|3A\|heritage` 筛选（A 级与世界遗产是两套刻度，各占一个取值），详情返回 `plans`；前端加等级徽章、等级筛选与「旅游方案」段，票价改成按国别渲染（不再硬编码人民币）；`db-schema.yml` 断言同步并新增等级 / 方案口径与重跑自愈检查 |
 | 2026-09-25 | v1.8 | 占位图标换成自绘：新增 `scripts/make_favicon.py`（标准库程序化生成 7 档尺寸），`public/earth.ico`（225 KB，出处无从查证）删除，图标落到约定路径 `public/favicon.ico`（8.5 KB）；`index.html`、`manifest.json`、`Credits.tsx`、`docs/LICENSE-AUDIT.md` 同步；`license-gate` 加一道 `make_favicon.py --check` |

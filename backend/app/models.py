@@ -35,6 +35,11 @@ BigIntPK = BigInteger().with_variant(Integer, "sqlite")
 
 STATUSES = ("draft", "published", "archived")
 EVENT_TYPES = ("view", "favorite", "rate", "share")
+# 景区质量等级(GB/T 17775), 只适用于中国大陆景区
+A_LEVELS = ("5A", "4A", "3A")
+# 世界遗产类别
+HERITAGE_KINDS = ("cultural", "natural", "mixed")
+BUDGET_LEVELS = ("free", "low", "mid", "high")
 
 # 景点-标签多对多。用 Table 而不是模型类, 因为这张表只承载关联关系。
 attraction_tag = Table(
@@ -84,6 +89,13 @@ class Attraction(Base):
         CheckConstraint(
             "status IN ('draft', 'published', 'archived')", name="attraction_status_check"
         ),
+        CheckConstraint(
+            "a_level IS NULL OR a_level IN ('5A', '4A', '3A')", name="attraction_a_level_check"
+        ),
+        CheckConstraint(
+            "heritage IS NULL OR heritage IN ('cultural', 'natural', 'mixed')",
+            name="attraction_heritage_check",
+        ),
         Index("idx_attraction_status", "status"),
         Index("idx_attraction_category", "category_id"),
         Index("idx_attraction_city", "city"),
@@ -102,6 +114,10 @@ class Attraction(Base):
     province: Mapped[str | None] = mapped_column(Text)
     city: Mapped[str | None] = mapped_column(Text)
     address: Mapped[str | None] = mapped_column(Text)
+    # 景区质量等级, 只对中国大陆景区有值。留空 = 未核实, 不是「没有等级」。
+    a_level: Mapped[str | None] = mapped_column(Text)
+    # 世界遗产类别, 只对列入 UNESCO 名录的景点有值。境外景点的「等级」看这个。
+    heritage: Mapped[str | None] = mapped_column(Text)
     # 只用于同城聚合等静态计算。本项目不做地图与定位, 这两个字段不参与渲染。
     lat: Mapped[float | None] = mapped_column(Float)
     lon: Mapped[float | None] = mapped_column(Float)
@@ -131,6 +147,12 @@ class Attraction(Base):
         order_by="AttractionImage.sort",
         cascade="all, delete-orphan",
     )
+    plans: Mapped[list[AttractionPlan]] = relationship(
+        back_populates="attraction",
+        lazy="selectin",
+        order_by="AttractionPlan.id",
+        cascade="all, delete-orphan",
+    )
 
 
 class AttractionImage(Base):
@@ -152,6 +174,75 @@ class AttractionImage(Base):
     )
 
     attraction: Mapped[Attraction] = relationship(back_populates="images")
+
+
+class AttractionPlan(Base):
+    """一个景点的游玩方案。步骤在 AttractionPlanStep 里, 按 (day_no, sort) 排序。"""
+
+    __tablename__ = "attraction_plan"
+    __table_args__ = (
+        CheckConstraint("days >= 1 AND days <= 30", name="plan_days_check"),
+        CheckConstraint(
+            "budget_level IS NULL OR budget_level IN ('free', 'low', 'mid', 'high')",
+            name="plan_budget_check",
+        ),
+        Index("idx_plan_attraction", "attraction_id"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    attraction_id: Mapped[int] = mapped_column(
+        ForeignKey("attraction.id", ondelete="CASCADE"), nullable=False
+    )
+    slug: Mapped[str] = mapped_column(Text, unique=True, nullable=False)
+    title: Mapped[str] = mapped_column(Text, nullable=False)
+    days: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    budget_level: Mapped[str | None] = mapped_column(Text)
+    best_for: Mapped[str | None] = mapped_column(Text)
+    summary: Mapped[str] = mapped_column(Text, nullable=False)
+    # 与景点一样: 来源与许可必填
+    source: Mapped[str] = mapped_column(Text, nullable=False)
+    license: Mapped[str] = mapped_column(Text, nullable=False)
+    source_url: Mapped[str | None] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+
+    attraction: Mapped[Attraction] = relationship(back_populates="plans")
+    steps: Mapped[list[AttractionPlanStep]] = relationship(
+        back_populates="plan",
+        lazy="selectin",
+        order_by="(AttractionPlanStep.day_no, AttractionPlanStep.sort)",
+        cascade="all, delete-orphan",
+    )
+
+
+class AttractionPlanStep(Base):
+    __tablename__ = "attraction_plan_step"
+    __table_args__ = (
+        CheckConstraint("day_no >= 1", name="plan_step_day_check"),
+        CheckConstraint(
+            "duration_hours IS NULL OR duration_hours >= 0", name="plan_step_hours_check"
+        ),
+        # 同一天里 sort 不能重复, 否则步骤顺序就没有确定含义了
+        UniqueConstraint("plan_id", "day_no", "sort", name="uq_plan_step_order"),
+        Index("idx_plan_step_plan", "plan_id", "day_no", "sort"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    plan_id: Mapped[int] = mapped_column(
+        ForeignKey("attraction_plan.id", ondelete="CASCADE"), nullable=False
+    )
+    day_no: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    sort: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    title: Mapped[str] = mapped_column(Text, nullable=False)
+    detail: Mapped[str] = mapped_column(Text, nullable=False)
+    duration_hours: Mapped[Decimal | None] = mapped_column(Numeric(4, 1))
+    tip: Mapped[str | None] = mapped_column(Text)
+
+    plan: Mapped[AttractionPlan] = relationship(back_populates="steps")
 
 
 class AppUser(Base):

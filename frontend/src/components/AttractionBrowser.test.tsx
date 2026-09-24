@@ -29,6 +29,9 @@ const item: Attraction = {
   rating_count: 128,
   ticket_price: 0,
   suggested_hours: 4,
+  country_code: "CN",
+  a_level: null,
+  heritage: null,
 }
 
 const page = (items: Attraction[], total = items.length) => ({
@@ -102,6 +105,37 @@ describe("AttractionBrowser", () => {
       },
       { timeout: 2000 },
     )
+  })
+
+  it("等级筛选会带进请求参数, 并回到第一页", async () => {
+    mockedFetch.mockResolvedValue(page([item]))
+    renderBrowser()
+    await screen.findByRole("heading", { name: "西湖" })
+
+    await userEvent.click(screen.getByRole("button", { name: "世界遗产" }))
+    await waitFor(() => {
+      expect(mockedFetch).toHaveBeenCalledWith(
+        expect.objectContaining({ grade: "heritage", page: 1 }),
+      )
+    })
+
+    // 选回「全部」时不带 grade 参数
+    await userEvent.click(screen.getByRole("button", { name: "全部" }))
+    await waitFor(() => {
+      expect(mockedFetch).toHaveBeenCalledWith(
+        expect.objectContaining({ grade: undefined }),
+      )
+    })
+  })
+
+  it("等级下没有景点时给的是筛选空态, 不是「去跑种子脚本」", async () => {
+    mockedFetch.mockResolvedValue(page([item]))
+    renderBrowser()
+    await screen.findByRole("heading", { name: "西湖" })
+
+    mockedFetch.mockResolvedValue(page([]))
+    await userEvent.click(screen.getByRole("button", { name: "3A" }))
+    expect(await screen.findByText("这个等级下暂时还没有已发布的景点")).toBeInTheDocument()
   })
 
   it("多页时翻页按钮按边界禁用", async () => {

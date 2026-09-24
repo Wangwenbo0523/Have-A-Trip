@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="班夫国家公园">
+  <title>班夫国家公园</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#192a3a"/>
+      <stop offset="1" stop-color="#3c5c59"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="698.5" cy="436.4" r="48.4" fill="#f45c28" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,445.9 216.0,542.0 344.0,451.5 472.0,543.1 600.0,430.8 728.0,539.0 856.0,416.3 984.0,536.1 1112.0,458.9 1240.0,544.6 1368.0,428.2 1496.0,538.4 1240.0,800.0" fill="#2a4450"/>
+  <polygon points="-40.0,800.0 120.0,514.9 280.0,603.8 440.0,541.9 600.0,609.2 760.0,536.0 920.0,608.0 1080.0,526.6 1240.0,606.1 1400.0,551.6 1560.0,611.1 1240.0,800.0" fill="#203642"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#15252f"/>
+  <polygon points="-40.0,800.0 66.7,625.5 173.3,685.1 280.0,617.7 386.7,683.5 493.3,638.4 600.0,687.7 706.7,608.6 813.3,681.7 920.0,620.1 1026.7,684.0 1133.3,627.0 1240.0,685.4 1346.7,616.9 1453.3,683.4 1240.0,800.0" fill="#15252f" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#f45c28" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#f45c28" letter-spacing="7">自然风光</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">班夫国家公园</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

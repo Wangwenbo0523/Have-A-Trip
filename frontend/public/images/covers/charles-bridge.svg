@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="查理大桥">
+  <title>查理大桥</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#14192a"/>
+      <stop offset="1" stop-color="#312e52"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <rect x="-20.0" y="561.1" width="76.9" height="98.9" fill="#1a1a33"/>
+  <rect x="82.9" y="488.9" width="113.0" height="171.1" fill="#1a1a33"/>
+  <rect x="96.9" y="504.9" width="85.0" height="9" fill="#f45d30" opacity="0.3"/>
+  <rect x="96.9" y="562.9" width="85.0" height="9" fill="#f45d30" opacity="0.3"/>
+  <rect x="221.9" y="574.4" width="80.9" height="85.6" fill="#1a1a33"/>
+  <rect x="328.7" y="402.7" width="140.0" height="257.3" fill="#1a1a33"/>
+  <rect x="342.7" y="476.7" width="112.0" height="9" fill="#f45d30" opacity="0.3"/>
+  <rect x="342.7" y="592.7" width="112.0" height="9" fill="#f45d30" opacity="0.3"/>
+  <rect x="494.7" y="413.6" width="128.1" height="246.4" fill="#1a1a33"/>
+  <rect x="508.7" y="429.6" width="100.1" height="9" fill="#f45d30" opacity="0.3"/>
+  <rect x="508.7" y="487.6" width="100.1" height="9" fill="#f45d30" opacity="0.3"/>
+  <rect x="648.8" y="448.9" width="96.7" height="211.1" fill="#1a1a33"/>
+  <rect x="662.8" y="580.9" width="68.7" height="9" fill="#f45d30" opacity="0.3"/>
+  <rect x="771.6" y="461.5" width="77.2" height="198.5" fill="#1a1a33"/>
+  <rect x="785.6" y="477.5" width="49.2" height="9" fill="#f45d30" opacity="0.3"/>
+  <rect x="785.6" y="535.5" width="49.2" height="9" fill="#f45d30" opacity="0.3"/>
+  <rect x="785.6" y="593.5" width="49.2" height="9" fill="#f45d30" opacity="0.3"/>
+  <rect x="874.8" y="432.5" width="153.7" height="227.5" fill="#1a1a33"/>
+  <rect x="888.8" y="448.5" width="125.7" height="9" fill="#f45d30" opacity="0.3"/>
+  <rect x="888.8" y="506.5" width="125.7" height="9" fill="#f45d30" opacity="0.3"/>
+  <rect x="1054.6" y="454.4" width="118.4" height="205.6" fill="#1a1a33"/>
+  <rect x="1068.6" y="470.4" width="90.4" height="9" fill="#f45d30" opacity="0.3"/>
+  <rect x="1068.6" y="528.4" width="90.4" height="9" fill="#f45d30" opacity="0.3"/>
+  <rect x="1068.6" y="586.4" width="90.4" height="9" fill="#f45d30" opacity="0.3"/>
+  <rect x="1198.9" y="450.5" width="89.2" height="209.5" fill="#1a1a33"/>
+  <rect x="1212.9" y="524.5" width="61.2" height="9" fill="#f45d30" opacity="0.3"/>
+  <rect x="572.1" y="442" width="30" height="218.0" fill="#242444"/>
+  <circle cx="587.1" cy="442" r="40" fill="#242444"/>
+  <circle cx="587.1" cy="442" r="40" fill="#f45d30" opacity="0.22"/>
+  <rect x="584.1" y="376" width="6" height="30" fill="#242444"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#f45d30" letter-spacing="7">城市地标</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">查理大桥</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

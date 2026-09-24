@@ -31,6 +31,45 @@ export interface AttractionImage {
 }
 
 /** 列表 / 卡片用的字段。后端刻意不含 description, 列表页不需要那段长文本。 */
+/**
+ * 景区质量等级(GB/T 17775), 只对中国大陆景区有值。
+ * 世界遗产没有 A 级, 所以它不在这条刻度上 —— 见 GradeFilter。
+ */
+export type ALevel = "5A" | "4A" | "3A"
+
+/** UNESCO 世界遗产类别。 */
+export type Heritage = "cultural" | "natural" | "mixed"
+
+/**
+ * 列表页的等级筛选。5A/4A/3A 是中国景区的质量等级, heritage 表示「已列入 UNESCO
+ * 世界遗产名录」—— 两套刻度, 各占一个取值, 不合并成一条线。
+ */
+export type GradeFilter = ALevel | "heritage"
+
+/** 旅游方案里的一步。day_no 从 1 起, 同一天内按 sort 升序。 */
+export interface PlanStep {
+  day_no: number
+  sort: number
+  title: string
+  detail: string
+  duration_hours: number | null
+  tip: string | null
+}
+
+/** 方案的花费档次。只给档次不给金额 —— 具体价格是易变信息。 */
+export type PlanBudgetLevel = "free" | "low" | "mid" | "high"
+
+/** 一个景点的游玩方案, 内容是本仓库自采的行程建议, 不是官方线路。 */
+export interface Plan {
+  slug: string
+  title: string
+  days: number
+  budget_level: PlanBudgetLevel | null
+  best_for: string | null
+  summary: string
+  steps: PlanStep[]
+}
+
 export interface Attraction {
   id: number
   slug: string
@@ -46,6 +85,12 @@ export interface Attraction {
   rating_count: number
   ticket_price: number | null
   suggested_hours: number | null
+  /** 卡片按国别决定票价怎么写: 境内是人民币, 境外库里没有币种字段 */
+  country_code: string
+  /** 景区质量等级; null 表示未核实, 不是「无等级」 */
+  a_level: ALevel | null
+  /** 世界遗产类别; null 表示未核实 */
+  heritage: Heritage | null
 }
 
 export interface AttractionDetail extends Attraction {
@@ -57,6 +102,7 @@ export interface AttractionDetail extends Attraction {
   lon: number | null
   best_season: string | null
   images: AttractionImage[]
+  plans: Plan[]
   source: string
   license: string
   source_url: string | null
@@ -98,6 +144,8 @@ export interface PageQuery {
   tag?: string
   q?: string
   sort?: "rating" | "newest" | "name"
+  /** 等级筛选; 不传就是全部 */
+  grade?: GradeFilter
 }
 
 /** 数据来源的修改状态。unregistered 是告警态, 不是正常的第四种状态。 */

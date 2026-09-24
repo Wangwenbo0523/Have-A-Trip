@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="里约基督像">
+  <title>里约基督像</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#12142a"/>
+      <stop offset="1" stop-color="#352b52"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <rect x="-20.0" y="542.3" width="87.7" height="117.7" fill="#1c1833"/>
+  <rect x="-6.0" y="558.3" width="59.7" height="9" fill="#f47320" opacity="0.3"/>
+  <rect x="-6.0" y="616.3" width="59.7" height="9" fill="#f47320" opacity="0.3"/>
+  <rect x="93.7" y="438.0" width="151.6" height="222.0" fill="#1c1833"/>
+  <rect x="107.7" y="570.0" width="123.6" height="9" fill="#f47320" opacity="0.3"/>
+  <rect x="271.3" y="398.0" width="89.5" height="262.0" fill="#1c1833"/>
+  <rect x="285.3" y="414.0" width="61.5" height="9" fill="#f47320" opacity="0.3"/>
+  <rect x="285.3" y="472.0" width="61.5" height="9" fill="#f47320" opacity="0.3"/>
+  <rect x="285.3" y="530.0" width="61.5" height="9" fill="#f47320" opacity="0.3"/>
+  <rect x="386.8" y="405.8" width="122.7" height="254.2" fill="#1c1833"/>
+  <rect x="400.8" y="421.8" width="94.7" height="9" fill="#f47320" opacity="0.3"/>
+  <rect x="400.8" y="537.8" width="94.7" height="9" fill="#f47320" opacity="0.3"/>
+  <rect x="400.8" y="595.8" width="94.7" height="9" fill="#f47320" opacity="0.3"/>
+  <rect x="535.5" y="473.3" width="117.7" height="186.7" fill="#1c1833"/>
+  <rect x="549.5" y="489.3" width="89.7" height="9" fill="#f47320" opacity="0.3"/>
+  <rect x="549.5" y="605.3" width="89.7" height="9" fill="#f47320" opacity="0.3"/>
+  <rect x="679.2" y="553.3" width="152.3" height="106.7" fill="#1c1833"/>
+  <rect x="857.4" y="487.4" width="137.1" height="172.6" fill="#1c1833"/>
+  <rect x="871.4" y="503.4" width="109.1" height="9" fill="#f47320" opacity="0.3"/>
+  <rect x="1020.6" y="470.1" width="152.3" height="189.9" fill="#1c1833"/>
+  <rect x="1034.6" y="486.1" width="124.3" height="9" fill="#f47320" opacity="0.3"/>
+  <rect x="1034.6" y="602.1" width="124.3" height="9" fill="#f47320" opacity="0.3"/>
+  <rect x="1198.9" y="387.0" width="138.2" height="273.0" fill="#1c1833"/>
+  <rect x="1212.9" y="403.0" width="110.2" height="9" fill="#f47320" opacity="0.3"/>
+  <rect x="467.7" y="442" width="30" height="218.0" fill="#272144"/>
+  <circle cx="482.7" cy="442" r="40" fill="#272144"/>
+  <circle cx="482.7" cy="442" r="40" fill="#f47320" opacity="0.22"/>
+  <rect x="479.7" y="376" width="6" height="30" fill="#272144"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#f47320" letter-spacing="7">城市地标</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">里约基督像</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

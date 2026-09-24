@@ -1,0 +1,99 @@
+.planList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.plan {
+  padding: 18px 20px;
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  background: var(--panel-bg);
+}
+
+.plan__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.plan__title {
+  font-size: 1.1rem;
+}
+
+.plan__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.plan__meta li {
+  padding: 1px 10px;
+  border: 1px solid var(--panel-border);
+  border-radius: 999px;
+}
+
+.plan__summary {
+  margin-top: 10px;
+  font-size: 0.92rem;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.plan__day {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--panel-border);
+}
+
+.plan__dayTitle {
+  color: var(--accent);
+  font-size: 0.95rem;
+}
+
+.plan__steps {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  list-style: none;
+}
+
+.plan__step {
+  padding-left: 14px;
+  border-left: 2px solid var(--panel-border);
+}
+
+.plan__stepTitle {
+  font-size: 0.95rem;
+}
+
+.plan__duration {
+  margin-left: 8px;
+  padding: 1px 8px;
+  border: 1px solid var(--panel-border);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.plan__detail {
+  margin-top: 4px;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.plan__tip {
+  margin-top: 6px;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.plan__disclaimer {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}

@@ -63,11 +63,60 @@ INSERT INTO attraction_image (attraction_id, url, caption, credit, license, sort
     ((SELECT id FROM attraction WHERE slug = 'chimelong-ocean-kingdom'), '/images/covers/chimelong-ocean-kingdom.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
     ((SELECT id FROM attraction WHERE slug = 'universal-beijing'), '/images/covers/universal-beijing.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
     ((SELECT id FROM attraction WHERE slug = 'window-of-the-world'), '/images/covers/window-of-the-world.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
-    ((SELECT id FROM attraction WHERE slug = 'hangzhou-songcheng'), '/images/covers/hangzhou-songcheng.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0)
+    ((SELECT id FROM attraction WHERE slug = 'hangzhou-songcheng'), '/images/covers/hangzhou-songcheng.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'angkor-wat'), '/images/covers/angkor-wat.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'taj-mahal'), '/images/covers/taj-mahal.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'mount-fuji'), '/images/covers/mount-fuji.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'petra'), '/images/covers/petra.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'borobudur'), '/images/covers/borobudur.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'hagia-sophia'), '/images/covers/hagia-sophia.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'ha-long-bay'), '/images/covers/ha-long-bay.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'kinkakuji'), '/images/covers/kinkakuji.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'gyeongbokgung'), '/images/covers/gyeongbokgung.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'eiffel-tower'), '/images/covers/eiffel-tower.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'colosseum'), '/images/covers/colosseum.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'sagrada-familia'), '/images/covers/sagrada-familia.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'versailles'), '/images/covers/versailles.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'neuschwanstein'), '/images/covers/neuschwanstein.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'acropolis'), '/images/covers/acropolis.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'santorini'), '/images/covers/santorini.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'stonehenge'), '/images/covers/stonehenge.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'pompeii'), '/images/covers/pompeii.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'louvre'), '/images/covers/louvre.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'jungfrau'), '/images/covers/jungfrau.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'charles-bridge'), '/images/covers/charles-bridge.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'pyramids-of-giza'), '/images/covers/pyramids-of-giza.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'victoria-falls'), '/images/covers/victoria-falls.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'serengeti'), '/images/covers/serengeti.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'marrakech-medina'), '/images/covers/marrakech-medina.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'table-mountain'), '/images/covers/table-mountain.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'grand-canyon'), '/images/covers/grand-canyon.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'statue-of-liberty'), '/images/covers/statue-of-liberty.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'yellowstone'), '/images/covers/yellowstone.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'chichen-itza'), '/images/covers/chichen-itza.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'banff'), '/images/covers/banff.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'niagara-falls'), '/images/covers/niagara-falls.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'machu-picchu'), '/images/covers/machu-picchu.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'christ-the-redeemer'), '/images/covers/christ-the-redeemer.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'iguazu-falls'), '/images/covers/iguazu-falls.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'galapagos'), '/images/covers/galapagos.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'easter-island'), '/images/covers/easter-island.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'sydney-opera-house'), '/images/covers/sydney-opera-house.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'great-barrier-reef'), '/images/covers/great-barrier-reef.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0),
+    ((SELECT id FROM attraction WHERE slug = 'milford-sound'), '/images/covers/milford-sound.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', 0)
 ON CONFLICT (attraction_id, url) DO UPDATE SET
     caption = EXCLUDED.caption,
     credit  = EXCLUDED.credit,
     license = EXCLUDED.license,
     sort    = EXCLUDED.sort;
+
+-- 列表卡片的封面就是这张 sort = 0 的图。放在这里同步, 免得 attraction.cover_image
+-- 和 attraction_image 指向两张不同的图(seed.sql 的 DO UPDATE 不碰 cover_image)。
+UPDATE attraction a
+SET cover_image = i.url
+FROM attraction_image i
+WHERE i.attraction_id = a.id
+  AND i.sort = 0
+  AND a.cover_image IS DISTINCT FROM i.url;
 
 COMMIT;

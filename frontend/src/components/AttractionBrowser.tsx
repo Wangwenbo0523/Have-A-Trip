@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react"
 import { fetchAttractions } from "../api/client"
 import { useApi } from "../hooks/useApi"
 import { useDebouncedValue } from "../hooks/useDebouncedValue"
-import type { PageQuery } from "../types"
+import type { GradeFilter, PageQuery } from "../types"
 import AttractionList from "./AttractionList"
 import SearchBox from "./SearchBox"
 import StateMessage from "./StateMessage"
@@ -17,6 +17,25 @@ const SORTS: { value: SortKey; label: string }[] = [
   { value: "name", label: "按名称" },
 ]
 
+/**
+ * 等级筛选。A 级(中国景区质量等级)与世界遗产是两套刻度, 所以在同一组按钮里各占
+ * 一项, 空字符串表示「全部」。
+ */
+const GRADES: { value: GradeFilter | ""; label: string }[] = [
+  { value: "", label: "全部" },
+  { value: "5A", label: "5A" },
+  { value: "4A", label: "4A" },
+  { value: "3A", label: "3A" },
+  { value: "heritage", label: "世界遗产" },
+]
+
+/** 空态文案要能区分「筛没了」和「库是空的」, 否则会误导人去跑种子脚本。 */
+const emptyDetail = (keyword: string, grade: GradeFilter | "") => {
+  if (keyword) return `没有找到和「${keyword}」相关的景点, 换个词试试`
+  if (grade) return "这个等级下暂时还没有已发布的景点"
+  return "这里还没有已发布的景点, 先执行 db/seed/seed.sql 导入种子数据"
+}
+
 interface AttractionBrowserProps {
   /** 分类 slug, 不传就是全部景点 */
   category?: string
@@ -27,17 +46,27 @@ interface AttractionBrowserProps {
 const AttractionBrowser = ({ category, pageSize = 12 }: AttractionBrowserProps) => {
   const [keyword, setKeyword] = useState("")
   const [sort, setSort] = useState<SortKey>("rating")
+  const [grade, setGrade] = useState<GradeFilter | "">("")
   const [page, setPage] = useState(1)
   const debouncedKeyword = useDebouncedValue(keyword, 300)
 
-  // 换分类 / 换关键字 / 换排序之后原页码可能越界, 一律回到第一页
+  // 换分类 / 换关键字 / 换排序 / 换等级之后原页码可能越界, 一律回到第一页
   useEffect(() => {
     setPage(1)
-  }, [category, debouncedKeyword, sort])
+  }, [category, debouncedKeyword, sort, grade])
 
   const { data, loading, error, reload } = useApi(
-    () => fetchAttractions({ page, size: pageSize, category, q: debouncedKeyword, sort }),
-    [page, pageSize, category, debouncedKeyword, sort],
+    () =>
+      fetchAttractions({
+        page,
+        size: pageSize,
+        category,
+        q: debouncedKeyword,
+        sort,
+        // 空串不是合法取值, 不筛选时干脆不带这个参数
+        grade: grade || undefined,
+      }),
+    [page, pageSize, category, debouncedKeyword, sort, grade],
   )
 
   const totalPages = data ? Math.max(1, Math.ceil(data.total / data.size)) : 1
@@ -50,18 +79,33 @@ const AttractionBrowser = ({ category, pageSize = 12 }: AttractionBrowserProps) 
           onChange={setKeyword}
           placeholder="搜索景点名称或简介…"
         />
-        <div className="browser__sorts" role="group" aria-label="排序方式">
-          {SORTS.map((item) => (
-            <button
-              key={item.value}
-              type="button"
-              className={`browser__sort${sort === item.value ? " is-active" : ""}`}
-              aria-pressed={sort === item.value}
-              onClick={() => setSort(item.value)}
-            >
-              {item.label}
-            </button>
-          ))}
+        <div className="browser__controls">
+          <div className="browser__grades" role="group" aria-label="等级筛选">
+            {GRADES.map((item) => (
+              <button
+                key={item.value || "all"}
+                type="button"
+                className={`browser__sort${grade === item.value ? " is-active" : ""}`}
+                aria-pressed={grade === item.value}
+                onClick={() => setGrade(item.value)}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+          <div className="browser__sorts" role="group" aria-label="排序方式">
+            {SORTS.map((item) => (
+              <button
+                key={item.value}
+                type="button"
+                className={`browser__sort${sort === item.value ? " is-active" : ""}`}
+                aria-pressed={sort === item.value}
+                onClick={() => setSort(item.value)}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -79,11 +123,7 @@ const AttractionBrowser = ({ category, pageSize = 12 }: AttractionBrowserProps) 
       {!loading && !error && data && data.items.length === 0 ? (
         <StateMessage
           title="没有匹配的景点"
-          detail={
-            debouncedKeyword
-              ? `没有找到和「${debouncedKeyword}」相关的景点, 换个词试试`
-              : "这里还没有已发布的景点, 先执行 db/seed/seed.sql 导入种子数据"
-          }
+          detail={emptyDetail(debouncedKeyword, grade)}
         />
       ) : null}
 

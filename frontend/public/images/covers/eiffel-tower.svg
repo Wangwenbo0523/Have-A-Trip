@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="埃菲尔铁塔">
+  <title>埃菲尔铁塔</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#141e2a"/>
+      <stop offset="1" stop-color="#2f3352"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <rect x="-20.0" y="563.5" width="103.6" height="96.5" fill="#1a2033"/>
+  <rect x="109.6" y="459.1" width="81.9" height="200.9" fill="#1a2033"/>
+  <rect x="123.6" y="591.1" width="53.9" height="9" fill="#f43635" opacity="0.3"/>
+  <rect x="217.5" y="452.1" width="79.8" height="207.9" fill="#1a2033"/>
+  <rect x="231.5" y="468.1" width="51.8" height="9" fill="#f43635" opacity="0.3"/>
+  <rect x="231.5" y="526.1" width="51.8" height="9" fill="#f43635" opacity="0.3"/>
+  <rect x="231.5" y="584.1" width="51.8" height="9" fill="#f43635" opacity="0.3"/>
+  <rect x="323.3" y="463.8" width="83.4" height="196.2" fill="#1a2033"/>
+  <rect x="337.3" y="479.8" width="55.4" height="9" fill="#f43635" opacity="0.3"/>
+  <rect x="432.7" y="504.6" width="80.1" height="155.4" fill="#1a2033"/>
+  <rect x="446.7" y="578.6" width="52.1" height="9" fill="#f43635" opacity="0.3"/>
+  <rect x="538.8" y="426.2" width="152.3" height="233.8" fill="#1a2033"/>
+  <rect x="552.8" y="558.2" width="124.3" height="9" fill="#f43635" opacity="0.3"/>
+  <rect x="552.8" y="616.2" width="124.3" height="9" fill="#f43635" opacity="0.3"/>
+  <rect x="717.1" y="537.6" width="130.3" height="122.4" fill="#1a2033"/>
+  <rect x="873.4" y="555.6" width="125.6" height="104.4" fill="#1a2033"/>
+  <rect x="887.4" y="571.6" width="97.6" height="9" fill="#f43635" opacity="0.3"/>
+  <rect x="1025.0" y="416.0" width="122.7" height="244.0" fill="#1a2033"/>
+  <rect x="1039.0" y="432.0" width="94.7" height="9" fill="#f43635" opacity="0.3"/>
+  <rect x="1039.0" y="548.0" width="94.7" height="9" fill="#f43635" opacity="0.3"/>
+  <rect x="1173.7" y="559.5" width="84.8" height="100.5" fill="#1a2033"/>
+  <rect x="594.8" y="442" width="30" height="218.0" fill="#252b44"/>
+  <circle cx="609.8" cy="442" r="40" fill="#252b44"/>
+  <circle cx="609.8" cy="442" r="40" fill="#f43635" opacity="0.22"/>
+  <rect x="606.8" y="376" width="6" height="30" fill="#252b44"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#f43635" letter-spacing="7">城市地标</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">埃菲尔铁塔</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

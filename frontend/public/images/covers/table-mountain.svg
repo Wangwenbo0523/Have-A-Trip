@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="桌山">
+  <title>桌山</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#17213a"/>
+      <stop offset="1" stop-color="#3a585c"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="552.4" cy="450.8" r="48.2" fill="#f47d16" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,417.9 216.0,536.4 344.0,433.2 472.0,539.4 600.0,423.9 728.0,537.6 856.0,446.7 984.0,542.1 1112.0,425.5 1240.0,537.9 1368.0,457.3 1496.0,544.3 1240.0,800.0" fill="#273b50"/>
+  <polygon points="-40.0,800.0 120.0,545.0 280.0,609.8 440.0,512.9 600.0,603.4 760.0,560.8 920.0,613.0 1080.0,520.2 1240.0,604.8 1400.0,557.7 1560.0,612.3 1240.0,800.0" fill="#1d2d42"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#121e2f"/>
+  <polygon points="-40.0,800.0 66.7,646.0 173.3,689.2 280.0,612.5 386.7,682.5 493.3,643.5 600.0,688.7 706.7,618.2 813.3,683.6 920.0,633.8 1026.7,686.8 1133.3,610.4 1240.0,682.1 1346.7,617.7 1453.3,683.5 1240.0,800.0" fill="#121e2f" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#f47d16" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#f47d16" letter-spacing="7">自然风光</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">桌山</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

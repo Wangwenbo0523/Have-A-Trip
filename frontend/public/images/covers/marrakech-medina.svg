@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="马拉喀什老城">
+  <title>马拉喀什老城</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a2126"/>
+      <stop offset="1" stop-color="#394b4e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <rect x="-30.0" y="500.3" width="161.4" height="103.7" fill="#1f2a2f"/>
+  <polygon points="-46.0,500.3 50.7,450.3 147.4,500.3" fill="#2b3a3e"/>
+  <rect x="-42.0" y="476.3" width="34.0" height="24" fill="#2b3a3e"/>
+  <rect x="-42.0" y="452.3" width="28.0" height="24" fill="#2b3a3e"/>
+  <rect x="-42.0" y="428.3" width="22.0" height="24" fill="#2b3a3e"/>
+  <rect x="161.4" y="456.4" width="157.5" height="147.6" fill="#1f2a2f"/>
+  <polygon points="145.4,456.4 240.2,406.4 334.9,456.4" fill="#2b3a3e"/>
+  <rect x="149.4" y="432.4" width="34.0" height="24" fill="#2b3a3e"/>
+  <rect x="149.4" y="408.4" width="28.0" height="24" fill="#2b3a3e"/>
+  <rect x="149.4" y="384.4" width="22.0" height="24" fill="#2b3a3e"/>
+  <rect x="348.9" y="457.1" width="152.4" height="146.9" fill="#1f2a2f"/>
+  <polygon points="332.9,457.1 425.1,407.1 517.3,457.1" fill="#2b3a3e"/>
+  <rect x="336.9" y="433.1" width="34.0" height="24" fill="#2b3a3e"/>
+  <rect x="336.9" y="409.1" width="28.0" height="24" fill="#2b3a3e"/>
+  <rect x="336.9" y="385.1" width="22.0" height="24" fill="#2b3a3e"/>
+  <rect x="531.3" y="466.6" width="168.0" height="137.4" fill="#1f2a2f"/>
+  <polygon points="515.3,466.6 615.3,416.6 715.3,466.6" fill="#2b3a3e"/>
+  <rect x="519.3" y="442.6" width="34.0" height="24" fill="#2b3a3e"/>
+  <rect x="519.3" y="418.6" width="28.0" height="24" fill="#2b3a3e"/>
+  <rect x="519.3" y="394.6" width="22.0" height="24" fill="#2b3a3e"/>
+  <rect x="729.3" y="505.3" width="186.2" height="98.7" fill="#1f2a2f"/>
+  <polygon points="713.3,505.3 822.4,455.3 931.5,505.3" fill="#2b3a3e"/>
+  <rect x="717.3" y="481.3" width="34.0" height="24" fill="#2b3a3e"/>
+  <rect x="717.3" y="457.3" width="28.0" height="24" fill="#2b3a3e"/>
+  <rect x="717.3" y="433.3" width="22.0" height="24" fill="#2b3a3e"/>
+  <rect x="945.5" y="458.2" width="160.5" height="145.8" fill="#1f2a2f"/>
+  <polygon points="929.5,458.2 1025.8,408.2 1122.1,458.2" fill="#2b3a3e"/>
+  <rect x="933.5" y="434.2" width="34.0" height="24" fill="#2b3a3e"/>
+  <rect x="933.5" y="410.2" width="28.0" height="24" fill="#2b3a3e"/>
+  <rect x="933.5" y="386.2" width="22.0" height="24" fill="#2b3a3e"/>
+  <rect x="1136.1" y="480.5" width="190.0" height="123.5" fill="#1f2a2f"/>
+  <polygon points="1120.1,480.5 1231.1,430.5 1342.1,480.5" fill="#2b3a3e"/>
+  <rect x="1124.1" y="456.5" width="34.0" height="24" fill="#2b3a3e"/>
+  <rect x="1124.1" y="432.5" width="28.0" height="24" fill="#2b3a3e"/>
+  <rect x="1124.1" y="408.5" width="22.0" height="24" fill="#2b3a3e"/>
+  <rect x="0" y="604.0" width="1200" height="196.0" fill="#131b1f"/>
+  <path d="M202.0,638.0 Q320.0,664.0 438.0,638.0 Z" fill="#2b3a3e"/>
+  <path d="M276.0,635.0 Q320.0,596.0 364.0,635.0 Z" fill="#1f2a2f"/>
+  <path d="M783.2,638.0 Q880.0,659.3 976.8,638.0 Z" fill="#2b3a3e"/>
+  <path d="M843.9,635.0 Q880.0,603.6 916.1,635.0 Z" fill="#1f2a2f"/>
+  <rect x="0" y="700.0" width="1200" height="3" fill="#e89d5d" opacity="0.22"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e89d5d" letter-spacing="7">古镇村落</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">马拉喀什老城</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

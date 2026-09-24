@@ -1,0 +1,22 @@
+.gradeBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: bold;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+/* A 级是中国景区的质量等级 */
+.gradeBadge--aLevel {
+  background: linear-gradient(135deg, #f5c518, #e8930c);
+  color: #1b1e24;
+}
+
+/* 世界遗产是另一套刻度, 用另一种颜色, 免得被读成 A 级 */
+.gradeBadge--heritage {
+  background: linear-gradient(135deg, #3fa9a0, #2b7f8f);
+  color: #fff;
+}

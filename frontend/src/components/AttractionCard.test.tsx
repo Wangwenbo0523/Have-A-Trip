@@ -23,6 +23,9 @@ const attraction: Attraction = {
   rating_count: 128,
   ticket_price: 0,
   suggested_hours: 4,
+  country_code: "CN",
+  a_level: null,
+  heritage: null,
 }
 
 const renderCard = (data: Attraction) =>
@@ -66,6 +69,29 @@ describe("AttractionCard", () => {
       "src",
       "/img/west-lake.jpg",
     )
+  })
+
+  it("有 A 级时显示等级徽章", () => {
+    renderCard({ ...attraction, a_level: "5A" })
+    expect(screen.getByText("5A")).toHaveAttribute("title", "国家 5A 级旅游景区")
+  })
+
+  it("没有 A 级但列入世界遗产时显示遗产徽章", () => {
+    renderCard({ ...attraction, heritage: "cultural" })
+    const badge = screen.getByText("文化遗产")
+    expect(badge).toHaveAttribute("title", "世界文化遗产")
+  })
+
+  it("两者都未核实时不渲染徽章", () => {
+    renderCard(attraction)
+    expect(screen.queryByText("5A")).not.toBeInTheDocument()
+    expect(screen.queryByText("文化遗产")).not.toBeInTheDocument()
+  })
+
+  it("境外景点不硬写人民币符号", () => {
+    renderCard({ ...attraction, country_code: "US", ticket_price: 25 })
+    expect(screen.getByText("需购票")).toBeInTheDocument()
+    expect(screen.queryByText("¥25")).not.toBeInTheDocument()
   })
 
   it("整张卡片链到详情页", () => {
