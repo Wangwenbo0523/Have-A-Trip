@@ -33,6 +33,7 @@ LICENSE        text eol=lf
 *.jpeg    binary
 *.webp    binary
 *.ico     binary
+*.gif     binary
 
 # 语言统计排除基底与文档
 frontend/src/**  linguist-vendored=false
