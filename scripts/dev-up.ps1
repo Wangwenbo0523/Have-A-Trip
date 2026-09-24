@@ -8,6 +8,8 @@
     - 幂等: 库连得上就接着用; schema.sql / seed.sql / images.sql 本身都可重复执行
     - 不装东西: 不下载不安装 PostgreSQL / Node / Python; 找不到 psql 只打印起库指引后退出
     - 不动仓库: 只写 .dev\(日志与 pid), 不生成也不修改 .env
+    - 认得出自己: 端口被占时先看 .dev\<name>.pid 是不是本脚本起的那份, 是就直接复用并打印
+      访问地址(重复跑不再报错); 不是才退出 —— 别人的进程不替它杀, 也不假装起好了
 
 .PARAMETER BackendPort
   后端监听端口, 默认 8000。
@@ -98,6 +100,44 @@ function Resolve-Psql {
         if ($hit) { return $hit.FullName }
     }
     return $null
+}
+
+function Get-OursRunning {
+    # 端口被占不等于"我们已经在跑"。两个条件都要满足, 缺一不可:
+    #   1. .dev 里那份 <name>.pid 记的进程还活着(那是本脚本自己写下的凭据);
+    #   2. 真正在监听这个端口的进程就是它, 或者是它的子孙 —— uvicorn 的 --reload 外层是
+    #      父进程, 真正 listen 的是子进程, 只比 pid 会漏掉这种情况。
+    # 只看第 1 条会在"换 -BackendPort 起, 而新端口恰好被别的项目占着"时误判成自己的。
+    param([string]$Name, [int]$Port)
+    if (-not (Test-Tcp "127.0.0.1" $Port)) { return 0 }
+    $pidFile = Join-Path $DevDir "$Name.pid"
+    if (-not (Test-Path $pidFile)) { return 0 }
+    $recorded = 0
+    [void][int]::TryParse((Get-Content $pidFile -Raw).Trim(), [ref]$recorded)
+    if ($recorded -le 0) { return 0 }
+    if (-not (Get-Process -Id $recorded -ErrorAction SilentlyContinue)) { return 0 }
+
+    $owner = 0
+    $conn = Get-NetTCPConnection -State Listen -LocalPort $Port -ErrorAction SilentlyContinue |
+        Select-Object -First 1
+    if ($conn) { $owner = [int]$conn.OwningProcess }
+    if ($owner -le 0) { return 0 }
+    if ($owner -eq $recorded) { return $recorded }
+
+    # 父子关系一次查全, 再在内存里往上走, 别每一层都打一次 WMI
+    $parents = @{}
+    foreach ($proc in Get-CimInstance Win32_Process -ErrorAction SilentlyContinue) {
+        $parents[[int]$proc.ProcessId] = [int]$proc.ParentProcessId
+    }
+    $current = $owner
+    for ($hop = 0; $hop -lt 8 -and $current -gt 0; $hop++) {
+        if ($current -eq $recorded) { return $recorded }
+        if (-not $parents.ContainsKey($current)) { break }
+        $next = $parents[$current]
+        if ($next -eq $current) { break }
+        $current = $next
+    }
+    return 0
 }
 
 function Wait-Http {
@@ -239,11 +279,19 @@ Write-Note "DATABASE_URL=$($env:DATABASE_URL)"
 
 # ------------------------------------------------------------------ 后端
 $backendStarted = $false
+$backendReused = $false
 if ($NoBackend) {
     Write-Note "-NoBackend: 不起后端。"
 } elseif (Test-Tcp "127.0.0.1" $BackendPort) {
-    Write-Fail "端口 $BackendPort 已被占用, 先停掉或换 -BackendPort。"
-    exit 1
+    $ours = Get-OursRunning -Name "backend" -Port $BackendPort
+    if ($ours -gt 0) {
+        $backendReused = $true
+        Write-Info "后端已经在跑(pid $ours), 直接复用, 不再起第二个。"
+    } else {
+        Write-Fail "端口 $BackendPort 已被占用, 而且不是本脚本起的(没有 .dev\backend.pid, 或那个进程已经不在)。"
+        Write-Host "  先停掉那个进程, 或换端口: -BackendPort 8011"
+        exit 1
+    }
 } else {
     $py = Join-Path $BackendDir ".venv\Scripts\python.exe"
     if (-not (Test-Path $py)) {
@@ -273,11 +321,19 @@ if ($backendStarted) {
 
 # ------------------------------------------------------------------ 前端
 $frontendStarted = $false
+$frontendReused = $false
 if ($NoFrontend) {
     Write-Note "-NoFrontend: 不起前端。"
 } elseif (Test-Tcp "127.0.0.1" $FrontendPort) {
-    Write-Fail "端口 $FrontendPort 已被占用, 先停掉或换 -FrontendPort。"
-    exit 1
+    $ours = Get-OursRunning -Name "frontend" -Port $FrontendPort
+    if ($ours -gt 0) {
+        $frontendReused = $true
+        Write-Info "前端已经在跑(pid $ours), 直接复用, 不再起第二个。"
+    } else {
+        Write-Fail "端口 $FrontendPort 已被占用, 而且不是本脚本起的(没有 .dev\frontend.pid, 或那个进程已经不在)。"
+        Write-Host "  先停掉那个进程, 或换端口: -FrontendPort 5175"
+        exit 1
+    }
 } elseif (-not (Test-Path (Join-Path $FrontendDir "node_modules"))) {
     Write-Fail "frontend\node_modules 不存在, 先 cd frontend; npm install"
     exit 1
@@ -315,13 +371,17 @@ if ($frontendStarted) {
 # ------------------------------------------------------------------ 收尾提示
 Write-Host ""
 Write-Info "== 起来了 =="
-if ($frontendStarted) { Write-Host "  前端      $FrontendUrl" }
-if ($backendStarted) {
+if ($frontendStarted -or $frontendReused) { Write-Host "  前端      $FrontendUrl" }
+if ($backendStarted -or $backendReused) {
     Write-Host "  接口文档  $($BackendUrl)/docs"
     Write-Host "  健康检查  $($BackendUrl)/api/v1/healthz"
 }
 Write-Host "  日志目录  $DevDir"
 Write-Host "  关掉它们  powershell -NoProfile -ExecutionPolicy Bypass -File $SelfPath -Down"
+if ($backendReused -or $frontendReused) {
+    Write-Note "复用的那份是已经在跑的实例: 这一次给的 -LlmProvider / -LlmModel 等参数只对新起的"
+    Write-Note "进程生效, 复用的还是它自己的配置; 要换配置就先 -Down 再起。"
+}
 
 if ($backendStarted -and -not $LlmProvider -and -not $env:LLM_PROVIDER) {
     Write-Note "AI 检索默认关闭(LLM_PROVIDER=none), 应用照常跑。想开本地模型: 装 ollama 并 pull 过模型后, 加 -LlmProvider ollama 再跑一次。"
