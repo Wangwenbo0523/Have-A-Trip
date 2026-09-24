@@ -1,6 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
+// 后端地址: 默认本机 8000。scripts/dev-up.ps1 换端口(-BackendPort)时会把这个值
+// 通过进程环境变量 DEV_API_PROXY 传进来; 手动改端口也能用同一个变量覆盖。
+// 注意它走的是进程环境变量, 不是 .env —— Vite 不会把 .env 灌进 config 的 process.env。
+const apiTarget = process.env.DEV_API_PROXY || 'http://127.0.0.1:8000'
+
 export default defineConfig({
   plugins: [react()],
 
@@ -14,7 +19,7 @@ export default defineConfig({
     // 前后端分开部署时用 VITE_API_BASE 指到真实地址(见 .env.example)。
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:8000',
+        target: apiTarget,
         changeOrigin: true,
       },
     },

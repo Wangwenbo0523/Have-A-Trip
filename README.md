@@ -60,6 +60,32 @@ PostgreSQL   景点档案 / 用户行为日志 / 推荐结果表
 
 需要：Python 3.13、Node 24、PostgreSQL 16。
 
+### 一键起（推荐）
+
+```powershell
+# 依赖只装一次
+cd backend;  python -m venv .venv;  .venv\Scripts\pip install -r requirements.txt;  cd ..
+cd frontend; npm install; cd ..
+
+# 连库 → 灌 schema 与种子 → 起后端(8000) → 起前端(5173)
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/dev-up.ps1
+
+# 关掉它起的两个进程
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/dev-up.ps1 -Down
+```
+
+`scripts/dev-up.ps1` 只干三件事：连一个**已经存在**的 PostgreSQL、按 `db/` 灌数据、起前后端。它不下载不安装任何东西，也不写 `.env`；日志与 pid 落在 `.dev/`（已 ignore）。找不到 `psql` 时打印起库指引后退出，不瞎猜。
+
+| 常用参数 | 用途 |
+|---|---|
+| `-PgBin C:\pgtemp\pginstall\bin -PgPort 55432` | 指到便携实例（默认 `5432`，不通时自动试探 `55432`） |
+| `-BackendPort 8010 -FrontendPort 5174` | 换端口；vite 代理跟着走（`DEV_API_PROXY`） |
+| `-NoSeed` | 只灌 schema，不灌种子数据 |
+| `-LlmProvider ollama` | 顺手把 AI 检索开成本地 ollama（其余 `LLM_*` 见 `backend/.env.example`） |
+| `-NoBackend` / `-NoFrontend` | 只起一半 |
+
+### 手工起（对照）
+
 ```bash
 # 1. 数据库
 createdb attraction_atlas
@@ -77,7 +103,7 @@ cp .env.example .env          # 按需改 DATABASE_URL
 # 3. 前端 (http://127.0.0.1:5173)
 cd frontend
 npm install
-npm run start                 # /api 由 vite 代理到 :8000, 本地免跨域
+npm run start                 # /api 由 vite 代理到 8000, 本地免跨域
 ```
 
 没有 PostgreSQL 也能跑测试：后端测试默认走 SQLite 内存库。生产目标仍是 PostgreSQL。

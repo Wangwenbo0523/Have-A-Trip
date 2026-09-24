@@ -36,6 +36,9 @@ db/seed/drafts/*.sql
 # 上游基底缓存(由 scripts/fetch-bases.ps1 生成)
 .cache/
 
+# dev-up.ps1 的临时产物(日志与 pid)
+.dev/
+
 # 编辑器
 .vscode/
 .idea/
