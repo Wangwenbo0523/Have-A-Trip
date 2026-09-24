@@ -35,7 +35,7 @@ export default function RegionCard({ name, countryList }: RegionCardProps) {
     .map((country) => country.name.common)
     .slice(0, 10);
 
-  const path = `/travel-guide/${name.replaceAll(" ", "_").toLowerCase()}`;
+  const path = `/${name.replaceAll(" ", "_").toLowerCase()}`;
   const imageSrc = initialProps.image[name];
 
   return (

@@ -45,9 +45,6 @@ function App() {
         setCountryList(countryList);
         setFlagList(flagList);
         setLoading(false);
-        navigator.geolocation.getCurrentPosition((err) =>
-          console.log("Geolocation error:", err),
-        );
       })
       .catch((error) => console.log(error));
 

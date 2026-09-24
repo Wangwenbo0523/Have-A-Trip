@@ -26,11 +26,9 @@ jobs:
             pip install -r backend/requirements.txt
           fi
 
-      - name: 安装前端依赖(生成完整 package-lock 解析)
-        run: |
-          if [ -f frontend/package-lock.json ]; then
-            npm ci --prefix frontend --ignore-scripts
-          fi
+      # 前端刻意不装 node_modules: license_gate.py 直接解析 frontend/package-lock.json,
+      # 不读 node_modules。原先那步 `npm ci` 既拖慢卡口, 又会把上游 lockfile 的
+      # 依赖解析错误(如 ERESOLVE)变成卡口失败, 已移除。
 
       - name: 跑许可证卡口
         run: python scripts/license_gate.py --strict

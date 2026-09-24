@@ -1,31 +1,30 @@
 {
-  "name": "travel-guide-app",
-  "version": "v2.00.0",
+  "name": "have-a-trip-frontend",
+  "version": "0.1.0",
   "private": true,
-  "description": "This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).",
-  "main": "index.js",
+  "description": "景点大全 App 前端: 景点浏览、搜索与推荐。基于 MIT 许可的 zero-to-mastery/travel-guide 改造。",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zero-to-mastery/travel-guide.git"
+    "url": "git+https://github.com/Wangwenbo0523/Have-A-Trip.git",
+    "directory": "frontend"
   },
-  "author": "ZTM",
+  "author": "Wangwenbo0523",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/zero-to-mastery/travel-guide/issues"
+    "url": "https://github.com/Wangwenbo0523/Have-A-Trip/issues"
   },
-  "homepage": "https://zero-to-mastery.github.io/travel-guide/",
+  "homepage": "https://github.com/Wangwenbo0523/Have-A-Trip",
   "dependencies": {
     "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^12.1.10",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
     "aos": "^2.3.4",
     "axios": "^1.18.0",
-    "jquery": "^4.0.0",
     "ol": "^6.8.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-router-dom": "^7.18.2",
-    "react-spinners": "^0.13.8",
+    "react-spinners": "^0.17.1",
     "tachyons": "^4.12.0",
     "web-vitals": "^5.1.0"
   },

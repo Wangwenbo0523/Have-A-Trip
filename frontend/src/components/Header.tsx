@@ -3,14 +3,14 @@ import { NavLink, Link } from "react-router-dom";
 import "../styles/Header.css";
 
 const navLinks = [
-  { to: "/travel-guide", label: "Home" },
-  { to: "/travel-guide/africa", label: "Africa" },
-  { to: "/travel-guide/americas", label: "Americas" },
-  { to: "/travel-guide/asia", label: "Asia" },
-  { to: "/travel-guide/europe", label: "Europe" },
-  { to: "/travel-guide/oceania", label: "Oceania" },
-  { to: "/travel-guide/polar", label: "Polar" },
-  { to: "/travel-guide/map", label: "Map" },
+  { to: "/", label: "Home" },
+  { to: "/africa", label: "Africa" },
+  { to: "/americas", label: "Americas" },
+  { to: "/asia", label: "Asia" },
+  { to: "/europe", label: "Europe" },
+  { to: "/oceania", label: "Oceania" },
+  { to: "/polar", label: "Polar" },
+  { to: "/map", label: "Map" },
 ]
 
 const Header = () => {
@@ -21,10 +21,10 @@ const Header = () => {
         data-aos="fade-down"
         data-aos-duration="5000"
       >
-        <Link to="/travel-guide">Travel Guide</Link>
+        <Link to="/">Travel Guide</Link>
       </h1>
       <div data-aos="fade-up" data-aos-duration="7000">
-        <Link to="/travel-guide">
+        <Link to="/">
           <div data-aos="fade-up" data-aos-duration="7000">
             <iframe
               src="https://giphy.com/embed/yo1whaKkz38ME"

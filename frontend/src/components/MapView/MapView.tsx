@@ -174,7 +174,7 @@ export function WorldMap({ countries }: WorldMapProps) {
 
       {countries.map((country) => (
         <div key={`markerDiv_${country.alpha3Code}`} className="mapLabelArea">
-          <Link to={`/travel-guide/detail/${country.name}`}>
+          <Link to={`/detail/${country.name}`}>
             <div
               id={`marker_${country.alpha3Code}`}
               className="smallMarker"

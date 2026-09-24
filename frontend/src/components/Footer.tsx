@@ -127,7 +127,7 @@ const footer = () => {
           </a>
           <Link
             className="link white-60 bg-transparent hover-white inline-flex items-center ma2 tc br2 pa2"
-            to="/travel-guide/credits"
+            to="/credits"
           >
             <svg
               className="dib h2 w2"

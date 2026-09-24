@@ -24,18 +24,18 @@ function AppRouter({
   searchField,
 }: AppRouterProps) {
   const regions = [
-    "/travel-guide/africa",
-    "/travel-guide/americas",
-    "/travel-guide/antarctic",
-    "/travel-guide/antarctic-ocean",
-    "/travel-guide/asia",
-    "/travel-guide/europe",
-    "/travel-guide/oceania",
-    "/travel-guide/polar",
+    "/africa",
+    "/americas",
+    "/antarctic",
+    "/antarctic-ocean",
+    "/asia",
+    "/europe",
+    "/oceania",
+    "/polar",
   ]
 
   const routes = regions.map((region, index) => {
-    const regionName = region.replace("/travel-guide/", "")
+    const regionName = region.replace("/", "")
       .replace(/-/g, " ")
       .replace(/\b\w/g, l => l.toUpperCase())
 
@@ -61,13 +61,13 @@ function AppRouter({
         <Header />
         <Routes>
           <Route
-            path="/travel-guide"
+            path="/"
             element={<RegionList countries={countries} regions={regionList} />}
           />
           {routes}
-          <Route path="/travel-guide/detail/:id" element={<Detail />} />
-          <Route path="/travel-guide/map" element={<WorldMap countries={countries} />} />
-          <Route path="/travel-guide/credits" element={<Credits />} />
+          <Route path="/detail/:id" element={<Detail />} />
+          <Route path="/map" element={<WorldMap countries={countries} />} />
+          <Route path="/credits" element={<Credits />} />
         </Routes>
         <Footer />
       </div>

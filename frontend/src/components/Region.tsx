@@ -22,7 +22,7 @@ const Region = ({ region, countries, search, onSearchChange }: RegionProps) => {
   const countryNames = countryList.map((country) => (
     <Link
       key={country.name.common}
-      to={`/travel-guide/detail/${country.name.common}`}
+      to={`/detail/${country.name.common}`}
     >
       <CountryCard countryData={country} />
     </Link>
@@ -40,7 +40,7 @@ const Region = ({ region, countries, search, onSearchChange }: RegionProps) => {
       <div className="tc bg-black-60 code dib br3 pb1 ma3 bw2 shadow-5 region regionFlagContainer">
         <h2>{region}</h2>
         <ul className="list">{countryNames}</ul>
-        <Link className="f6 link dim br-pill ph4 pv2 mb2 dib black bg-white" to="/travel-guide">
+        <Link className="f6 link dim br-pill ph4 pv2 mb2 dib black bg-white" to="/">
           BACK
         </Link>
       </div>
