@@ -505,3 +505,4 @@ npm.cmd run dev                        # 手动过一遍: 首页 -> 分类 -> �
 | 2026-09-25 | v1.4 | S8 完成：CI 补 `frontend-build` 与 `dco` 两条工作流、前端接入 Vitest（21 用例）、项目名统一为 Have-A-Trip、新增 `docs/DEPLOY.md`；第八节待决问题全部定案 |
 | 2026-09-25 | v1.5 | S6 完成：`recsys/` 四个脚本端到端跑通，BPR 离线结果写回 `rec_result`；钉死 4 个上游依赖坑；`run_recbole.py` 改 `chdir` 修掉仓库里的野 `log/` 目录 |
 | 2026-09-25 | v1.6 | S5 完成：`Credits.tsx` 重写成数据来源与许可声明页，数据由新增的 `GET /api/v1/sources` 从库里现算；share-alike 来源未登记修改状态会在页面标红。全部计划步骤 S0–S8 至此收口 |
+| 2026-09-25 | v1.7 | 收尾：`docs/DEPLOY.md` 检查清单补 `/api/v1/sources` 的 `needs_attention` 必须为 `false`；按既定顺序最后安装 `ecc-universal`（全局 npm `ecc-universal@2.2.1`，`ecc` CLI 可用；Codex 侧的 skill 仍由 `ecc@ecc` 插件提供，未重复落一份到 `~/.codex/`） |

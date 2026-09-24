@@ -135,6 +135,7 @@ server {
 - [ ] `cd frontend && npm run typecheck && npm test && npm run build` 通过
 - [ ] `db/schema.sql` 在目标库上跑过至少两次（验幂等）
 - [ ] `/api/v1/healthz` 的 `status` 是 `ok`
+- [ ] `/api/v1/sources` 的 `needs_attention` 是 `false`（库里有 share-alike 来源却没登记修改状态时为 `true`，声明页会出红色告警）
 - [ ] 刷新 `/attraction/<某个 slug>` 不 404（SPA 回落生效）
 - [ ] 前端产物里没有任何地图 SDK：`grep -rIn "leaflet\|mapbox\|ol/" dist/assets` 应为空
 - [ ] 备份策略覆盖 PostgreSQL
