@@ -40,7 +40,7 @@ PostgreSQL   景点档案 / 用户行为日志 / 推荐结果表
 | `recsys/` | RecBole 调用层：依赖钉版、训练配置 |
 | `db/` | 景点实体表设计 |
 | `scripts/` | 基底钉版记录、重拉脚本、**许可证卡口** |
-| `docs/` | 基底清单、许可审查 |
+| `docs/` | **`PLAN.md` 施工计划表**、`BASES.md` 基底清单、`LICENSE-AUDIT.md` 许可审查 |
 
 ## 许可证纪律（重要）
 
@@ -58,8 +58,8 @@ python scripts/license_gate.py --strict
 1. **贡献者签 DCO**（见 `CONTRIBUTING.md`）——没有版权集中，闭源需征得每个贡献者同意。
 2. **数据层许可单独审**——OSM 是 ODbL、CC BY-SA 有相同方式共享义务，代码干净不代表数据干净。见 `docs/LICENSE-AUDIT.md`。
 
-> 根目录 `LICENSE` 决定项目主体许可（当前为 Unlicense，即公有领域放弃），两个基底各自为 MIT，`frontend/LICENSE` 已随源码保留——MIT 要求保留该版权声明，不能改成公有领域。
-> 已发布的旧版本仍受当时许可约束，这不影响后续版本。
+> 根目录 `LICENSE` 为 **MIT**（2026-09-25 由建仓时默认的 Unlicense 换入——Unlicense 会把版权永久奉献给公有领域，与「将来可能闭源」直接冲突）。
+> 两个基底各自为 MIT，`frontend/LICENSE` 已随源码保留——MIT 要求保留该版权声明，不能删除。已发布的旧版本仍受当时许可约束，这不影响后续版本。
 > 以上是工程判断，不构成法律意见。
 
 ## 起步
@@ -76,6 +76,8 @@ powershell -File scripts/fetch-bases.ps1
 ```
 
 ## 待办
+
+施工顺序、依赖关系与每步的验收标准见 **`docs/PLAN.md`（施工计划表）**。摘要：
 
 - [ ] `db/schema.sql`：景点档案、分类、标签、行为日志、推荐结果
 - [ ] `backend/`：FastAPI 服务（景点列表/详情/搜索 + 推荐接口 + 内容相似度冷启动）
