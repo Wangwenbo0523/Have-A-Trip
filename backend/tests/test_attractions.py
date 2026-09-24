@@ -12,7 +12,7 @@ def get_json(client, path, **params):
 
 def test_only_published_is_listed(client, seeded):
     body = get_json(client, f"{API}/attractions")
-    assert body["total"] == 4
+    assert body["total"] == 5
     slugs = {item["slug"] for item in body["items"]}
     assert "draft-spot" not in slugs
 
@@ -38,7 +38,7 @@ def test_pagination_is_stable_and_disjoint(client, seeded):
 def test_page_beyond_end_is_empty_not_error(client, seeded):
     body = get_json(client, f"{API}/attractions", page=99, size=20)
     assert body["items"] == []
-    assert body["total"] == 4
+    assert body["total"] == 5
 
 
 def test_size_is_capped(client, seeded):
@@ -86,7 +86,9 @@ def test_search_no_hit(client, seeded):
 
 def test_sort_by_rating(client, seeded):
     names = [i["slug"] for i in get_json(client, f"{API}/attractions", sort="rating")["items"]]
-    assert names == ["palace-museum", "west-lake", "terracotta-army", "lingyin-temple"]
+    assert names == [
+        "palace-museum", "west-lake", "terracotta-army", "lingyin-temple", "ocean-world",
+    ]
 
 
 def test_detail_by_slug_and_by_id(client, seeded):
@@ -129,8 +131,8 @@ def test_similar_404(client, seeded):
 def test_categories_carry_published_counts(client, seeded):
     body = get_json(client, f"{API}/categories")
     counts = {c["slug"]: c["attraction_count"] for c in body}
-    assert counts == {"nature": 1, "museum": 1, "history": 2}  # draft 不计入
-    assert [c["slug"] for c in body] == ["nature", "museum", "history"]  # 按 sort
+    assert counts == {"nature": 1, "museum": 1, "history": 2, "theme-park": 1}  # draft 不计入
+    assert [c["slug"] for c in body] == ["nature", "museum", "history", "theme-park"]  # 按 sort
 
 
 def test_tags_only_include_ones_with_attractions(client, seeded):

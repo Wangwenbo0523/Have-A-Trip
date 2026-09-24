@@ -19,8 +19,10 @@ BACKEND_ROOT = pathlib.Path(__file__).resolve().parents[1]
 if str(BACKEND_ROOT) not in sys.path:
     sys.path.insert(0, str(BACKEND_ROOT))
 
+from app.config import get_settings  # noqa: E402
 from app.db import Base, get_db  # noqa: E402
 from app.main import app  # noqa: E402
+from app.recommend import service as rec_service  # noqa: E402
 from app.models import AppUser, Attraction, BehaviorLog, Category, Tag  # noqa: E402
 
 
@@ -43,9 +45,13 @@ def db_session():
 @pytest.fixture()
 def client(db_session):
     app.dependency_overrides[get_db] = lambda: db_session
+    # 推荐缓存是进程级的, 而每个用例的库都是全新的(id 会从 1 重新开始),
+    # 不清就可能读到上一个用例的结果。
+    rec_service.get_cache(get_settings()).clear()
     with TestClient(app) as test_client:
         yield test_client
     app.dependency_overrides.clear()
+    rec_service.get_cache(get_settings()).clear()
 
 
 @pytest.fixture()
@@ -58,7 +64,8 @@ def seeded(db_session):
     nature = Category(slug="nature", name="自然风光", sort=10)
     museum = Category(slug="museum", name="博物馆", sort=20)
     history = Category(slug="history", name="历史古迹", sort=30)
-    db_session.add_all([nature, museum, history])
+    theme_park = Category(slug="theme-park", name="主题乐园", sort=70)
+    db_session.add_all([nature, museum, history, theme_park])
     db_session.flush()
 
     free = Tag(slug="free", name="免票")
@@ -100,17 +107,27 @@ def seeded(db_session):
         status="published", source="测试夹具", license="MIT",
         tags=[free],
     )
+    # 孤立景点: 不同分类、不同城市、没有任何标签, 与谁都不像。
+    # 有了它, 才能测到「相似候选不够时用热门补齐」那条分支。
+    ocean_world = Attraction(
+        slug="ocean-world", name="海洋世界", name_en="Ocean World",
+        summary="上海市郊的海洋主题乐园", description="以海洋生物展示为主。",
+        category_id=theme_park.id, province="上海市", city="上海市",
+        rating_avg=Decimal("0.00"), rating_count=0,
+        status="published", source="测试夹具", license="MIT",
+        tags=[],
+    )
     draft = Attraction(
         slug="draft-spot", name="未发布景点", summary="不该出现在任何接口里",
         category_id=nature.id, city="杭州市",
         status="draft", source="测试夹具", license="MIT",
     )
-    db_session.add_all([west_lake, palace, terracotta, lingyin, draft])
+    db_session.add_all([west_lake, palace, terracotta, lingyin, ocean_world, draft])
     db_session.commit()
     return {
-        "nature": nature, "museum": museum, "history": history,
+        "nature": nature, "museum": museum, "history": history, "theme_park": theme_park,
         "west_lake": west_lake, "palace": palace, "terracotta": terracotta,
-        "lingyin": lingyin, "draft": draft,
+        "lingyin": lingyin, "ocean_world": ocean_world, "draft": draft,
     }
 
 

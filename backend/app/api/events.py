@@ -12,7 +12,9 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ..aggregates import recount_attraction_rating
+from ..config import get_settings
 from ..db import get_db
+from ..recommend import service as recommend_service
 from ..models import AppUser, Attraction, BehaviorLog
 from ..schemas import EventIn, EventOut
 
@@ -51,5 +53,8 @@ def create_event(payload: EventIn, db: Session = Depends(get_db)) -> EventOut:
         recount_attraction_rating(db, attraction.id)
 
     db.commit()
+
+    # 刚上报的行为应当立刻影响推荐; 不作废的话用户要等 TTL 到期才看到变化
+    recommend_service.get_cache(get_settings()).invalidate_user(user.id)
     db.refresh(log)
     return EventOut.model_validate(log)

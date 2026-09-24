@@ -50,6 +50,7 @@ TEST_DATABASE_URL=postgresql+psycopg://postgres:postgres@127.0.0.1:5432/attracti
 | GET | `/categories` | 分类 + 各分类下已发布景点数 |
 | GET | `/tags` | 标签 + 数量（只返回有景点的） |
 | POST | `/events` | 行为埋点：`view` / `favorite` / `rate` / `share` |
+| GET | `/recommendations` | 推荐。`user_id` 或 `device_id` 二选一 |
 
 ### 列表参数
 
@@ -85,8 +86,11 @@ curl "http://127.0.0.1:8000/api/v1/attractions?city=杭州市&tag=free&q=湖"
 ## 设计要点
 
 - **只有 `published` 对外**。`draft` / `archived` 在列表、详情、埋点里一律 404 或不出现。
-- **推荐不在这个进程里算模型**。S2 的 `/recommendations` 读 `rec_result` 表；冷启动走内容相似度
-  （`app/recommend/content_based.py`），纯静态字段打分，不需要用户行为。
+- **推荐不在这个进程里算模型**。`/recommendations` 走三级降级，**任何情况下都不返回空列表**：
+  1. `rec_result` 里有该用户最新一批 → 直接用，`algo` 与 `reason` 来自表（训练之后被下架的景点会被过滤掉）
+  2. 没有 → 拿用户最近互动过的景点当种子，用内容相似度算（`content_based.py`），已互动过的不再推
+  3. 连种子都没有（新用户）→ 评分最高的已发布景点兜底，`algo=popular-fallback`
+  结果按 `(user_id, limit)` 做 60 秒 TTL 内存缓存；上报行为时立刻作废该用户的缓存。
 - **评分只从 `behavior_log` 聚合**。`POST /events` 收到 `rate` 后会重算该景点的
   `rating_avg` / `rating_count`（`app/aggregates.py`）。口径是「同一用户只算最后一次评分」——
   否则反复改分的人会获得更高权重。种子数据里评分为 0，不伪造。
@@ -105,4 +109,5 @@ curl "http://127.0.0.1:8000/api/v1/attractions?city=杭州市&tag=free&q=湖"
 | `app/schemas.py` | 出入参 Pydantic 模型（前端按它写类型） |
 | `app/aggregates.py` | 从 `behavior_log` 重算评分聚合 |
 | `app/api/` | 路由：health / attractions / categories / events |
-| `app/recommend/` | 内容相似度；`service.py` 在 S2 加入 |
+| `app/recommend/content_based.py` | 内容相似度打分（纯静态字段，不需要行为数据） |
+| `app/recommend/service.py` | 三级降级、理由生成、TTL 缓存 |

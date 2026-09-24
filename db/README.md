@@ -46,7 +46,9 @@ psql -d attraction_atlas -c "select * from schema_version;"
 | `behavior_log` | 行为日志，推荐原料 |
 | `rec_result` | 推荐结果，**API 只读这一张** |
 
-另有视图 `v_latest_rec`：每个用户最近一次生成的推荐结果，省去应用层算 `max(generated_at)`。
+另有视图 `v_latest_rec`：每个用户最近一次生成的推荐结果，方便用 psql 直接查。
+注意 API 用的是语义等价的子查询而不是这个视图 —— 视图只在 PostgreSQL 里存在，
+用了它 SQLite 上的测试就跑不了。
 
 ## 字段口径（改字段前先读这一节）
 
