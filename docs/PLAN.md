@@ -31,7 +31,7 @@
 
 ---
 
-## 二、当前基线（已完成）
+## 二、起点基线（写这份计划时的状态；已经推进，每步的「实际做了什么」里是结果）
 
 | 项 | 状态 |
 |---|---|
@@ -60,7 +60,7 @@
 | **S2** | 推荐接口 + 冷启动 | `backend/app/recommend/*` | S1 | G3 | 无行为的新用户也能拿到非空推荐，且每条带 `reason` | `feat(rec):` | ✅ `29069bb` |
 | **S4** | 前端 Attraction 化 | `types/index.ts` 重写、`Attraction*` 组件、`api/client.ts` | S1、S3 | G3 | 首页/分类/详情/搜索可用；无 `Country` 残留 | `feat(web):` | ✅ 本次提交 |
 | **S6** | 离线训练链路 | `recsys/{export_interactions,run_recbole,write_back}.py` | S0 | G4 | 三条脚本端到端跑通，`rec_result` 有数据 | `feat(recsys):` | ⬜ 待开工 |
-| **S7** | 内容与数据 | `db/seed/*.sql`（30–50 个景点）+ 来源清单 | S0 | G4 | 每个景点 `source` / `license` 非空且可用 | `data(seed):` | ⬜ 待开工 |
+| **S7** | 内容与数据 | `db/seed/*.sql`（30–50 个景点）+ 来源清单 | S0 | G4 | 每个景点 `source` / `license` 非空且可用 | `data(seed):` | ✅ 本次提交 |
 | **S5** | 数据来源与许可声明页 | `frontend/src/components/Credits.tsx` 改造 | S4、S7 | G5 | 页面逐条列出来源与许可，与 S7 一致 | `feat(web):` | ⬜ 待开工 |
 | **S8** | 工程化收尾 | CI 增 build/test、`README`、部署说明 | S2、S4、S6 | G6 | CI 三条工作流全绿且**真的会**变红 | `chore(ci):` | ✅ 本次提交 |
 
@@ -103,7 +103,7 @@ G6         +----------+------------------+--> S8 (工程化收尾)
 **任务清单**
 
 1. `db/schema.sql`：9 张表（见下表）+ 迁移记录表
-2. `db/seed/seed.sql`：分类、标签、3 个示例景点（够跑通接口，不追求内容量）
+2. `db/seed/seed.sql`：分类、标签、3 个示例景点（够跑通接口，不追求内容量；S7 已扩到 50 个）
 3. `db/README.md`：怎么建库、怎么执行、字段口径说明
 
 **表设计**
@@ -371,11 +371,22 @@ psql -d attraction_atlas -c "select count(*), max(generated_at) from rec_result;
 4. 导出「数据来源清单」供 S5 页面使用
 5. 若确实要用 ODbL / CC BY-SA 数据：隔离在独立导入脚本 + 独立数据集目录，不混进种子数据
 
-**退出标准**
+**实际做了什么**
 
-- [ ] 每个景点的 `source`、`license` 非空
-- [ ] 没有无许可证来源的数据
-- [ ] 若含 share-alike 数据，能明确指出它落在哪些表、哪些行
+| 项 | 结果 |
+|---|---|
+| 数据来源 | **全部自采**，没有引入任何第三方数据集。50 条的 `source` 都是「Have-A-Trip 自采（公开事实信息）」、`license` 为 `MIT`，因此**不存在 share-alike 传染到数据库**的问题 |
+| 内容规模 | 50 个景点覆盖 21 个省级行政区；7 个分类（自然 12 / 历史 10 / 博物馆 6 / 地标 6 / 古镇 6 / 宗教 5 / 乐园 5）、19 个标签、175 条标签关联 |
+| 幂等写法 | `seed.sql` 改成**声明式**：分类 / 标签 / 景点用 `ON CONFLICT (slug) DO UPDATE`，标签关联按 `source` 认领后删掉重建。旧版的 `DO NOTHING` 不会修好早期跑过种子的库 |
+| 不造假 | 坐标全 `NULL`、评分全 0、票价只在**确定免费**时写 `0`（5 条）、`attraction_image` 一条不插 |
+| CI | `db-schema.yml` 把口径变成断言：行数、无坐标、无评分、无「不确定免费」的票价、无图片、无孤立标签；另加一步**先改坏再重跑**，证明种子确实会自愈 |
+| 来源清单 | `db/README.md` 新增「数据来源清单」一节：给出聚合 SQL 与当前结果，S5 的声明页从库里聚合，不在前端写死 |
+
+**退出标准（2026-09-25 达成）**
+
+- [x] 每个景点的 `source`、`license` 非空 —— CI 直接断言「缺 source/license 的景点数 = 0」
+- [x] 没有无许可证来源的数据 —— 50 条全部自采 + MIT，第三方数据集一条没用
+- [x] 若含 share-alike 数据，能明确指出它落在哪些表、哪些行 —— **不含**。ODbL / CC BY-SA 的边界与处置写在 `docs/LICENSE-AUDIT.md` 第三节，将来真要用时按那里说的隔离
 
 ---
 

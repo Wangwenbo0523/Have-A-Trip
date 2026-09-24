@@ -63,13 +63,43 @@ jobs:
           expect 1 "$(q "select count(*) from information_schema.views where table_schema='public';")" "视图数量"
           expect 1 "$(q "select count(*) from information_schema.triggers where trigger_name='trg_attraction_updated_at';")" "updated_at 触发器"
 
-          # 两遍种子数据不该产生重复行
+          # 种子数据规模。改了 db/seed/seed.sql 就要一起改这里的数字, 否则 CI 会拦下来
           expect 7 "$(q "select count(*) from category;")" "category 行数"
-          expect 8 "$(q "select count(*) from tag;")" "tag 行数"
-          expect 3 "$(q "select count(*) from attraction;")" "attraction 行数(重跑未重复插入)"
+          expect 19 "$(q "select count(*) from tag;")" "tag 行数"
+          expect 50 "$(q "select count(*) from attraction;")" "attraction 行数(重跑未重复插入)"
+          expect 175 "$(q "select count(*) from attraction_tag;")" "attraction_tag 行数"
+          expect 1 "$(q "select count(*) from schema_version where version='0001_init';")" "schema_version 记录数"
+
+          # 种子数据的口径, 见 db/README.md「种子数据的口径」
+          # 这几条是把「不编造、不夸大」变成机器能拦的检查
           expect 0 "$(q "select count(*) from attraction where source is null or license is null;")" "缺 source/license 的景点数"
           expect 0 "$(q "select count(*) from attraction where status <> 'published';")" "非 published 的种子景点数"
-          expect 1 "$(q "select count(*) from schema_version where version='0001_init';")" "schema_version 记录数"
+          expect 0 "$(q "select count(*) from attraction where lat is not null or lon is not null;")" "带坐标的种子景点数(一期不做地图与定位)"
+          expect 0 "$(q "select count(*) from attraction where rating_avg <> 0 or rating_count <> 0;")" "带评分的种子景点数(评分只能由 behavior_log 聚合)"
+          expect 0 "$(q "select count(*) from attraction where ticket_price is not null and ticket_price <> 0;")" "写了票价但不确定免费的景点数"
+          expect 0 "$(q "select count(*) from attraction_image;")" "图片行数(没有可靠出处的图不进仓库)"
+          expect 0 "$(q "select count(*) from attraction a where not exists (select 1 from attraction_tag x where x.attraction_id = a.id);")" "没有任何标签的景点数"
+          expect 0 "$(q "select count(*) from category c where not exists (select 1 from attraction a where a.category_id = c.id);")" "没有景点的分类数"
+          expect 0 "$(q "select count(*) from tag g where not exists (select 1 from attraction_tag x where x.tag_id = g.id);")" "没被用到的标签数"
+
+      - name: 断言重跑种子能修回被改动的行
+        run: |
+          set -euo pipefail
+          q() { psql -h 127.0.0.1 -U postgres -d attraction_atlas -tAc "$1"; }
+          expect() { if [ "$1" != "$2" ]; then echo "::error::$3: 期望 $1, 实际 $2"; exit 1; fi; echo "OK: $3"; }
+
+          # 模拟两种情况: 有人手工改了库里的一行, 以及库里躺着的还是上一个版本的种子
+          # (旧版种子写死过坐标与票价, 也用过 ON CONFLICT DO NOTHING, 那样的库不会被修好)
+          q "update attraction set name='旧名字', lat=1.0, lon=2.0, ticket_price=999.00 where slug='west-lake';" > /dev/null
+          q "delete from attraction_tag where attraction_id = (select id from attraction where slug='west-lake');" > /dev/null
+
+          psql -h 127.0.0.1 -U postgres -d attraction_atlas -v ON_ERROR_STOP=1 -q -f db/seed/seed.sql
+
+          expect "西湖" "$(q "select name from attraction where slug='west-lake';")" "name 被同步回文件里的版本"
+          expect 1 "$(q "select count(*) from attraction where slug='west-lake' and lat is null and lon is null;")" "坐标被清回 NULL"
+          expect 1 "$(q "select count(*) from attraction where slug='west-lake' and ticket_price = 0;")" "票价回到文件里的 0"
+          expect 4 "$(q "select count(*) from attraction_tag where attraction_id = (select id from attraction where slug='west-lake');")" "被删掉的标签关联被重建"
+          expect 50 "$(q "select count(*) from attraction;")" "重跑后景点数仍是 50, 没有多出来"
 
       - name: 断言 CHECK 约束真的拦得住
         run: |

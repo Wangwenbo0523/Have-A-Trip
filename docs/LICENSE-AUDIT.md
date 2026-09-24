@@ -70,6 +70,20 @@ ol  ->  ol-mapbox-style  ->  @mapbox/mapbox-gl-style-spec  ->  { @mapbox/jsonlin
 | `peterpan23/SenTARev-`（景点评论情感） | 无 | — | **不可用** |
 | 官方文旅部门公开名录、自行采集 | 视发布方 | 逐条确认 | **推荐** |
 
+### 本项目当前的数据状况（2026-09-25，S7 落数据）
+
+| 项 | 现状 |
+|---|---|
+| 种子数据 | 50 个景点、19 个标签、175 条标签关联，全部自采 |
+| `source` | `Have-A-Trip 自采（公开事实信息）`（50 / 50 条） |
+| `license` | `MIT`（50 / 50 条） |
+| 第三方数据集 | **一个都没有** —— 本节表格里那些源，一期全部没用 |
+| 图片 | `attraction_image` **0 行** —— 没有可靠出处的图不进仓库 |
+| share-alike | **无**。ODbL / CC BY-SA 义务目前不沾这个库，也没有可传染的衍生物 |
+
+聚合口径与查询语句在 `db/README.md` 的「数据来源清单」一节，S5 的声明页从数据库聚合生成，
+所以将来引入新来源时，声明页会跟着变，不靠人记得改前端。**引入新来源时先回来更新本节。**
+
 ### 处理原则
 
 1. **优先自采或 MIT 数据源**。景点名录本质是事实信息，自己整理最干净。
@@ -105,7 +119,7 @@ vendor 进来的 `frontend/LICENSE`（`Copyright (c) 2019 Zero To Mastery`）原
 | `frontend/src/img/BaganMyanmar.jpg`（675 KB，页头背景） | 上游基底 `zero-to-mastery/travel-guide` 里的实景照片 | **无从查证**。MIT 覆盖的是仓库作者的贡献，不等于贡献者有权授权别人的摄影作品 | **已删除**（2026-09-25，S8）。页头背景改用纯 CSS 渐变，顺带省掉首屏 675 KB |
 | `frontend/public/earth.ico`、`favicon.ico` | 上游基底的占位图标 | 同上，未标注 | 保留但**待替换**：上线前换成自绘图标 |
 | `frontend/src/logo.svg` | 上游基底的 React 标志 | 零引用死资源 | 已删除（2026-09-25，S4） |
-| 景点配图 | 本项目种子数据 | 目前留空（`attraction_image` 为空） | S7 落数据时**每条必须带 `credit` 与 `license` 字段**（数据库层已设为 NOT NULL） |
+| 景点配图 | 本项目种子数据 | 目前留空（`attraction_image` 为 0 行） | S7 已落 50 条景点，**配图仍然一张都没有**。落图时每条必须带 `credit` 与 `license`（数据库层已设为 NOT NULL），且来源要能查证 |
 
 ### 原则
 
@@ -124,7 +138,8 @@ vendor 进来的 `frontend/LICENSE`（`Copyright (c) 2019 Zero To Mastery`）原
 - [x] 两个基底的 LICENSE 随源码保留（`frontend/LICENSE`）
 - [x] **贡献者 DCO 签核已启用**：`scripts/check_dco.py` + `.github/workflows/dco.yml` 逐个 commit 校验（2026-09-25）
 - [x] 图片资产已单独立节审查（见第五节），来源不明的那张已删除
-- [ ] 上线前完成数据层逐条复核
+- [x] 一期数据层已定案（2026-09-25，S7）：50 条全部自采、`license` 为 MIT，无第三方数据集，无图片
+- [ ] 接入新数据源或图片时，回来更新第三、第五节并逐条复核
 - [ ] 定期跑 `python scripts/license_gate.py --strict`
 
 > 以上是工程与合规判断，不构成法律意见。真要闭源时建议请律师过一遍。
