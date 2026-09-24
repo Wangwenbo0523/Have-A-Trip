@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 
 import { fetchRecommendNotes } from "../api/client"
 import { useAIStatus } from "../hooks/useAIStatus"
+import { useI18n } from "../i18n"
 import type { AIRecommendNotes, Recommendation } from "../types"
 import AttractionCard from "./AttractionCard"
 import "../styles/recommendNotes.css"
@@ -12,8 +13,11 @@ import "../styles/recommendNotes.css"
  * 条目、顺序、分数全部来自 /recommendations, 这里只多一层文案: 模型可用时把
  * 「为什么推荐它」那句话改写得更顺, 不可用或润色失败时原样显示后端给的理由。
  * 润色是锦上添花, 拿不到就不显示, 绝不让推荐位变成报错页。
+ *
+ * 理由正文是后端(或模型)产出的内容, 不翻译; 只有「AI 润色」这个标签是界面文案。
  */
 const RecommendationGrid = ({ items }: { items: Recommendation[] }) => {
+  const { t } = useI18n()
   const status = useAIStatus()
   const [notes, setNotes] = useState<AIRecommendNotes | null>(null)
 
@@ -55,7 +59,7 @@ const RecommendationGrid = ({ items }: { items: Recommendation[] }) => {
 
       {notes?.polished ? (
         <p className="recommendNotes__foot">
-          <span className="recommendNotes__chip">AI 润色</span>
+          <span className="recommendNotes__chip">{t("recommend.chip")}</span>
           <span>{notes.disclaimer}</span>
         </p>
       ) : null}

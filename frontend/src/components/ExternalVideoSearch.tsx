@@ -1,6 +1,7 @@
 import React from "react"
 
-import { EXTERNAL_SEARCH_SITES, externalSearchText } from "../lib/externalSearch"
+import { useI18n } from "../i18n"
+import { EXTERNAL_SEARCH_SITES } from "../lib/externalSearch"
 import "../styles/externalSearch.css"
 
 interface Props {
@@ -15,13 +16,14 @@ interface Props {
  * 也不做 iframe 内嵌 —— 那会把第三方脚本和 Cookie 引进来。
  */
 const ExternalVideoSearch = ({ keyword }: Props) => {
+  const { t } = useI18n()
   const trimmed = keyword.trim()
   if (!trimmed) return null
 
   return (
     <section className="detail__section" aria-labelledby="detail-external-search">
       <h3 className="section__title" id="detail-external-search">
-        相关视频
+        {t("external.title")}
       </h3>
       <ul className="externalSearch__list">
         {EXTERNAL_SEARCH_SITES.map((site) => (
@@ -32,15 +34,12 @@ const ExternalVideoSearch = ({ keyword }: Props) => {
               target="_blank"
               rel="noreferrer noopener"
             >
-              {externalSearchText(site, trimmed)}
+              {t("external.link", { site: t(site.nameKey), keyword: trimmed })}
             </a>
           </li>
         ))}
       </ul>
-      <p className="externalSearch__note">
-        点开是站外搜索页, 视频由平台与上传者提供, 与本应用无关;
-        本应用不内嵌播放器, 也不抓取或转载这些内容。
-      </p>
+      <p className="externalSearch__note">{t("external.note")}</p>
     </section>
   )
 }

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 
 import { describeError, searchByAI } from "../api/client"
 import { useAIStatus } from "../hooks/useAIStatus"
+import { useI18n } from "../i18n"
 import type { AISearchResult } from "../types"
 import AttractionList from "./AttractionList"
 import StateMessage from "./StateMessage"
@@ -22,8 +23,11 @@ interface AiSearchPanelProps {
  * 只在后端说 AI 可用时才渲染: 默认配置(LLM_PROVIDER=none)下这个组件什么都不显示,
  * 应用照常运行。模型未配置 / 超时 / 答得不合法时, 后端会降级成关键词检索并返回 200,
  * 所以这里必须把 degraded 与 note 显示出来 —— 不能让用户以为模型真的听懂了。
+ *
+ * note 与 disclaimer 是后端(或模型)的输出, 属于内容不翻译; 界面文案走 i18n。
  */
 const AiSearchPanel = ({ onActiveChange }: AiSearchPanelProps) => {
+  const { t, lang } = useI18n()
   const status = useAIStatus()
   const [query, setQuery] = useState("")
   const [result, setResult] = useState<AISearchResult | null>(null)
@@ -45,7 +49,7 @@ const AiSearchPanel = ({ onActiveChange }: AiSearchPanelProps) => {
     try {
       setResult(await searchByAI(trimmed))
     } catch (err) {
-      setError(describeError(err))
+      setError(describeError(err, lang))
     } finally {
       setLoading(false)
     }
@@ -60,7 +64,7 @@ const AiSearchPanel = ({ onActiveChange }: AiSearchPanelProps) => {
     <section className="aiSearch">
       <form className="aiSearch__form" onSubmit={submit}>
         <label className="aiSearch__label" htmlFor="ai-search">
-          用一句话找景点
+          {t("ai.search.label")}
         </label>
         <div className="aiSearch__row">
           <input
@@ -69,15 +73,15 @@ const AiSearchPanel = ({ onActiveChange }: AiSearchPanelProps) => {
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="例如: 杭州适合慢慢逛的古迹"
+            placeholder={t("ai.search.placeholder")}
             maxLength={200}
           />
           <button className="aiSearch__submit" type="submit" disabled={loading || !query.trim()}>
-            {loading ? "解析中…" : "找一下"}
+            {loading ? t("ai.search.loading") : t("ai.search.submit")}
           </button>
           {result || error ? (
             <button className="aiSearch__clear" type="button" onClick={clear}>
-              清除
+              {t("ai.search.clear")}
             </button>
           ) : null}
         </div>
@@ -85,7 +89,9 @@ const AiSearchPanel = ({ onActiveChange }: AiSearchPanelProps) => {
 
       {loading ? <Loader /> : null}
 
-      {!loading && error ? <StateMessage title="AI 检索失败" detail={error} tone="error" /> : null}
+      {!loading && error ? (
+        <StateMessage title={t("ai.search.error.title")} detail={error} tone="error" />
+      ) : null}
 
       {!loading && !error && result ? (
         <div className="aiSearch__result">
@@ -93,8 +99,8 @@ const AiSearchPanel = ({ onActiveChange }: AiSearchPanelProps) => {
           <p className="aiSearch__disclaimer">{result.disclaimer}</p>
           {result.items.length === 0 ? (
             <StateMessage
-              title="没有匹配的景点"
-              detail={`没有找到和「${result.query}」相关的景点, 换个说法试试`}
+              title={t("ai.search.empty.title")}
+              detail={t("ai.search.empty.detail", { query: result.query })}
             />
           ) : (
             <AttractionList attractions={result.items} />

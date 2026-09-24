@@ -2,8 +2,8 @@ import React from "react"
 import { Link } from "react-router-dom"
 
 import { fetchAttractions, fetchRecommendations } from "../api/client"
-import { APP_TAGLINE } from "../config"
 import { useApi } from "../hooks/useApi"
+import { useI18n } from "../i18n"
 import type { CategoryWithCount } from "../types"
 import AttractionList from "./AttractionList"
 import CategoryCard from "./CategoryCard"
@@ -16,29 +16,28 @@ interface HomePageProps {
 }
 
 const HomePage = ({ categories }: HomePageProps) => {
+  const { t } = useI18n()
   const recommendations = useApi(() => fetchRecommendations(6), [])
   const latest = useApi(() => fetchAttractions({ size: 6, sort: "newest" }), [])
 
   return (
     <main className="page">
       <section className="hero">
-        <h2 className="hero__title">{APP_TAGLINE}</h2>
-        <p className="hero__lead">
-          按分类、城市和标签翻看景点档案, 看点、票价、最佳季节与游览时长一目了然。
-        </p>
+        <h2 className="hero__title">{t("app.tagline")}</h2>
+        <p className="hero__lead">{t("home.lead")}</p>
         <Link className="hero__cta" to="/attractions">
-          浏览全部景点
+          {t("home.cta")}
         </Link>
       </section>
 
       <section className="section" aria-labelledby="home-recommend">
         <h3 className="section__title" id="home-recommend">
-          为你推荐
+          {t("home.recommend")}
         </h3>
         {recommendations.loading ? <Loader /> : null}
         {!recommendations.loading && recommendations.error ? (
           <StateMessage
-            title="推荐暂时拿不到"
+            title={t("home.error.recommend")}
             detail={recommendations.error}
             tone="error"
             onRetry={recommendations.reload}
@@ -48,14 +47,17 @@ const HomePage = ({ categories }: HomePageProps) => {
           recommendations.data.length > 0 ? (
             <RecommendationGrid items={recommendations.data} />
           ) : (
-            <StateMessage title="暂时没有可推荐的景点" detail="多逛几个景点之后推荐会更准" />
+            <StateMessage
+              title={t("home.recommendEmpty.title")}
+              detail={t("home.recommendEmpty.detail")}
+            />
           )
         ) : null}
       </section>
 
       <section className="section" aria-labelledby="home-categories">
         <h3 className="section__title" id="home-categories">
-          按分类浏览
+          {t("home.categories")}
         </h3>
         {categories.length > 0 ? (
           <div className="categoryGrid">
@@ -65,20 +67,20 @@ const HomePage = ({ categories }: HomePageProps) => {
           </div>
         ) : (
           <StateMessage
-            title="分类还没加载出来"
-            detail="确认后端已经启动, 并且执行过 db/schema.sql 与 db/seed/seed.sql"
+            title={t("home.categoriesEmpty.title")}
+            detail={t("home.categoriesEmpty.detail")}
           />
         )}
       </section>
 
       <section className="section" aria-labelledby="home-latest">
         <h3 className="section__title" id="home-latest">
-          最新收录
+          {t("home.latest")}
         </h3>
         {latest.loading ? <Loader /> : null}
         {!latest.loading && latest.error ? (
           <StateMessage
-            title="景点加载失败"
+            title={t("home.error.latest")}
             detail={latest.error}
             tone="error"
             onRetry={latest.reload}

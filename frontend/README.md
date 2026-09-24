@@ -55,6 +55,8 @@ src/
 ├── api/client.ts        # axios 实例 + 各接口的封装 + describeError/getDeviceId
 ├── config.ts            # 站点常量（项目名、仓库地址、基底署名）
 ├── hooks/               # useApi（加载/错误/重试）、useDebouncedValue
+├── lib/display.ts      # 景点名按语种排版（name / name_en 的标题与副标题）
+├── i18n/                # 中英双语文案表 + LanguageProvider / useI18n（无第三方依赖）
 ├── types/index.ts       # 与 backend/app/schemas.py 一一对应
 ├── components/
 │   ├── HomePage.tsx     AttractionBrowser.tsx  CategoryPage.tsx
@@ -74,6 +76,19 @@ src/
 
 设备标识是本地生成的随机串（`localStorage` 里的 `have-a-trip.device_id`），
 **不是定位信息**，也不含任何位置数据。
+
+## 中英双语
+
+界面文案有**中文（默认）**与**英文**两套，切换按钮在页头右上角：中文界面显示 `EN`，英文界面显示 `中文`。
+选择存在 `localStorage["have-a-trip:lang"]`，刷新与换页都保持；`<html lang>` 与页面标题跟着切换。
+
+**只有界面文案**分语种。景点档案（`name` / `summary` / 方案 / 图注 / 来源与许可）与分类名、标签名
+是数据库里的**内容**，两种语种下原样显示；后端返回的 `note` / `disclaimer` 同理。
+唯一的例外是景点名：英文界面下 `name_en` 有值就用它当标题（见 `src/lib/display.ts`），
+没有则回退中文名 —— **库里只填了少数几条英文名**，不替景点编一个。
+
+实现是一张消息表（`src/i18n/messages.ts`）+ 一个 `t()`，**没有引入 i18n 依赖**（本仓库对新增依赖有许可证卡口）。
+英文表缺键时回退中文串，`src/i18n/i18n.test.ts` 会校验两张表的键与占位符一一对应。
 
 ## 契约
 

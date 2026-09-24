@@ -1,11 +1,15 @@
-import type { ALevel, Heritage } from "../types"
+import type { MessageKey } from "../i18n/messages"
+import type { Heritage } from "../types"
 
-/** 世界遗产类别的中文说法。徽章上用短说法, title 与详情页用完整说法。 */
-export const HERITAGE_LABELS: Record<Heritage, { short: string; full: string }> = {
-  cultural: { short: "文化遗产", full: "世界文化遗产" },
-  natural: { short: "自然遗产", full: "世界自然遗产" },
-  mixed: { short: "双重遗产", full: "世界双重遗产" },
+/**
+ * 世界遗产类别的**文案键**。
+ *
+ * 这里存 key 而不是中文串: 翻译归 i18n 管, 这一层只负责「取值 -> 用哪句话」。
+ * 中文串见 src/i18n/messages.ts 的 grade.heritage.*(short 用于徽章,
+ * full 用于 title 提示)。
+ */
+export const HERITAGE_TEXT: Record<Heritage, { short: MessageKey; full: MessageKey }> = {
+  cultural: { short: "grade.heritage.cultural.short", full: "grade.heritage.cultural.full" },
+  natural: { short: "grade.heritage.natural.short", full: "grade.heritage.natural.full" },
+  mixed: { short: "grade.heritage.mixed.short", full: "grade.heritage.mixed.full" },
 }
-
-/** A 级的完整说法。 */
-export const aLevelText = (level: ALevel) => `国家 ${level} 级旅游景区`

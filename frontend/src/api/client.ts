@@ -6,6 +6,7 @@
  */
 import axios from "axios"
 
+import { translate, type Lang } from "../i18n"
 import type {
   AIAskResult,
   AIRecommendNotes,
@@ -34,17 +35,22 @@ const http = axios.create({
   headers: { Accept: "application/json" },
 })
 
-/** 把各种报错翻译成一句可以直接显示给用户的中文。 */
-export function describeError(error: unknown): string {
+/**
+ * 把各种报错翻译成一句可以直接显示给用户的话。
+ *
+ * 默认中文。后端返回的 detail 是**内容**(见 src/i18n/messages.ts 的口径), 原样透传;
+ * 只有前端自己拼的这几句(连不上、超时、状态码)才走文案表, 好跟着语种切换。
+ */
+export function describeError(error: unknown, lang: Lang = "zh"): string {
   if (axios.isAxiosError(error)) {
     const detail = (error.response?.data as { detail?: unknown } | undefined)?.detail
     if (typeof detail === "string") return detail
-    if (error.code === "ECONNABORTED") return "请求超时, 后端可能没在运行"
-    if (!error.response) return `连不上后端 ${API_BASE}, 请先启动 FastAPI 服务`
-    return `后端返回 ${error.response.status}`
+    if (error.code === "ECONNABORTED") return translate(lang, "api.timeout")
+    if (!error.response) return translate(lang, "api.offline", { base: API_BASE })
+    return translate(lang, "api.status", { status: error.response.status })
   }
   if (error instanceof Error) return error.message
-  return "未知错误"
+  return translate(lang, "api.unknown")
 }
 
 const DEVICE_ID_KEY = "have-a-trip.device_id"

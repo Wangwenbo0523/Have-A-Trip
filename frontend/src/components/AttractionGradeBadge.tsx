@@ -1,6 +1,7 @@
 import React from "react"
 
-import { HERITAGE_LABELS, aLevelText } from "../lib/grade"
+import { useI18n } from "../i18n"
+import { HERITAGE_TEXT } from "../lib/grade"
 import type { ALevel, Heritage } from "../types"
 import "../styles/AttractionGradeBadge.css"
 
@@ -14,17 +15,19 @@ interface AttractionGradeBadgeProps {
  * 显示 A 级。两者都为空表示「未核实」, 此时不渲染任何东西, 免得把未核实画成无等级。
  */
 const AttractionGradeBadge = ({ aLevel, heritage }: AttractionGradeBadgeProps) => {
+  const { t } = useI18n()
+
   if (aLevel) {
     return (
-      <span className="gradeBadge gradeBadge--aLevel" title={aLevelText(aLevel)}>
+      <span className="gradeBadge gradeBadge--aLevel" title={t("grade.aLevel", { level: aLevel })}>
         {aLevel}
       </span>
     )
   }
   if (heritage) {
     return (
-      <span className="gradeBadge gradeBadge--heritage" title={HERITAGE_LABELS[heritage].full}>
-        {HERITAGE_LABELS[heritage].short}
+      <span className="gradeBadge gradeBadge--heritage" title={t(HERITAGE_TEXT[heritage].full)}>
+        {t(HERITAGE_TEXT[heritage].short)}
       </span>
     )
   }

@@ -1,6 +1,7 @@
 import React from "react"
 import { useParams } from "react-router-dom"
 
+import { useI18n } from "../i18n"
 import type { CategoryWithCount } from "../types"
 import AttractionBrowser from "./AttractionBrowser"
 
@@ -10,6 +11,7 @@ interface CategoryPageProps {
 }
 
 const CategoryPage = ({ categories }: CategoryPageProps) => {
+  const { t } = useI18n()
   const { slug = "" } = useParams<{ slug: string }>()
   const category = categories.find((item) => item.slug === slug)
 
@@ -17,7 +19,9 @@ const CategoryPage = ({ categories }: CategoryPageProps) => {
     <main className="page">
       <h2 className="page__title">{category ? category.name : slug}</h2>
       <p className="page__subtitle">
-        {category ? `共 ${category.attraction_count} 个景点` : "分类信息还没加载出来"}
+        {category
+          ? t("category.page.subtitle", { count: category.attraction_count })
+          : t("category.page.missing")}
       </p>
       <AttractionBrowser category={slug} />
     </main>

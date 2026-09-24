@@ -3,28 +3,31 @@ import React from "react"
 import { fetchSources } from "../api/client"
 import { APP_REPO_URL, BASE_REPO_NAME, BASE_REPO_URL } from "../config"
 import { useApi } from "../hooks/useApi"
+import { useI18n, type MessageKey } from "../i18n"
 import type { ModificationStatus } from "../types"
 import StateMessage from "./StateMessage"
 
 import "../styles/credits.css"
 
 /**
- * 修改状态 -> 页面上的一句话。
+ * 修改状态 -> **文案键**。
  *
  * unregistered 不是「第四种正常状态」, 而是告警: 库里有 share-alike 来源, 但没人登记过
  * 改没改过。ODbL 与 CC BY-SA 都要求标注, 所以它必须显眼地露出来。
  */
-const MODIFICATION_LABEL: Record<ModificationStatus, string> = {
-  modified: "已修改",
-  unmodified: "未修改",
-  "not-applicable": "无需标注",
-  unregistered: "未登记",
+const MODIFICATION_KEYS: Record<ModificationStatus, MessageKey> = {
+  modified: "credits.modification.modified",
+  unmodified: "credits.modification.unmodified",
+  "not-applicable": "credits.modification.notApplicable",
+  unregistered: "credits.modification.unregistered",
 }
 
 interface CodeAsset {
-  name: string
+  nameKey: MessageKey
+  /** 名称里带变量的(只有前端基底那条)在这里给值 */
+  nameVars?: Record<string, string>
   license: string
-  note: string
+  noteKey: MessageKey
   link?: string
 }
 
@@ -34,43 +37,45 @@ interface CodeAsset {
  */
 const CODE_ASSETS: CodeAsset[] = [
   {
-    name: "Have-A-Trip 本体",
+    nameKey: "credits.asset.self.name",
     license: "MIT",
-    note: "根 LICENSE 的署名为 Copyright (c) 2026 Wangwenbo0523",
+    noteKey: "credits.asset.self.note",
     link: APP_REPO_URL,
   },
   {
-    name: `前端基底 ${BASE_REPO_NAME}`,
+    nameKey: "credits.asset.base.name",
+    nameVars: { name: BASE_REPO_NAME },
     license: "MIT",
-    note: "已大幅修改: 删掉地图与定位、整体换成景点模型。上游 LICENSE 原样保留",
+    noteKey: "credits.asset.base.note",
     link: BASE_REPO_URL,
   },
   {
-    name: "RecBole",
+    nameKey: "credits.asset.recbole.name",
     license: "MIT",
-    note: "推荐引擎, 当 pip 依赖使用, 未改动源码",
+    noteKey: "credits.asset.recbole.note",
     link: "https://github.com/RUCAIBox/RecBole",
   },
   {
-    name: "站点图标 public/favicon.ico",
+    nameKey: "credits.asset.favicon.name",
     license: "MIT",
-    note: "自绘: 由 scripts/make_favicon.py 程序化生成, 与仓库同许可, 不含第三方素材",
+    noteKey: "credits.asset.favicon.note",
     link: `${APP_REPO_URL}/blob/main/scripts/make_favicon.py`,
   },
 ]
 
 const Credits = () => {
+  const { t } = useI18n()
   const { data, loading, error, reload } = useApi(() => fetchSources(), [])
 
   const sourceSection = () => {
-    if (loading) return <StateMessage title="正在加载来源清单" />
+    if (loading) return <StateMessage title={t("credits.sources.loading")} />
     // 错误态在上面统一给过一次, 这里不再重复一个带按钮的报错
     if (!data) return null
     if (data.sources.length === 0) {
       return (
         <StateMessage
-          title="暂无已发布的景点数据"
-          detail="库里还没有 status='published' 的景点。"
+          title={t("credits.sources.empty.title")}
+          detail={t("credits.sources.empty.detail")}
         />
       )
     }
@@ -79,15 +84,15 @@ const Credits = () => {
         <div className="credits__scroll">
           <table className="credits__table">
             <caption className="credits__caption">
-              共 {data.attraction_total} 条已发布景点
+              {t("credits.sources.caption", { total: data.attraction_total })}
             </caption>
             <thead>
               <tr>
-                <th scope="col">来源</th>
-                <th scope="col">许可</th>
-                <th scope="col">景点数</th>
-                <th scope="col">覆盖省级行政区</th>
-                <th scope="col">修改状态</th>
+                <th scope="col">{t("credits.table.source")}</th>
+                <th scope="col">{t("credits.table.license")}</th>
+                <th scope="col">{t("credits.table.attractions")}</th>
+                <th scope="col">{t("credits.table.provinces")}</th>
+                <th scope="col">{t("credits.table.modification")}</th>
               </tr>
             </thead>
             <tbody>
@@ -105,7 +110,7 @@ const Credits = () => {
                           : "credits__flag"
                       }
                     >
-                      {MODIFICATION_LABEL[record.modification]}
+                      {t(MODIFICATION_KEYS[record.modification])}
                     </span>
                   </td>
                 </tr>
@@ -113,34 +118,33 @@ const Credits = () => {
             </tbody>
           </table>
         </div>
-        <p className="credits__note">
-          许可带相同方式共享义务(ODbL / CC BY-SA)时必须有「已修改 / 未修改」的标注。
-          「未登记」的意思是还没登记, 不等于无需标注。
-        </p>
+        <p className="credits__note">{t("credits.note")}</p>
       </>
     )
   }
 
   const imageSection = () => {
-    if (loading) return <StateMessage title="正在加载图片署名" />
+    if (loading) return <StateMessage title={t("credits.images.loading")} />
     if (!data) return null
     if (data.images.length === 0) {
       return (
         <StateMessage
-          title="目前一张配图都没有"
-          detail="库里的图每条都必须带 credit 与 license(两列都是 NOT NULL), 查不到出处的图不进仓库。现在一张都没有, 说明配图还没落库。"
+          title={t("credits.images.empty.title")}
+          detail={t("credits.images.empty.detail")}
         />
       )
     }
     return (
       <div className="credits__scroll">
         <table className="credits__table">
-          <caption className="credits__caption">共 {data.image_total} 张图</caption>
+          <caption className="credits__caption">
+            {t("credits.images.caption", { total: data.image_total })}
+          </caption>
           <thead>
             <tr>
-              <th scope="col">署名</th>
-              <th scope="col">许可</th>
-              <th scope="col">张数</th>
+              <th scope="col">{t("credits.table.credit")}</th>
+              <th scope="col">{t("credits.table.license")}</th>
+              <th scope="col">{t("credits.table.count")}</th>
             </tr>
           </thead>
           <tbody>
@@ -159,45 +163,50 @@ const Credits = () => {
 
   return (
     <main className="page">
-      <h2 className="page__title">数据来源与许可</h2>
-      <p className="page__subtitle">景点数据与图片署名由数据库聚合生成, 不是手写的清单</p>
+      <h2 className="page__title">{t("credits.title")}</h2>
+      <p className="page__subtitle">{t("credits.subtitle")}</p>
 
       {error ? (
-        <StateMessage tone="error" title="来源清单加载失败" detail={error} onRetry={reload} />
+        <StateMessage
+          tone="error"
+          title={t("credits.error.title")}
+          detail={error}
+          onRetry={reload}
+        />
       ) : null}
 
       {data?.needs_attention ? (
         <StateMessage
           tone="error"
-          title="有 share-alike 来源没有登记修改状态"
-          detail="ODbL 与 CC BY-SA 要求标注「是否修改过」。请先在 backend/app/api/sources.py 的 SOURCE_MODIFICATIONS 里登记, 再对外发布。"
+          title={t("credits.attention.title")}
+          detail={t("credits.attention.detail")}
         />
       ) : null}
 
       <section className="section">
-        <h3 className="section__title">景点数据来源</h3>
+        <h3 className="section__title">{t("credits.sources.title")}</h3>
         {sourceSection()}
       </section>
 
       <section className="section">
-        <h3 className="section__title">图片署名</h3>
+        <h3 className="section__title">{t("credits.images.title")}</h3>
         {imageSection()}
       </section>
 
       <section className="section">
-        <h3 className="section__title">代码与静态素材</h3>
+        <h3 className="section__title">{t("credits.code.title")}</h3>
         <div className="credits__scroll">
           <table className="credits__table">
             <thead>
               <tr>
-                <th scope="col">名称</th>
-                <th scope="col">许可</th>
-                <th scope="col">说明</th>
+                <th scope="col">{t("credits.table.name")}</th>
+                <th scope="col">{t("credits.table.license")}</th>
+                <th scope="col">{t("credits.table.note")}</th>
               </tr>
             </thead>
             <tbody>
               {CODE_ASSETS.map((asset) => (
-                <tr key={asset.name}>
+                <tr key={asset.nameKey}>
                   <td>
                     {asset.link ? (
                       <a
@@ -206,14 +215,14 @@ const Credits = () => {
                         target="_blank"
                         rel="noreferrer noopener"
                       >
-                        {asset.name}
+                        {t(asset.nameKey, asset.nameVars)}
                       </a>
                     ) : (
-                      asset.name
+                      t(asset.nameKey, asset.nameVars)
                     )}
                   </td>
                   <td>{asset.license}</td>
-                  <td>{asset.note}</td>
+                  <td>{t(asset.noteKey)}</td>
                 </tr>
               ))}
             </tbody>
@@ -222,12 +231,12 @@ const Credits = () => {
       </section>
 
       <section className="section">
-        <h3 className="section__title">这个应用不做什么</h3>
+        <h3 className="section__title">{t("credits.notDo.title")}</h3>
         <ul className="credits__list">
-          <li>不含地图与定位: 没有地图 SDK, 不采集轨迹, 也不上报位置。</li>
-          <li>评分只来自用户主动打分: 种子数据里的评分恒为 0, 不伪造数字。</li>
-          <li>推荐结果由离线任务整批写入, 接口只读结果表, 不实时跟踪任何个人。</li>
-          <li>站外内容只给搜索链接: 不内嵌播放器、不抓取、不转载, 版权归平台与上传者。</li>
+          <li>{t("credits.notDo.1")}</li>
+          <li>{t("credits.notDo.2")}</li>
+          <li>{t("credits.notDo.3")}</li>
+          <li>{t("credits.notDo.4")}</li>
         </ul>
       </section>
     </main>

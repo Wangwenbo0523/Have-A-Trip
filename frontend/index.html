@@ -7,6 +7,7 @@
     <meta name="theme-color" content="#14161a">
     <meta name="description"
         content="Have-A-Trip 景点大全: 景点档案、检索与个性化推荐。只做景点介绍, 不含地图与定位。">
+    <!-- 静态默认中文; 语种在运行期由 LanguageProvider 覆盖 <html lang> 与 <title>, 见 src/i18n。 -->
     <!-- AOS 样式与脚本都从 npm 包引入(见 src/index.tsx)。
          原先这里有个 cdn.rawgit.com 的 <script>, 该 CDN 已于 2019 年关停。 -->
     <link rel="manifest" href="/manifest.json">
@@ -15,7 +16,7 @@
 </head>
 
 <body>
-    <noscript>需要开启 JavaScript 才能使用本站。</noscript>
+    <noscript>需要开启 JavaScript 才能使用本站。/ JavaScript is required to use this site.</noscript>
     <div id="root"></div>
     <script type="module" src="/src/index.tsx"></script>
 </body>

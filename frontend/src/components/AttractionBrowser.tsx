@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react"
 import { fetchAttractions } from "../api/client"
 import { useApi } from "../hooks/useApi"
 import { useDebouncedValue } from "../hooks/useDebouncedValue"
+import { useI18n, type MessageKey } from "../i18n"
 import type { GradeFilter, PageQuery } from "../types"
 import AiSearchPanel from "./AiSearchPanel"
 import AttractionList from "./AttractionList"
@@ -12,30 +13,30 @@ import Loader from "./utils/Loader"
 
 type SortKey = NonNullable<PageQuery["sort"]>
 
-const SORTS: { value: SortKey; label: string }[] = [
-  { value: "rating", label: "评分优先" },
-  { value: "newest", label: "最新收录" },
-  { value: "name", label: "按名称" },
+/**
+ * 排序按钮的文字是界面文案, 所以这里只存 **文案键**, 渲染时按当前语种查表 ——
+ * 模块级常量存不了语种, 写死中文串的话英文界面下按钮不会跟着变。
+ */
+const SORTS: { value: SortKey; labelKey: MessageKey }[] = [
+  { value: "rating", labelKey: "browser.sort.rating" },
+  { value: "newest", labelKey: "browser.sort.newest" },
+  { value: "name", labelKey: "browser.sort.name" },
 ]
 
 /**
  * 等级筛选。A 级(中国景区质量等级)与世界遗产是两套刻度, 所以在同一组按钮里各占
  * 一项, 空字符串表示「全部」。
+ *
+ * 5A / 4A / 3A 两种语种下写法相同, 但仍然走文案表: 将来英文界面想写成
+ * “5A (China)” 只需要改文案, 不用动这个数组。
  */
-const GRADES: { value: GradeFilter | ""; label: string }[] = [
-  { value: "", label: "全部" },
-  { value: "5A", label: "5A" },
-  { value: "4A", label: "4A" },
-  { value: "3A", label: "3A" },
-  { value: "heritage", label: "世界遗产" },
+const GRADES: { value: GradeFilter | ""; labelKey: MessageKey }[] = [
+  { value: "", labelKey: "browser.grade.all" },
+  { value: "5A", labelKey: "browser.grade.a5" },
+  { value: "4A", labelKey: "browser.grade.a4" },
+  { value: "3A", labelKey: "browser.grade.a3" },
+  { value: "heritage", labelKey: "browser.grade.heritage" },
 ]
-
-/** 空态文案要能区分「筛没了」和「库是空的」, 否则会误导人去跑种子脚本。 */
-const emptyDetail = (keyword: string, grade: GradeFilter | "") => {
-  if (keyword) return `没有找到和「${keyword}」相关的景点, 换个词试试`
-  if (grade) return "这个等级下暂时还没有已发布的景点"
-  return "这里还没有已发布的景点, 先执行 db/seed/seed.sql 导入种子数据"
-}
 
 interface AttractionBrowserProps {
   /** 分类 slug, 不传就是全部景点 */
@@ -45,6 +46,7 @@ interface AttractionBrowserProps {
 
 /** 景点列表: 关键字搜索 + 排序 + 分页。首页、分类页、全部景点页共用。 */
 const AttractionBrowser = ({ category, pageSize = 12 }: AttractionBrowserProps) => {
+  const { t } = useI18n()
   const [keyword, setKeyword] = useState("")
   const [sort, setSort] = useState<SortKey>("rating")
   const [grade, setGrade] = useState<GradeFilter | "">("")
@@ -73,6 +75,13 @@ const AttractionBrowser = ({ category, pageSize = 12 }: AttractionBrowserProps) 
 
   const totalPages = data ? Math.max(1, Math.ceil(data.total / data.size)) : 1
 
+  /** 空态文案要能区分「筛没了」和「库是空的」, 否则会误导人去跑种子脚本。 */
+  const emptyDetail = () => {
+    if (debouncedKeyword) return t("browser.empty.keyword", { keyword: debouncedKeyword })
+    if (grade) return t("browser.empty.grade")
+    return t("browser.empty.default")
+  }
+
   return (
     <div className="browser">
       {/*
@@ -89,10 +98,10 @@ const AttractionBrowser = ({ category, pageSize = 12 }: AttractionBrowserProps) 
             <SearchBox
               value={keyword}
               onChange={setKeyword}
-              placeholder="搜索景点名称或简介…"
+              placeholder={t("search.placeholder")}
             />
             <div className="browser__controls">
-              <div className="browser__grades" role="group" aria-label="等级筛选">
+              <div className="browser__grades" role="group" aria-label={t("browser.grade.aria")}>
                 {GRADES.map((item) => (
                   <button
                     key={item.value || "all"}
@@ -101,11 +110,11 @@ const AttractionBrowser = ({ category, pageSize = 12 }: AttractionBrowserProps) 
                     aria-pressed={grade === item.value}
                     onClick={() => setGrade(item.value)}
                   >
-                    {item.label}
+                    {t(item.labelKey)}
                   </button>
                 ))}
               </div>
-              <div className="browser__sorts" role="group" aria-label="排序方式">
+              <div className="browser__sorts" role="group" aria-label={t("browser.sort.aria")}>
                 {SORTS.map((item) => (
                   <button
                     key={item.value}
@@ -114,7 +123,7 @@ const AttractionBrowser = ({ category, pageSize = 12 }: AttractionBrowserProps) 
                     aria-pressed={sort === item.value}
                     onClick={() => setSort(item.value)}
                   >
-                    {item.label}
+                    {t(item.labelKey)}
                   </button>
                 ))}
               </div>
@@ -125,7 +134,7 @@ const AttractionBrowser = ({ category, pageSize = 12 }: AttractionBrowserProps) 
 
           {!loading && error ? (
             <StateMessage
-              title="景点加载失败"
+              title={t("browser.error.title")}
               detail={error}
               tone="error"
               onRetry={reload}
@@ -133,10 +142,7 @@ const AttractionBrowser = ({ category, pageSize = 12 }: AttractionBrowserProps) 
           ) : null}
 
           {!loading && !error && data && data.items.length === 0 ? (
-            <StateMessage
-              title="没有匹配的景点"
-              detail={emptyDetail(debouncedKeyword, grade)}
-            />
+            <StateMessage title={t("browser.empty.title")} detail={emptyDetail()} />
           ) : null}
 
           {!loading && !error && data && data.items.length > 0 ? (
@@ -144,17 +150,21 @@ const AttractionBrowser = ({ category, pageSize = 12 }: AttractionBrowserProps) 
               <AttractionList attractions={data.items} />
               <div className="browser__pager">
                 <button type="button" disabled={page <= 1} onClick={() => setPage((n) => n - 1)}>
-                  上一页
+                  {t("browser.pager.prev")}
                 </button>
                 <span>
-                  第 {data.page} / {totalPages} 页 · 共 {data.total} 个景点
+                  {t("browser.pager.status", {
+                    page: data.page,
+                    totalPages,
+                    count: data.total,
+                  })}
                 </span>
                 <button
                   type="button"
                   disabled={page >= totalPages}
                   onClick={() => setPage((n) => n + 1)}
                 >
-                  下一页
+                  {t("browser.pager.next")}
                 </button>
               </div>
             </>

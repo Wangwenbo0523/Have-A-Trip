@@ -2,13 +2,18 @@ import React, { useState } from "react"
 
 import { askAboutAttraction, describeError } from "../api/client"
 import { useAIStatus } from "../hooks/useAIStatus"
+import { useI18n, type MessageKey } from "../i18n"
 import type { AIAskResult } from "../types"
 import StateMessage from "./StateMessage"
 import Loader from "./utils/Loader"
 import "../styles/aiAsk.css"
 
 /** 几个常见问题。用户往往不知道该问什么, 给几个能点开的例子比空输入框友好。 */
-const SUGGESTIONS = ["适合带小孩去吗?", "要逛多久?", "什么季节去最好?"]
+const SUGGESTIONS: MessageKey[] = [
+  "ai.ask.suggestion.1",
+  "ai.ask.suggestion.2",
+  "ai.ask.suggestion.3",
+]
 
 interface AiAskBoxProps {
   slug: string
@@ -22,8 +27,11 @@ interface AiAskBoxProps {
  * 答案只能来自这个景点的档案字段, 所以它是**复述**而不是知识问答 —— 档案里没有的
  * (开放时间、天气、交通)后端会明确说不作答。降级时后端返回档案摘录并仍然 200,
  * 所以这里把 note 显示出来, 让人知道这句话是模型写的还是档案里现成的。
+ *
+ * answer / note / disclaimer 都是后端的输出(内容), 原样显示不翻译。
  */
 const AiAskBox = ({ slug, name }: AiAskBoxProps) => {
+  const { t, lang } = useI18n()
   const status = useAIStatus()
   const [question, setQuestion] = useState("")
   const [result, setResult] = useState<AIAskResult | null>(null)
@@ -41,7 +49,7 @@ const AiAskBox = ({ slug, name }: AiAskBoxProps) => {
     try {
       setResult(await askAboutAttraction(slug, trimmed))
     } catch (err) {
-      setError(describeError(err))
+      setError(describeError(err, lang))
     } finally {
       setLoading(false)
     }
@@ -55,10 +63,8 @@ const AiAskBox = ({ slug, name }: AiAskBoxProps) => {
 
   return (
     <section className="aiAsk">
-      <h3 className="section__title">问一句</h3>
-      <p className="aiAsk__hint">
-        答案只依据这个景点的档案字段; 档案里没有的信息 (开放时间、天气、交通) 不会作答。
-      </p>
+      <h3 className="section__title">{t("ai.ask.title")}</h3>
+      <p className="aiAsk__hint">{t("ai.ask.hint")}</p>
 
       <form className="aiAsk__form" onSubmit={submit}>
         <input
@@ -66,26 +72,30 @@ const AiAskBox = ({ slug, name }: AiAskBoxProps) => {
           type="text"
           value={question}
           onChange={(event) => setQuestion(event.target.value)}
-          placeholder={`关于「${name}」, 想问点什么?`}
-          aria-label="就这个景点问一句"
+          placeholder={t("ai.ask.placeholder", { name })}
+          aria-label={t("ai.ask.aria")}
           maxLength={200}
         />
         <button className="aiAsk__submit" type="submit" disabled={loading || !question.trim()}>
-          {loading ? "查阅中…" : "问问看"}
+          {loading ? t("ai.ask.loading") : t("ai.ask.submit")}
         </button>
         {result || error ? (
           <button className="aiAsk__clear" type="button" onClick={reset}>
-            清除
+            {t("ai.ask.clear")}
           </button>
         ) : null}
       </form>
 
       {result === null && !loading && !error ? (
         <ul className="aiAsk__suggestions">
-          {SUGGESTIONS.map((item) => (
-            <li key={item}>
-              <button type="button" className="aiAsk__suggestion" onClick={() => setQuestion(item)}>
-                {item}
+          {SUGGESTIONS.map((key) => (
+            <li key={key}>
+              <button
+                type="button"
+                className="aiAsk__suggestion"
+                onClick={() => setQuestion(t(key))}
+              >
+                {t(key)}
               </button>
             </li>
           ))}
@@ -94,7 +104,9 @@ const AiAskBox = ({ slug, name }: AiAskBoxProps) => {
 
       {loading ? <Loader /> : null}
 
-      {!loading && error ? <StateMessage title="问不出来" detail={error} tone="error" /> : null}
+      {!loading && error ? (
+        <StateMessage title={t("ai.ask.error.title")} detail={error} tone="error" />
+      ) : null}
 
       {!loading && !error && result ? (
         <div className="aiAsk__answer">

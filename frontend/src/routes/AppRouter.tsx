@@ -10,31 +10,39 @@ import Header from "../components/Header"
 import HomePage from "../components/HomePage"
 import ItineraryPlanner from "../components/ItineraryPlanner"
 import StateMessage from "../components/StateMessage"
+import { useI18n } from "../i18n"
 import type { CategoryWithCount } from "../types"
 
-const AllAttractions = () => (
-  <main className="page">
-    <h2 className="page__title">全部景点</h2>
-    <p className="page__subtitle">支持关键字搜索、排序与分页</p>
-    <AttractionBrowser />
-  </main>
-)
+const AllAttractions = () => {
+  const { t } = useI18n()
+  return (
+    <main className="page">
+      <h2 className="page__title">{t("router.attractions.title")}</h2>
+      <p className="page__subtitle">{t("router.attractions.subtitle")}</p>
+      <AttractionBrowser />
+    </main>
+  )
+}
 
-const NotFound = () => (
-  <main className="page">
-    <StateMessage title="页面不存在" detail="检查一下链接, 或者回首页看看" />
-  </main>
-)
+const NotFound = () => {
+  const { t } = useI18n()
+  return (
+    <main className="page">
+      <StateMessage title={t("router.notFound.title")} detail={t("router.notFound.detail")} />
+    </main>
+  )
+}
 
-const Planner = () => (
-  <main className="page">
-    <h2 className="page__title">帮我排行程</h2>
-    <p className="page__subtitle">
-      说一句你想怎么玩, AI 从本站景点档案里挑出合适的, 按天排好
-    </p>
-    <ItineraryPlanner />
-  </main>
-)
+const Planner = () => {
+  const { t } = useI18n()
+  return (
+    <main className="page">
+      <h2 className="page__title">{t("router.planner.title")}</h2>
+      <p className="page__subtitle">{t("router.planner.subtitle")}</p>
+      <ItineraryPlanner />
+    </main>
+  )
+}
 
 interface AppRouterProps {
   categories: CategoryWithCount[]

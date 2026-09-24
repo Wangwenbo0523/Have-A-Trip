@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react"
 import { Link } from "react-router-dom"
 
 import { createItinerary, describeError, fetchItinerary, itineraryRejection } from "../api/client"
+import { useI18n, type Lang } from "../i18n"
 import type { Itinerary, ItineraryItem, ItineraryRejection } from "../types"
 import StateMessage from "./StateMessage"
 import Loader from "./utils/Loader"
@@ -12,11 +13,19 @@ const POLL_INTERVAL_MS = 2000
 
 const DAY_OPTIONS = [1, 2, 3, 4, 5, 6, 7, 10, 14]
 
-/** 后端只给 retry_after(ISO), 显示成「明天 0 点」比一串时间戳有用。 */
-function formatRetry(iso: string): string {
+/**
+ * 后端只给 retry_after(ISO), 显示成「明天 0 点」比一串时间戳有用。
+ * locale 跟着语种走 —— 中文的「9/26 00:00」和英文的「9/26, 12:00 AM」写法不一样。
+ */
+function formatRetry(iso: string, lang: Lang, fallback: string): string {
   const when = new Date(iso)
-  if (Number.isNaN(when.getTime())) return "稍后再试"
-  return when.toLocaleString("zh-CN", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })
+  if (Number.isNaN(when.getTime())) return fallback
+  return when.toLocaleString(lang === "en" ? "en-US" : "zh-CN", {
+    month: "numeric",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  })
 }
 
 function groupByDay(items: ItineraryItem[]): [number, ItineraryItem[]][] {
@@ -37,8 +46,11 @@ function groupByDay(items: ItineraryItem[]): [number, ItineraryItem[]][] {
  *
  * 失败的三种情形分开显示: failed(调用了模型但失败)给人话, rejected(被限额拦下)
  * 给「什么时候再来」, 网络错给 describeError。混成一句会让用户以为是自己的输入有问题。
+ *
+ * itinerary.note / item.note / item.reason 都是后端(或模型)的输出, 属于内容不翻译。
  */
 const ItineraryPlanner = () => {
+  const { t, lang } = useI18n()
   const [requestText, setRequestText] = useState("")
   const [days, setDays] = useState(3)
   const [itinerary, setItinerary] = useState<Itinerary | null>(null)
@@ -62,7 +74,7 @@ const ItineraryPlanner = () => {
       try {
         next = await fetchItinerary(token)
       } catch (err) {
-        if (alive.current) setError(describeError(err))
+        if (alive.current) setError(describeError(err, lang))
         return
       }
       if (!alive.current) return
@@ -71,7 +83,7 @@ const ItineraryPlanner = () => {
     }
     // 到这里说明超过了后端给的轮询上限。行程可能还在跑, 提示用户刷新而不是继续等。
     if (alive.current) {
-      setError("等得有点久了。行程可能还在生成, 稍后刷新看看。")
+      setError(t("planner.error.timeout"))
     }
   }
 
@@ -96,7 +108,7 @@ const ItineraryPlanner = () => {
       if (!alive.current) return
       const blocked = itineraryRejection(err)
       if (blocked) setRejection(blocked)
-      else setError(describeError(err))
+      else setError(describeError(err, lang))
     } finally {
       if (alive.current) setBusy(false)
     }
@@ -108,26 +120,34 @@ const ItineraryPlanner = () => {
     setError("")
   }
 
+  /** 被限额拦下时要说清「什么时候能再来」, 时间戳本地化后再拼进文案。 */
+  const retryDetail = (blocked: ItineraryRejection) => {
+    const when = formatRetry(blocked.retry_after, lang, t("planner.retry.later"))
+    return blocked.limit
+      ? t("planner.rejected.withLimit", { limit: blocked.limit, when })
+      : t("planner.rejected.withoutLimit", { when })
+  }
+
   const waiting = busy && itinerary !== null && (itinerary.status === "pending" || itinerary.status === "generating")
 
   return (
     <section className="planner">
       <form className="planner__form" onSubmit={submit}>
         <label className="planner__label" htmlFor="planner-request">
-          说说你想怎么玩
+          {t("planner.label")}
         </label>
         <textarea
           id="planner-request"
           className="planner__input"
           value={requestText}
           onChange={(event) => setRequestText(event.target.value)}
-          placeholder="例如: 带小孩去杭州玩三天, 不想爬山, 预算两千"
+          placeholder={t("planner.placeholder")}
           maxLength={300}
           rows={3}
         />
         <div className="planner__row">
           <label className="planner__days" htmlFor="planner-days">
-            天数
+            {t("planner.days")}
             <select
               id="planner-days"
               value={days}
@@ -135,17 +155,17 @@ const ItineraryPlanner = () => {
             >
               {DAY_OPTIONS.map((value) => (
                 <option key={value} value={value}>
-                  {value} 天
+                  {value === 1 ? t("planner.dayOption.one") : t("planner.dayOption", { days: value })}
                 </option>
               ))}
             </select>
           </label>
           <button className="planner__submit" type="submit" disabled={busy || !requestText.trim()}>
-            {busy ? "生成中…" : "帮我排一下"}
+            {busy ? t("planner.busy") : t("planner.submit")}
           </button>
           {itinerary || rejection || error ? (
             <button className="planner__clear" type="button" onClick={reset}>
-              清除
+              {t("planner.clear")}
             </button>
           ) : null}
         </div>
@@ -155,24 +175,20 @@ const ItineraryPlanner = () => {
 
       {!busy && rejection ? (
         <StateMessage
-          title="今天排得够多了"
-          detail={
-            rejection.limit
-              ? `每个设备每天最多 ${rejection.limit} 次, ${formatRetry(rejection.retry_after)} 之后可以再来。`
-              : `${formatRetry(rejection.retry_after)} 之后可以再来。`
-          }
+          title={t("planner.rejected.title")}
+          detail={retryDetail(rejection)}
           tone="error"
         />
       ) : null}
 
       {!busy && !rejection && error ? (
-        <StateMessage title="没能排出行程" detail={error} tone="error" />
+        <StateMessage title={t("planner.error.title")} detail={error} tone="error" />
       ) : null}
 
       {!busy && itinerary && itinerary.status === "failed" ? (
         <StateMessage
-          title="这次没排出来"
-          detail={itinerary.error || "再试一次, 或者把需求说得具体一点。"}
+          title={t("planner.failed.title")}
+          detail={itinerary.error || t("planner.failed.fallback")}
           tone="error"
         />
       ) : null}
@@ -182,7 +198,7 @@ const ItineraryPlanner = () => {
           {itinerary.note ? <p className="planner__note">{itinerary.note}</p> : null}
           {groupByDay(itinerary.items).map(([day, items]) => (
             <article className="planner__day" key={day}>
-              <h3 className="planner__dayTitle">第 {day} 天</h3>
+              <h3 className="planner__dayTitle">{t("planner.dayTitle", { day })}</h3>
               <ol className="planner__stops">
                 {items.map((item) => (
                   <li className="planner__stop" key={`${item.day_index}-${item.seq}`}>
