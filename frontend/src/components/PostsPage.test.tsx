@@ -289,7 +289,7 @@ describe("PostsPage", () => {
     await screen.findByText("湖边光正好。")
 
     // 第一页的游标拿在手上, 按钮就该在
-    const more = screen.getByRole("button", { name: "加载更多" })
+    const more = await screen.findByRole("button", { name: "加载更多" })
 
     // 第二页就是最后一页: 按钮收起, 换成一句收尾
     mockedList.mockResolvedValueOnce(
@@ -312,7 +312,7 @@ describe("PostsPage", () => {
     mockedList.mockResolvedValueOnce(
       page([post({ id: 4, body: "更旧的 A" })], { next_cursor: 4 }),
     )
-    await userEvent.click(screen.getByRole("button", { name: "加载更多" }))
+    await userEvent.click(await screen.findByRole("button", { name: "加载更多" }))
 
     await waitFor(() =>
       expect(mockedList).toHaveBeenLastCalledWith({
@@ -330,7 +330,7 @@ describe("PostsPage", () => {
     await screen.findByText("湖边光正好。")
 
     mockedList.mockRejectedValueOnce(new Error("连不上后端"))
-    await userEvent.click(screen.getByRole("button", { name: "加载更多" }))
+    await userEvent.click(await screen.findByRole("button", { name: "加载更多" }))
 
     expect(await screen.findByText("连不上后端")).toBeInTheDocument()
     // 游标没动, 所以按钮还在, 再点还是这一页
@@ -348,7 +348,7 @@ describe("PostsPage", () => {
     mockedList.mockResolvedValueOnce(
       page([post({ id: 8, body: "第二条" }), post({ id: 7, body: "更旧的 B" })], { next_cursor: null }),
     )
-    await userEvent.click(screen.getByRole("button", { name: "加载更多" }))
+    await userEvent.click(await screen.findByRole("button", { name: "加载更多" }))
 
     expect(await screen.findByText("更旧的 B")).toBeInTheDocument()
     expect(screen.getAllByText("第二条")).toHaveLength(1)
@@ -360,7 +360,7 @@ describe("PostsPage", () => {
     await screen.findByText("湖边光正好。")
 
     mockedList.mockResolvedValueOnce(page([post({ id: 5, body: "更旧的" })], { next_cursor: null }))
-    await userEvent.click(screen.getByRole("button", { name: "加载更多" }))
+    await userEvent.click(await screen.findByRole("button", { name: "加载更多" }))
     await screen.findByText("更旧的")
 
     // 勾「只看我的」= 换了一批数据: 位置已经变了, 接着往下接没有意义
@@ -376,7 +376,7 @@ describe("PostsPage", () => {
     await screen.findByText("湖边光正好。")
 
     mockedList.mockResolvedValueOnce(page([post({ id: 3, body: "更旧的 C" })], { next_cursor: null }))
-    await userEvent.click(screen.getByRole("button", { name: "加载更多" }))
+    await userEvent.click(await screen.findByRole("button", { name: "加载更多" }))
 
     await waitFor(() =>
       expect(mockedList).toHaveBeenLastCalledWith({

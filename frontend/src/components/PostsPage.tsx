@@ -6,7 +6,7 @@ import { useApi } from "../hooks/useApi"
 import { useI18n } from "../i18n"
 import { fetchAllAttractions } from "../lib/attractions"
 import { localizedName } from "../lib/display"
-import type { Post } from "../types"
+import type { Post, PostPage } from "../types"
 import PostComposer from "./PostComposer"
 import PostList from "./PostList"
 import StateMessage from "./StateMessage"
@@ -30,9 +30,10 @@ const PostsPage = () => {
   const [onlyMine, setOnlyMine] = useState(false)
   const [failure, setFailure] = useState("")
   // 「加载更多」翻出来的后续页与第一页分开存: 第一页归 useApi 管(重试、切筛选、发完
-  // 刷新都走它), 这里只负责往后接
-  const [older, setOlder] = useState<Post[]>([])
-  const [cursor, setCursor] = useState<number | null>(null)
+  // 刷新都走它), 这里只负责往后接。存整页而不是摊平的数组, 是为了拿到每页自己的
+  // next_cursor: 一页还没翻时游标直接读第一页回的那个, 不必先进 state 再等一次 effect
+  // —— 否则按钮会比列表晚一帧才出现, 而"晚一帧"在测试里就是竞态
+  const [pages, setPages] = useState<PostPage[]>([])
   const [moreLoading, setMoreLoading] = useState(false)
   const [moreFailure, setMoreFailure] = useState("")
 
@@ -44,11 +45,13 @@ const PostsPage = () => {
   // 景点选择器的候选: 全库已发布景点, 与对比页共用同一个加载器
   const spots = useApi(fetchAllAttractions, [])
 
+  // 有后续页时游标以最后一页为准(它可能就是 null = 到底了), 否则用第一页回的那个
+  const cursor = pages.length > 0 ? pages[pages.length - 1].next_cursor : (data?.next_cursor ?? null)
+
   // 第一页换了(刚发过、刚删过、切了筛选)就把翻出来的后续页丢掉, 游标也跟着重来:
   // 那时位置已经变了, 接着往下接只会把看过的东西再摆一遍
   useEffect(() => {
-    setOlder([])
-    setCursor(data?.next_cursor ?? null)
+    setPages([])
     setMoreFailure("")
   }, [data])
 
@@ -57,12 +60,21 @@ const PostsPage = () => {
     [attraction, spots.data],
   )
 
-  // 第一页是权威顺序: 后续页与它有重合时(刚删过一条, 后面整体上移一格)以第一页为准
+  // 第一页是权威顺序: 后续页与它有重合时(刚删过一条, 后面整体上移一格)以第一页为准;
+  // 后续页之间也逐个去过重, 免得同一页被接了两次
   const items = useMemo(() => {
     const head = data?.items ?? []
     const seen = new Set(head.map((item) => item.id))
-    return [...head, ...older.filter((item) => !seen.has(item.id))]
-  }, [data, older])
+    const merged = [...head]
+    for (const page of pages) {
+      for (const item of page.items) {
+        if (seen.has(item.id)) continue
+        seen.add(item.id)
+        merged.push(item)
+      }
+    }
+    return merged
+  }, [data, pages])
 
   const remove = async (post: Post) => {
     setFailure("")
@@ -86,8 +98,7 @@ const PostsPage = () => {
         onlyMine,
         before: cursor,
       })
-      setOlder((prev) => [...prev, ...next.items])
-      setCursor(next.next_cursor)
+      setPages((prev) => [...prev, next])
     } catch (err) {
       // 出错就停在原地: 游标没动, 再点一次还是这一页
       setMoreFailure(describeError(err, lang))
@@ -166,7 +177,7 @@ const PostsPage = () => {
             </button>
             {moreFailure ? <span className="posts__moreError">{moreFailure}</span> : null}
           </div>
-        ) : older.length > 0 ? (
+        ) : pages.length > 0 ? (
           <p className="posts__end">{t("posts.more.end")}</p>
         ) : null
       ) : null}
