@@ -11,7 +11,8 @@ import "../styles/attractionPicks.css"
 /**
  * 首页的「出去走走」—— 打开首页弹出三个景点, 尽量挑近的。
  *
- * 「近」只到城市级: 后端按 IP 猜一次归属地, 同城不够用同省补, 再不够才全国随机。
+ * 「近」只到城市级: 后端按 IP 猜一次归属地, 同城不够用同省补, 再不够用国内补, 连国内都不够
+ * 才轮到全部景点(库里的境外景点摊在 30 来个国家, 不这么收口首页就会推出境外的)。
  * 猜出来的位置**必须写在脸上** —— 标题、位置那一行与页脚都要说清依据(见 nearbyLine):
  * 不说清来源的「给你推荐」比随机更糟, 用户会以为我们真知道他在哪儿。
  * 产品本身不做地图与精确定位, 这一点在页脚与 README 里都写明。
@@ -48,8 +49,9 @@ function markSeen(): void {
  *
  * - scope=city: 猜到你在 X, 三个都在附近
  * - scope=region: 猜到你在 X, 同城不够三个, 用省内的补齐了
- * - 其余但 located: 位置猜到了, 可这一带收录的不到三个, 剩下的是全国随机补的
- * - 没位置: 没认出你在哪儿, 三个都是全国随机
+ * - scope=nation 且 located: 位置猜到了, 可这一带收录的不到三个, 剩下的是国内补的
+ * - scope=nation 但没位置: 没认出你在哪儿, 三个都是国内随机
+ * - scope=world: 连国内都不够三个(库小, 或你在境外), 剩下的是从全部景点里抽的
  *
  * 后端给的是**库内取值**(杭州市 / 浙江省), 直接显示即可, 前端不再自己拼「市」。
  * 单独一个函数是因为这段话最容易被改糊, 而它恰恰是这一块唯一能说明依据的地方。
@@ -57,6 +59,10 @@ function markSeen(): void {
 export function nearbyLine(result: NearbyResult, t: Translate): string {
   // scope=region 说的是「省内的补齐了」, 这里就得报省份 —— 报城市会自相矛盾
   // (「猜你在杭州市。同城不够三个」), 而这两种写法差一个字, 极容易写错
+  // 先判 world: 它的说法与「国内」正相反, 判断顺序错了就会说反话
+  if (result.scope === "world") {
+    return t("home.picks.world")
+  }
   if (result.scope === "city" && result.city) {
     return t("home.picks.nearCity", { city: result.city })
   }

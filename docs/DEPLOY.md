@@ -98,9 +98,12 @@ WantedBy=multi-user.target
 所以不要拿 HTTP 200 当「一切正常」，要读 `status` 字段。
 
 **按位置推荐（可选）**：配了 `GEO_IP_PROVIDER` 之后，首页「出去走走」会拿访客 IP 去问一次归属地，
-只取城市/省份名做**同城 → 同省 → 全国**的三级就近抽取（库里的 `lat/lon` 全是 NULL，算不出公里数）。
-三条边界：① 位置只用于这一次查询 —— 不落库、不写 cookie、不返回坐标，日志里也不记；② 服务超时/连不上/
-返回的写法对不上库内取值时一律**退回全国随机**并在响应里标 `scope=nation`，不是报错；③ ip-api 免费档
+只取城市/省份名做**同城 → 同省 → 国内 → 全部**的四级就近抽取（库里的 `lat/lon` 全是 NULL，算不出公里数）。
+第三级按**库内主国**（`country_code=CN`，与 `/stats` 的境内/境外同一口径）收口，因为库里 40 条境外景点摊在
+30 来个国家，不收口首页第一屏就会推出境外的景点；访客**已知在境外**时跳过这一级，直接走全部随机，不为
+每个国家只有一两条的地方做国别特判。四条边界：① 位置只用于这一次查询 —— 不落库、不写 cookie、不返回坐标，
+日志里也不记；② 服务超时/连不上/返回的写法对不上库内取值时一律**退回国内随机**并在响应里标 `scope=nation`，
+不是报错；③ ip-api 免费档
 45 次/分钟且只提供 http，按「每次打开首页一次」的量级够用，量大了请换自建服务（`GEO_IP_PROVIDER=custom`）。
 **不要把 `GEO_TRUST_FORWARDED_FOR` 当默认打开**：那个头谁都能写，信了就等于让伪造的头把所有人指到同一个城市。
 
@@ -209,7 +212,8 @@ python scripts/reclaim_itineraries.py
 - [ ] `python scripts/reclaim_itineraries.py --dry-run` 没有长期积压的 `generating`
 - [ ] 若 `EMBEDDING_PROVIDER` 指向云端：确认**景点档案文本**出境已过合规（离线向量化会把景点描述发给服务商，见 `docs/LICENSE-AUDIT.md` 第七节）
 - [ ] 若开了 `GEO_IP_PROVIDER`：从公网访问 `/api/v1/attractions/nearby` 能拿到 `scope=city` 或 `scope=region`（本机 `127.0.0.1` 一定走 `nation`，那是正常的）；反代部署时 `GEO_TRUST_FORWARDED_FOR` 已打开，且代理是**覆盖**而不是追加该头
-- [ ] 若没开 `GEO_IP_PROVIDER`：`/api/v1/attractions/nearby` 仍返回三个且 `scope=nation`，过程中没有任何外部归属地请求
+- [ ] 若没开 `GEO_IP_PROVIDER`：`/api/v1/attractions/nearby` 仍返回三个、`scope=nation`，且三个的
+      `country_code` 全是 `CN`（这就是库内主国那一级在起作用），过程中没有任何外部归属地请求
 - [ ] 刷新 `/attraction/<某个 slug>` 不 404（SPA 回落生效）
 - [ ] 静态素材与生成脚本一致：`python scripts/make_favicon.py --check` 与 `python scripts/make_attraction_covers.py --check` 都通过
 - [ ] 前端产物里没有任何地图 SDK：`grep -rIn "leaflet\|mapbox\|ol/" dist/assets` 应为空

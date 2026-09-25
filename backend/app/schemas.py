@@ -117,20 +117,22 @@ class AttractionDetail(AttractionListItem):
     source_url: str | None = None
     updated_at: datetime
 
-# 就近推荐用到了哪一层。没有第四档: 库里的 lat/lon 全是 NULL(见 db/README.md 的数据口径),
-# 算不出公里数, 所以「近」只能是同城 -> 同省 -> 全国。
-NearbyScope = Literal["city", "region", "nation"]
+# 就近推荐用到了哪一层。四档: 同城 -> 同省 -> 国内 -> 全部。库里的 lat/lon 全是 NULL
+# (见 db/README.md 的数据口径), 算不出公里数, 所以「近」只能按行政层级近似。
+NearbyScope = Literal["city", "region", "nation", "world"]
 
 
 class NearbyResult(BaseModel):
     """按 IP 猜出来的就近推荐。
 
     `scope` 取结果里**最远**的那一层: 三个全在同城是 city, 有同省补进来的算 region,
-    一旦掺进全国随机就是 nation。
+    有国内(库内主国)补进来的算 nation, 连国内都凑不满、掺进了境外景点才是 world ——
+    world 只在库很小、或访客**已知在境外**时才会出现。
 
     `located` 是「在你**库里有收录**的城市/省份上对上了」, 而不是「认出了你的 IP」——
-    认出来了但库里那个城市还没有景点时它也是 false, 这时 scope 必然是 nation。
-    两个字段合起来说明白了前端该怎么说这句话(见 home.picks.located / home.picks.fallback)。
+    认出来了但库里那个城市还没有景点时它也是 false, 这时 scope 是 nation 或 world。
+    两个字段合起来说明白了前端该怎么说这句话(见 i18n 的 home.picks.nearCity /
+    nearRegion / mixed / unknown / world —— 五种说法, 每一种都得是真话)。
 
     刻意不回归属地原文: 库里没有的写法(境外城市、直辖市的区)报给前端只会让人困惑,
     要展示就展示我们真正拿去查库的那两个值。

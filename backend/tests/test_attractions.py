@@ -238,7 +238,7 @@ def test_nearby_is_not_swallowed_by_the_detail_route(client, seeded):
 
 
 def test_nearby_without_a_location_still_returns_three(client, seeded, no_lookup):
-    """认不出你在哪儿也照常给三个全国随机, 但必须如实说清楚 —— 不假装就近。"""
+    """认不出你在哪儿也照常给三个国内随机, 但必须如实说清楚 —— 不假装就近。"""
     body = get_json(client, f"{API}/attractions/nearby")
     assert len(body["items"]) == 3
     assert body["located"] is False
@@ -323,6 +323,62 @@ def test_nearby_the_national_fill_is_still_random(client, seeded, from_hangzhou)
         for _ in range(30)
     }
     assert len(seen) > 1
+
+
+def add_overseas(db_session, seeded, *, slug="banff", country="CA"):
+    """加一条境外景点。默认夹具那 5 条全是 CN, 不补一条就测不到「境外会不会掺进来」。"""
+    spot = Attraction(
+        slug=slug, name="班夫国家公园", category_id=seeded["nature"].id,
+        city="班夫", province="阿尔伯塔省", country_code=country,
+        status="published", source="测试夹具", license="MIT",
+    )
+    db_session.add(spot)
+    db_session.commit()
+    return spot
+
+
+def test_nearby_fills_within_the_home_country_not_the_whole_world(
+    client, seeded, db_session, no_lookup
+):
+    """第三级是「国内」不是「全世界」。
+
+    库里 156 条已发布有 40 条在境外, 不按国别收口的话一次要三个有近六成概率掺进境外
+    景点 —— 首页第一屏推一张去加拿大的机票说不通。这里国内 5 条、境外 1 条, 每轮要 5 条,
+    跑 20 轮: 国内正好够用, 境外那条一次都不该进来(不加国别过滤时每轮都有 5/6 的概率
+    抽到它, 20 轮全躲开的可能小于亿分之一 —— 这条用例不是摆设)。
+    """
+    add_overseas(db_session, seeded)
+    for _ in range(20):
+        body = get_json(client, f"{API}/attractions/nearby", limit=5)
+        slugs = {item["slug"] for item in body["items"]}
+        assert body["scope"] == "nation"
+        assert "banff" not in slugs, "国内还有得抽的时候不该掺境外景点"
+        assert len(slugs) == 5
+
+
+def test_nearby_falls_back_to_the_whole_catalogue_when_home_is_not_enough(
+    client, seeded, db_session, no_lookup
+):
+    """国内凑不满才轮到第四级, 而且要如实把 scope 改成 world。"""
+    add_overseas(db_session, seeded)
+    body = get_json(client, f"{API}/attractions/nearby", limit=6)
+    slugs = [item["slug"] for item in body["items"]]
+    assert body["scope"] == "world"
+    assert len(slugs) == 6
+    assert slugs[-1] == "banff", "境外的只能补在最后, 不能挤到前面的就近位"
+
+
+def test_nearby_does_not_claim_home_for_a_visitor_abroad(client, seeded, db_session, from_hangzhou):
+    """访客已知在境外时**跳过**「国内」这一级。
+
+    那边每个国家库内只有一两条(见 /stats 的 by_country), 按国别抽等于把「就近」变成
+    「就那一条」; 直接走全部随机更诚实, 页面上也会说「从全部景点里抽的」而不是「国内」。
+    """
+    add_overseas(db_session, seeded)
+    from_hangzhou(attr({"city": "巴黎", "regionName": "法兰西岛", "countryCode": "FR"}))
+    body = get_json(client, f"{API}/attractions/nearby", limit=2)
+    assert body["located"] is False
+    assert body["scope"] == "world", "要是还先抽国内, 这两条就会全是 CN 并报成 nation"
 
 
 def test_nearby_limit_is_bounded(client, seeded):

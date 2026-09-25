@@ -100,7 +100,7 @@ export async function fetchAttractions(query: PageQuery = {}): Promise<Page<Attr
  * 「换一批」直接再调一次即可, 不需要什么刷新参数。
  *
  * 首页的「出去走走」走的是下面那条 fetchNearbyAttractions(它认不出来时会自己退回
- * 全国随机); 这条留给不需要位置的入口。
+ * 国内随机); 这条留给不需要位置的入口。
  */
 export async function fetchRandomAttractions(limit = 3): Promise<Attraction[]> {
   const { data } = await http.get<Attraction[]>("/attractions/random", { params: { limit } })
@@ -110,7 +110,7 @@ export async function fetchRandomAttractions(limit = 3): Promise<Attraction[]> {
 /**
  * 按 IP 猜你在哪儿, 尽量抽附近的三个 —— 首页「出去走走」用这个。
  *
- * 认不出位置**不是错误**: 后端照常返回全国随机并把 scope 标成 nation, 所以拿到的
+ * 认不出位置**不是错误**: 后端照常返回国内随机并把 scope 标成 nation, 所以拿到的
  * 一定是三个(库非空时), 调用方只需按 scope / located 如实说明依据。
  * 与随机那条一样**不缓存**, 「换一批」再调一次即可(每次都会重新猜一次位置)。
  */

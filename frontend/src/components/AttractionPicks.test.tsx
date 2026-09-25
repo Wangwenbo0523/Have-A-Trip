@@ -94,7 +94,7 @@ describe("AttractionPicks", () => {
     await screen.findByRole("dialog")
     const line = await screen.findByText(/^猜你在/)
     expect(line).toHaveTextContent("猜你在杭州市 —— 这三个就在附近。")
-    // 那一行只有一种说法: 说了在同城就不能又说「全国随机」(页脚那一段另算)
+    // 那一行只有一种说法: 说了在同城就不能又说「国内/全部」(页脚那一段另算)
     expect(line).not.toHaveTextContent("全国")
   })
 
@@ -108,7 +108,7 @@ describe("AttractionPicks", () => {
     ).toBeInTheDocument()
   })
 
-  it("位置认出来了但附近不够时, 明说其余是全国随机补的", async () => {
+  it("位置认出来了但附近不够时, 明说其余是国内补的", async () => {
     mockedNearby.mockResolvedValue({
       items: [attraction("west-lake", "西湖"), attraction("palace-museum", "故宫博物院", "北京市")],
       located: true,
@@ -120,11 +120,11 @@ describe("AttractionPicks", () => {
 
     await screen.findByRole("dialog")
     expect(
-      await screen.findByText("猜你在杭州市, 但这一带收录的还不到三个, 其余是全国随机补的。"),
+      await screen.findByText("猜你在杭州市, 但这一带收录的还不到三个, 其余是国内各地补的。"),
     ).toBeInTheDocument()
   })
 
-  it("认不出位置时如实说「没认出你在哪儿」, 不假装就近", async () => {
+  it("认不出位置时如实说「没认出你在哪儿」, 且说清三个是国内抽的", async () => {
     mockedNearby.mockResolvedValue({
       items: [attraction("palace-museum", "故宫博物院", "北京市")],
       located: false,
@@ -136,8 +136,29 @@ describe("AttractionPicks", () => {
 
     await screen.findByRole("dialog")
     expect(
-      await screen.findByText("没认出你在哪儿 —— 这三个是全国各地随机抽的。"),
+      await screen.findByText("没认出你在哪儿 —— 这三个是国内各地随机抽的。"),
     ).toBeInTheDocument()
+  })
+
+  it("连国内都不够时就直说这批是从全部景点里抽的, 不说成国内", async () => {
+    mockedNearby.mockResolvedValue({
+      items: [
+        attraction("banff", "班夫国家公园"),
+        attraction("marrakech-medina", "马拉喀什老城"),
+        attraction("daocheng-yading", "稻城亚丁", "甘孜藏族自治州"),
+      ],
+      located: false,
+      scope: "world",
+      city: null,
+      region: null,
+    })
+    renderPicks()
+
+    await screen.findByRole("dialog")
+    const line = await screen.findByText(/^就近和国内都没凑够/)
+    expect(line).toHaveTextContent("就近和国内都没凑够三个, 剩下的是从全部景点里抽的。")
+    // world 与 nation 的说法正相反: 判断顺序写反了这里就会说成「国内各地」
+    expect(line).not.toHaveTextContent("国内各地")
   })
 
   it("页脚说明就近是按 IP 估的, 且不保存位置", async () => {

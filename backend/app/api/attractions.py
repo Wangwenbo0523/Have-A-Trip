@@ -102,15 +102,28 @@ def find_attraction(db: Session, id_or_slug: str) -> Attraction | None:
     return db.scalars(statement).first()
 
 
+# 库内主国。与 Attraction.country_code 的默认值、stats 里 by_country 那一对「境内/境外」
+# 是同一个口径。刻意不做成配置项: 它是数据事实(这个库收的主要是中国景点), 不是部署参数。
+HOME_COUNTRY = "CN"
+
+
+def _is_abroad(location: ip_locate.Location | None) -> bool:
+    """访客是不是**已知**在境外。没认出来、或服务没给国别, 一律算「不是」。"""
+    if location is None or not location.country_code:
+        return False
+    return location.country_code.strip().upper() != HOME_COUNTRY
+
+
 def _sample_published(
     db: Session,
     limit: int,
     *,
     city: str | None = None,
     region: str | None = None,
+    country: str | None = None,
     exclude: list[int] | None = None,
 ) -> list[Attraction]:
-    """从已发布景点里随机抽 limit 个互不相同的, 可限定城市/省份并排除指定 id。
+    """从已发布景点里随机抽 limit 个互不相同的, 可限定城市/省份/国别并排除指定 id。
 
     /attractions/random 与 /attractions/nearby 共用这一套抽法: 先数出符合条件的总数 N,
     再随机取互不相同的下标, 按 ORDER BY id + OFFSET 逐个取。不用 ORDER BY random():
@@ -124,6 +137,8 @@ def _sample_published(
         statement = statement.where(Attraction.city == city)
     if region is not None:
         statement = statement.where(Attraction.province == region)
+    if country is not None:
+        statement = statement.where(Attraction.country_code == country)
     if exclude:
         statement = statement.where(Attraction.id.not_in(exclude))
     total = count_of(db, statement)
@@ -200,14 +215,19 @@ def nearby_attractions(
 ) -> NearbyResult:
     """首页那块「出去走走」用这个。
 
-    与 /attractions/random 只差一点: 尽量抽**近**的。远近分三级算 —— 同城 -> 同省 ->
-    全国, 因为库里的 lat/lon 全是 NULL(见 db/README.md 的数据口径), 算不出公里数。
-    每一级内部仍然是随机抽取, 仍然不缓存(响应写 no-store)。同城/同省抽出来的**必须排
-    在前面**: 三个里前两个在杭州、第三个在北京, 那前两个才是「近的」, 所以结果是按
-    「先近后远」拼起来的, 不再二次排序。
+    与 /attractions/random 只差一点: 尽量抽**近**的。远近分四级算 —— 同城 -> 同省 ->
+    国内 -> 全部, 因为库里的 lat/lon 全是 NULL(见 db/README.md 的数据口径), 算不出
+    公里数, 只能按行政层级近似。每一级内部仍然是随机抽取, 仍然不缓存(响应写 no-store)。
+    同城/同省抽出来的**必须排在前面**: 三个里前两个在杭州、第三个在北京, 那前两个才是
+    「近的」, 所以结果是按「先近后远」拼起来的, 不再二次排序。
+
+    第三级是「国内」而不是「全部」: 库里 156 条已发布里有 40 条在境外、摊在 30 来个国家
+    (见 /stats 的 by_country)。不加国别过滤的话, 一次要三个有近六成概率掺进境外景点 ——
+    对首页第一屏来说, 「出去走走」推一张去加拿大的机票是说不通的。反过来, 也不为已知在
+    境外的访客按国别抽: 那边每个国家只有一两条, 抽出来等于「就那一条」。
 
     这不是定位: 归属地只到城市级(直辖市常常只到区), 只在这一次请求里用一下, 不落库、
-    不写 cookie、不返回坐标。认不出来时照常返回全国随机并如实标 scope=nation —— 首页
+    不写 cookie、不返回坐标。认不出来时照常返回国内随机并如实标 scope=nation —— 首页
     最先看到的那一块不该空着, 也不该假装自己是就近的。
     """
     city: str | None = None
@@ -215,6 +235,9 @@ def nearby_attractions(
     location = ip_locate.locate(ip_locate.client_ip(request, settings), settings)
     if location is not None:
         city, region = ip_locate.match_place(db, city=location.city, region=location.region)
+
+    # 已知在境外就不走「国内」这一级(理由见上面第 3 段), 认不出来时按主国兜底
+    home = None if _is_abroad(location) else HOME_COUNTRY
 
     levels: list[tuple[NearbyScope, list[Attraction]]] = []
     if city:
@@ -225,8 +248,13 @@ def nearby_attractions(
             ("region", _sample_published(db, limit - len(taken), region=region, exclude=taken))
         )
     taken = [attraction.id for _, row in levels for attraction in row]
+    if home and len(taken) < limit:
+        levels.append(
+            ("nation", _sample_published(db, limit - len(taken), country=home, exclude=taken))
+        )
+    taken = [attraction.id for _, row in levels for attraction in row]
     if len(taken) < limit:
-        levels.append(("nation", _sample_published(db, limit - len(taken), exclude=taken)))
+        levels.append(("world", _sample_published(db, limit - len(taken), exclude=taken)))
 
     picked = [attraction for _, row in levels for attraction in row]
     # scope 取真正出过货的最远那一层: 只有全在同城凑齐才算 city
@@ -235,7 +263,8 @@ def nearby_attractions(
     return NearbyResult(
         items=[AttractionListItem.model_validate(attraction) for attraction in picked],
         located=bool(city or region),
-        scope=contributed[-1] if contributed else "nation",
+        # 库里一条都没有时不会有弹窗(前端空列表不开), 这里给个中性的最远档
+        scope=contributed[-1] if contributed else "world",
         city=city,
         region=region,
     )

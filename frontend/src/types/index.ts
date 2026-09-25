@@ -117,16 +117,17 @@ export interface Page<T> {
 }
 
 /**
- * 就近推荐用到了哪一层。没有第四档: 库里的 lat/lon 全是 NULL(见 db/README.md 的数据口径),
- * 算不出公里数, 所以「近」只能是同城 -> 同省 -> 全国。
+ * 就近推荐用到了哪一层。四档: 同城 -> 同省 -> 国内 -> 全部。库里的 lat/lon 全是 NULL
+ * (见 db/README.md 的数据口径), 算不出公里数, 所以「近」只能按行政层级近似。
+ * world 只在库很小、或访客已知在境外时才会出现。
  */
-export type NearbyScope = "city" | "region" | "nation"
+export type NearbyScope = "city" | "region" | "nation" | "world"
 
 /**
  * 首页「出去走走」的结果。契约来源: backend/app/schemas.py 的 NearbyResult。
  *
- * `scope` 取结果里最远的那一层 —— 三个里掺进了全国随机就不是纯就近, 页面上必须按它
- * 如实说明依据。`located` 是「在你库里有收录的城市/省份上对上了」, 不是「认出了你的 IP」。
+ * `scope` 取结果里最远的那一层 —— 三个里掺进了国内/境外的随机就不是纯就近, 页面上必须
+ * 按它如实说明依据(nation 说的是「这批从国内抽的」, world 才是「从全部景点抽的」)。`located` 是「在你库里有收录的城市/省份上对上了」, 不是「认出了你的 IP」。
  */
 export interface NearbyResult {
   items: Attraction[]
