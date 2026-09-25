@@ -1,14 +1,23 @@
 """配置。全部可用环境变量覆盖, 见 .env.example。"""
 from __future__ import annotations
 
+import os
 from functools import lru_cache
 from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
+# 读哪一份 .env。默认 ".env"(相对启动时的 cwd); 环境变量给空串 = 一份都不读。
+#
+# 用例把这个开关设成空(见 tests/conftest.py): 开发机上按 README 配好 backend/.env 之后,
+# 「什么都没配」那几条用例会从 .env 里拿到模型名与 key —— 本地红、CI 绿, 这类
+# 只有一台机器能复现的红最难查。配置本身没错, 错的是用例不该读开发机的 .env。
+_ENV_FILE = os.getenv("SETTINGS_ENV_FILE", ".env") or None
+
+
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    model_config = SettingsConfigDict(env_file=_ENV_FILE, extra="ignore")
 
     # 生产目标是 PostgreSQL; 测试会把它换成 SQLite 内存库
     database_url: str = (

@@ -5,9 +5,15 @@
 """
 from __future__ import annotations
 
+import os
 import pathlib
 import sys
 from decimal import Decimal
+
+# 必须在 import app.* 之前设: app.config 在模块导入时就把 .env 路径定下来了。
+# 用例要在「什么都没配」的干净环境里跑 —— 开发机 backend/.env 里有 ollama 配置时,
+# 少了这一行会有 5 条用例本地红(CI 因为没有 .env 反而是绿的)。
+os.environ.setdefault("SETTINGS_ENV_FILE", "")
 
 import pytest
 from fastapi.testclient import TestClient
