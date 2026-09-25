@@ -37,7 +37,7 @@ from .validator import ValidatedItem, ValidationError, validate
 
 # 提示词口径。改了 system prompt 或输出格式就必须 +1 —— 它进缓存键,
 # 否则新旧两种格式的行程会被当成同一份复用。
-PROMPT_VERSION = "1"
+PROMPT_VERSION = "2"
 
 # error 字段的落库长度。异常信息可能很长, 而这一列是给人看的。
 ERROR_MAX = 500
@@ -315,6 +315,14 @@ def _draft(
     """
     candidate_ids = {attraction.id for attraction in candidates}
     sufficient = len(candidate_ids) >= days
+    # 别让模型去填根本填不满的格子。候选景点只有 4 个、却要 3 天每天 2 站时, 模型
+    # 只能把同一个景点排两遍 —— 本机 qwen2.5:7b 实测就是这么干的(西湖进第 1、2 天,
+    # 宋城进第 1、3 天, 两条 reason 一字不差)。总站数不该超过候选景点的个数, 所以
+    # 按候选数把每天的站数上限收紧。这只是不把模型往违反「不重复」的方向推,
+    # 兜底仍然是 validator 那条硬规则。
+    per_day = max_per_day
+    if candidate_ids:
+        per_day = max(1, min(max_per_day, len(candidate_ids) // days))
     usage = {"prompt_tokens": 0, "completion_tokens": 0}
     feedback: str | None = None
     attempt = 0
@@ -323,7 +331,7 @@ def _draft(
         system, user = build_prompt(
             request_text=request_text,
             days=days,
-            max_per_day=max_per_day,
+            max_per_day=per_day,
             candidates=candidates,
             feedback=feedback,
         )

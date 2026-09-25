@@ -101,7 +101,13 @@ def _validate(raw, *, days=1, max_per_day=6, candidates=None, sufficient=True):
 
 def test_valid_payload_is_sorted_by_day_and_seq():
     items, note = _validate(
-        {'items': [_item(day_index=2, seq=1, attraction_id=2), _item(day_index=1, seq=2), _item(day_index=1, seq=1)]},
+        {
+            'items': [
+                _item(day_index=2, seq=1, attraction_id=2),
+                _item(day_index=1, seq=2, attraction_id=3),
+                _item(day_index=1, seq=1),
+            ]
+        },
         days=2,
     )
     assert [(entry.day_index, entry.seq) for entry in items] == [(1, 1), (1, 2), (2, 1)]
@@ -135,14 +141,20 @@ def test_day_index_beyond_requested_days_is_refused():
 
 def test_seq_must_be_continuous_from_one():
     with pytest.raises(ValidationError, match='seq'):
-        _validate({'items': [_item(seq=1), _item(seq=3)]})
+        _validate({'items': [_item(seq=1), _item(seq=3, attraction_id=2)]})
 
 
 def test_too_many_stops_in_one_day_is_refused():
     """单独测每天上限: 天数给 2, 免得先撞上「总条数」那条规则。"""
     with pytest.raises(ValidationError, match='超过每天'):
         _validate(
-            {'items': [_item(day_index=1, seq=1), _item(day_index=1, seq=2), _item(day_index=1, seq=3)]},
+            {
+                'items': [
+                    _item(day_index=1, seq=1),
+                    _item(day_index=1, seq=2, attraction_id=2),
+                    _item(day_index=1, seq=3, attraction_id=3),
+                ]
+            },
             days=2,
             max_per_day=2,
         )
@@ -151,7 +163,13 @@ def test_too_many_stops_in_one_day_is_refused():
 def test_total_over_the_global_cap_is_refused():
     with pytest.raises(ValidationError, match='总条数'):
         _validate(
-            {'items': [_item(day_index=1, seq=1), _item(day_index=1, seq=2), _item(day_index=2, seq=1)]},
+            {
+                'items': [
+                    _item(day_index=1, seq=1),
+                    _item(day_index=1, seq=2, attraction_id=2),
+                    _item(day_index=2, seq=1, attraction_id=3),
+                ]
+            },
             days=2,
             max_per_day=1,
         )
@@ -165,7 +183,7 @@ def test_incomplete_day_coverage_is_refused_when_candidates_are_enough():
 def test_missing_days_allowed_only_when_candidates_are_insufficient():
     """候选景点比天数还少时「排不满」是数据问题, 不是模型的问题: 放行并说明。"""
     items, note = _validate(
-        {'items': [_item(day_index=1, seq=1), _item(day_index=2, seq=1)]},
+        {'items': [_item(day_index=1, seq=1), _item(day_index=2, seq=1, attraction_id=2)]},
         days=4,
         sufficient=False,
     )
@@ -176,10 +194,39 @@ def test_missing_days_allowed_only_when_candidates_are_insufficient():
 def test_non_contiguous_days_still_refused_when_candidates_insufficient():
     with pytest.raises(ValidationError, match='天数不连续'):
         _validate(
-            {'items': [_item(day_index=1, seq=1), _item(day_index=3, seq=1)]},
+            {'items': [_item(day_index=1, seq=1), _item(day_index=3, seq=1, attraction_id=2)]},
             days=4,
             sufficient=False,
         )
+
+
+def test_repeating_the_same_attraction_is_refused():
+    """同一个景点排两遍要整份拒掉, 不是偷偷去掉后一条。
+
+    真实模型(本机 qwen2.5:7b)在 3 天杭州的实测里把西湖排进第 1、2 天、宋城排进
+    第 1、3 天, 而且两条 reason 一字不差 —— 一格一天的行程里这是白白浪费一天,
+    但页面看上去完全正常。上层带着这条原因重试一次, 模型通常就能改对。
+    """
+    with pytest.raises(ValidationError, match='两次'):
+        _validate(
+            {'items': [_item(day_index=1, seq=1, attraction_id=2), _item(day_index=2, seq=1, attraction_id=2)]},
+            days=2,
+        )
+
+
+def test_same_attraction_twice_in_one_day_is_refused():
+    with pytest.raises(ValidationError, match='两次'):
+        _validate({'items': [_item(seq=1, attraction_id=2), _item(seq=2, attraction_id=2)]})
+
+
+def test_distinct_attractions_are_not_affected_by_the_repeat_rule():
+    """反向对照: 同一景点不重复的规则不能把「两天去两个地方」也拦下来。"""
+    items, note = _validate(
+        {'items': [_item(day_index=1, seq=1, attraction_id=1), _item(day_index=2, seq=1, attraction_id=2)]},
+        days=2,
+    )
+    assert len(items) == 2
+    assert note is None
 
 
 def test_note_and_reason_are_trimmed_and_defaulted():
@@ -371,6 +418,44 @@ def test_zero_retries_keeps_the_single_attempt_behaviour(seeded):
             candidates=[seeded['west_lake'], seeded['lingyin']],
         )
     assert len(fake.calls) == 1
+
+def test_daily_cap_is_tightened_when_candidates_cannot_fill_it(seeded):
+    """候选比「天数 x 每天站数」还少时, 提示词里的每天站数要跟着收紧。
+
+    否则 4 个候选、3 天每天 2 站就只能靠重复安排凑数 —— 本机 qwen2.5:7b 实测正是
+    这么干的。收紧之后模型被要求「每天 1 到 1 站」, 不重复也排得满。
+    """
+    pool = [seeded['palace'], seeded['west_lake'], seeded['terracotta'], seeded['lingyin']]
+    fake = FakeClient(payload=reply(seeded, days=3, ids=[a.id for a in pool]))
+    trip_service._draft(
+        fake,
+        request_text='杭州三天',
+        days=3,
+        max_per_day=6,
+        max_tokens=200,
+        retries=0,
+        candidates=pool,
+    )
+    system, _user = fake.calls[0]
+    assert '每天 1 到 1 站' in system, '4 个候选 / 3 天时每天不该还要 6 站'
+
+
+def test_daily_cap_only_moves_down_never_up(seeded):
+    """反向对照: 这条收紧只往下走, 不会把配置里的上限往上抬。"""
+    pool = [seeded['palace'], seeded['west_lake'], seeded['terracotta'], seeded['lingyin'], seeded['ocean_world']]
+    fake = FakeClient(payload=reply(seeded, days=1, ids=[seeded['west_lake'].id]))
+    trip_service._draft(
+        fake,
+        request_text='想去哪儿都行',
+        days=1,
+        max_per_day=2,
+        max_tokens=200,
+        retries=0,
+        candidates=pool,
+    )
+    system, _user = fake.calls[0]
+    assert '每天 1 到 2 站' in system, '候选比上限多时该按配置走, 不该被抬到 5'
+
 
 def test_draft_attraction_is_never_a_candidate(client, seeded, trip_model):
     """未发布景点不可能被模型选中, 因为候选集里压根没有它。"""

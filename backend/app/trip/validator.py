@@ -6,6 +6,9 @@
 
 为什么整份拒掉而不是丢掉越界的那一条: 越界说明模型在编景点, 那么它没越界的那几条
 也没有可信度可言。丢掉单条会让用户拿到一份"看起来正常"的行程, 里面一半是编的。
+同一个景点被排进两天也按整份拒掉: 它不是幻觉, 但一格一天的行程里重复安排
+等于把这一天浪费掉, 而用户在页面上看不出这是模型偷懒 —— 这种"看着正常"的错误
+比明显报错更难发现。拒掉之后 service 会把原因回灌进提示词重来一次。
 """
 from __future__ import annotations
 
@@ -73,6 +76,8 @@ def validate(
         raise ValidationError("模型返回了 0 条行程")
 
     parsed: list[ValidatedItem] = []
+    # attraction_id -> 它第一次出现在第几条(1 起), 用来报出冲突的两条位置
+    seen_at: dict[int, int] = {}
     for index, item in enumerate(items):
         if not isinstance(item, dict):
             raise ValidationError("第 %d 条不是对象" % (index + 1))
@@ -90,6 +95,15 @@ def validate(
         seq = _int(item.get("seq"), "seq")
         if seq < 1:
             raise ValidationError("seq=%d 必须从 1 起" % seq)
+
+        repeated_at = seen_at.get(attraction_id)
+        if repeated_at is not None:
+            raise ValidationError(
+                "attraction_id=%d 被排了两次(第 %d 条与第 %d 条): 同一次行程里每个景点最多出现一次; "
+                "候选景点不够时可以少排几站, 不要用重复安排来凑数"
+                % (attraction_id, repeated_at, index + 1)
+            )
+        seen_at[attraction_id] = index + 1
 
         parsed.append(
             ValidatedItem(
