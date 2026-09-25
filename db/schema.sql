@@ -395,9 +395,10 @@ CREATE TABLE IF NOT EXISTS post (
     CONSTRAINT post_author_length_check CHECK (length(author_name) <= 40)
 );
 
--- 列表永远按 (status, created_at DESC) 取; 我的动态按 (user_id, created_at DESC)
-CREATE INDEX IF NOT EXISTS idx_post_status_time ON post (status, created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_post_user_time   ON post (user_id, created_at DESC);
+-- 列表按 id 倒序取(与游标同序, 见 backend/app/api/posts.py); 我的动态按 (user_id, id DESC)。
+-- 用 id 而不是 created_at: 游标是整数比较, 在 PostgreSQL 与 SQLite 上结果一致
+CREATE INDEX IF NOT EXISTS idx_post_status_id ON post (status, id DESC);
+CREATE INDEX IF NOT EXISTS idx_post_user_id   ON post (user_id, id DESC);
 -- updated_at 触发器。必须写在两张表建好之后 —— 触发器不能挂在不存在的表上。
 -- 复用上面 251 行定义的 set_updated_at()。配额计数器是用 UPDATE 自增的,
 -- 没有这个触发器它的 updated_at 永远停在插入那一刻。

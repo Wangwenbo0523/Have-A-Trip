@@ -560,3 +560,6 @@ class PostPage(BaseModel):
     daily_limit: int
     used_today: int | None = None
     disclaimer: str
+    # 「加载更多」的游标: 已经看到的最后一条的 id, 原样回传给 before 就接着往下取;
+    # null 表示没有更旧的了。为什么是 id 而不是时间戳, 见 app/api/posts.py 的文件头
+    next_cursor: int | None = None

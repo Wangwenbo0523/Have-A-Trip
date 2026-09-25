@@ -137,6 +137,91 @@ def test_size_is_clamped_to_max_page_size(client, seeded, settings_default):
     assert listing(client, size=9999).json()["size"] == settings_default.max_page_size
 
 
+def test_next_cursor_appears_only_when_more_is_left(client, seeded):
+    for index in range(3):
+        post(client, body="第 %d 条" % index)
+    assert listing(client, size=2).json()["next_cursor"] is not None
+    # 用偏移翻到最后一页也一样: 没有更旧的就该报 null, 与用哪种翻法无关
+    tail = listing(client, size=2, page=2).json()
+    assert len(tail["items"]) == 1 and tail["next_cursor"] is None
+
+
+def test_cursor_walks_older_without_repeating(client, seeded):
+    """「加载更多」走游标: 一页一页往下, 不重不漏。"""
+    for index in range(5):
+        post(client, body="第 %d 条" % index)
+
+    seen: list[str] = []
+    cursor = None
+    for _ in range(4):  # 5 条、每页 2 条, 最多翻 3 次就该到底
+        params = {"size": 2} if cursor is None else {"size": 2, "before": cursor}
+        page = listing(client, **params).json()
+        seen += [item["body"] for item in page["items"]]
+        cursor = page["next_cursor"]
+        if cursor is None:
+            break
+    assert seen == ["第 4 条", "第 3 条", "第 2 条", "第 1 条", "第 0 条"]
+    assert len(set(seen)) == len(seen), "游标翻页不该把同一条摆两遍"
+
+
+def test_cursor_is_not_disturbed_by_a_new_post(client, seeded):
+    """翻页途中有人发了新动态 —— 偏移分页的经典翻车点, 游标不该受影响。"""
+    for index in range(4):
+        post(client, body="第 %d 条" % index)
+    first = listing(client, size=2).json()
+    assert [item["body"] for item in first["items"]] == ["第 3 条", "第 2 条"]
+
+    post(client, body="插队的新的")
+
+    second = listing(client, size=2, before=first["next_cursor"]).json()
+    assert [item["body"] for item in second["items"]] == ["第 1 条", "第 0 条"]
+    # 同一时刻用偏移翻第二页: 「第 2 条」会被再摆一遍
+    offset_second = [item["body"] for item in listing(client, size=2, page=2).json()["items"]]
+    assert offset_second == ["第 2 条", "第 1 条"]
+
+
+def test_cursor_is_not_disturbed_by_a_deletion(client, seeded):
+    """删掉一条也一样: 偏移会跳过一条, 游标不会。"""
+    for index in range(4):
+        post(client, body="第 %d 条" % index)
+    first = listing(client, size=2).json()
+    victim = next(item for item in first["items"] if item["body"] == "第 2 条")
+    removed = client.delete(f"{API}/posts/{victim['id']}", params={"device_id": "device-a"})
+    assert removed.status_code == 204
+
+    second = listing(client, size=2, before=first["next_cursor"]).json()
+    assert [item["body"] for item in second["items"]] == ["第 1 条", "第 0 条"]
+    # 偏移那一支会漏掉「第 1 条」: 它被顶上来了, 而第二页从「第 0 条」才开始
+    offset_second = [item["body"] for item in listing(client, size=2, page=2).json()["items"]]
+    assert offset_second == ["第 0 条"]
+
+
+def test_cursor_keeps_the_same_filters(client, seeded):
+    """游标只说明"从哪儿继续", 筛选条件照样生效。"""
+    for index in range(3):
+        post(client, body="西湖 %d" % index, attraction_slug="west-lake")
+    post(client, body="没挂景点")
+
+    first = listing(client, size=2, attraction="west-lake").json()
+    assert [item["body"] for item in first["items"]] == ["西湖 2", "西湖 1"]
+    second = listing(client, size=2, attraction="west-lake", before=first["next_cursor"]).json()
+    assert [item["body"] for item in second["items"]] == ["西湖 0"]
+    assert second["next_cursor"] is None
+
+
+def test_page_and_before_cannot_be_combined(client, seeded):
+    """两种翻法一起给说不清从哪儿开始, 宁可报错也不猜。"""
+    post(client)
+    assert listing(client, page=2, before=1).status_code == 422
+
+
+def test_broken_cursor_is_rejected(client, seeded):
+    post(client)
+    assert listing(client, before="随便什么").status_code == 422
+    assert listing(client, before=0).status_code == 422
+    assert listing(client, before=-3).status_code == 422
+
+
 def test_list_only_returns_visible(client, seeded, user, db_session):
     post(client, body="看得见的")
     db_session.add(

@@ -517,9 +517,10 @@ class Post(Base):
         CheckConstraint("length(body) >= 1", name="post_body_not_blank"),
         CheckConstraint("length(body) <= 1000", name="post_body_length_check"),
         CheckConstraint("length(author_name) <= 40", name="post_author_length_check"),
-        # 列表永远按 (status, created_at) 取, 这两个索引就是给它的
-        Index("idx_post_status_time", "status", "created_at"),
-        Index("idx_post_user_time", "user_id", "created_at"),
+        # 列表按 id 倒序取(与游标同序, 见 api/posts.py), 「我的」也一样:
+        # 这两个索引就是给它的 —— 不是 created_at, 改了排序就要跟着改这里
+        Index("idx_post_status_id", "status", "id"),
+        Index("idx_post_user_id", "user_id", "id"),
     )
 
     id: Mapped[int] = mapped_column(BigIntPK, primary_key=True)

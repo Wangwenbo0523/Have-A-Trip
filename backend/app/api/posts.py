@@ -19,6 +19,19 @@ app_user 一行(与 app/api/events.py 同一套写法)。动态挂在这行上, 
 运营下架 = update post set status = 'hidden'(见 db/README.md), 内容留着, 列表不再返回。
 两者不能合成一个开关: 前者是用户撤回自己的话, 后者是平台收走别人的话, 留痕要求不同。
 
+翻页
+----
+列表按 **id 倒序**(也就是插入顺序)取, 游标是"你已经看到的那条的 id" —— 再要下一页就带
+`before=<id>`。界面上的「加载更多」一律走它: 这个列表的头部一直在长, 偏移分页的第二页
+会整体下移一格, 已经看过的那条被再摆一遍; 删一条则相反, 会有一条被跳过。
+
+为什么不用 (created_at, id) 这种更像时间线的游标 —— 实测踩过: 时间戳在测试库的 SQLite
+上只存到秒, 而绑进去的参数带微秒, 两边做行值比较时第一段永远"小于", id 那一半的平局
+规则根本轮不上, 同一秒里的行会被重复吐出来。本仓库的用例跑 SQLite、生产跑 PostgreSQL,
+不能只在一边对。id 是整数, 两种库比出来一样, 发新帖删旧帖都不影响已经翻过的位置。
+
+偏移那一支(page/size)留着给"跳到第 N 页"用, 两种给法只能挑一个。
+
 限流
 ----
 按东八区自然日计数。计数器与行程共用 trip_quota 表, 但 owner_key 带 post: 前缀 ——
@@ -138,6 +151,7 @@ def _page_out(
     total: int,
     settings: Settings,
     used: int | None,
+    next_cursor: int | None = None,
 ) -> PostPage:
     return PostPage(
         items=items,
@@ -147,6 +161,7 @@ def _page_out(
         daily_limit=settings.post_daily_limit,
         used_today=used,
         disclaimer=DISCLAIMER,
+        next_cursor=next_cursor,
     )
 
 
@@ -154,6 +169,11 @@ def _page_out(
 def list_posts(
     page: int = Query(1, ge=1),
     size: int | None = Query(None, ge=1, description="默认取配置值, 上限 max_page_size"),
+    before: int | None = Query(
+        None,
+        ge=1,
+        description="只取 id 比它小的, 「加载更多」用: 把上一页的 next_cursor 原样带回来",
+    ),
     attraction: str | None = Query(None, description="只看挂在这个景点(slug)下的动态"),
     device_id: str | None = Query(None, description="只看这个设备发的: 精确匹配, 用于「我的」"),
     viewer: str | None = Query(None, description="谁在看, 只用来算 mine"),
@@ -164,8 +184,16 @@ def list_posts(
 
     两个筛选都是**精确匹配**, 不做自由文本搜索: 库里的动态量级用不上全文索引,
     而模糊匹配只会把「找这个景点的动态」变成「找含这两个字的动态」。
+
+    翻页: `page`/`size` 是偏移, `before` 是游标(id), 两种给法**只能挑一个** —— 一起给
+    说不清从哪儿开始, 与其猜不如报错。响应里的 next_cursor 就是给 `before` 用的。
     """
     size_limit = min(size or settings.default_page_size, settings.max_page_size)
+
+    if before is not None and page != 1:
+        raise HTTPException(
+            status.HTTP_422_UNPROCESSABLE_ENTITY, detail="page 与 before 只能给一个"
+        )
 
     # 没给 viewer 就拿 device_id 顶: 按设备筛选这件事本来就只发生在"我自己的动态"这一处。
     # 判断错了也没有安全后果 —— mine 只是前端要不要显示删除按钮, 真删的时候服务端再查一次。
@@ -197,15 +225,26 @@ def list_posts(
             return _page_out([], page=page, size=size_limit, total=0, settings=settings, used=used)
         filters.append(Post.user_id == owner_id)
 
+    if before is not None:
+        # 与下面的 order_by 同序(都是 id), 所以不会重复也不会跳
+        filters.append(Post.id < before)
+
     total = db.scalar(select(func.count()).select_from(Post).where(*filters)) or 0
+    # 多取一条来判断"还有没有更旧的"。用 total 也能算, 但那样偏移与游标两支要各写一套
+    # 判断(游标那支还能不能用 total 得想一下) —— 统一成"多取一条"更不容易写歪。
     rows = db.scalars(
         select(Post)
         .where(*filters)
         .options(selectinload(Post.attraction))
-        .order_by(Post.created_at.desc(), Post.id.desc())
-        .offset((page - 1) * size_limit)
-        .limit(size_limit)
+        # 按 id 倒序 = 插入顺序。列表与游标必须同序, 否则游标指哪儿都是错的
+        .order_by(Post.id.desc())
+        # 游标已经指明了从哪儿开始, 再叠一个偏移就成了"游标之后再跳 N 条", 不是本意
+        .offset(0 if before is not None else (page - 1) * size_limit)
+        .limit(size_limit + 1)
     ).all()
+
+    has_more = len(rows) > size_limit
+    rows = rows[:size_limit]
 
     return _page_out(
         [_to_out(row, viewer_user_id=viewer_user_id) for row in rows],
@@ -214,6 +253,7 @@ def list_posts(
         total=int(total),
         settings=settings,
         used=used,
+        next_cursor=rows[-1].id if has_more and rows else None,
     )
 
 

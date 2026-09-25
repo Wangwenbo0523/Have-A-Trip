@@ -152,7 +152,7 @@ def test_post_indexes_and_foreign_keys(pg_engine):
     inspector = inspect(pg_engine)
 
     indexes = {item["name"] for item in inspector.get_indexes("post")}
-    assert {"idx_post_status_time", "idx_post_user_time"} <= indexes, "列表与「我的」各走一个索引"
+    assert {"idx_post_status_id", "idx_post_user_id"} <= indexes, "列表与「我的」各走一个索引"
 
     # 景点被硬删不许连带删掉动态: 内容还在, 只是少一个可点的链接
     attraction_fk = [
