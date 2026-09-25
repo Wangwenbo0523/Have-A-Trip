@@ -31,7 +31,8 @@ from ..llm.embedding import EmbeddingClient, EmbeddingError
 from ..models import Attraction, Itinerary, ItineraryItem
 from ..recommend import content_based
 from ..search import semantic
-from . import quota
+from .. import quota
+from ..quota import owner_key_for  # 作用域口径只有一份, 见 app/quota.py
 from .prompt import build_prompt
 from .validator import ValidatedItem, ValidationError, validate
 
@@ -71,17 +72,6 @@ def build_llm(settings: Settings) -> LLMClient:
 def build_embedding(settings: Settings) -> EmbeddingClient:
     """候选召回用的向量客户端。同样是为了测试可替换。"""
     return EmbeddingClient(settings)
-
-
-def owner_key_for(user_id: int | None, device_id: str | None) -> str:
-    """缓存与限额的作用域。登录用户按用户, 匿名按设备。
-
-    两种作用域必须能区分开: 否则 id=7 的用户与 device_id="7" 的设备会共享一份缓存,
-    互相读到对方的行程。
-    """
-    if user_id is not None:
-        return "u:%d" % user_id
-    return "d:%s" % (device_id or "anonymous")
 
 
 def request_hash_of(request_text: str) -> str:

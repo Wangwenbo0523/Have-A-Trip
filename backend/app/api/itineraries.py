@@ -12,13 +12,14 @@
 """
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+from datetime import datetime
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Response, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ..config import Settings, get_settings
+from .. import quota
 from ..db import get_db, get_session_factory
 from ..models import AppUser, Itinerary
 from ..schemas import (
@@ -38,18 +39,9 @@ DISCLAIMER = "行程由 AI 按本站景点档案编排, 出行前请核实开放
 REASON_DAILY_LIMIT = "daily_limit_exceeded"
 REASON_BUDGET = "global_budget_exhausted"
 
-BEIJING = timezone(timedelta(hours=8))
-
-
-def _retry_after() -> str:
-    """额度按东八区自然日结算, 所以下次重置就是明天 0 点。"""
-    now = datetime.now(BEIJING)
-    tomorrow = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
-    return tomorrow.isoformat()
-
 
 def _rejected(reason: str, *, limit: int | None = None) -> HTTPException:
-    detail: dict = {"status": "rejected", "reason": reason, "retry_after": _retry_after()}
+    detail: dict = {"status": "rejected", "reason": reason, "retry_after": quota.retry_after()}
     if limit is not None:
         detail["limit"] = limit
     return HTTPException(status.HTTP_429_TOO_MANY_REQUESTS, detail=detail)

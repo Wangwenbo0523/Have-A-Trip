@@ -18,7 +18,7 @@ from llm_stubs import FakeClient, FakeEmbeddingClient, ScriptedClient
 
 from app.llm import LLMError
 from app.models import Attraction, Itinerary, TripQuota
-from app.trip import quota
+from app import quota
 from app.trip import service as trip_service
 from app.trip.validator import ValidationError, validate
 
