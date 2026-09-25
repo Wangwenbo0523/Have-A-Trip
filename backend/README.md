@@ -32,7 +32,7 @@ cd backend
 .venv\Scripts\python -m pytest
 ```
 
-- 默认跑在 **SQLite 内存库**上，本地不需要 PostgreSQL，214 个用例（8 个对拍用例无 PostgreSQL 时跳过）约 25 秒。
+- 默认跑在 **SQLite 内存库**上，本地不需要 PostgreSQL，354 个用例（344 通过，另有 10 个对拍用例需要 PostgreSQL，未设 TEST_DATABASE_URL 时跳过）约 30 秒。
 - `pytest.ini` 把 `app.*` 抛出的 DeprecationWarning 提升为 error —— 依赖库的废弃用法不会再悄悄积累。
 - 需要 PostgreSQL 的对拍测试（`tests/test_schema_parity.py`）在没有 `TEST_DATABASE_URL` 时**跳过**，不会假装通过：
 
@@ -61,6 +61,9 @@ TEST_DATABASE_URL=postgresql+psycopg://postgres:postgres@127.0.0.1:5432/attracti
 | POST | `/search/semantic` | 按意思找景点。向量不可用 / 没有向量 / 维度不一致时**退回关键词检索**，仍返回 200 |
 | POST | `/itineraries` | 提交一次行程生成。202 受理并返回 token；命中同一 owner 的同一份需求返回 200，不重复计费 |
 | GET | `/itineraries/{token}` | 按**不可枚举** token 取行程：`pending` / `generating` / `succeeded` / `failed` / `rejected` |
+| GET | `/posts` | 用户动态列表：只出 `visible`，按时间倒序。`?attraction=<slug>` / `?device_id=` 是**精确匹配**筛选，`?viewer=` 只用来算 `mine` 与 `used_today` |
+| POST | `/posts` | 发一条动态。正文 1–500 字，可选署名与一个已发布景点（`post_daily_limit` 默认 10 条/天，超了 429） |
+| DELETE | `/posts/{id}` | 作者删自己的动态（硬删并归还当天名额）。不是作者一律 404 |
 
 ### 列表参数
 
@@ -105,6 +108,10 @@ curl "http://127.0.0.1:8000/api/v1/attractions?city=杭州市&tag=free&q=湖"
   `rating_avg` / `rating_count`（`app/aggregates.py`）。口径是「同一用户只算最后一次评分」——
   否则反复改分的人会获得更高权重。种子数据里评分为 0，不伪造。
 - **`rating` 只属于 `rate` 事件**。数据库用 CHECK 拦「rate 缺 rating」，API 两个方向都拦。
+- **动态区没有账号也能有作者**。匿名身份就是前端 localStorage 里的 `device_id`（映射成 `app_user` 一行）——
+  不是认证，所以 `PostAuthorOut` 只回署名，**不回 `device_id`**（那串是删除权限的凭据）。
+  作者删除是硬删、运营下架是 `status='hidden'` 软删，两件事不合成一个开关；限额与行程共用
+  `trip_quota` 但键带 `post:` 前缀（`app/quota.py`），互不吃名额。口径见 `app/api/posts.py` 文件头。
 - **与 `db/schema.sql` 是双份 DDL**，靠 `tests/test_schema_parity.py` 在 CI 的 PostgreSQL 上对拍，
   表名与列名不一致直接失败。
 
@@ -118,6 +125,7 @@ curl "http://127.0.0.1:8000/api/v1/attractions?city=杭州市&tag=free&q=湖"
 | `app/models.py` | ORM 模型，与 `db/schema.sql` 对应 |
 | `app/schemas.py` | 出入参 Pydantic 模型（前端按它写类型） |
 | `app/aggregates.py` | 从 `behavior_log` 重算评分聚合 |
-| `app/api/` | 路由：health / attractions / categories / events |
+| `app/quota.py` | 限额与 token 预算的原子记数。**行程与动态共用**，靠 `owner_key` 前缀（`u:` / `d:` / `post:u:`）分账 |
+| `app/api/` | 路由：health / attractions / categories / events / posts / itineraries / ai |
 | `app/recommend/content_based.py` | 内容相似度打分（纯静态字段，不需要行为数据） |
 | `app/recommend/service.py` | 三级降级、理由生成、TTL 缓存 |

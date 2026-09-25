@@ -234,6 +234,7 @@ python scripts/reclaim_itineraries.py
 - [ ] **换过向量模型或改过拼串口径**：已重跑 `build_embeddings.py`，且 `--report` 里没有多种维度（同一模型出现两种维度会让检索整体退回关键词）
 - [ ] 行程限额与预算按预期生效：`TRIP_DAILY_LIMIT` / `TRIP_GLOBAL_DAILY_TOKEN_BUDGET` 压到 1 试一次，第 2 次应返回 429 且 `detail.reason` 对得上
 - [ ] `python scripts/reclaim_itineraries.py --dry-run` 没有长期积压的 `generating`
+- [ ] 动态区：`db/schema.sql` 已把 `post` 表与 `0004_posts` 版本记录建出来（`select count(*) from information_schema.tables where table_schema='public';` 应为 16，`select version from schema_version;` 里有 `0004_posts`）；`POST_DAILY_LIMIT` 压到 1 试一次，第 2 次应返回 429 且 `detail.reason` 是 `daily_limit_exceeded`；发一条再删掉，`GET /api/v1/posts?device_id=<你的>` 的 `used_today` 应回到 0
 - [ ] 若 `EMBEDDING_PROVIDER` 指向云端：确认**景点档案文本**出境已过合规（离线向量化会把景点描述发给服务商，见 `docs/LICENSE-AUDIT.md` 第七节）
 - [ ] 若开了 `GEO_IP_PROVIDER`：从公网访问 `/api/v1/attractions/nearby` 能拿到 `scope=city` 或 `scope=region`（本机 `127.0.0.1` 一定走 `nation`，那是正常的）；反代部署时 `GEO_TRUST_FORWARDED_FOR` 已打开，且代理是**覆盖**而不是追加该头
 - [ ] 若没开 `GEO_IP_PROVIDER`：`/api/v1/attractions/nearby` 仍返回三个、`scope=nation`，且三个的
