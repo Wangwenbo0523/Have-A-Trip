@@ -37,7 +37,8 @@ psql -d attraction_atlas -c "select a.name, c.name from attraction a join catego
 psql -d attraction_atlas -c "select a.name, string_agg(t.name, ' / ') from attraction a join attraction_tag at on at.attraction_id = a.id join tag t on t.id = at.tag_id group by a.id, a.name limit 5;"
 psql -d attraction_atlas -c "select count(*) from attraction_image;"           # 156
 psql -d attraction_atlas -c "select credit, license, count(*) from attraction_image group by 1, 2;"
-psql -d attraction_atlas -c "select * from schema_version;"
+psql -d attraction_atlas -c "select count(*) from post;"                    # 动态是用户产生的，种子数据里没有，通常是 0
+psql -d attraction_atlas -c "select * from schema_version;"                 # 应含 0001_init / 0002_plans / 0003_ai / 0004_posts
 ```
 
 ## 表
@@ -58,7 +59,8 @@ psql -d attraction_atlas -c "select * from schema_version;"
 | `attraction_embedding` | 景点描述的向量，语义检索用。**存 JSON 文本，不引 pgvector** |
 | `itinerary` | LLM 生成的用户行程（一次生成一行），见下面与 `attraction_plan` 的区别 |
 | `itinerary_item` | 行程里的一站，按 `(day_index, seq)` 排序 |
-| `trip_quota` | 行程的限额与 token 预算计数器，按 `(owner_key, day)` 原子自增 |
+| `trip_quota` | 限额与 token 预算计数器，按 `(owner_key, day)` 原子自增。**行程与动态共用**，靠前缀区分（`u:` / `d:` / `post:u:` / `__global__`） |
+| `post` | 用户动态（唯一由用户产出自由文本的地方），可选挂一个景点 |
 
 ### `itinerary` 与 `attraction_plan` 的区别
 
@@ -102,6 +104,11 @@ psql -d attraction_atlas -c "select * from schema_version;"
 | `itinerary` 只存 `request_hash`，**不存需求原文** | 原文里常有同行人、预算这类个人信息。不存就不需要额外背一套保留期与删除机制，而生成并不需要回读原文 |
 | `itinerary.unit_price` 是**单价快照** | 服务商调价后，历史行程的成本仍然按当时的价算 |
 | `trip_quota` 的限额靠单条 `UPDATE ... WHERE used < :limit` + `rowcount` | 「先查条数再写入」在任何隔离级别下都不是原子的，两个并发请求会同时通过检查。单条语句的读-改-写在 PostgreSQL 与 SQLite 上都原子，所以限额不需要 Redis |
+| `post.status` 只有 `visible` / `hidden`，**没有自动审核** | 一期不做机审：下架是运营动作 `update post set status='hidden' where id=...`，比自动过滤误伤少。列表只出 `visible` |
+| `post` 的删除是**硬删**，运营下架是软删 | 作者删自己的动态（DELETE）是撤回自己的话，名额一并归还；运营下架是平台收走别人的话，内容要留着。两者留痕要求不同，不能合成一个开关 |
+| `post.author_name` / `post.attraction_name` 是**快照** | 同 `itinerary_item.attraction_name`：署名与景点名只在这里存一份，作者改名或景点下架后旧动态仍显示当时那一刻 |
+| `post` 的正文长度：库里 CHECK `<= 1000`，接口口径 `<= 500` | 两个数字**故意不合并**（见 `backend/app/schemas.py` 的 `POST_BODY_MAX`）。收紧产品口径不该动表结构，放宽存储也不该悄悄放开接口 |
+| `post` 不存任何定位 | 动态是「谁说了什么」，不是「谁在哪儿说的」。没有 `lat` / `lon`，也没有 IP；定位相关的字段一个都不要加 |
 | 限额按**东八区自然日**结算，`day` 存 `YYYY-MM-DD` 文本 | 用文本而不是 `DATE`：两种数据库的时区处理不一样，这里要的只是「哪个自然日」这个分组键 |
 
 ## 种子数据的口径
