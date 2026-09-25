@@ -1,7 +1,15 @@
 import { AxiosError } from "axios"
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 
-import { API_BASE, describeError, getDeviceId } from "./client"
+import {
+  API_BASE,
+  createPost,
+  deletePost,
+  describeError,
+  fetchPosts,
+  getDeviceId,
+  http,
+} from "./client"
 
 const axiosError = (options: { code?: string; status?: number; detail?: unknown }) => {
   const response =
@@ -51,5 +59,63 @@ describe("getDeviceId", () => {
     expect(first).toBeTruthy()
     expect(getDeviceId()).toBe(first)
     expect(window.localStorage.getItem("have-a-trip.device_id")).toBe(first)
+  })
+})
+
+describe("动态接口", () => {
+  const emptyPage = {
+    items: [],
+    page: 1,
+    size: 20,
+    total: 0,
+    daily_limit: 10,
+    used_today: 0,
+    disclaimer: "动态由用户发布。",
+  }
+
+  it("列表把设备号当 viewer 带上, 勾了「只看我的」才传 device_id", async () => {
+    const get = vi.spyOn(http, "get").mockResolvedValue({ data: emptyPage })
+    window.localStorage.clear()
+    const device = getDeviceId()
+
+    await fetchPosts({ onlyMine: true, attraction: "west-lake" })
+    expect(get).toHaveBeenCalledWith("/posts", {
+      params: {
+        attraction: "west-lake",
+        device_id: device,
+        viewer: device,
+        page: undefined,
+        size: undefined,
+      },
+    })
+
+    // 没勾「只看我的」时不传 device_id —— 一个参数是"给谁看", 另一个是"看谁的"
+    get.mockClear()
+    await fetchPosts()
+    expect(get.mock.calls[0][1]?.params.device_id).toBeUndefined()
+    get.mockRestore()
+  })
+
+  it("发帖只带正文/署名/景点, 不带任何定位", async () => {
+    const post = vi.spyOn(http, "post").mockResolvedValue({ data: {} })
+    window.localStorage.clear()
+
+    await createPost({ body: "湖边光正好", nickname: "小北", attraction_slug: "west-lake" })
+    expect(post).toHaveBeenCalledWith("/posts", {
+      device_id: getDeviceId(),
+      body: "湖边光正好",
+      nickname: "小北",
+      attraction_slug: "west-lake",
+    })
+    post.mockRestore()
+  })
+
+  it("删除是 DELETE 并带上设备号 —— 后端拿它判断是不是作者", async () => {
+    const del = vi.spyOn(http, "delete").mockResolvedValue({ data: null })
+    window.localStorage.clear()
+
+    await deletePost(7)
+    expect(del).toHaveBeenCalledWith("/posts/7", { params: { device_id: getDeviceId() } })
+    del.mockRestore()
   })
 })

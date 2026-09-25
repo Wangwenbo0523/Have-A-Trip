@@ -44,6 +44,9 @@ const Header = ({ categories }: { categories: CategoryWithCount[] }) => {
           <NavLink className={navClass} to="/planner">
             {t("nav.planner")}
           </NavLink>
+          <NavLink className={navClass} to="/posts">
+            {t("nav.posts")}
+          </NavLink>
           <NavLink className={navClass} to="/stats">
             {t("nav.stats")}
           </NavLink>

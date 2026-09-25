@@ -175,3 +175,9 @@
 .detail__source a:hover {
   color: var(--accent);
 }
+
+/* 详情页里"大家在这儿说了什么"那一块的入口。列表本身的样式归 posts.css */
+.detail__postsCta {
+  margin-top: 12px;
+  font-size: 0.9rem;
+}

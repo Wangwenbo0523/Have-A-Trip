@@ -418,3 +418,51 @@ export interface ItineraryRejection {
   retry_after: string
   limit?: number
 }
+
+// ---------------------------------------------------------------- 动态区
+
+/**
+ * 动态的作者。**只有署名** —— 没有账号体系, 服务端也不回 device_id:
+ * 那个串是删除权限的凭据, 列出来等于把别人的删除权交给所有人。
+ */
+export interface PostAuthor {
+  name: string
+}
+
+/**
+ * 动态挂着的景点。slug 为 null 表示景点已下架或已删除: 名字照显, 但没有链接可点。
+ */
+export interface PostAttraction {
+  slug: string | null
+  name: string
+  name_en: string | null
+}
+
+export interface Post {
+  id: number
+  author: PostAuthor
+  body: string
+  attraction: PostAttraction | null
+  created_at: string
+  /** 是不是这台设备发的。只有 true 才给删除按钮 —— 服务端删之前还会再查一次 */
+  mine: boolean
+}
+
+export interface PostPage {
+  items: Post[]
+  page: number
+  size: number
+  total: number
+  /** 当天发帖上限(配置值) */
+  daily_limit: number
+  /** 今天已经发了几条; 没带身份请求时为 null */
+  used_today: number | null
+  disclaimer: string
+}
+
+/** 发一条动态。attraction_slug 留空就是纯文字。 */
+export interface PostPayload {
+  body: string
+  nickname?: string
+  attraction_slug?: string
+}

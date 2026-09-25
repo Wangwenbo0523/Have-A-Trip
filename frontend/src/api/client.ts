@@ -22,6 +22,9 @@ import type {
   NearbyResult,
   Page,
   PageQuery,
+  Post,
+  PostPage,
+  PostPayload,
   Recommendation,
   SemanticSearchResult,
   SourcesResponse,
@@ -256,6 +259,59 @@ export function itineraryRejection(error: unknown): ItineraryRejection | null {
   }
   return null
 }
+
+/**
+ * 动态区列表。
+ *
+ * viewer 一律带上自己的 device_id: 后端据此标出哪几条是"我发的"(mine), 以及
+ * 今天还剩几条名额。onlyMine 再额外把列表**筛**成只有自己的 —— 一个参数是"给谁看",
+ * 另一个是"看谁的", 别混。
+ */
+export async function fetchPosts(
+  params: { attraction?: string; onlyMine?: boolean; page?: number; size?: number } = {},
+): Promise<PostPage> {
+  const { data } = await http.get<PostPage>("/posts", {
+    params: {
+      attraction: params.attraction,
+      // 没勾「只看我的」就不传 device_id(axios 会丢掉 undefined)
+      device_id: params.onlyMine ? getDeviceId() : undefined,
+      viewer: getDeviceId(),
+      page: params.page,
+      size: params.size,
+    },
+  })
+  return data
+}
+
+/** 某个景点下的动态。详情页那一块用, 与动态区是同一条接口。 */
+export async function fetchPostsByAttraction(slug: string, size = 5): Promise<PostPage> {
+  return fetchPosts({ attraction: slug, size })
+}
+
+/**
+ * 发一条动态。
+ *
+ * 只传正文、可选署名、可选挂的景点 slug —— **不传任何定位**, 后端也不存。
+ * 署名由后端记住(存在 app_user.nickname), 下次不用重填。
+ */
+export async function createPost(payload: PostPayload): Promise<Post> {
+  const { data } = await http.post<Post>("/posts", { device_id: getDeviceId(), ...payload })
+  return data
+}
+
+/**
+ * 作者删除自己的动态 —— 后端是**硬删**, 删完把当天名额还回来。
+ * 不是作者会拿到 404(服务端不区分"不存在"与"不是你的")。
+ */
+export async function deletePost(id: number): Promise<void> {
+  await http.delete(`/posts/${id}`, { params: { device_id: getDeviceId() } })
+}
+
+/**
+ * 动态区被限额拦下时, detail 与行程那条路**同形**(见 backend/app/api/posts.py 的
+ * _rejected)。复用同一个解析器, 免得两处各写一遍、迟早分叉。
+ */
+export const postRejection = itineraryRejection
 
 /** 上报一条行为。埋点失败不该挡住阅读, 调用方自行决定要不要 catch。 */
 export async function reportEvent(payload: EventPayload): Promise<void> {

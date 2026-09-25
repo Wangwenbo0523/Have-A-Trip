@@ -10,6 +10,7 @@ import Footer from "../components/Footer"
 import Header from "../components/Header"
 import HomePage from "../components/HomePage"
 import ItineraryPlanner from "../components/ItineraryPlanner"
+import PostsPage from "../components/PostsPage"
 import StatsPage from "../components/StatsPage"
 import StateMessage from "../components/StateMessage"
 import { useI18n } from "../i18n"
@@ -46,6 +47,17 @@ const Planner = () => {
   )
 }
 
+const Feeds = () => {
+  const { t } = useI18n()
+  return (
+    <main className="page">
+      <h2 className="page__title">{t("router.posts.title")}</h2>
+      <p className="page__subtitle">{t("router.posts.subtitle")}</p>
+      <PostsPage />
+    </main>
+  )
+}
+
 interface AppRouterProps {
   categories: CategoryWithCount[]
 }
@@ -60,6 +72,7 @@ const AppRouter = ({ categories }: AppRouterProps) => (
         <Route path="/category/:slug" element={<CategoryPage categories={categories} />} />
         <Route path="/attraction/:slug" element={<AttractionDetail />} />
         <Route path="/planner" element={<Planner />} />
+        <Route path="/posts" element={<Feeds />} />
         <Route path="/stats" element={<StatsPage />} />
         <Route path="/compare" element={<ComparePage />} />
         <Route path="/credits" element={<Credits />} />

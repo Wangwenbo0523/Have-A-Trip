@@ -1,0 +1,244 @@
+/* 动态区。发言的地方只有一处, 所以版式从上到下就是"写 -> 筛 -> 读"三段落。 */
+
+.posts {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* 发帖框: 与行程表单同一个语气(输入区 -> 一行控件 -> 说明), 不另造一套视觉。 */
+.composer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 18px;
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  background: var(--panel-bg);
+}
+
+.composer__label {
+  color: var(--muted);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+}
+
+.composer__input {
+  padding: 12px 16px;
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  background: var(--panel-bg-strong);
+  color: var(--text);
+  font-size: 1rem;
+  font-family: inherit;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.composer__input:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+/* 字数计数靠右: 它不是提示, 是"还差多少就发不出去" */
+.composer__counter {
+  align-self: flex-end;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.composer__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.composer__nickname {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.composer__nickname input {
+  padding: 8px 12px;
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  background: var(--panel-bg-strong);
+  color: var(--text);
+  font-size: 0.95rem;
+  max-width: 200px;
+}
+
+.composer__submit {
+  margin-left: auto;
+  padding: 10px 22px;
+  border: 1px solid var(--panel-border);
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.composer__submit:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* 挂景点那行与对比页的选择器共用 picker.css, 这里只管占位宽度 */
+.composer__spot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.composer__spot .picker {
+  flex: 1 1 260px;
+  min-width: 0;
+}
+
+.composer__unspot {
+  padding: 8px 16px;
+  border: 1px solid var(--panel-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.composer__unspot:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+/* 筛选与名额那一行 */
+.posts__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.posts__mine {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.posts__filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  border: 1px solid var(--panel-border);
+  border-radius: 999px;
+}
+
+.posts__filterClear {
+  border: none;
+  background: transparent;
+  color: var(--accent);
+  font-size: 0.85rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.posts__quota {
+  margin-left: auto;
+}
+
+/* 列表 */
+.posts__list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.post {
+  padding: 14px 16px;
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  background: var(--panel-bg);
+}
+
+.post__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.post__author {
+  font-weight: 600;
+}
+
+.post__time {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+/* 用户写的正文: 原样显示, 但保留换行 —— 用户打的分段不该被挤成一坨 */
+.post__body {
+  margin-top: 8px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.post__spot {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 4px 12px;
+  border: 1px solid var(--panel-border);
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
+
+/* 景点已下架: 名字还在, 但没有能打开的页面 */
+.post__spot--gone {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.post__delete,
+.post__cancel {
+  margin-top: 10px;
+  padding: 6px 14px;
+  border: 1px solid var(--panel-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.post__delete:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.post__delete--confirm {
+  border-color: #c0392b;
+  color: #c0392b;
+}
+
+.post__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.posts__disclaimer,
+.posts__hint {
+  color: var(--muted);
+  font-size: 0.82rem;
+}

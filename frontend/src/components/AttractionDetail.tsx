@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 
-import { fetchAttraction, fetchSimilar, getDeviceId, reportEvent } from "../api/client"
+import {
+  fetchAttraction,
+  fetchPostsByAttraction,
+  fetchSimilar,
+  getDeviceId,
+  reportEvent,
+} from "../api/client"
 import { useApi } from "../hooks/useApi"
 import { useI18n } from "../i18n"
 import { localizedName, namesFor } from "../lib/display"
@@ -10,6 +16,7 @@ import AiAskBox from "./AiAskBox"
 import AttractionList from "./AttractionList"
 import AttractionPlan from "./AttractionPlan"
 import ExternalVideoSearch from "./ExternalVideoSearch"
+import PostList from "./PostList"
 import StateMessage from "./StateMessage"
 import Loader from "./utils/Loader"
 import "../styles/detail.css"
@@ -19,6 +26,8 @@ const AttractionDetail = () => {
   const { t, lang } = useI18n()
   const { data, loading, error, reload } = useApi(() => fetchAttraction(slug), [slug])
   const similar = useApi(() => fetchSimilar(slug, 6), [slug])
+  // 大家在这儿说了什么。只取前几条: 详情页是档案, 动态区才是说话的地方
+  const posts = useApi(() => fetchPostsByAttraction(slug, 5), [slug])
   const [favorited, setFavorited] = useState(false)
 
   const attractionId = data?.id ?? null
@@ -235,6 +244,28 @@ const AttractionDetail = () => {
           </ul>
         </section>
       ) : null}
+
+      {/* 用户动态: 只读一小段, 想说话/想看全在动态区(那边也是同一条接口) */}
+      <section className="detail__section" aria-labelledby="detail-posts">
+        <h3 className="section__title" id="detail-posts">
+          {t("posts.onSpot.title")}
+        </h3>
+        {posts.loading ? <Loader /> : null}
+        {!posts.loading && posts.data ? (
+          <PostList
+            items={posts.data.items}
+            empty={{
+              title: t("posts.onSpot.empty.title"),
+              detail: t("posts.onSpot.empty.detail"),
+            }}
+          />
+        ) : null}
+        <p className="detail__postsCta">
+          <Link to={"/posts?attraction=" + encodeURIComponent(data.slug)}>
+            {t("posts.onSpot.cta")}
+          </Link>
+        </p>
+      </section>
 
       {/* 站外搜索的关键词跟着界面显示的标题走, 见 src/lib/display.ts */}
       <ExternalVideoSearch keyword={localizedName(lang, data)} />
