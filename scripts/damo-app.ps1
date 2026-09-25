@@ -12,7 +12,8 @@
     - 认得出自己: 端口上跑的已经是本实例就直接复用, 不再起第二个, 也不重复开窗
     - 关窗即停: 窗口一关就把服务收掉; 找不到能开应用窗口的浏览器时退回默认浏览器, 那时
       服务留在后台, 用 -Down 收
-    - 失败说人话: 起不来时弹一个对话框指出日志在哪, 而不是留一个空窗口让人猜
+    - 失败说人话: 起不来时弹一个对话框指出日志在哪, 而不是留一个空窗口让人猜;
+      数据库没起也一样 —— **不启动**一个每个接口都会 500 的空壳
 
 .PARAMETER Port
   应用端口, 默认 8100(与 dev-up 的 8000/8010 错开, 两边可以同时开着)。
@@ -98,6 +99,24 @@ function Get-Health {
     }
 }
 
+function Test-Healthy {
+    param($Health)
+    # **不能只看有没有 status 字段**: 数据库连不上时 healthz 照样回 200, 只是把 status
+    # 报成 degraded —— 只看字段在不在, 等于把一个「每个接口都 500」的应用当好的开出去。
+    # (2026-09-26 真出过这事: 便携实例非正常停止, 启动器探不到端口就退回默认的 5432 起了
+    # 服务, 界面上推荐 / 分类 / 最新收录整片 500, 而没有任何一处说「数据库没起」。)
+    return ($null -ne $Health) -and ($Health.status -eq "ok")
+}
+
+function Get-DbHint {
+    # 只说「连不上」没用, 要给出能直接粘的起库命令 —— 「便携实例还躺在磁盘上却不在跑」
+    # 是这台机器上最常见的那种「数据库没起」。
+    if ((Test-Path "C:\pgtemp\pginstall\bin\pg_ctl.exe") -and (Test-Path "C:\pgtemp\pgdata")) {
+        return "便携实例看起来是停的, 起来它(这台机器的库在 55432):`n`n  & C:\pgtemp\pginstall\bin\pg_ctl.exe -D C:\pgtemp\pgdata -l C:\pgtemp\pgdata\server.log -o ""-p 55432 -c listen_addresses=127.0.0.1"" start`n"
+    }
+    return "起库命令见 scripts/dev-up.ps1 顶部注释, 或用 -PgPort / -PgBin 指到已有实例。"
+}
+
 function Show-Alert {
     param([string]$Title, [string]$Text)
     # 界面起见窗口失败时, 这是唯一能把话说给用户听的地方(脚本自己没有窗口)
@@ -156,9 +175,15 @@ if ($needBuild) {
 # ------------------------------------------------------------------ 起服务
 $reused = $false
 $health = Get-Health
-if ($health) {
+if (Test-Healthy $health) {
     $reused = $true
     Write-Info "已经在跑(端口 $Port), 直接复用, 不再起第二个。"
+} elseif ($health) {
+    # 服务在, 但它自己说数据库连不上 —— 页面会整片 500。它的 DATABASE_URL 是启动那一刻
+    # 定下的, 改不了, 所以只能收掉重开; 这里是「说清楚」, 不是「复用过去」。
+    Show-Alert "damo 在跑, 但数据库连不上" "端口 $Port 上的实例回报 status=$($health.status) / database=$($health.database), 界面上每个接口都会 500。`n`n它的 DATABASE_URL 是启动时定下的, 改不了 —— 先把数据库起好, 再收掉重开:`n`n  damo.cmd -Down`n  damo.cmd`n`n$(Get-DbHint)"
+    Write-Fail "端口 $Port 上的实例数据库连不上($($health.status)), 先 -Down 收掉再重开"
+    exit 1
 } elseif (Test-Port "127.0.0.1" $Port) {
     Show-Alert "端口 $Port 被占用" "那个程序不是 damo(没回 /api/v1/healthz)。`n`n换个端口:  damo.cmd -Port 8101`n或先停掉它。"
     Write-Fail "端口 $Port 被占用, 而且不是我们的应用"
@@ -168,8 +193,16 @@ if ($health) {
         if ($env:DATABASE_URL) {
             $DatabaseUrl = $env:DATABASE_URL
         } else {
+            if (-not (Test-Port $PgHost $PgPort) -and (Test-Port $PgHost 55432)) {
+                Write-Note "连不上 $PgHost`:$PgPort, 但 55432 有实例, 改用 55432。"
+                $PgPort = 55432
+            }
             if (-not (Test-Port $PgHost $PgPort)) {
-                if (Test-Port $PgHost 55432) { $PgPort = 55432 }
+                # 数据库没起就别启动: 起了也是一个每个接口都 500 的空壳, 而且窗口里看不出
+                # 是数据库的问题(真出过事, 见 Test-Healthy 的注释)。
+                Show-Alert "数据库没起" "连不上 $PgHost`:$PgPort —— 这样启动出来的应用每个接口都会 500。`n`n$(Get-DbHint)"
+                Write-Fail "连不上 $PgHost`:$PgPort, 数据库没起, 不启动。"
+                exit 1
             }
             $DatabaseUrl = "postgresql+psycopg://$PgUser@$($PgHost):$PgPort/$Database"
         }
@@ -189,11 +222,18 @@ if ($health) {
     Write-Info "服务已起(pid $($proc.Id)), 日志 .dev\app.out.log"
 
     $deadline = (Get-Date).AddSeconds(60)
-    while (-not (Get-Health) -and (Get-Date) -lt $deadline) { Start-Sleep -Milliseconds 500 }
+    while (-not (Test-Healthy (Get-Health)) -and (Get-Date) -lt $deadline) { Start-Sleep -Milliseconds 500 }
     $health = Get-Health
     if (-not $health) {
         Show-Alert "damo 起不来" "服务 60 秒内没就绪。日志:`n$ErrLog"
         Write-Fail "服务没起来, 看 .dev\app.err.log"
+        Stop-App | Out-Null
+        exit 1
+    }
+    if (-not (Test-Healthy $health)) {
+        # 进程活着但数据库连不上: 收掉它, 别留一个「看着像好的」的窗口
+        Show-Alert "damo 起来了, 但数据库连不上" "status=$($health.status) / database=$($health.database)`n`nDATABASE_URL 用的是:`n$DatabaseUrl`n`n$(Get-DbHint)`n日志: $ErrLog"
+        Write-Fail "数据库连不上, 已收掉这个实例(它只会一直 500)"
         Stop-App | Out-Null
         exit 1
     }

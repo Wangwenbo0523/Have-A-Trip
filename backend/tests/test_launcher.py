@@ -1,12 +1,14 @@
 """本地应用启动器的守线: 把今天踩过的坑变成可执行的断言。
 
 启动器是**本机用**的那条路径(scripts/damo-app.ps1 + damo.cmd), 它不在 CI 的测试矩阵里,
-所以这里用文本级断言替它把关 —— 三条都是真出过事或真会出事的:
+所以这里用文本级断言替它把关 —— 下面这些坑都真出过事或真会出事:
 
 - .ps1 不带 BOM: PowerShell 5.1 会按系统码页(中文机器上是 GBK)读文件, 中文注释被解成
   乱码, 严重时直接语法错(实测: 一个中文注释的脚本报 UnexpectedToken)
 - .ps1 里出现 0.0.0.0: 这是给人在这台机器上用的应用, 不该顺手对局域网开口
 - --reload: 那是 dev-up.ps1 的场景; 应用路径开了它, 进程会多一层, 关窗收不干净
+- 就绪判定只看「有没有 status 字段」: healthz 在数据库连不上时**照样回 200**, 只是把
+  status 报成 degraded —— 于是「每个接口都 500」的应用被当成就绪开了出去
 """
 from __future__ import annotations
 
@@ -68,3 +70,31 @@ def test_the_double_click_entry_point_is_ascii_only():
     assert CMD.is_file(), "缺 damo.cmd(双击入口)"
     bad = [i for i, byte in enumerate(CMD.read_bytes()) if byte > 127]
     assert bad == [], f"damo.cmd 里有非 ASCII 字节: {bad[:5]}"
+
+
+def test_the_launcher_does_not_mistake_a_degraded_health_for_ready():
+    """healthz 在数据库连不上时**照样回 200**, 只是把 status 报成 degraded。
+
+    2026-09-26 真出过事: 便携实例非正常停止(留下一个死 postmaster.pid), 启动器探不到
+    端口就退回默认的 5432 起了服务, 界面上「推荐」「分类」「最新收录」整片 500, 而窗口和
+    日志里没有任何一处说「数据库没起」。所以: 就绪判定必须看 status 的**值**, 而且只准有
+    一处判 —— 两处各判一次, 就是下一个漏。
+    """
+    text = APP_PS1.read_text(encoding="utf-8-sig")
+    assert "Test-Healthy" in text, "把就绪判定收进一个函数, 别在两个地方各判一次"
+    assert 'status -eq "ok"' in text, "就绪要看 status 是不是 ok, 不能只看字段在不在"
+    waited = [line for line in text.splitlines() if "(Get-Health" in line]
+    assert waited, "找不到等就绪的那一行, 用例该跟着脚本改"
+    for line in waited:
+        assert "Test-Healthy" in line, f"等就绪必须走 Test-Healthy: {line.strip()}"
+
+
+def test_the_launcher_refuses_to_start_without_a_database():
+    """数据库没起时**不许启动**: 起了也是一个每个接口都 500 的空壳。
+
+    与上一条是一件事的两半 —— 上一条管「已经起来的实例健不健康」, 这条管「还没起时要不要
+    起」。dev-up.ps1 早就硬失败(「连不上 ..., 数据库没起」), 应用路径当时漏了这道。
+    """
+    text = APP_PS1.read_text(encoding="utf-8-sig")
+    assert "数据库没起, 不启动" in text, "数据库没起时必须硬失败, 不能照起"
+    assert "pg_ctl" in text, "要把便携实例的起库命令原样给出来, 只说一句连不上没用"

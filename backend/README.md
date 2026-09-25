@@ -32,7 +32,7 @@ cd backend
 .venv\Scripts\python -m pytest
 ```
 
-- 默认跑在 **SQLite 内存库**上，本地不需要 PostgreSQL，361 个用例（351 通过，另有 10 个对拍用例需要 PostgreSQL，未设 TEST_DATABASE_URL 时跳过）约 30 秒。
+- 默认跑在 **SQLite 内存库**上，本地不需要 PostgreSQL，363 个用例（353 通过，另有 10 个对拍用例需要 PostgreSQL，未设 TEST_DATABASE_URL 时跳过）约 30 秒。
 - `pytest.ini` 把 `app.*` 抛出的 DeprecationWarning 提升为 error —— 依赖库的废弃用法不会再悄悄积累。
 - 需要 PostgreSQL 的对拍测试（`tests/test_schema_parity.py`）在没有 `TEST_DATABASE_URL` 时**跳过**，不会假装通过：
 
