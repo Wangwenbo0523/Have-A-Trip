@@ -81,9 +81,9 @@ ol  ->  ol-mapbox-style  ->  @mapbox/mapbox-gl-style-spec  ->  { @mapbox/jsonlin
 | 等级字段 | `a_level` 1279 条（自采 50 + 官方名录 1229）、`heritage` 63 条。自采部分**逐条查证后才填**，查不到就留空；名录部分直接取发布方给出的等级 |
 | `source` | `Have-A-Trip 自采（公开事实信息）` 156 条，加上三个官方名录来源共 1229 条 |
 | `license` | `MIT` 156 条；`政府公开信息（官方名录）` 1229 条。**两个都不是 copyleft** |
-| 第三方数据集 | **仍然一个都没有** —— 本节表格里那些个人 / 社区数据集（OpenStreetMap、Wikipedia、`tuansuwu/china-5a-scenic-areas`、`Iter-X/open-poi-datasets` …）至今一个没用。v2.0 主动放弃了一份 CC BY-SA 的 5A 名录，2026-09-26 换成了文旅部自己发布的 5A 名录 |
-| 图片 | `attraction_image` 1385 行（每个景点一张），全部是 `scripts/make_attraction_covers.py` 自绘的 SVG |
-| share-alike | **无**。ODbL / CC BY-SA 义务不沾这个库，也没有可传染的衍生物 |
+| 第三方数据集 | **仍然一个都没有** —— 本节表格里那些个人 / 社区数据集（OpenStreetMap、Wikipedia、`tuansuwu/china-5a-scenic-areas`、`Iter-X/open-poi-datasets` …）至今一个没用。v2.0 主动放弃了一份 CC BY-SA 的 5A 名录，2026-09-26 换成了文旅部自己发布的 5A 名录。**图片是另一回事**：2026-09-26 起有 130 张 Commons 照片（含 98 张 CC BY-SA），这一行说的是**数据集**，见第五节 |
+| 图片 | `attraction_image` **1385 行 = 每个景点恰好一行**：**1255 条指向自绘 SVG**（MIT）+ **130 条指向 Wikimedia Commons 实景照片**（PD / CC0 / CC BY / CC BY-SA，逐张登记在 `db/seed/photos.json`，落库到 `attraction_image.credit` / `.license`）。磁盘上的 SVG 文件是 1385 个 —— 换成照片的那 130 个景点也留着自绘版当兜底，只是不再挂进 `attraction_image` |
+| share-alike | 代码与数据**无**；**图片资产有**。2026-09-26 加入的 130 张实景照片里，98 张是 CC BY-SA、27 张是 CC BY（详见第五节）。义务落在这 130 个**图片文件**上，不传染到 MIT 的代码与种子数据 —— 但将来闭源前得先把这 98 张 CC BY-SA 换成自绘或 PD / CC0 |
 
 聚合口径与查询语句在 `db/README.md` 的「数据来源清单」一节。声明页 `/credits` 已经上线，
 它读 `GET /api/v1/sources`，而后端每次都是从 `attraction` / `attraction_image` 现算的 ——
@@ -129,13 +129,16 @@ vendor 进来的 `frontend/LICENSE`（`Copyright (c) 2019 Zero To Mastery`）原
 | `frontend/src/img/BaganMyanmar.jpg`（675 KB，页头背景） | 上游基底 `zero-to-mastery/travel-guide` 里的实景照片 | **无从查证**。MIT 覆盖的是仓库作者的贡献，不等于贡献者有权授权别人的摄影作品 | **已删除**（2026-09-25，S8）。页头背景改用纯 CSS 渐变，顺带省掉首屏 675 KB |
 | `frontend/public/favicon.ico` | **自绘**，无第三方素材 | MIT（与仓库同许可） | **已换掉**（2026-09-25）。上游的 `earth.ico`（225 KB）与 `favicon.ico` 出处无从查证，已删除；现由 `scripts/make_favicon.py` 用标准库程序化生成（7 档尺寸、8.5 KB），改常量重跑即可复现 |
 | `frontend/src/logo.svg` | 上游基底的 React 标志 | 零引用死资源 | 已删除（2026-09-25，S4） |
-| 景点配图（90 张，`frontend/public/images/covers/*.svg`） | **自绘**，由 `scripts/make_attraction_covers.py` 程序化生成 | MIT（与仓库同许可） | 原计划用 CC0 / 公有领域图库（2026-09-25）：**Wikimedia Commons 与 Openverse 在本机网络下不可达**（连接超时），Unsplash / Pixabay 用的是各自的专有许可而非 CC0，且对中国具体景点的覆盖很薄。于是改为自绘——出处就是仓库里的脚本。每条仍走 `attraction_image.credit` / `.license`（NOT NULL），声明页会聚合出来 |
+| 景点配图 · 自绘（1385 个文件，其中 1255 个挂在 `attraction_image` 上） | **自绘**，由 `scripts/make_attraction_covers.py` 程序化生成 | MIT（与仓库同许可） | 出处就是仓库里的脚本本身。每个景点都有一张，改常量重跑即可复现，`--check` 会拦下手工改过的图。**每张都生成了，但只有没照片的 1255 个景点把它挂进 `attraction_image`** —— 剩下 130 个的自绘版留在磁盘上做兜底（照片要换掉时改一行 photos.json 就能回退） |
+| 景点配图 · 实景照片（130 张，`frontend/public/images/covers/*.jpg`） | **Wikimedia Commons**：由 `scripts/fetch_commons_photos.py` 抓取，台账 `db/seed/photos.json` 逐张记作者、许可与来源页 | **逐张不同**：CC BY-SA 4.0（57）、CC BY-SA 3.0（38）、CC BY 3.0（20）、CC0（4）、CC BY 2.0（3）、CC BY 4.0（3）、CC BY-SA 2.0（2）、CC BY 2.5（1）、CC BY-SA 3.0 igo（1）、Public domain（1） | 2026-09-26 加入。原口径是「不引带相同方式共享义务的图」，这次**明知有义务仍然收了** —— 当时的决定是先把 5A 景区的首图补齐，署名与合规回头再补。**已知缺口**：CC BY / CC BY-SA 要求署名（CC BY-SA 还要求以相同方式共享），而库里只有 `credit` / `license` 两列，声明页按「作者 + 许可」聚合出若干行，**没有逐图署名、没有来源页链接、也没标出某一行对应哪张图**。2026-09-25 那句「Wikimedia Commons 在本机网络下不可达」也已过期：本机可经代理出去，130 张就是这么抓来的 |
 
 ### 原则
 
 1. **来源查不到出处的图片，一律不进仓库**。一张图的风险比一行依赖代码更隐蔽——没有工具会替你扫。
 2. 景点配图优先自己拍或自绘，其次才是明确标注 CC0 / 公有领域的图库，并在 `attraction_image.credit` 里写明作者与许可。
    **不要**为了「有图」而放进许可不明或带相同方式共享义务的照片——前者是法律风险，后者给将来闭源添一道手续。
+   这条原则在 2026-09-26 被**主动放宽过一次**：为补齐 5A 景区首图收了 130 张 Commons 照片，其中 98 张 CC BY-SA。
+   代价与还没补上的义务记在上表与第四节的核对清单里；要恢复原口径，把这 130 张换成自绘或 PD / CC0 即可。
 3. 图片的署名与许可**是数据库字段**，不是文档里的口头约定。`attraction_image.credit` / `.license` 都是 `NOT NULL`，
    声明页（`Credits.tsx`）由它们聚合生成——想漏也漏不掉。
 4. `public/` 下的图标是**自绘**的（`scripts/make_favicon.py`）。换图形要改那个脚本再重跑，
@@ -251,7 +254,8 @@ AI 在本项目里做三件事（都在 `backend/app/llm/`）：
 - [x] **贡献者 DCO 签核已启用**：`scripts/check_dco.py` + `.github/workflows/dco.yml` 逐个 commit 校验（2026-09-25）
 - [x] 图片资产已单独立节审查（见第五节），来源不明的那张已删除
 - [x] `public/` 下的占位图标已换成自绘（2026-09-25）：`scripts/make_favicon.py` 生成，上游 `earth.ico` 已删除
-- [x] 景点配图已落（2026-09-25）：90 张自绘封面，由 `scripts/make_attraction_covers.py` 生成；声明页显示「Have-A-Trip 自绘 · MIT · 90 张」
+- [x] 景点配图已落（2026-09-25）：自绘封面由 `scripts/make_attraction_covers.py` 生成，每个景点一张（随名录扩容现为 1385 张），`credit` 为 Have-A-Trip 自绘、`license` 为 MIT
+- [ ] **130 张实景照片的署名义务还没补完**（2026-09-26）：`db/seed/photos.json` 逐张记了作者、许可与来源页，但界面上只有按「作者 + 许可」聚合的几行，没有逐图署名，也没有指向来源页的链接。CC BY / CC BY-SA 要求署名，CC BY-SA 还要求相同方式共享 —— 要么把界面补上，要么把这 130 张换回自绘
 - [x] 境外 40 个景点同样自采（v2.0），没有引入任何第三方数据集；评估过一份 CC BY-SA 4.0 的 5A 名录，因 share-alike 与闭源路线冲突而放弃
 - [x] 一期数据层已定案（2026-09-25，S7）：50 条全部自采、`license` 为 MIT，无第三方数据集，无图片
 - [ ] 接入新数据源或图片时，回来更新第三、第五节并逐条复核

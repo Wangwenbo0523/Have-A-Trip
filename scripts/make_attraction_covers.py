@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 """为每个景点生成一张自绘封面图, 并产出配图的种子 SQL。
 
-为什么是自绘: 图片和代码一样是版权资产, 但更难查。原计划用 CC0 / 公有领域的图库,
+为什么自绘: 图片和代码一样是版权资产, 但更难查。原计划用 CC0 / 公有领域的图库,
 实测 Wikimedia Commons 与 Openverse 在本机网络下不可达(连接超时), 而 Unsplash /
 Pixabay 一类可访问的图库用的是各自的专有许可(不是 CC0), 且对中国具体景点的覆盖很薄。
-与其塞一批出处含糊的照片, 不如**自己画**: 出处就是本脚本, 与仓库同许可, 将来闭源
-不受任何第三方约束。
+与其塞一批出处含糊的照片, 不如**自己画** —— 这才是下面这段的由来。
+
+v4.5 起本机可以经代理出去, 于是补了一批 Commons 实景照片(由 scripts/fetch_commons_photos.py
+抓, 台账 db/seed/photos.json, 许可只收 PD / CC0 / CC BY / CC BY-SA), 所以现在是两种并存:
+照片优先, 没有照片的景点仍画 SVG 兜底。
 
 产出两个东西:
   1. frontend/public/images/covers/<slug>.svg   每个景点一张, 按 slug 确定性生成
@@ -38,6 +41,10 @@ SEED_PATHS = (
     REPO_ROOT / "db" / "seed" / "attractions_cn.sql",
 )
 IMAGES_SQL_PATH = REPO_ROOT / "db" / "seed" / "images.sql"
+# 抓自 Wikimedia Commons 的实景照片清单(可选)。没有它就跑成纯自绘 SVG 的老样子。
+PHOTOS_JSON_PATH = REPO_ROOT / "db" / "seed" / "photos.json"
+PHOTO_URL_TEMPLATE = "/images/covers/{slug}.jpg"
+PHOTO_CREDIT_FALLBACK = "Wikimedia Commons 用户"
 COVER_DIR = REPO_ROOT / "frontend" / "public" / "images" / "covers"
 
 # ---------------------------------------------------------------- 版式
@@ -150,7 +157,7 @@ def rand01(slug: str):
 
 
 def parse_attractions(text: str):
-    """从种子 SQL 里抽出 (slug, name, category)。
+    """从种子 SQL 里抽出 (slug, name, name_en, category)。
 
     只认「单独一行左括号, 下一行是 'slug', '名称', 英文名(或 NULL),」的固定写法:
     比整份 SQL 解析可靠得多, 而且不用连数据库(所以 --check 在 CI 里也能裸跑)。
@@ -171,12 +178,16 @@ def parse_attractions(text: str):
         # 名字里的单引号在 SQL 里写成两个(''), 这里按同样的规则认回来并还原
         # (库里的值就是还原后的, 图上的标题必须跟库里一致)。
         m = re.match(
-            r"^\s*'([a-z0-9-]+)',\s*'((?:[^']|'')+)',\s*(?:'(?:[^']|'')*'|NULL),\s*$",
+            r"^\s*'([a-z0-9-]+)',\s*'((?:[^']|'')+)',\s*(?:'((?:[^']|'')*)'|NULL),\s*$",
             lines[i + 1],
         )
         if not m:
             continue
-        slug, name = m.group(1), m.group(2).replace("''", "'")
+        slug = m.group(1)
+        name = m.group(2).replace("''", "'")
+        # 第三列 name_en: 名录条目一律 NULL, 自采档案有英文名。抓图那个脚本要拿它当
+        # 匹配关键词(中文名在文件名里常被翻成英文), 所以在解析这一步就留下。
+        name_en = (m.group(3) or "").replace("''", "'")
         category = None
         for j in range(i + 1, min(i + 40, len(lines))):
             cm = re.search(r"category WHERE slug = '([a-z-]+)'", lines[j])
@@ -186,7 +197,7 @@ def parse_attractions(text: str):
             if lines[j].strip() in ("),", ");"):
                 break
         if category:
-            rows.append((slug, name, category))
+            rows.append((slug, name, name_en, category))
         else:
             skipped.append((slug, i + 2))
     return rows, skipped
@@ -475,19 +486,70 @@ def build_svg(slug: str, name: str, category: str) -> str:
 '''
 
 
-def build_images_sql(rows) -> str:
-    values = ",\n".join(
-        "    ((SELECT id FROM attraction WHERE slug = '%s'), '%s', '%s', '%s', '%s', 0)"
-        % (slug, URL_TEMPLATE.format(slug=slug), CAPTION, CREDIT, LICENSE)
-        for slug, _name, _category in rows
-    )
-    return f'''-- Have-A-Trip · 景点配图的种子数据
+def one_line(text: str) -> str:
+    """把值里的换行与连续空白压成单个空格。
+
+    Commons 的 Artist 字段经常自带换行(「原始上传者是谁」另起一行): 直接写进 SQL, 一条
+    INSERT 就会断成三行 —— 语句本身仍然合法, 但本文件是按「一行一条」看的, 断行既难看,
+    又会被 git diff --check 这类行级检查挑出来(行尾挂一个孤零零的空格)。
+    """
+    return re.sub(r"\s+", " ", text or "").strip()
+
+
+def sql_quote(text: str) -> str:
+    """SQL 字符串字面量: 先压成一行, 再把单引号写成两个。"""
+    return one_line(text).replace("'", "''")
+
+
+def load_photos() -> dict:
+    """读 db/seed/photos.json: 抓自 Wikimedia Commons 的实景照片。
+
+    条目形如 {slug, seq, photo, license, artist, source, ...}。
+    许可为空的直接丢掉 —— attraction_image.license 是 NOT NULL, 宁可用自绘。
+    """
+    import json
+
+    if not PHOTOS_JSON_PATH.exists():
+        return {}
+    out = {}
+    for item in json.loads(io.open(PHOTOS_JSON_PATH, encoding="utf-8").read()):
+        slug, photo, lic = item.get("slug"), item.get("photo"), (item.get("license") or "").strip()
+        if not slug or not photo or not lic:
+            continue
+        item["credit"] = (item.get("artist") or "").strip() or PHOTO_CREDIT_FALLBACK
+        out[slug] = item
+    return out
+
+
+def photo_caption(item: dict) -> str:
+    """标题里带编号, 方便对着编号清单逐张核对。"""
+    name = (item.get("file") or item.get("photo") or "").replace("File:", "")
+    return "#%03d · %s" % (item.get("pid") or item.get("seq") or 0, name)
+
+
+def build_images_sql(rows, photos) -> str:
+    entries = []
+    for slug, _name, _name_en, _category in rows:
+        item = photos.get(slug)
+        if item:
+            entries.append(
+                "    ((SELECT id FROM attraction WHERE slug = '%s'), '%s', '%s', '%s', '%s', 0)"
+                % (slug, PHOTO_URL_TEMPLATE.format(slug=slug), sql_quote(photo_caption(item)),
+                   sql_quote(item["credit"]), sql_quote(item["license"])))
+        else:
+            entries.append(
+                "    ((SELECT id FROM attraction WHERE slug = '%s'), '%s', '%s', '%s', '%s', 0)"
+                % (slug, URL_TEMPLATE.format(slug=slug), CAPTION, CREDIT, LICENSE))
+    values = ",\n".join(entries)
+    return f'''-- Have-A-Trip 景点配图的种子数据
 --
 -- 本文件由 scripts/make_attraction_covers.py 生成, **不要手改**。
 -- 改图或加景点请改那个脚本再重跑, 否则 CI 的 --check 会拦下来。
 --
--- 封面是自绘的 SVG, 出处就是仓库里的脚本本身, 许可与仓库一致(MIT)。
--- 为什么不用第三方照片: 见 docs/LICENSE-AUDIT.md 第五节。
+-- 配图来源有两种:
+--   1. 抓自 Wikimedia Commons 的实景照片, 清单在 db/seed/photos.json,
+--      作者与许可逐张登记在 credit / license 里, url 形如 /images/covers/<slug>.jpg;
+--   2. 没有合适照片的景点, 退回仓库自绘的 SVG 示意图, 许可与仓库一致(MIT)。
 --
 -- 幂等: 用 upsert, 重跑会把 caption / credit / license 同步成本文件的版本。
 --
@@ -495,6 +557,11 @@ def build_images_sql(rows) -> str:
 --   psql -d attraction_atlas -v ON_ERROR_STOP=1 -f db/seed/images.sql
 
 BEGIN;
+
+-- 本文件是 /images/covers/ 这批封面图的唯一来源: 先清掉旧行再插。
+-- 不清的话, 换图(比如某景点从自绘换成实景照片)会留下上一版的行,
+-- 于是同一个景点有两行 sort = 0, cover_image 就成了碰运气。
+DELETE FROM attraction_image WHERE url LIKE '/images/covers/%';
 
 INSERT INTO attraction_image (attraction_id, url, caption, credit, license, sort) VALUES
 {values}
@@ -504,8 +571,7 @@ ON CONFLICT (attraction_id, url) DO UPDATE SET
     license = EXCLUDED.license,
     sort    = EXCLUDED.sort;
 
--- 列表卡片的封面就是这张 sort = 0 的图。放在这里同步, 免得 attraction.cover_image
--- 和 attraction_image 指向两张不同的图(seed.sql 的 DO UPDATE 不碰 cover_image)。
+-- 列表页的封面取 sort = 0 的图。
 UPDATE attraction a
 SET cover_image = i.url
 FROM attraction_image i
@@ -529,7 +595,7 @@ def main() -> int:
     # 重复的 slug 会被 files 这个 dict 静默吃掉(images.sql 也会对同一个 slug upsert
     # 两次), 与其等图对不上再回头找, 不如在这里就拦下。
     seen: dict[str, int] = {}
-    for slug, _, _ in rows:
+    for slug, *_ in rows:
         seen[slug] = seen.get(slug, 0) + 1
     problems += [f"slug 重复 {n} 次: {slug}" for slug, n in sorted(seen.items()) if n > 1]
     if problems:
@@ -541,8 +607,9 @@ def main() -> int:
         print("没有从 db/seed/ 的种子文件里解析出任何景点, 先检查文件格式")
         return 1
 
-    files = {slug: build_svg(slug, name, category) for slug, name, category in rows}
-    sql = build_images_sql(rows)
+    photos = load_photos()
+    files = {slug: build_svg(slug, name, category) for slug, name, _name_en, category in rows}
+    sql = build_images_sql(rows, photos)
 
     if "--check" in sys.argv[1:]:
         problems = []
@@ -557,6 +624,10 @@ def main() -> int:
         elif io.open(IMAGES_SQL_PATH, encoding="utf-8", newline="").read() != sql:
             problems.append(f"内容不一致 {IMAGES_SQL_PATH.relative_to(REPO_ROOT)}")
         # 反向检查: 景点被删了但图还留着, 属于孤儿文件
+        for slug, item in sorted(photos.items()):
+            path = COVER_DIR / item["photo"]
+            if not path.exists():
+                problems.append(f"缺失照片 {path.relative_to(REPO_ROOT)}")
         if COVER_DIR.exists():
             known = {f"{slug}.svg" for slug in files}
             for path in sorted(COVER_DIR.glob("*.svg")):
