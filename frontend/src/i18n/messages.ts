@@ -330,6 +330,10 @@ export const zh = {
   "posts.quota.left": "今天还能发 {left} 条",
   "posts.quota.full": "今天的 {limit} 条已经发完了",
 
+  "posts.more": "加载更多",
+  "posts.more.busy": "加载中…",
+  "posts.more.end": "没有更多了",
+
   "posts.empty.title": "还没有人说话",
   "posts.empty.detail": "第一个来占个座: 写两句你去过的感觉就行。",
   "posts.emptyMine.title": "你还没发过动态",
@@ -666,6 +670,10 @@ export const en: Record<MessageKey, string> = {
   "posts.filter.clear": "Show all",
   "posts.quota.left": "{left} posts left today",
   "posts.quota.full": "All {limit} posts for today are used",
+
+  "posts.more": "Load more",
+  "posts.more.busy": "Loading…",
+  "posts.more.end": "No more posts",
 
   "posts.empty.title": "Nobody has posted yet",
   "posts.empty.detail": "Be the first: two lines about a place you have been to is enough.",

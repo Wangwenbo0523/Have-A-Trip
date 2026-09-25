@@ -70,6 +70,8 @@ const page = (items: Post[], over: Partial<PostPage> = {}): PostPage => ({
   daily_limit: 10,
   used_today: 0,
   disclaimer: "动态由用户发布。",
+  // 默认没有更旧的: 只有明确要翻页的用例才给游标
+  next_cursor: null,
   ...over,
 })
 
@@ -279,5 +281,110 @@ describe("PostsPage", () => {
 
     await userEvent.click(screen.getByRole("button", { name: "看全部" }))
     await waitFor(() => expect(mockedList).toHaveBeenCalled())
+  })
+
+  it("还有更旧的时候才给「加载更多」, 翻到底就说一句没有更多了", async () => {
+    mockedList.mockResolvedValueOnce(page([post({ id: 9 })], { next_cursor: 5 }))
+    renderPosts()
+    await screen.findByText("湖边光正好。")
+
+    // 第一页的游标拿在手上, 按钮就该在
+    const more = screen.getByRole("button", { name: "加载更多" })
+
+    // 第二页就是最后一页: 按钮收起, 换成一句收尾
+    mockedList.mockResolvedValueOnce(
+      page([post({ id: 5, body: "更旧的" })], { next_cursor: null }),
+    )
+    await userEvent.click(more)
+
+    expect(await screen.findByText("更旧的")).toBeInTheDocument()
+    // 两页拼在一起, 第一页的不能被顶掉
+    expect(screen.getByText("湖边光正好。")).toBeInTheDocument()
+    expect(screen.queryByRole("button", { name: "加载更多" })).not.toBeInTheDocument()
+    expect(screen.getByText("没有更多了")).toBeInTheDocument()
+  })
+
+  it("「加载更多」把上一页的游标原样带回去, 取到的还是更旧的那一批", async () => {
+    mockedList.mockResolvedValueOnce(page([post({ id: 9 })], { next_cursor: 9 }))
+    renderPosts()
+    await screen.findByText("湖边光正好。")
+
+    mockedList.mockResolvedValueOnce(
+      page([post({ id: 4, body: "更旧的 A" })], { next_cursor: 4 }),
+    )
+    await userEvent.click(screen.getByRole("button", { name: "加载更多" }))
+
+    await waitFor(() =>
+      expect(mockedList).toHaveBeenLastCalledWith({
+        attraction: undefined,
+        onlyMine: false,
+        before: 9,
+      }),
+    )
+    expect(await screen.findByText("更旧的 A")).toBeInTheDocument()
+  })
+
+  it("要下一页失败时说清错误, 按钮留着能再点一次", async () => {
+    mockedList.mockResolvedValueOnce(page([post({ id: 9 })], { next_cursor: 5 }))
+    renderPosts()
+    await screen.findByText("湖边光正好。")
+
+    mockedList.mockRejectedValueOnce(new Error("连不上后端"))
+    await userEvent.click(screen.getByRole("button", { name: "加载更多" }))
+
+    expect(await screen.findByText("连不上后端")).toBeInTheDocument()
+    // 游标没动, 所以按钮还在, 再点还是这一页
+    expect(screen.getByRole("button", { name: "加载更多" })).toBeInTheDocument()
+  })
+
+  it("后续页与第一页撞上时按 id 去重, 不把同一条摆两遍", async () => {
+    mockedList.mockResolvedValueOnce(
+      page([post({ id: 9 }), post({ id: 8, body: "第二条" })], { next_cursor: 8 }),
+    )
+    renderPosts()
+    await screen.findByText("第二条")
+
+    // 第二页把第一页已出现过的 id=8 又吐了一遍(删一条之后整体上移就会这样)
+    mockedList.mockResolvedValueOnce(
+      page([post({ id: 8, body: "第二条" }), post({ id: 7, body: "更旧的 B" })], { next_cursor: null }),
+    )
+    await userEvent.click(screen.getByRole("button", { name: "加载更多" }))
+
+    expect(await screen.findByText("更旧的 B")).toBeInTheDocument()
+    expect(screen.getAllByText("第二条")).toHaveLength(1)
+  })
+
+  it("第一页换了(切筛选、发完重拉)就把翻出来的后续页丢掉", async () => {
+    mockedList.mockResolvedValueOnce(page([post({ id: 9 })], { next_cursor: 5 }))
+    renderPosts()
+    await screen.findByText("湖边光正好。")
+
+    mockedList.mockResolvedValueOnce(page([post({ id: 5, body: "更旧的" })], { next_cursor: null }))
+    await userEvent.click(screen.getByRole("button", { name: "加载更多" }))
+    await screen.findByText("更旧的")
+
+    // 勾「只看我的」= 换了一批数据: 位置已经变了, 接着往下接没有意义
+    mockedList.mockResolvedValue(page([post({ id: 9 })], { next_cursor: null }))
+    await userEvent.click(screen.getByLabelText("只看我的"))
+
+    await waitFor(() => expect(screen.queryByText("更旧的")).not.toBeInTheDocument())
+  })
+
+  it("按景点看的时候, 翻页也带着这个景点", async () => {
+    mockedBySpot.mockResolvedValueOnce(page([post({ id: 9 })], { next_cursor: 3 }))
+    renderPosts("/posts?attraction=west-lake")
+    await screen.findByText("湖边光正好。")
+
+    mockedList.mockResolvedValueOnce(page([post({ id: 3, body: "更旧的 C" })], { next_cursor: null }))
+    await userEvent.click(screen.getByRole("button", { name: "加载更多" }))
+
+    await waitFor(() =>
+      expect(mockedList).toHaveBeenLastCalledWith({
+        attraction: "west-lake",
+        onlyMine: false,
+        before: 3,
+      }),
+    )
+    expect(await screen.findByText("更旧的 C")).toBeInTheDocument()
   })
 })

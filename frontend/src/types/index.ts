@@ -458,6 +458,11 @@ export interface PostPage {
   /** 今天已经发了几条; 没带身份请求时为 null */
   used_today: number | null
   disclaimer: string
+  /**
+   * 「加载更多」的游标: 已经看到的最后一条的 id, 原样回传给 fetchPosts 的 before
+   * 就接着往下取; null 表示没有更旧的了
+   */
+  next_cursor: number | null
 }
 
 /** 发一条动态。attraction_slug 留空就是纯文字。 */

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 
 import { deletePost, describeError, fetchPosts, fetchPostsByAttraction } from "../api/client"
@@ -20,6 +20,8 @@ import "../styles/posts.css"
  * ?attraction=<slug> 进来时只显示挂在这个景点下的 —— 景点详情页那个「大家在这儿
  * 说了什么」就是带着这个参数跳过来的。
  *
+ * 列表按 id 倒序, 一页一页往后接: 「加载更多」拿上一页的 next_cursor 当游标再要一页。
+ *
  * 这里**没有**账号、没有定位、没有图片: 匿名身份只是 localStorage 里一个随机串。
  */
 const PostsPage = () => {
@@ -27,6 +29,12 @@ const PostsPage = () => {
   const [params, setParams] = useSearchParams()
   const [onlyMine, setOnlyMine] = useState(false)
   const [failure, setFailure] = useState("")
+  // 「加载更多」翻出来的后续页与第一页分开存: 第一页归 useApi 管(重试、切筛选、发完
+  // 刷新都走它), 这里只负责往后接
+  const [older, setOlder] = useState<Post[]>([])
+  const [cursor, setCursor] = useState<number | null>(null)
+  const [moreLoading, setMoreLoading] = useState(false)
+  const [moreFailure, setMoreFailure] = useState("")
 
   const attraction = params.get("attraction") ?? ""
   const { data, loading, error, reload } = useApi(
@@ -36,18 +44,55 @@ const PostsPage = () => {
   // 景点选择器的候选: 全库已发布景点, 与对比页共用同一个加载器
   const spots = useApi(fetchAllAttractions, [])
 
+  // 第一页换了(刚发过、刚删过、切了筛选)就把翻出来的后续页丢掉, 游标也跟着重来:
+  // 那时位置已经变了, 接着往下接只会把看过的东西再摆一遍
+  useEffect(() => {
+    setOlder([])
+    setCursor(data?.next_cursor ?? null)
+    setMoreFailure("")
+  }, [data])
+
   const filtered = useMemo(
     () => (attraction ? (spots.data ?? []).find((item) => item.slug === attraction) : undefined),
     [attraction, spots.data],
   )
 
+  // 第一页是权威顺序: 后续页与它有重合时(刚删过一条, 后面整体上移一格)以第一页为准
+  const items = useMemo(() => {
+    const head = data?.items ?? []
+    const seen = new Set(head.map((item) => item.id))
+    return [...head, ...older.filter((item) => !seen.has(item.id))]
+  }, [data, older])
+
   const remove = async (post: Post) => {
     setFailure("")
     try {
       await deletePost(post.id)
+      // 名额在响应里, 所以删完从头拉一次; 已经翻出来的后续页会一并丢掉 —— 少了一条之后
+      // 偏移与游标都会错位, 与其拼不如重来
       reload()
     } catch (err) {
       setFailure(describeError(err, lang))
+    }
+  }
+
+  const loadMore = async () => {
+    if (cursor === null || moreLoading) return
+    setMoreLoading(true)
+    setMoreFailure("")
+    try {
+      const next = await fetchPosts({
+        attraction: attraction || undefined,
+        onlyMine,
+        before: cursor,
+      })
+      setOlder((prev) => [...prev, ...next.items])
+      setCursor(next.next_cursor)
+    } catch (err) {
+      // 出错就停在原地: 游标没动, 再点一次还是这一页
+      setMoreFailure(describeError(err, lang))
+    } finally {
+      setMoreLoading(false)
     }
   }
 
@@ -97,7 +142,7 @@ const PostsPage = () => {
 
       {!loading && !error && data ? (
         <PostList
-          items={data.items}
+          items={items}
           onDelete={remove}
           empty={
             onlyMine
@@ -105,6 +150,25 @@ const PostsPage = () => {
               : { title: t("posts.empty.title"), detail: t("posts.empty.detail") }
           }
         />
+      ) : null}
+
+      {/* 还有更旧的就给按钮; 翻到底又说了一句「没有更多了」, 免得用户以为还能点 */}
+      {!loading && !error && data && items.length > 0 ? (
+        cursor !== null ? (
+          <div className="posts__moreRow">
+            <button
+              type="button"
+              className="posts__more"
+              onClick={loadMore}
+              disabled={moreLoading}
+            >
+              {moreLoading ? t("posts.more.busy") : t("posts.more")}
+            </button>
+            {moreFailure ? <span className="posts__moreError">{moreFailure}</span> : null}
+          </div>
+        ) : older.length > 0 ? (
+          <p className="posts__end">{t("posts.more.end")}</p>
+        ) : null
       ) : null}
 
       {failure ? (

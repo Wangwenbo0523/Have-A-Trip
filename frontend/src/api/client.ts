@@ -268,7 +268,14 @@ export function itineraryRejection(error: unknown): ItineraryRejection | null {
  * 另一个是"看谁的", 别混。
  */
 export async function fetchPosts(
-  params: { attraction?: string; onlyMine?: boolean; page?: number; size?: number } = {},
+  params: {
+    attraction?: string
+    onlyMine?: boolean
+    page?: number
+    /** 游标: 上一页的 next_cursor 原样带回来(后端按 id 比, 见 app/api/posts.py) */
+    before?: number
+    size?: number
+  } = {},
 ): Promise<PostPage> {
   const { data } = await http.get<PostPage>("/posts", {
     params: {
@@ -277,6 +284,7 @@ export async function fetchPosts(
       device_id: params.onlyMine ? getDeviceId() : undefined,
       viewer: getDeviceId(),
       page: params.page,
+      before: params.before,
       size: params.size,
     },
   })

@@ -237,6 +237,49 @@
   gap: 8px;
 }
 
+/* 加载更多: 与删除按钮同一个语气(细边框圆角), 它只是"再要一页", 不是主操作 */
+.posts__moreRow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+}
+
+.posts__more {
+  padding: 8px 22px;
+  border: 1px solid var(--panel-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.posts__more:hover:enabled {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+/* 正在要下一页: 按钮留在原地只变灰, 免得用户以为没点上而连点 */
+.posts__more:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+/* 这一次没要到: 提示挨着按钮, 按钮还在 —— 再点一次还是这一页 */
+.posts__moreError {
+  color: #c0392b;
+  font-size: 0.82rem;
+}
+
+/* 翻到底了: 说一句就够, 不要再摆一个点不动的按钮 */
+.posts__end {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  text-align: center;
+}
 .posts__disclaimer,
 .posts__hint {
   color: var(--muted);
