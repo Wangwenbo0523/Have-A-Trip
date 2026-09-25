@@ -13,7 +13,7 @@
   gap: 8px;
   padding: 16px 18px;
   border: 1px solid var(--panel-border);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   background: var(--panel-bg);
 }
 
@@ -26,7 +26,7 @@
 .composer__input {
   padding: 12px 16px;
   border: 1px solid var(--panel-border);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   background: var(--panel-bg-strong);
   color: var(--text);
   font-size: 1rem;
@@ -65,7 +65,7 @@
 .composer__nickname input {
   padding: 8px 12px;
   border: 1px solid var(--panel-border);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   background: var(--panel-bg-strong);
   color: var(--text);
   font-size: 0.95rem;
@@ -76,7 +76,7 @@
   margin-left: auto;
   padding: 10px 22px;
   border: 1px solid var(--panel-border);
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   background: var(--accent);
   color: var(--accent-contrast);
   font-size: 0.95rem;
@@ -104,7 +104,7 @@
 .composer__unspot {
   padding: 8px 16px;
   border: 1px solid var(--panel-border);
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   background: transparent;
   color: var(--muted);
   font-size: 0.85rem;
@@ -138,7 +138,7 @@
   gap: 8px;
   padding: 4px 10px;
   border: 1px solid var(--panel-border);
-  border-radius: 999px;
+  border-radius: var(--radius-full);
 }
 
 .posts__filterClear {
@@ -167,7 +167,7 @@
 .post {
   padding: 14px 16px;
   border: 1px solid var(--panel-border);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   background: var(--panel-bg);
 }
 
@@ -200,7 +200,7 @@
   margin-top: 10px;
   padding: 4px 12px;
   border: 1px solid var(--panel-border);
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   font-size: 0.85rem;
 }
 
@@ -215,7 +215,7 @@
   margin-top: 10px;
   padding: 6px 14px;
   border: 1px solid var(--panel-border);
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   background: transparent;
   color: var(--muted);
   font-size: 0.82rem;
@@ -228,8 +228,8 @@
 }
 
 .post__delete--confirm {
-  border-color: #c0392b;
-  color: #c0392b;
+  border-color: var(--error);
+  color: var(--error);
 }
 
 .post__actions {
@@ -249,7 +249,7 @@
 .posts__more {
   padding: 8px 22px;
   border: 1px solid var(--panel-border);
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   background: transparent;
   color: var(--muted);
   font-size: 0.88rem;
@@ -269,7 +269,7 @@
 
 /* 这一次没要到: 提示挨着按钮, 按钮还在 —— 再点一次还是这一页 */
 .posts__moreError {
-  color: #c0392b;
+  color: var(--error);
   font-size: 0.82rem;
 }
 

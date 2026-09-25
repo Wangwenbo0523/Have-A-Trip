@@ -26,24 +26,29 @@
   gap: 6px;
 }
 
+/* 筛选胶囊默认是「空心的」: 白底 + 细线 + 灰字, 像一条待选项。
+   选中的那一颗换成墨色实底, 不用品牌色 —— 这一屏同时有好几组筛选, 全刷成红色
+   等于没有重点; 品牌色留给真正的主行动(主按钮、重试)。 */
 .browser__sort {
   padding: 8px 16px;
   border: 1px solid var(--panel-border);
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   background: transparent;
   color: var(--muted);
-  font-size: 0.9rem;
-  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s, box-shadow 0.15s;
 }
 
 .browser__sort:hover {
   color: var(--text);
+  border-color: var(--panel-border-strong);
 }
 
 .browser__sort.is-active {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--accent-contrast);
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--panel-bg);
 }
 
 .browser__pager {
@@ -53,20 +58,22 @@
   justify-content: center;
   gap: 16px;
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: 0.875rem;
 }
 
+/* 翻页是次要行动, 用 8px 圆角的次级按钮, 与主按钮的胶囊形区分开 */
 .browser__pager button {
   padding: 8px 20px;
-  border: 1px solid var(--panel-border);
-  border-radius: 999px;
+  border: 1px solid var(--panel-border-strong);
+  border-radius: var(--radius-sm);
   background: transparent;
-  transition: border-color 0.2s, color 0.2s;
+  font-weight: 500;
+  transition: background-color 0.15s, border-color 0.15s;
 }
 
 .browser__pager button:hover:enabled {
-  border-color: var(--accent);
-  background: var(--accent-soft);
+  background: var(--panel-bg-strong);
+  border-color: var(--text);
   color: var(--text);
 }
 
@@ -81,32 +88,32 @@
   gap: 6px;
   padding: 20px 16px;
   border: 1px solid var(--panel-border);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   background: var(--panel-bg);
   text-align: center;
-  transition: transform 0.2s ease-out, border-color 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
 }
 
+/* 悬停只浮起那一档阴影, 不换边框颜色(上一版会把边框刷成橙色) */
 .categoryCard:hover {
-  transform: translateY(-3px);
-  border-color: var(--accent);
+  transform: translateY(-2px);
   box-shadow: var(--shadow-card);
 }
 
 .categoryCard__name {
-  font-size: 1.1rem;
-  font-weight: bold;
+  font-size: 1rem;
+  font-weight: 600;
 }
 
 .categoryCard__count {
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: 0.875rem;
 }
 
 .stateMessage {
   padding: 24px;
   border: 1px dashed var(--panel-border);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   text-align: center;
   color: var(--muted);
 }
@@ -118,24 +125,28 @@
 
 .stateMessage__title {
   color: var(--text);
-  font-size: 1.05rem;
+  font-size: 1.0625rem;
+  font-weight: 600;
 }
 
 .stateMessage__detail {
   margin-top: 6px;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
 }
 
+/* 重试是这一块里唯一该做的一件事, 所以它是实心主按钮 */
 .stateMessage__retry {
   margin-top: 14px;
-  padding: 8px 22px;
-  border: 1px solid var(--accent);
-  border-radius: 999px;
-  background: transparent;
-  color: var(--accent);
+  padding: 10px 22px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background-color 0.15s;
 }
 
 .stateMessage__retry:hover {
-  background: var(--accent);
-  color: var(--accent-contrast);
+  background: var(--accent-active);
 }

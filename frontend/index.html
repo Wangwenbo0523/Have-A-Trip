@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="theme-color" content="#14161a">
+    <meta name="theme-color" content="#ffffff">
     <meta name="description"
         content="Have-A-Trip 景点大全: 景点档案、检索与个性化推荐。只做景点介绍, 不含地图与定位。">
     <!-- 静态默认中文; 语种在运行期由 LanguageProvider 覆盖 <html lang> 与 <title>, 见 src/i18n。 -->
@@ -13,6 +13,28 @@
     <link rel="manifest" href="/manifest.json">
     <link rel="shortcut icon" href="/favicon.ico">
     <title>Have-A-Trip · 景点大全</title>
+
+    <script>
+        /*
+         * 首屏定主题。React 挂载之前先把 data-theme 写到 <html> 上, 否则选了深色的
+         * 用户会先看到一闪的白底 —— 这一下闪烁比多几行内联脚本难看得多。
+         * **这是唯一一处与 src/theme 重复 storage key 的地方**: 为了不闪, 只能在这里
+         * 同步读一次; 改 key 时两处都要改。读不到就什么都不写, CSS 的 :root 默认是浅色。
+         *
+         * 这段原先被写在 </html> 之后(无效 HTML, 靠浏览器容错才生效), 已挪回 <head>,
+         * 位置在样式表与模块脚本之前, 保证第一帧就是对的底色。
+         */
+        (function () {
+            try {
+                var saved = window.localStorage.getItem("have-a-trip:theme");
+                if (saved === "light" || saved === "dark") {
+                    document.documentElement.dataset.theme = saved;
+                }
+            } catch (error) {
+                /* 无痕模式下读 localStorage 会抛, 走默认浅色 */
+            }
+        })();
+    </script>
 </head>
 
 <body>
@@ -22,21 +44,3 @@
 </body>
 
 </html>
-    <script>
-        /*
-         * 首屏定主题。React 挂载之前先把 data-theme 写到 <html> 上, 否则选了浅色的
-         * 用户会先看到一闪的深色底 —— 这一下闪烁比多几行内联脚本难看得多。
-         * **这是唯一一处与 src/theme 重复 storage key 的地方**: 为了不闪, 只能在这里
-         * 同步读一次; 改 key 时两处都要改。读不到就什么都不写, CSS 的 :root 默认是深色。
-         */
-        (function () {
-            try {
-                var saved = window.localStorage.getItem("have-a-trip:theme");
-                if (saved === "light" || saved === "dark") {
-                    document.documentElement.dataset.theme = saved;
-                }
-            } catch (error) {
-                /* 无痕模式下读 localStorage 会抛, 走默认深色 */
-            }
-        })();
-    </script>

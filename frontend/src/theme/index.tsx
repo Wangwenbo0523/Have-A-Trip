@@ -9,14 +9,17 @@ export type Theme = "dark" | "light"
  * 浏览器 UI(移动端地址栏、任务切换器)也跟着换色。
  * 浅色页面上顶一条深色状态栏很割裂, 所以跟着主题走而不是写死在 index.html。
  */
-const THEME_COLOR: Record<Theme, string> = { dark: "#14161a", light: "#f6f7f9" }
+const THEME_COLOR: Record<Theme, string> = { dark: "#101012", light: "#ffffff" }
 
 /**
- * 初始主题: 存过的选择优先, 否则**深色**。
+ * 初始主题: 存过的选择优先, 否则**浅色**。
+ *
+ * 这套视觉是白画布优先的(Airbnb 的设计语言, 见仓库根 DESIGN.md): 卡片是白底压白底
+ * 靠细线分块, 页头也是白的。默认给深色等于让所有人先看到一副非设计意图的样子。
  *
  * 刻意不嗅探 prefers-color-scheme, 与 detectLang 不嗅探 navigator.language 是同一个
- * 理由: 本站的视觉是围绕深色设计的(页头整块彩色渐变、卡片压在深色底上), 跟着系统走
- * 会让同一台机器上的两个人、或者同一台机器上的两个页面看到两副样子。选择权交给按钮。
+ * 理由: 跟着系统走会让同一台机器上的两个人、或者同一台机器上的两个页面看到两副样子。
+ * 选择权交给按钮。
  */
 export function detectTheme(): Theme {
   try {
@@ -25,7 +28,7 @@ export function detectTheme(): Theme {
   } catch {
     // 无痕模式下 localStorage 会直接抛, 按默认值走
   }
-  return "dark"
+  return "light"
 }
 
 /**
@@ -47,8 +50,8 @@ interface ThemeValue {
   toggle: () => void
 }
 
-/** 脱离 Provider 时给深色而不是抛异常: 组件(以及它的测试)可以独立渲染。 */
-const FALLBACK: ThemeValue = { theme: "dark", setTheme: () => {}, toggle: () => {} }
+/** 脱离 Provider 时给浅色而不是抛异常: 组件(以及它的测试)可以独立渲染。 */
+const FALLBACK: ThemeValue = { theme: "light", setTheme: () => {}, toggle: () => {} }
 
 const ThemeContext = createContext<ThemeValue>(FALLBACK)
 

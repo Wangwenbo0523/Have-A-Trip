@@ -1,116 +1,128 @@
 /*
- * 主题变量。**深色在这里就是默认值**, 浅色只覆盖颜色, 不碰尺寸、间距与布局 ——
- * 两套主题共用同一份组件样式, 所以新组件只要用变量取色, 浅色主题就自动成立。
- * 切换逻辑见 src/theme, 下面 :root[data-theme="light"] 是覆盖。
+ * 设计令牌。视觉语言取自 Airbnb 的公开设计系统, 完整说明见仓库根 DESIGN.md:
+ * 白画布 + 近黑墨色 + 单一品牌色 Rausch(#ff385c), 软圆角, 阴影只有一档。
+ *
+ * **浅色(白画布)是默认值**, 深色是 :root[data-theme="dark"] 的覆盖 —— 两套主题共用
+ * 同一份组件样式, 所以新组件只要用变量取色, 深色主题就自动成立。切换逻辑见 src/theme。
+ *
+ * 颜色是两层写法: 上面一组是这套设计语言的原生名字(canvas / ink / hairline / primary),
+ * 面板、页头这些分块再各自把值绑过去。改主题时只动上面一层, 组件不用跟着改。
  */
 :root {
-  color-scheme: dark;
-
-  --page-bg: #14161a;
-  /* body 顶部那圈径向亮光的心色: 深色下把视线引向页头, 浅色下几乎与底色同色 */
-  --page-glow: #2b3038;
-  --panel-bg: rgba(255, 255, 255, 0.04);
-  /* 比 --panel-bg 亮一档, 用在需要「比周围更实」的块上(面板里的输入框、事实表) */
-  --panel-bg-strong: rgba(255, 255, 255, 0.07);
-  --panel-border: rgba(255, 255, 255, 0.12);
-  --panel-border-strong: rgba(255, 255, 255, 0.22);
-  --text: #f4f5f7;
-  /* 正文里弱一档的长文本(卡片简介、方案正文): 比 --text 淡, 比 --muted 实 */
-  --text-soft: rgba(255, 255, 255, 0.78);
-  --muted: #a7adb8;
-  --accent: #f46732;
-  --accent-soft: rgba(244, 103, 50, 0.16);
-  /* 铺在 --accent 上的文字: 两套主题下都是白, 提取出来是为了不散落一堆 #fff */
-  --accent-contrast: #fff;
-  --shadow-card: 0 14px 32px rgba(0, 0, 0, 0.35);
-
-  /* 输入框、搜索框: 比面板再「凹」一层 */
-  --surface-sunken: rgba(0, 0, 0, 0.45);
-  /* 压在图片上的角标。无论哪套主题, 底下都可能是张亮图, 所以一律用深色遮罩 */
-  --surface-overlay: rgba(0, 0, 0, 0.7);
-  --on-overlay: #fff;
-  --placeholder: rgba(255, 255, 255, 0.45);
-  /* 没有配图时的占位块与块上的首字 */
-  --media-bg: linear-gradient(135deg, #2f3540, #1b1e24);
-  --media-icon: rgba(255, 255, 255, 0.25);
-  /* 标签这类小胶囊的底色: 比 --panel-bg 更淡, 免得在卡片里抢戏 */
-  --chip-bg: rgba(255, 255, 255, 0.03);
-  --scrollbar-thumb: rgba(255, 255, 255, 0.18);
-  --scrollbar-thumb-hover: rgba(255, 255, 255, 0.3);
-
-  /* 页头自带一整块彩色渐变 + 压暗遮罩, 普通的 --panel-* 表达不了, 所以单列一组 */
-  --header-bg: #10131a;
-  --header-glow-warm: rgba(244, 103, 50, 0.28);
-  --header-glow-cool: rgba(70, 120, 200, 0.24);
-  --header-veil-from: rgba(0, 0, 0, 0.35);
-  --header-veil-to: rgba(0, 0, 0, 0.9);
-  --header-nav-bg: rgba(0, 0, 0, 0.55);
-  --header-text: #fff;
-  --header-link: rgba(255, 255, 255, 0.82);
-  --header-link-active-text: #fff;
-  --header-link-hover-bg: rgba(244, 103, 50, 0.85);
-  --header-link-active-ring: rgba(244, 103, 50, 0.55);
-  --header-title-shadow: 3px 2px 0 rgba(0, 0, 0, 0.6);
-  /* 浮在页头上的小胶囊(语种、主题): 半透黑压在彩色渐变上 */
-  --tool-bg: rgba(0, 0, 0, 0.4);
-  --tool-text: rgba(255, 255, 255, 0.82);
-
-  /* 评分星色: 深色下用亮黄, 浅色下要压深才看得清 */
-  --star: #f5c518;
-  --footer-bg: rgba(0, 0, 0, 0.35);
-}
-
-/*
- * 浅色主题。只覆盖颜色。
- *
- * 强调色比深色主题**深一档**: #f46732 在白底上的对比度只有 3:1 上下, 当文字用不够看;
- * 换成 #d9531f 之后, 橙底白字与浅底橙字两头都能读。页头那片「压暗遮罩」在浅色下
- * 反过来变成提亮到白, 否则白色页头会透出底下被遮罩压灰的底色。
- */
-:root[data-theme="light"] {
   color-scheme: light;
 
-  --page-bg: #f6f7f9;
+  /* ---- 原生色板 ---- */
+  --canvas: #ffffff;
+  --surface-soft: #f7f7f7;
+  --surface-strong: #f2f2f2;
+  --ink: #222222;
+  --body: #3f3f3f;
+  --muted-ink: #6a6a6a;
+  --hairline: #dddddd;
+  --hairline-soft: #ebebeb;
+  --border-strong: #c1c1c1;
+  --primary: #ff385c;
+  --primary-active: #e00b41;
+  --primary-tint: rgba(255, 56, 92, 0.1);
+  --on-primary: #ffffff;
+  --error-ink: #c13515;
+
+  /* ---- 圆角。软是这套语言的核心, 除了页面栅格本身没有硬角。 ---- */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 32px;
+  --radius-full: 999px;
+
+  /*
+   * 字体。Cereal / Circular 是 Airbnb 的自有字体, 拿不到时文档指定的公开替代是 Inter;
+   * 中文落到苹方 / 微软雅黑, 免得中英混排时字号视觉不一致。
+   */
+  --font-sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", sans-serif;
+
+  /* ---- 分块取色 ---- */
+  --page-bg: var(--canvas);
+  /* body 顶部那圈径向亮光的心色: 白画布下与底色同色(等于没有), 深色下把视线引向页头 */
   --page-glow: #ffffff;
-  --panel-bg: rgba(23, 26, 33, 0.03);
-  --panel-bg-strong: rgba(23, 26, 33, 0.06);
-  --panel-border: rgba(23, 26, 33, 0.14);
-  --panel-border-strong: rgba(23, 26, 33, 0.28);
-  --text: #1c2027;
-  --text-soft: rgba(28, 32, 39, 0.82);
-  --muted: #5c6470;
-  --accent: #d9531f;
-  --accent-soft: rgba(217, 83, 31, 0.12);
-  --accent-contrast: #fff;
-  --shadow-card: 0 12px 26px rgba(23, 26, 33, 0.12);
+  --panel-bg: var(--canvas);
+  /* 比 --panel-bg 实一档, 用在需要「比周围更实」的块上(面板里的输入框、事实表) */
+  --panel-bg-strong: var(--surface-soft);
+  --panel-border: var(--hairline);
+  --panel-border-strong: var(--border-strong);
+  --text: var(--ink);
+  /* 正文里弱一档的长文本(卡片简介、方案正文): 比 --text 淡, 比 --muted 实 */
+  --text-soft: var(--body);
+  --muted: var(--muted-ink);
+  --accent: var(--primary);
+  --accent-soft: var(--primary-tint);
+  --accent-contrast: var(--on-primary);
+  --accent-active: var(--primary-active);
+  --error: var(--error-ink);
+  /* 唯一一档阴影: 卡片悬停、浮层、搜索框静置时用。整套系统没有第二档。 */
+  --shadow-card: rgba(0, 0, 0, 0.02) 0 0 0 1px, rgba(0, 0, 0, 0.04) 0 2px 6px 0,
+    rgba(0, 0, 0, 0.1) 0 4px 8px 0;
 
-  --surface-sunken: #ffffff;
-  --surface-overlay: rgba(23, 26, 33, 0.72);
-  --on-overlay: #fff;
-  --placeholder: rgba(28, 32, 39, 0.42);
-  --media-bg: linear-gradient(135deg, #e4e7ed, #ccd2db);
-  --media-icon: rgba(28, 32, 39, 0.22);
-  --chip-bg: rgba(23, 26, 33, 0.04);
-  --scrollbar-thumb: rgba(23, 26, 33, 0.2);
-  --scrollbar-thumb-hover: rgba(23, 26, 33, 0.34);
+  /* 输入框、搜索框: 白底 + 细线, 靠描边而不是靠底色区分 */
+  --surface-sunken: var(--canvas);
+  /* 压在图片上的角标。无论哪套主题, 底下都可能是张亮图, 所以一律用深色遮罩 */
+  --surface-overlay: rgba(0, 0, 0, 0.6);
+  --on-overlay: #ffffff;
+  /* 压在照片上的白色角标(分类名、评级)。与 --surface-overlay 同一个道理: 底下是照片,
+     不跟着主题走, 两套主题下都是白底墨字。 */
+  --media-chip-bg: #ffffff;
+  --media-chip-text: #222222;
+  --placeholder: var(--muted-ink);
+  /* 没有配图时的占位块与块上的首字 */
+  --media-bg: linear-gradient(135deg, var(--surface-strong), var(--hairline));
+  --media-icon: rgba(34, 34, 34, 0.22);
+  /* 标签这类小胶囊的底色: 比 --panel-bg 更淡, 免得在卡片里抢戏 */
+  --chip-bg: var(--surface-soft);
+  --scrollbar-thumb: rgba(34, 34, 34, 0.2);
+  --scrollbar-thumb-hover: rgba(34, 34, 34, 0.34);
 
-  --header-bg: #ffffff;
-  --header-glow-warm: rgba(217, 83, 31, 0.16);
-  --header-glow-cool: rgba(70, 120, 200, 0.14);
-  --header-veil-from: rgba(255, 255, 255, 0);
-  --header-veil-to: rgba(255, 255, 255, 0.6);
-  --header-nav-bg: rgba(23, 26, 33, 0.04);
-  --header-text: #1c2027;
-  --header-link: rgba(28, 32, 39, 0.8);
-  --header-link-active-text: #b8440f;
-  --header-link-hover-bg: rgba(217, 83, 31, 0.9);
-  --header-link-active-ring: rgba(217, 83, 31, 0.5);
-  --header-title-shadow: none;
-  --tool-bg: rgba(255, 255, 255, 0.75);
-  --tool-text: rgba(28, 32, 39, 0.8);
+  /* 页头: 白底 + 一条细线, 没有渐变也没有遮罩 */
+  --header-bg: var(--canvas);
+  --header-text: var(--ink);
+  --header-link: var(--muted-ink);
+  --header-link-active-text: var(--ink);
+  /* 浮在页头上的小胶囊(语种、主题): 浅灰实底 + 墨色字 */
+  --tool-bg: var(--surface-strong);
+  --tool-text: var(--ink);
 
-  --star: #d9a406;
-  --footer-bg: rgba(23, 26, 33, 0.03);
+  /* 评分星色。这套系统的评分本身就是墨色, 不改成一个抢眼的黄。 */
+  --star: var(--ink);
+  --footer-bg: var(--surface-soft);
+}
+/*
+ * 深色主题。只覆盖**原生色板**, 上面那些分块取色全绑在原生色板上, 所以自动跟着变 ——
+ * 这也意味着深色下要改一处分块颜色, 应该去改它绑的那个原生值, 而不是在这里重绑。
+ *
+ * 品牌色不动: Rausch 在近黑底上照样是那一点品牌电压。只有按压态反过来**提亮**
+ * (浅色下按下去变深, 深色下按下去变亮), 否则按在深底上的红色几乎看不出变化。
+ */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --canvas: #101012;
+  --surface-soft: #1c1c1f;
+  --surface-strong: #26262a;
+  --ink: #f5f5f5;
+  --body: rgba(255, 255, 255, 0.82);
+  --muted-ink: #a3a3a8;
+  --hairline: #2f2f33;
+  --hairline-soft: #242428;
+  --border-strong: #3d3d42;
+  --primary-active: #ff5c78;
+  --error-ink: #ff7a6b;
+
+  /* 不绑在原生色板上的那几处, 深色下要单独给值 */
+  --page-glow: #1b1b1e;
+  --media-icon: rgba(255, 255, 255, 0.22);
+  --scrollbar-thumb: rgba(255, 255, 255, 0.18);
+  --scrollbar-thumb-hover: rgba(255, 255, 255, 0.3);
+  --shadow-card: rgba(0, 0, 0, 0.2) 0 0 0 1px, rgba(0, 0, 0, 0.3) 0 2px 6px 0,
+    rgba(0, 0, 0, 0.5) 0 4px 8px 0;
 }
 
 * {
@@ -123,9 +135,11 @@ body {
   min-height: 100vh;
   background: radial-gradient(circle at 20% 0%, var(--page-glow) 0%, var(--page-bg) 60%);
   color: var(--text);
-  font-family: verdana, "Microsoft YaHei", "PingFang SC", Lucida, sans-serif;
+  font-family: var(--font-sans);
   font-size: 16px;
-  line-height: 1.7;
+  /* 这套系统的正文行高偏紧(1.43~1.5), 靠照片和留白撑视觉重量, 不靠字距 */
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
 img {
@@ -174,7 +188,7 @@ html {
 
 ::-webkit-scrollbar-thumb {
   border: 2px solid transparent;
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   background-clip: content-box;
   background-color: var(--scrollbar-thumb);
 }
@@ -182,7 +196,6 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background-color: var(--scrollbar-thumb-hover);
 }
-
 /*
  * 打印。
  *
@@ -190,7 +203,7 @@ html {
  * 而不逐条改样式 —— 所有用变量的地方一次性变成白底黑字; 再把页头、页脚、表单与
  * 按钮摘掉, 行程单是要带出门的, 那些都是噪音。
  *
- * 选择器写成 `:root, :root[data-theme]`: 与浅色主题的 `:root[data-theme="light"]`
+ * 选择器写成 `:root, :root[data-theme]`: 与深色主题的 `:root[data-theme="dark"]`
  * 同权重, 靠位置靠后取胜, 所以这段必须留在文件末尾。
  */
 @media print {
@@ -211,6 +224,10 @@ html {
     --shadow-card: none;
     --chip-bg: #fff;
     --surface-sunken: #fff;
+    --media-bg: #fff;
+    --media-icon: #9aa1ab;
+    --media-chip-bg: #fff;
+    --media-chip-text: #000;
     --placeholder: #6b7280;
     --footer-bg: transparent;
   }

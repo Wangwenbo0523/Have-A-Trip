@@ -1,34 +1,39 @@
 .searchBox {
   display: flex;
   align-items: center;
-  gap: 10px;
-  text-align: center;
+  gap: 12px;
 }
 
 .searchBox__label {
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: 0.875rem;
+  font-weight: 500;
 }
 
+/* 搜索框是这套语言里的「药丸」: 全圆角、白底、一条细线, 静置时就已经抬着那一档阴影
+   (Airbnb 的搜索栏在页面上是浮起来的), 聚焦时把线加粗成墨色而不是发一圈光晕。 */
 .search {
   flex: 1;
   min-width: 0;
   max-width: 26rem;
-  padding: 10px 16px;
-  border-radius: 999px;
+  height: 56px;
+  padding: 0 20px;
   border: 1px solid var(--panel-border);
+  border-radius: var(--radius-full);
   background: var(--surface-sunken);
   color: var(--text);
   font-size: 1rem;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  box-shadow: var(--shadow-card);
+  transition: border-color 0.15s, padding 0.15s;
 }
 
 .search::placeholder {
   color: var(--placeholder);
 }
 
+/* 线从 1px 变成 2px 会挤掉内边距, 所以左右各减 1px 顶回去 */
 .search:focus {
   outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-soft);
+  border: 2px solid var(--text);
+  padding: 0 19px;
 }

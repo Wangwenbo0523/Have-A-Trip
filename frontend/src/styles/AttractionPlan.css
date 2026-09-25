@@ -7,7 +7,7 @@
 .plan {
   padding: 18px 20px;
   border: 1px solid var(--panel-border);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   background: var(--panel-bg);
 }
 
@@ -34,7 +34,7 @@
 .plan__meta li {
   padding: 1px 10px;
   border: 1px solid var(--panel-border);
-  border-radius: 999px;
+  border-radius: var(--radius-full);
 }
 
 .plan__summary {
@@ -75,7 +75,7 @@
   margin-left: 8px;
   padding: 1px 8px;
   border: 1px solid var(--panel-border);
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   color: var(--muted);
   font-size: 0.75rem;
 }

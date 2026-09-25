@@ -1,16 +1,16 @@
+/* 详情页的「追问」面板。与 aiSearch 同一套: 浅灰底 + 白输入框 + 一颗实心主按钮。 */
 .aiAsk {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 18px 20px;
-  border: 1px solid var(--panel-border);
-  border-radius: 12px;
-  background: var(--panel-bg);
+  padding: 20px;
+  border-radius: var(--radius-md);
+  background: var(--panel-bg-strong);
 }
 
 .aiAsk__hint {
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: 0.8125rem;
 }
 
 .aiAsk__form {
@@ -21,37 +21,51 @@
 
 .aiAsk__input {
   flex: 1 1 240px;
-  padding: 10px 16px;
+  height: 44px;
+  padding: 0 18px;
   border: 1px solid var(--panel-border);
-  border-radius: 999px;
-  background: transparent;
+  border-radius: var(--radius-full);
+  background: var(--surface-sunken);
   color: var(--text);
-  font-size: 0.95rem;
+  font-size: 0.9375rem;
+  transition: border-color 0.15s;
 }
 
 .aiAsk__input:focus {
-  border-color: var(--accent);
+  border: 2px solid var(--text);
+  padding: 0 17px;
   outline: none;
 }
 
 .aiAsk__submit,
 .aiAsk__clear {
-  padding: 10px 22px;
-  border: 1px solid var(--accent);
-  border-radius: 999px;
+  height: 44px;
+  padding: 0 22px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
   background: var(--accent);
   color: var(--accent-contrast);
+  font-weight: 500;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.aiAsk__submit:hover:enabled {
+  background: var(--accent-active);
 }
 
 .aiAsk__clear {
-  border-color: var(--panel-border);
+  border-color: var(--panel-border-strong);
   background: transparent;
-  color: var(--muted);
+  color: var(--text);
+}
+
+.aiAsk__clear:hover {
+  background: var(--surface-sunken);
 }
 
 .aiAsk__submit:disabled {
-  border-color: var(--panel-border);
-  background: var(--panel-bg-strong);
+  border-color: transparent;
+  background: var(--panel-bg);
   color: var(--muted);
   cursor: not-allowed;
 }
@@ -63,19 +77,20 @@
   list-style: none;
 }
 
+/* 建议问题是「可点的胶囊」, 用浅灰实底而不是虚线框 —— 虚线不在这套形状语言里 */
 .aiAsk__suggestion {
   padding: 6px 14px;
-  border: 1px dashed var(--panel-border);
-  border-radius: 999px;
-  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  background: var(--chip-bg);
   color: var(--muted);
-  font-size: 0.85rem;
-  transition: border-color 0.2s, color 0.2s;
+  font-size: 0.8125rem;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s;
 }
 
 .aiAsk__suggestion:hover {
-  border-color: var(--accent);
-  border-style: solid;
+  border-color: var(--panel-border);
+  background: var(--surface-sunken);
   color: var(--text);
 }
 
@@ -87,21 +102,22 @@
 
 .aiAsk__question {
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: 0.8125rem;
 }
 
 .aiAsk__text {
   color: var(--text);
   font-size: 1rem;
-  line-height: 1.7;
+  line-height: 1.6;
 }
 
+/* AI 的回答不是权威结论, 这句提示要看得见但不必喊 —— 用小号灰字而不是彩色 */
 .aiAsk__note {
-  color: var(--accent);
-  font-size: 0.85rem;
+  color: var(--muted);
+  font-size: 0.8125rem;
 }
 
 .aiAsk__disclaimer {
   color: var(--muted);
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
 }

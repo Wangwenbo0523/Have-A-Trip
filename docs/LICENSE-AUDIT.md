@@ -126,7 +126,7 @@ vendor 进来的 `frontend/LICENSE`（`Copyright (c) 2019 Zero To Mastery`）原
 
 | 资产 | 来源 | 许可 | 处置 |
 |---|---|---|---|
-| `frontend/src/img/BaganMyanmar.jpg`（675 KB，页头背景） | 上游基底 `zero-to-mastery/travel-guide` 里的实景照片 | **无从查证**。MIT 覆盖的是仓库作者的贡献，不等于贡献者有权授权别人的摄影作品 | **已删除**（2026-09-25，S8）。页头背景改用纯 CSS 渐变，顺带省掉首屏 675 KB |
+| `frontend/src/img/BaganMyanmar.jpg`（675 KB，页头背景） | 上游基底 `zero-to-mastery/travel-guide` 里的实景照片 | **无从查证**。MIT 覆盖的是仓库作者的贡献，不等于贡献者有权授权别人的摄影作品 | **已删除**（2026-09-25，S8）。页头背景先改用纯 CSS 渐变（顺带省掉首屏 675 KB）；2026-09-26 界面重做后页头是**白底 + 一条细线**，那段渐变也一并去掉了，现在页头不含任何图片资产 |
 | `frontend/public/favicon.ico` | **自绘**，无第三方素材 | MIT（与仓库同许可） | **已换掉**（2026-09-25）。上游的 `earth.ico`（225 KB）与 `favicon.ico` 出处无从查证，已删除；现由 `scripts/make_favicon.py` 用标准库程序化生成（7 档尺寸、8.5 KB），改常量重跑即可复现 |
 | `frontend/src/logo.svg` | 上游基底的 React 标志 | 零引用死资源 | 已删除（2026-09-25，S4） |
 | 景点配图 · 自绘（1385 个文件，其中 1255 个挂在 `attraction_image` 上） | **自绘**，由 `scripts/make_attraction_covers.py` 程序化生成 | MIT（与仓库同许可） | 出处就是仓库里的脚本本身。每个景点都有一张，改常量重跑即可复现，`--check` 会拦下手工改过的图。**每张都生成了，但只有没照片的 1255 个景点把它挂进 `attraction_image`** —— 剩下 130 个的自绘版留在磁盘上做兜底（照片要换掉时改一行 photos.json 就能回退） |

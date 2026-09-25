@@ -14,6 +14,13 @@ const MAX_NAV_CATEGORIES = 6
 const navClass = ({ isActive }: { isActive: boolean }) =>
   `header__link${isActive ? " is-active" : ""}`
 
+/**
+ * 页头。格局照搬 Airbnb 的顶栏: 左边品牌, 中间一排文字导航(当前页用一道墨色下划线
+ * 标出来, 不是给当前项刷一块彩色底), 右边是语种与主题两个小胶囊。
+ *
+ * DOM 顺序就是视觉顺序(品牌 → 导航 → 工具), 不靠 order 或绝对定位把工具「挪」到右边 ——
+ * 那是上一版的做法, 窄屏时两个绝对定位的按钮会互相压住。
+ */
 const Header = ({ categories }: { categories: CategoryWithCount[] }) => {
   const { t } = useI18n()
   const topCategories = [...categories]
@@ -23,12 +30,6 @@ const Header = ({ categories }: { categories: CategoryWithCount[] }) => {
   return (
     <header className="header">
       <div className="header__bar">
-        {/* 语种与主题切换固定在页头右上角, 每一页都能点到 */}
-        <div className="header__tools">
-          <LanguageSwitch />
-          <ThemeSwitch />
-        </div>
-
         <Link className="header__brand" to="/">
           <span className="header__name">{APP_NAME}</span>
           <span className="header__tagline">{t("app.tagline")}</span>
@@ -63,6 +64,12 @@ const Header = ({ categories }: { categories: CategoryWithCount[] }) => {
             {t("nav.credits")}
           </NavLink>
         </nav>
+
+        {/* 语种与主题切换固定在页头右侧, 每一页都能点到 */}
+        <div className="header__tools">
+          <LanguageSwitch />
+          <ThemeSwitch />
+        </div>
       </div>
     </header>
   )

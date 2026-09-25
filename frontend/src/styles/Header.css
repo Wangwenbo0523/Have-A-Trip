@@ -1,27 +1,90 @@
-@import url("https://fonts.googleapis.com/css?family=Staatliches&display=swap");
-
-/* 页头背景。上游基底用的是一张来源无从查证的实景照片(src/img/BaganMyanmar.jpg),
-   对一个「将来可能闭源」的项目来说这是许可风险, 已删除。改用纯 CSS 渐变,
-   零外部资产、零许可问题, 也省掉首屏 675 KB。
-
-   页头是每一页都要重复的固定成本, 所以整体压扁了一档: 首屏留给内容, 而不是品牌墙。 */
+/*
+ * 页头。
+ *
+ * 上一版是一整块彩色渐变 + 压暗遮罩, 品牌名居中大写带描边阴影, 导航刷成一排橙色胶囊。
+ * 那套在新设计语言里没有位置: Airbnb 的顶栏是**平的**白底 + 一条细线, 视觉重量交给
+ * 照片和内容, 页头只负责导航。顺带去掉 Staatliches 的 Google Fonts 外链(见 git 历史),
+ * 首屏少一次跨域请求。
+ *
+ * 布局用 DOM 顺序 + flex 完成, 不用绝对定位: 上一版把两个工具按钮绝对定位到右上角,
+ * 窄屏下要额外写媒体查询, 且迟早会互相压住。
+ */
 .header {
-  position: relative;
-  background-color: var(--header-bg);
-  background-image:
-    radial-gradient(ellipse at 15% 0%, var(--header-glow-warm), transparent 55%),
-    radial-gradient(ellipse at 85% 10%, var(--header-glow-cool), transparent 60%),
-    linear-gradient(180deg, var(--header-veil-from), var(--header-veil-to));
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--panel-border);
 }
 
-/* 语种与主题两个按钮固定在页头右上角。
-   装在一个容器里而不是各自绝对定位 —— 两个各自定位的按钮迟早会互相压住,
-   而且窄屏下要各写一遍媒体查询。 */
-.header__tools {
-  position: absolute;
-  top: 18px;
-  right: 16px;
+.header__bar {
+  width: min(1280px, 100%);
+  margin: 0 auto;
+  padding: 10px 16px;
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 24px;
+  row-gap: 2px;
+}
+
+.header__brand {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+}
+
+/* 品牌名是全站唯一一处品牌色文字 —— 与 Airbnb 把字标做成 Rausch 是同一个用法:
+   整套系统里彩色只出现在这里和主按钮/激活态上, 其余全是白 + 墨。 */
+.header__name {
+  font-size: 1.375rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0;
+  color: var(--accent);
+}
+
+.header__tagline {
+  color: var(--muted);
+  font-size: 0.8125rem;
+  line-height: 1.3;
+}
+
+.header__nav {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+/* 导航项是一排文字, 不是一排胶囊。下划线常驻(透明态占位), 激活时只换颜色与字重,
+   这样悬停整排不会跳。当前页标成墨色下划线而不是刷一块彩色底。 */
+.header__link {
+  padding: 6px 10px;
+  border-bottom: 2px solid transparent;
+  color: var(--header-link);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.header__link:hover {
+  color: var(--header-link-active-text);
+}
+
+.header__link.is-active {
+  color: var(--header-link-active-text);
+  border-bottom-color: var(--header-text);
+  font-weight: 600;
+}
+
+.header__tools {
+  display: flex;
+  flex: 0 0 auto;
+  /* 导航换行时工具仍贴右, 所以用 auto 外边距而不是靠 justify-content */
+  margin-left: auto;
   gap: 8px;
 }
 
@@ -31,20 +94,23 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
-  border: 1px solid var(--panel-border);
-  border-radius: 999px;
+  height: 40px;
+  padding: 0 14px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
   background: var(--tool-bg);
   color: var(--tool-text);
-  font-size: 0.86rem;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background-color 0.15s, border-color 0.15s, box-shadow 0.15s;
 }
 
+/* 悬停时抬成白底 + 细线 + 那一档阴影, 与卡片是同一套反馈 */
 .header__tool:hover {
-  background: var(--header-link-hover-bg);
-  color: var(--accent-contrast);
+  background: var(--panel-bg);
+  border-color: var(--panel-border);
+  box-shadow: var(--shadow-card);
 }
 
 .header__tool:focus-visible {
@@ -52,76 +118,30 @@
   outline-offset: 2px;
 }
 
+/* 窄屏: 导航整排挪到第二行, 品牌与工具留在第一行 */
+@media (max-width: 900px) {
+  .header__nav {
+    order: 3;
+    flex-basis: 100%;
+  }
+}
+
 @media (max-width: 560px) {
-  .header__tools {
-    top: 10px;
-    right: 10px;
-    gap: 6px;
+  .header__bar {
+    column-gap: 12px;
+  }
+
+  /* 品牌名下面那行小字在窄屏上是纯噪音, 先摘掉 */
+  .header__tagline {
+    display: none;
+  }
+
+  .header__link {
+    padding: 6px 8px;
+    font-size: 0.875rem;
   }
 
   .header__tool {
-    padding: 5px 9px;
-    font-size: 0.78rem;
+    padding: 0 10px;
   }
-}
-
-.header__bar {
-  width: min(1180px, 100%);
-  margin: 0 auto;
-  padding: 18px 16px 0;
-}
-
-.header__brand {
-  display: block;
-  text-align: center;
-}
-
-.header__name {
-  display: block;
-  font-family: "Staatliches", "Microsoft YaHei", cursive;
-  font-size: 2.3rem;
-  letter-spacing: 5px;
-  text-transform: uppercase;
-  color: var(--header-text);
-  text-shadow: var(--header-title-shadow);
-}
-
-.header__tagline {
-  display: block;
-  color: var(--muted);
-  font-size: 0.85rem;
-  letter-spacing: 3px;
-  margin-top: 2px;
-}
-
-/* 导航做成胶囊, 与页面里的筛选 / 标签是同一套形状语言 */
-.header__nav {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 2px;
-  margin-top: 14px;
-  padding: 6px 0;
-  border-top: 1px solid var(--panel-border);
-  border-bottom: 1px solid var(--panel-border);
-  background: var(--header-nav-bg);
-}
-
-.header__link {
-  padding: 6px 14px;
-  border-radius: 999px;
-  color: var(--header-link);
-  font-size: 0.92rem;
-  transition: background-color 0.2s, color 0.2s;
-}
-
-.header__link:hover {
-  background: var(--header-link-hover-bg);
-  color: var(--accent-contrast);
-}
-
-.header__link.is-active {
-  background: var(--accent-soft);
-  box-shadow: inset 0 0 0 1px var(--header-link-active-ring);
-  color: var(--header-link-active-text);
 }

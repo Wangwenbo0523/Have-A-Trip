@@ -1,22 +1,43 @@
+/*
+ * 评级徽章。
+ *
+ * 徽章都压在照片上, 所以取色一律走 --media-chip-*(两套主题下都是白底墨字的那一组),
+ * 再叠一档唯一的阴影把小块从图上抬起来。
+ *
+ * 等级越高越"响": 5A 用品牌色实底, 4A 用墨色实底, 3A 是默认的白底墨字。整套系统只有
+ * 白、墨、Rausch 三种颜色, 不给等级另发明一套金色/绿色渐变(上一版是那样), 否则卡片上
+ * 会同时出现橙、金、青三种彩色块, 把照片挤掉。
+ */
 .gradeBadge {
   display: inline-flex;
   align-items: center;
-  padding: 2px 9px;
-  border-radius: 999px;
-  font-size: 0.72rem;
-  font-weight: bold;
-  line-height: 1.6;
+  padding: 4px 10px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  background: var(--media-chip-bg);
+  color: var(--media-chip-text);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.18;
   white-space: nowrap;
+  box-shadow: var(--shadow-card);
 }
 
-/* A 级是中国景区的质量等级 */
-.gradeBadge--aLevel {
-  background: linear-gradient(135deg, #f5c518, #e8930c);
-  color: #1b1e24;
+/* 5A: 全站最高等级, 值得用掉那一处品牌电压 */
+.gradeBadge--5a {
+  background: var(--accent);
+  color: var(--accent-contrast);
 }
 
-/* 世界遗产是另一套刻度, 用另一种颜色, 免得被读成 A 级 */
+/* 4A: 墨色实底 */
+.gradeBadge--4a {
+  background: var(--media-chip-text);
+  color: var(--media-chip-bg);
+}
+
+/* 3A 用 .gradeBadge 的默认值, 不需要另写一条 */
+
+/* 世界遗产是另一套刻度, 白底之外再描一圈墨线, 免得被读成 A 级 */
 .gradeBadge--heritage {
-  background: linear-gradient(135deg, #3fa9a0, #2b7f8f);
-  color: #fff;
+  border-color: var(--media-chip-text);
 }

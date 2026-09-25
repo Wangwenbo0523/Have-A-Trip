@@ -13,13 +13,20 @@ interface AttractionGradeBadgeProps {
 /**
  * 等级徽章。a_level 与 heritage 是两套刻度 —— 世界遗产没有 A 级, 所以有 A 级就先
  * 显示 A 级。两者都为空表示「未核实」, 此时不渲染任何东西, 免得把未核实画成无等级。
+ *
+ * 除了表示「这是 A 级」的 gradeBadge--aLevel, 还多挂一个按档位区分的类名
+ * (gradeBadge--5a / --4a / --3a): 三档在样式上不是一个权重 —— 5A 用品牌色实底,
+ * 4A 用墨色实底, 3A 是默认的白底墨字。见 styles/AttractionGradeBadge.css。
  */
 const AttractionGradeBadge = ({ aLevel, heritage }: AttractionGradeBadgeProps) => {
   const { t } = useI18n()
 
   if (aLevel) {
     return (
-      <span className="gradeBadge gradeBadge--aLevel" title={t("grade.aLevel", { level: aLevel })}>
+      <span
+        className={`gradeBadge gradeBadge--aLevel gradeBadge--${aLevel.toLowerCase()}`}
+        title={t("grade.aLevel", { level: aLevel })}
+      >
         {aLevel}
       </span>
     )

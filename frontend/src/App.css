@@ -4,15 +4,18 @@
   min-height: 100vh;
 }
 
+/* 内容宽度 1280px, 与页头的 .header__bar 和页脚的 .footer__inner 同一个栅格:
+   三处必须一样宽, 否则滚动时页头与内容会错开一条边。 */
 .page {
   flex: 1;
-  width: min(1180px, 100%);
+  width: min(1280px, 100%);
   margin: 0 auto;
-  padding: 26px 16px 56px;
+  padding: 24px 16px 64px;
 }
 
 .page__title {
-  font-size: 2rem;
+  font-size: 1.75rem;
+  font-weight: 700;
   line-height: 1.3;
 }
 
@@ -22,51 +25,65 @@
 }
 
 .section {
-  margin-bottom: 40px;
+  margin-bottom: 48px;
 }
 
 .section__title {
-  font-size: 1.25rem;
-  letter-spacing: 0.02em;
+  font-size: 1.375rem;
+  font-weight: 600;
+  letter-spacing: 0;
   margin-bottom: 16px;
   padding-bottom: 10px;
   border-bottom: 1px solid var(--panel-border);
 }
 
+/*
+ * 英雄区。这套系统的显示字号是**克制**的: 首页 h1 只有 28px/700, 因为视觉重量由
+ * 照片和卡片承担 —— 字号一放大就变成 SaaS 落地页的口气, 不像一个「去处」的目录。
+ */
 .hero {
-  padding: 4px 0 34px;
+  padding: 8px 0 32px;
 }
 
 .hero__title {
-  font-size: 2.1rem;
-  line-height: 1.3;
-  letter-spacing: 1px;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.43;
+  letter-spacing: 0;
 }
 
 .hero__lead {
   color: var(--muted);
   max-width: 46rem;
-  margin: 12px 0 20px;
+  margin: 8px 0 20px;
 }
 
+/* 主按钮: 8px 圆角、48px 高、16px/500。按压态换色而不是降透明度 —— 降透明度在
+   白底上会让红色发灰, 看着像被禁用。 */
 .hero__cta {
-  display: inline-block;
-  padding: 10px 22px;
-  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 14px 24px;
+  border-radius: var(--radius-sm);
   background: var(--accent);
   color: var(--accent-contrast);
-  font-weight: bold;
-  transition: opacity 0.2s;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.25;
+  transition: background-color 0.15s;
 }
 
 .hero__cta:hover {
-  opacity: 0.85;
+  background: var(--accent-active);
 }
 
+/* 卡片列距 16px、行距 32px: 横向两两成组, 纵向留出呼吸, 是这套栅格的节奏 */
 .attractionGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 20px;
+  column-gap: 16px;
+  row-gap: 32px;
 }
 
 /* 卡片下面可能还有内容(推荐位的理由), 所以格子里用纵向 flex:
@@ -82,9 +99,9 @@
   padding: 8px 12px;
   border-left: 3px solid var(--accent);
   background: var(--accent-soft);
-  border-radius: 0 8px 8px 0;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
   color: var(--muted);
-  font-size: 0.88rem;
+  font-size: 0.875rem;
   line-height: 1.6;
   /* 理由长短不一时, 同一行里卡片的高度会被这句带偏。
      给两行的下限, 短句子不再把同伴的卡片顶高一截。 */
@@ -103,22 +120,23 @@
   padding: 40px 0;
 }
 
+/* 页脚与正文同为白/浅灰, 只靠一条细线分开 —— 这套系统没有「深色页脚」 */
 .footer {
   border-top: 1px solid var(--panel-border);
   background: var(--footer-bg);
 }
 
 .footer__inner {
-  width: min(1180px, 100%);
+  width: min(1280px, 100%);
   margin: 0 auto;
-  padding: 22px 16px;
+  padding: 32px 16px;
   color: var(--muted);
-  font-size: 0.85rem;
+  font-size: 0.875rem;
 }
 
 .footer__brand {
   color: var(--text);
-  font-weight: bold;
+  font-weight: 700;
   margin-bottom: 8px;
 }
 

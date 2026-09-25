@@ -1,11 +1,12 @@
+/* 「一句话找景点」面板。整块铺浅灰(比白画布实一档)而不是靠描边圈起来 ——
+   这块本来就是页面里的一个突出区块, 底色一变就分开了, 不用再套一圈线。 */
 .aiSearch {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 18px 20px;
-  border: 1px solid var(--panel-border);
-  border-radius: 12px;
-  background: var(--panel-bg);
+  padding: 20px;
+  border-radius: var(--radius-md);
+  background: var(--panel-bg-strong);
 }
 
 .aiSearch__form {
@@ -16,8 +17,8 @@
 
 .aiSearch__label {
   color: var(--muted);
-  font-size: 0.85rem;
-  letter-spacing: 0.08em;
+  font-size: 0.8125rem;
+  font-weight: 500;
 }
 
 .aiSearch__row {
@@ -26,40 +27,55 @@
   gap: 10px;
 }
 
+/* 输入框落到浅灰面板上, 所以取白底 + 一条细线 —— 与面板拉开一层 */
 .aiSearch__input {
   flex: 1 1 260px;
-  padding: 12px 16px;
+  height: 48px;
+  padding: 0 18px;
   border: 1px solid var(--panel-border);
-  border-radius: 999px;
-  background: var(--panel-bg-strong);
+  border-radius: var(--radius-full);
+  background: var(--surface-sunken);
   color: var(--text);
   font-size: 1rem;
+  transition: border-color 0.15s;
 }
 
 .aiSearch__input:focus {
-  border-color: var(--accent);
+  border: 2px solid var(--text);
+  padding: 0 17px;
   outline: none;
 }
 
+/* 主行动: 品牌色实底胶囊。次行动(清空)保持空心, 不与主按钮抢 */
 .aiSearch__submit,
 .aiSearch__clear {
-  padding: 12px 24px;
-  border: 1px solid var(--accent);
-  border-radius: 999px;
+  height: 48px;
+  padding: 0 24px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
   background: var(--accent);
   color: var(--accent-contrast);
-  transition: opacity 0.2s;
+  font-weight: 500;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.aiSearch__submit:hover:enabled {
+  background: var(--accent-active);
 }
 
 .aiSearch__clear {
-  border-color: var(--panel-border);
+  border-color: var(--panel-border-strong);
   background: transparent;
-  color: var(--muted);
+  color: var(--text);
+}
+
+.aiSearch__clear:hover {
+  background: var(--surface-sunken);
 }
 
 .aiSearch__submit:disabled {
-  border-color: var(--panel-border);
-  background: var(--panel-bg-strong);
+  border-color: transparent;
+  background: var(--panel-bg);
   color: var(--muted);
   cursor: not-allowed;
 }
@@ -71,13 +87,13 @@
 }
 
 .aiSearch__note {
-  color: var(--text);
-  font-size: 0.95rem;
+  color: var(--text-soft);
+  font-size: 0.9375rem;
 }
 
 /* 免责声明是后端返回的必填字段, 必须显示 —— 别把它做成 hover 才看得到的提示 */
 .aiSearch__disclaimer {
   margin-bottom: 10px;
   color: var(--muted);
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
 }

@@ -18,19 +18,19 @@ beforeEach(() => {
 })
 
 describe("ThemeSwitch", () => {
-  it("深色界面上写的是目标主题「浅色」, 并把可读标签说清楚", () => {
+  it("浅色界面上写的是目标主题「深色」, 并把可读标签说清楚", () => {
     renderSwitch()
-    const button = screen.getByRole("button", { name: "切换到浅色主题" })
-    expect(button).toHaveTextContent("浅色")
+    const button = screen.getByRole("button", { name: "切换到深色主题" })
+    expect(button).toHaveTextContent("深色")
   })
 
-  it("点一下切到浅色: 按钮变成「深色」, data-theme 与 localStorage 都跟着变", async () => {
+  it("点一下切到深色: 按钮变成「浅色」, data-theme 与 localStorage 都跟着变", async () => {
     renderSwitch()
 
-    await userEvent.click(screen.getByRole("button", { name: "切换到浅色主题" }))
+    await userEvent.click(screen.getByRole("button", { name: "切换到深色主题" }))
 
-    expect(screen.getByRole("button", { name: "切换到深色主题" })).toHaveTextContent("深色")
-    expect(document.documentElement.dataset.theme).toBe("light")
-    expect(window.localStorage.getItem(THEME_STORAGE_KEY)).toBe("light")
+    expect(screen.getByRole("button", { name: "切换到浅色主题" })).toHaveTextContent("浅色")
+    expect(document.documentElement.dataset.theme).toBe("dark")
+    expect(window.localStorage.getItem(THEME_STORAGE_KEY)).toBe("dark")
   })
 })

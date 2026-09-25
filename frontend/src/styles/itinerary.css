@@ -4,7 +4,7 @@
   gap: 18px;
   padding: 18px 20px;
   border: 1px solid var(--panel-border);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   background: var(--panel-bg);
 }
 
@@ -23,7 +23,7 @@
 .planner__input {
   padding: 12px 16px;
   border: 1px solid var(--panel-border);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   background: var(--panel-bg-strong);
   color: var(--text);
   font-size: 1rem;
@@ -55,7 +55,7 @@
 .planner__days select {
   padding: 8px 12px;
   border: 1px solid var(--panel-border);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   background: var(--panel-bg-strong);
   color: var(--text);
   font-size: 0.95rem;
@@ -65,7 +65,7 @@
 .planner__clear {
   padding: 10px 22px;
   border: 1px solid var(--panel-border);
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   background: var(--accent);
   color: var(--accent-contrast);
   font-size: 0.95rem;
@@ -100,7 +100,7 @@
 .planner__print {
   padding: 8px 20px;
   border: 1px solid var(--accent);
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   background: transparent;
   color: var(--accent);
   font-size: 0.9rem;
@@ -124,7 +124,7 @@
 .planner__day {
   padding: 14px 16px;
   border: 1px solid var(--panel-border);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   background: var(--panel-bg-strong);
 }
 
