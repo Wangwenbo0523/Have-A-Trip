@@ -158,6 +158,8 @@ damo.cmd -Down
 
 装好之后不用再开命令行：双击桌面上的 `damo` 就行（`damo.cmd` 是它的等价物）。
 
+这一形态读的是同一份 `backend/.env`（已在 `.gitignore` 里，不进仓库）。按 `.env.example` 把 `LLM_PROVIDER=ollama` / `EMBEDDING_PROVIDER=ollama` 填上并 `ollama pull` 过模型之后，**双击入口就带 AI 能力**（一句话检索、详情追问、推荐理由润色），不必再开命令行；`/api/v1/ai/status` 会如实报告 `available` 与 `embedding_available`，没配就是降级成关键词检索，不是报错。
+
 分工是**改代码 vs 用**：不开 `--reload`、不跑 vite dev server，而是让 FastAPI **一个进程**同时托 `frontend/dist` 与 `/api`（`SERVE_FRONTEND=true`），所以只有一个进程、一个端口，默认 `8100`（与 dev-up 的 8000/8010 错开，两边可以同时开着）。四条约定：
 
 - 不动仓库：日志与 pid 只写 `.dev/`，不生成也不改 `.env`
