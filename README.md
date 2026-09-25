@@ -105,7 +105,7 @@ PostgreSQL   景点档案 / 用户行为日志 / 推荐结果表
 | `backend/` | FastAPI 服务与测试，见 `backend/README.md` |
 | `db/` | `schema.sql` + 种子数据 + 字段口径，见 `db/README.md` |
 | `recsys/` | RecBole 调用层：依赖钉版、训练配置、离线脚本，见 `recsys/README.md` |
-| `scripts/` | 基底钉版记录、许可证卡口、DCO 校验、提交前一把过（`verify_all.py` 跑完本机能跑的静态门禁并汇总）、静态素材生成（`make_favicon.py` 站点图标、`make_attraction_covers.py` 景点配图与 `db/seed/images.sql`、`fetch_commons_photos.py` 抓 Wikimedia Commons 实景照片——需要能出去的代理）、种子渲染（`build_cn_attractions.py` 把官方名录 CSV 渲成 SQL）、离线工具（`draft_attraction_summaries.py` 生成简介草稿，人审后入库）、演示脚本（`demo-offline.ps1` 跑出「不配模型也完整可用」的验收报告）、本机应用启动器（`damo-app.ps1` 单进程起应用并开窗口、`install-damo-app.ps1` 装桌面与开始菜单快捷方式）、打包脚本（`make_installer.ps1` 把仓库打成一个能直接发给别人的 zip） |
+| `scripts/` | 基底钉版记录、许可证卡口、DCO 校验、提交前一把过（`verify_all.py` 跑完本机能跑的静态门禁并汇总）、静态素材生成（`make_favicon.py` 站点图标、`make_attraction_covers.py` 景点配图与 `db/seed/images.sql`、`fetch_commons_photos.py` 抓 Wikimedia Commons 实景照片——需要能出去的代理）、本机网络排查（`system_proxy.py` 读 Windows 的代理设置并实测命令行会不会走代理）、种子渲染（`build_cn_attractions.py` 把官方名录 CSV 渲成 SQL）、离线工具（`draft_attraction_summaries.py` 生成简介草稿，人审后入库）、演示脚本（`demo-offline.ps1` 跑出「不配模型也完整可用」的验收报告）、本机应用启动器（`damo-app.ps1` 单进程起应用并开窗口、`install-damo-app.ps1` 装桌面与开始菜单快捷方式）、打包脚本（`make_installer.ps1` 把仓库打成一个能直接发给别人的 zip） |
 | `damo.cmd` | 双击入口（Windows）：起一个单进程应用并开一个独立窗口，见「当应用用」 |
 | `installer/` | 简易安装包（Windows）：`install.ps1` 把包装到**当前用户**（复制文件 → 建 venv 装依赖 → 建库灌 schema 与三个种子 → 装快捷方式），`-Uninstall` 卸载，见「做安装包」 |
 | `install.cmd` | 安装包的双击入口：解压后双击它就装，`install.cmd -Uninstall` 卸载（真实逻辑在 `installer/install.ps1`） |

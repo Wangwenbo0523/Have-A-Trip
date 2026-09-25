@@ -13,6 +13,9 @@ pid / seq / slug / photo / license / artist / source, 落库到 attraction_image
 
 网络: Wikimedia 在中国大陆直连不通(TLS 握手上被重置), 需要能出去的代理, 形如
       --proxy http://127.0.0.1:7890; 代理会轮换重试, 坏掉的自动跳过。
+      不确定本机命令行走不走代理(浏览器能上不等于命令行能上), 先跑
+      python scripts/system_proxy.py 看一眼: 它会把 WinINET / WinHTTP / 环境变量
+      三层分开报出来, 并实测一次请求。
 
 用法:
   python scripts/fetch_commons_photos.py --proxy-file proxies.txt --levels 5A --width 800
