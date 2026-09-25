@@ -48,6 +48,9 @@ db/seed/drafts/*.sql
 # dev-up.ps1 的临时产物(日志与 pid)
 .dev/
 
+# make_installer.ps1 的产物(发给别人的 zip 与组装用的暂存目录)
+/dist-installer/
+
 # 编辑器
 .vscode/
 .idea/

@@ -202,7 +202,7 @@ if ($NoSeed) {
 } elseif ($stored -gt 0) {
     if (-not $script:JsonMode) { Write-Note "库内已有 $stored 个景点, 跳过种子(要重灌先 drop 掉这个库)。" }
 } else {
-    foreach ($rel in @("db\schema.sql", "db\seed\seed.sql", "db\seed\images.sql")) {
+    foreach ($rel in @("db\schema.sql", "db\seed\seed.sql", "db\seed\attractions_cn.sql", "db\seed\images.sql")) {
         $file = Join-Path $Root $rel
         if (-not (Test-Path $file)) { Write-Fail "缺少 $rel"; exit 1 }
         $sw = [System.Diagnostics.Stopwatch]::StartNew()

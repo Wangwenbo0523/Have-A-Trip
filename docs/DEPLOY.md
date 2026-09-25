@@ -28,14 +28,17 @@
 
 ```bash
 createdb attraction_atlas
-psql -d attraction_atlas -f db/schema.sql      # 幂等: 重复执行不报错
-psql -d attraction_atlas -f db/seed/seed.sql   # 种子数据, 生产按需
-psql -d attraction_atlas -f db/seed/images.sql # 配图元数据, 生产按需
+psql -d attraction_atlas -f db/schema.sql               # 幂等: 重复执行不报错
+psql -d attraction_atlas -f db/seed/seed.sql            # 种子数据, 生产按需
+psql -d attraction_atlas -f db/seed/images.sql          # 配图元数据, 生产按需
+psql -d attraction_atlas -f db/seed/attractions_cn.sql  # 官方 A 级景区名录 1229 条, 生产按需
 ```
 
-这三个文件都是 `CREATE ... IF NOT EXISTS` / `ON CONFLICT` 写法，
+这四个文件都是 `CREATE ... IF NOT EXISTS` / `ON CONFLICT` 写法，
 所以可以直接放进部署脚本重复执行，不需要单独的迁移框架。
-`db/schema_version` 表记录了已应用的版本。
+
+
+灌的顺序不能换：`images.sql` 必须排在两个景点种子之后（它按 slug 关联景点）。
 
 ## 三、API 进程
 
@@ -166,7 +169,19 @@ SERVE_FRONTEND=true FRONTEND_DIST=/srv/have-a-trip/frontend/dist \
 > `FRONTEND_DIST` 留空时按**仓库位置**算（`<仓库>/frontend/dist`），与进程 cwd 无关 —— 从别处起服务也认得出产物在哪。
 > 生产上仍建议「反向代理 + 静态托管」那套（上面第四节）：静态文件交给 nginx / Caddy 比让 Python 读磁盘更划算，还能顺手做 gzip 与 CDN。这条形态的价值在**本机应用**与不需要代理的单机部署。
 
-## 五、推荐离线任务
+## 四·六、把一份装好的包交给别人（Windows 简易安装包）
+
+「本机应用」那条路要求对方自己装 Node 并 build。要交给一个只想用的人，先把仓库打成包：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/make_installer.ps1
+# 产物: dist-installer\have-a-trip-<版本>.zip（-Build 会先重建 frontend/dist，-KeepStage 留着组装目录）
+```
+
+拿包的人**解压后双击 `install.cmd`**：复制文件 → 建 `backend\.venv` 装 `requirements.txt` → 建库灌 schema 与四个种子 → 建桌面与开始菜单快捷方式。全程不需要 Node（`frontend/dist` 在包里），只需要他有 **Python 3.13 与 PostgreSQL 16** —— 缺哪样就停下来说清楚去哪装，不代装、不瞎猜（与 `dev-up.ps1` 同一条口径）。
+
+装到 `%LOCALAPPDATA%\Programs\Have-A-Trip`（用户级，不需要管理员）；`install.cmd -Uninstall` 卸载，库与 `backend\.env` 不动。包里只有 **git 跟踪的文件 + `frontend/dist`**：`.git` / `node_modules` / `.venv` / `.dev` / `.env` / `景区名录/` 一律不进，打包脚本会自己把包验一遍，验出不该有的东西就删掉 zip 不让它发出去。
+
 
 推荐结果由离线任务写进 `rec_result` 表，API 只读它。所以：
 

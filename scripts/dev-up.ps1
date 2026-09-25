@@ -5,7 +5,7 @@
 .DESCRIPTION
   只做本地开发。三条硬约束:
 
-    - 幂等: 库连得上就接着用; schema.sql / seed.sql / images.sql 本身都可重复执行
+    - 幂等: 库连得上就接着用; schema.sql / seed.sql / attractions_cn.sql / images.sql 本身都可重复执行
     - 不装东西: 不下载不安装 PostgreSQL / Node / Python; 找不到 psql 只打印起库指引后退出
     - 不动仓库: 只写 .dev\(日志与 pid), 不生成也不修改 .env
     - 认得出自己: 端口被占时先看 .dev\<name>.pid 是不是本脚本起的那份, 是就直接复用并打印
@@ -245,7 +245,9 @@ $sqlFiles = @("db\schema.sql")
 if ($NoSeed) {
     Write-Note "-NoSeed: 跳过种子数据, 只应用 schema。"
 } else {
-    $sqlFiles += @("db\seed\seed.sql", "db\seed\images.sql")
+    # 三个种子文件都要灌: seed.sql 是自采档案, attractions_cn.sql 是官方名录(1229 条),
+    # images.sql 是配图。images.sql 必须排在两个景点文件之后 —— 它按 slug 关联景点。
+    $sqlFiles += @("db\seed\seed.sql", "db\seed\attractions_cn.sql", "db\seed\images.sql")
 }
 
 foreach ($rel in $sqlFiles) {

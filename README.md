@@ -105,8 +105,10 @@ PostgreSQL   景点档案 / 用户行为日志 / 推荐结果表
 | `backend/` | FastAPI 服务与测试，见 `backend/README.md` |
 | `db/` | `schema.sql` + 种子数据 + 字段口径，见 `db/README.md` |
 | `recsys/` | RecBole 调用层：依赖钉版、训练配置、离线脚本，见 `recsys/README.md` |
-| `scripts/` | 基底钉版记录、许可证卡口、DCO 校验、提交前一把过（`verify_all.py` 跑完本机能跑的静态门禁并汇总）、静态素材生成（`make_favicon.py` 站点图标、`make_attraction_covers.py` 景点配图）、种子渲染（`build_cn_attractions.py` 把官方名录 CSV 渲成 SQL）、离线工具（`draft_attraction_summaries.py` 生成简介草稿，人审后入库）、演示脚本（`demo-offline.ps1` 跑出「不配模型也完整可用」的验收报告）、本机应用启动器（`damo-app.ps1` 单进程起应用并开窗口、`install-damo-app.ps1` 装桌面与开始菜单快捷方式） |
+| `scripts/` | 基底钉版记录、许可证卡口、DCO 校验、提交前一把过（`verify_all.py` 跑完本机能跑的静态门禁并汇总）、静态素材生成（`make_favicon.py` 站点图标、`make_attraction_covers.py` 景点配图）、种子渲染（`build_cn_attractions.py` 把官方名录 CSV 渲成 SQL）、离线工具（`draft_attraction_summaries.py` 生成简介草稿，人审后入库）、演示脚本（`demo-offline.ps1` 跑出「不配模型也完整可用」的验收报告）、本机应用启动器（`damo-app.ps1` 单进程起应用并开窗口、`install-damo-app.ps1` 装桌面与开始菜单快捷方式）、打包脚本（`make_installer.ps1` 把仓库打成一个能直接发给别人的 zip） |
 | `damo.cmd` | 双击入口（Windows）：起一个单进程应用并开一个独立窗口，见「当应用用」 |
+| `installer/` | 简易安装包（Windows）：`install.ps1` 把包装到**当前用户**（复制文件 → 建 venv 装依赖 → 建库灌 schema 与三个种子 → 装快捷方式），`-Uninstall` 卸载，见「做安装包」 |
+| `install.cmd` | 安装包的双击入口：解压后双击它就装，`install.cmd -Uninstall` 卸载（真实逻辑在 `installer/install.ps1`） |
 | `docs/` | `PLAN.md` 施工计划、`BASES.md` 基底清单、`LICENSE-AUDIT.md` 许可审查、`DEPLOY.md` 部署 |
 
 ## 快速起步
@@ -175,6 +177,34 @@ damo.cmd -Down
 | `-NoWindow` | 只起服务不开窗口（脚本 / CI 用） |
 | `-Down` | 收掉本脚本起的实例 |
 
+### 做安装包（发给别人）
+
+上面两条都要求对方有 Node（得 build 前端）。要把这份东西交给一个只想用的人，走这条：
+
+```powershell
+# 打一个 zip 到 dist-installer\（默认用现有的 frontend/dist；它比前端源码旧就直接停下来）
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/make_installer.ps1
+
+# 想看看包里到底装了什么: 留着组装用的暂存目录
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/make_installer.ps1 -KeepStage
+```
+
+拿包的人**解压后双击 `install.cmd`** 就装上了，全程不需要 Node —— 前端产物已经在包里。他要有的只有 **Python 3.13 与 PostgreSQL 16**，这两样不代装：缺哪个就停下来告诉他去哪装。
+
+装的是「用」的形态，落在 `%LOCALAPPDATA%\Programs\Have-A-Trip`（用户级目录，不需要管理员），并建桌面与开始菜单的 `damo` 图标。卸载走开始菜单里的「卸载 damo」，或 `install.cmd -Uninstall`（库与 `backend\.env` 留着不动）。
+
+前端产物是不是新的，打包脚本自己看：`frontend/dist` 只要比 `frontend/src`、`frontend/public` 旧就硬失败（vite 把源在构建期写死进产物，发一份旧前端出去最难回头发现），加 `-Build` 重建即可。
+
+包里装的是**git 跟踪的文件 + 预构建的 `frontend/dist`**：`.git` / `node_modules` / `.venv` / `.dev` / `.env` / 带第三方许可的 `景区名录/` 一律不进包。打包脚本会自己把包翻一遍验这个事，验出不该有的东西就删掉 zip，不让它发出去。
+
+| 安装参数 | 用途 |
+|---|---|
+| `-TargetDir D:\Apps\Have-A-Trip` | 换安装位置 |
+| `-PgBin C:\pgtemp\pginstall\bin -PgPort 55432` | 指到便携 PostgreSQL 实例 |
+| `-Database have_a_trip -PgUser postgres -PgPassword ***` | 换库名 / 账号（口令只写进 `backend\.env`） |
+| `-SkipDatabase` / `-SkipDeps` | 只复制文件 / 不建 venv（分步装的时候用） |
+| `-Uninstall` | 卸载 |
+
 ### 离线演示（不配模型也完整可用）
 
 ```powershell
@@ -192,6 +222,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/demo-offline.ps1 -Pg
 createdb attraction_atlas
 psql -d attraction_atlas -f db/schema.sql
 psql -d attraction_atlas -f db/seed/seed.sql
+psql -d attraction_atlas -f db/seed/attractions_cn.sql   # 官方 A 级景区名录 1229 条
 psql -d attraction_atlas -f db/seed/images.sql
 
 # 2. 后端 (http://127.0.0.1:8000, 文档 /docs)
