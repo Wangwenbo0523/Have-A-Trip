@@ -70,7 +70,8 @@ def semantic_search(
         return fallback("未配置向量模型, 已退回关键词检索。")
     if not model:
         return fallback("库内还没有景点向量, 请先跑一次向量化任务; 已退回关键词检索。")
-    if semantic.model_dim(db, model) is None:
+    stored_dim = semantic.model_dim(db, model)
+    if stored_dim is None:
         # 同一个模型下混了两种维度, 算出来的相似度是垃圾。宁可退回关键词。
         return fallback("向量维度不一致(需要重灌), 已退回关键词检索。")
 
@@ -78,6 +79,15 @@ def semantic_search(
         vector = embedding.embed_one(payload.query)
     except EmbeddingError as exc:
         return fallback("向量服务不可用(%s), 已退回关键词检索。" % exc)
+
+    if stored_dim != len(vector):
+        # 库内向量与查询向量不是同一套: 比出来的余弦全是 0, 一条都搜不到。
+        # 这时说「没找到」是错的 —— 说清是维度对不上, 用户才知道该重灌。
+        return fallback(
+            "查询向量是 %d 维, 库内向量(%s)是 %d 维, 两者无法比较; "
+            "换过向量模型就重跑一次 scripts/build_embeddings.py。"
+            % (len(vector), model, stored_dim)
+        )
 
     hits = semantic.semantic_search(db, vector, model=model, limit=limit)
     if not hits:

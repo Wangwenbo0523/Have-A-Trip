@@ -60,6 +60,27 @@ def existing(session: Session, model: str) -> dict[int, AttractionEmbedding]:
     return {row.attraction_id: row for row in rows}
 
 
+def stray_models(session: Session, model: str) -> list[tuple[str, int, int, int]]:
+    """表里除当前模型之外的向量行。返回 (model, 行数, 最小维度, 最大维度)。
+
+    active_model 只取行数最多的那一份, 所以换过向量模型之后留下的旧行不会被检索
+    用到 —— 但也正因为用不到, 它们在界面上完全看不出来, 只能一直占着这张表。
+    这里把它们报出来, 是为了让「换个模型要重灌」这件事有个收尾的地方。
+    """
+    rows = session.execute(
+        select(
+            AttractionEmbedding.model,
+            func.count(),
+            func.min(AttractionEmbedding.dim),
+            func.max(AttractionEmbedding.dim),
+        )
+        .where(AttractionEmbedding.model != model)
+        .group_by(AttractionEmbedding.model)
+        .order_by(func.count().desc(), AttractionEmbedding.model.asc())
+    ).all()
+    return [(str(name), int(count), int(low), int(high)) for name, count, low, high in rows]
+
+
 def report(session: Session, model: str) -> None:
     total = session.scalar(
         select(func.count()).select_from(Attraction).where(Attraction.status == "published")
@@ -81,6 +102,10 @@ def report(session: Session, model: str) -> None:
         print("维度分布  : %s" % ", ".join("%d 维 x %d" % (dim, count) for dim, count in dims))
         if len(dims) > 1:
             print("警告      : 同一模型下出现多种维度, 检索会拒绝使用这批数据。")
+    for other, count, low, high in stray_models(session, model):
+        span = "%d 维" % low if low == high else "%d..%d 维" % (low, high)
+        print("其它模型  : %s x %d (%s) —— 检索不会用到;" % (other, count, span))
+        print("            换模型时留下的旧向量。模型换回去还要用就别删, 确定不要了再清。")
 
 
 def main() -> int:

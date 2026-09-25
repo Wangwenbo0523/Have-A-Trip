@@ -190,6 +190,30 @@ def test_semantic_search_degrades_without_any_vector(client, seeded, use_embeddi
     assert 'west-lake' in slugs(body)
 
 
+def test_query_width_mismatch_is_reported_as_such(client, db_session, seeded, use_embedding):
+    """库内向量与查询向量不是同一套时, 要说清是维度对不上, 而不是「没搜到」。
+
+    cos 对长度不等的一对向量返回 0, 于是每一条都排到最后, 表现成「没有找到语义
+    相近的景点」。那句提示把「换了模型没重灌」说成了「库里没有像的」—— 用户照它
+    去改需求, 永远改不好。
+    """
+    _store_vectors(db_session, dim=8)
+    use_embedding(FakeEmbeddingClient(dim=16, model=MODEL))
+    body = semantic_search(client, '西湖')
+    assert body['degraded'] is True
+    assert '8' in body['note'] and '16' in body['note'], body['note']
+    assert 'build_embeddings' in body['note'], '要告诉用户怎么修'
+    assert 'west-lake' in slugs(body), '仍然要有兜底结果, 不是空页'
+
+
+def test_accepts_width_matches_the_stored_dimension(db_session, seeded):
+    """accepts_width 就是「这两根向量能不能比」, 三种情形各来一次。"""
+    _store_vectors(db_session, dim=8)
+    assert semantic.accepts_width(db_session, MODEL, 8) is True
+    assert semantic.accepts_width(db_session, MODEL, 16) is False
+    assert semantic.accepts_width(db_session, 'no-such-model', 8) is False
+
+
 def test_mixed_dimensions_are_refused(client, db_session, seeded, use_embedding):
     """同一模型下混了两种维度: 算出来的相似度是垃圾, 必须整体退回关键词。"""
     _store_vectors(db_session, dim=8, only=('west-lake', 'palace-museum', 'terracotta-army'))

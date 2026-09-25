@@ -59,6 +59,18 @@ def model_dim(db: Session, model: str) -> int | None:
     return int(rows[0][0])
 
 
+def accepts_width(db: Session, model: str, width: int) -> bool:
+    """库内这份向量能不能拿去跟一根 width 维的查询向量比。
+
+    model_dim 只看库内自身一不一致; 这一条管的是「查询向量与库内向量是不是同一套」。
+    两者不等时 cos 会返回 0(见 vectors.cosine), 于是每一条都排不上, 表现成
+    「没有找到语义相近的景点」—— 那句提示是错的: 真正的原因是换了向量模型但还没
+    重灌, 该做的是重跑 scripts/build_embeddings.py。维度对不上不该被说成搜不到。
+    """
+    stored = model_dim(db, model)
+    return stored is not None and stored == width
+
+
 def load_vectors(db: Session, model: str) -> dict[int, list[float]]:
     """已发布景点的全部向量。90 条量级一次读完, 见 vectors.py 里的取舍说明。"""
     rows = db.execute(

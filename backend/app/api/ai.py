@@ -127,6 +127,8 @@ def _semantic_hits(
         vector = embedding.embed_one(query)
     except EmbeddingError:
         return []
+    if not semantic.accepts_width(db, model, len(vector)):
+        return []
     return semantic.semantic_search(db, vector, model=model, limit=limit)
 
 
