@@ -62,6 +62,14 @@ psql -d attraction_atlas -c "select * from schema_version;"                 # �
 | `trip_quota` | 限额与 token 预算计数器，按 `(owner_key, day)` 原子自增。**行程与动态共用**，靠前缀区分（`u:` / `d:` / `post:u:` / `__global__`） |
 | `post` | 用户动态（唯一由用户产出自由文本的地方），可选挂一个景点 |
 
+### `post` 的两条索引为什么按 `id` 倒序
+
+`idx_post_status_id (status, id DESC)` 与 `idx_post_user_id (user_id, id DESC)` 服务于
+`GET /api/v1/posts`：列表与游标**同序**才可能不重不漏。游标是整数 `id`，不是 `(created_at, id)` ——
+测试库 SQLite 的 `created_at` 只存到秒，行值比较会在「同一秒里的多条」上静默失效，理由写在
+`backend/app/api/posts.py` 的文件头。`id` 单调递增，按 `id` 倒序 = 插入顺序，与 `created_at` 倒序实际同序。
+排序口径将来改了，这两条索引要跟着改，否则等于白建。
+
 ### `itinerary` 与 `attraction_plan` 的区别
 
 两个名字都叫「计划」，但**不是一类东西**，改哪个之前先认清：

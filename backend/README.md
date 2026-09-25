@@ -32,7 +32,7 @@ cd backend
 .venv\Scripts\python -m pytest
 ```
 
-- 默认跑在 **SQLite 内存库**上，本地不需要 PostgreSQL，354 个用例（344 通过，另有 10 个对拍用例需要 PostgreSQL，未设 TEST_DATABASE_URL 时跳过）约 30 秒。
+- 默认跑在 **SQLite 内存库**上，本地不需要 PostgreSQL，361 个用例（351 通过，另有 10 个对拍用例需要 PostgreSQL，未设 TEST_DATABASE_URL 时跳过）约 30 秒。
 - `pytest.ini` 把 `app.*` 抛出的 DeprecationWarning 提升为 error —— 依赖库的废弃用法不会再悄悄积累。
 - 需要 PostgreSQL 的对拍测试（`tests/test_schema_parity.py`）在没有 `TEST_DATABASE_URL` 时**跳过**，不会假装通过：
 
@@ -61,7 +61,7 @@ TEST_DATABASE_URL=postgresql+psycopg://postgres:postgres@127.0.0.1:5432/attracti
 | POST | `/search/semantic` | 按意思找景点。向量不可用 / 没有向量 / 维度不一致时**退回关键词检索**，仍返回 200 |
 | POST | `/itineraries` | 提交一次行程生成。202 受理并返回 token；命中同一 owner 的同一份需求返回 200，不重复计费 |
 | GET | `/itineraries/{token}` | 按**不可枚举** token 取行程：`pending` / `generating` / `succeeded` / `failed` / `rejected` |
-| GET | `/posts` | 用户动态列表：只出 `visible`，按时间倒序。`?attraction=<slug>` / `?device_id=` 是**精确匹配**筛选，`?viewer=` 只用来算 `mine` 与 `used_today` |
+| GET | `/posts` | 用户动态列表：只出 `visible`，按时间倒序。`?attraction=<slug>` / `?device_id=` 是**精确匹配**筛选，`?viewer=` 只用来算 `mine` 与 `used_today`。翻页：`?page=`（偏移）与 `?before=<上一页的 next_cursor>`（游标）**只能给一个**，一起给是 422；响应里的 `next_cursor` 为 `null` 表示没有更旧的了 |
 | POST | `/posts` | 发一条动态。正文 1–500 字，可选署名与一个已发布景点（`post_daily_limit` 默认 10 条/天，超了 429） |
 | DELETE | `/posts/{id}` | 作者删自己的动态（硬删并归还当天名额）。不是作者一律 404 |
 
