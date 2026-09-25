@@ -117,6 +117,32 @@ class AttractionDetail(AttractionListItem):
     source_url: str | None = None
     updated_at: datetime
 
+# 就近推荐用到了哪一层。没有第四档: 库里的 lat/lon 全是 NULL(见 db/README.md 的数据口径),
+# 算不出公里数, 所以「近」只能是同城 -> 同省 -> 全国。
+NearbyScope = Literal["city", "region", "nation"]
+
+
+class NearbyResult(BaseModel):
+    """按 IP 猜出来的就近推荐。
+
+    `scope` 取结果里**最远**的那一层: 三个全在同城是 city, 有同省补进来的算 region,
+    一旦掺进全国随机就是 nation。
+
+    `located` 是「在你**库里有收录**的城市/省份上对上了」, 而不是「认出了你的 IP」——
+    认出来了但库里那个城市还没有景点时它也是 false, 这时 scope 必然是 nation。
+    两个字段合起来说明白了前端该怎么说这句话(见 home.picks.located / home.picks.fallback)。
+
+    刻意不回归属地原文: 库里没有的写法(境外城市、直辖市的区)报给前端只会让人困惑,
+    要展示就展示我们真正拿去查库的那两个值。
+    """
+
+    items: list[AttractionListItem] = Field(default_factory=list)
+    located: bool = False
+    scope: NearbyScope = "nation"
+    # 库内取值(不是归属地原文), 命中不到就是 null
+    city: str | None = None
+    region: str | None = None
+
 
 T = TypeVar("T")
 

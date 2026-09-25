@@ -19,6 +19,7 @@ import type {
   Itinerary,
   ItineraryAccepted,
   ItineraryRejection,
+  NearbyResult,
   Page,
   PageQuery,
   Recommendation,
@@ -92,14 +93,29 @@ export async function fetchAttractions(query: PageQuery = {}): Promise<Page<Attr
 }
 
 /**
- * 随机抽几个景点 —— 首页「景区推荐」弹窗用(名字叫推荐, 机制是随机抽取)。
+ * 随机抽几个景点, **不问你在哪儿**。
  *
  * 与 /recommendations 的区别: 那条按 (用户, 条数) 缓存, 同一个人的结果稳定;
  * 这一条后端**不缓存**(响应上写了 no-store), 每次调用都是一组新的 —— 所以
  * 「换一批」直接再调一次即可, 不需要什么刷新参数。
+ *
+ * 首页的「出去走走」走的是下面那条 fetchNearbyAttractions(它认不出来时会自己退回
+ * 全国随机); 这条留给不需要位置的入口。
  */
 export async function fetchRandomAttractions(limit = 3): Promise<Attraction[]> {
   const { data } = await http.get<Attraction[]>("/attractions/random", { params: { limit } })
+  return data
+}
+
+/**
+ * 按 IP 猜你在哪儿, 尽量抽附近的三个 —— 首页「出去走走」用这个。
+ *
+ * 认不出位置**不是错误**: 后端照常返回全国随机并把 scope 标成 nation, 所以拿到的
+ * 一定是三个(库非空时), 调用方只需按 scope / located 如实说明依据。
+ * 与随机那条一样**不缓存**, 「换一批」再调一次即可(每次都会重新猜一次位置)。
+ */
+export async function fetchNearbyAttractions(limit = 3): Promise<NearbyResult> {
+  const { data } = await http.get<NearbyResult>("/attractions/nearby", { params: { limit } })
   return data
 }
 

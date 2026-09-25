@@ -3,16 +3,25 @@ from __future__ import annotations
 
 import random
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response, status
 from sqlalchemy import Select, func, or_, select
 from sqlalchemy.orm import Session
 
 from ..config import Settings, get_settings
 from ..db import get_db
+from ..geo import ip_locate
 from ..models import Attraction, Category, Tag, attraction_tag
 from ..recommend.content_based import popular_attractions
 from ..search import semantic
-from ..schemas import AttractionDetail, AttractionListItem, GradeFilter, Page, SortKey
+from ..schemas import (
+    AttractionDetail,
+    AttractionListItem,
+    GradeFilter,
+    NearbyResult,
+    NearbyScope,
+    Page,
+    SortKey,
+)
 
 router = APIRouter(prefix="/attractions", tags=["attractions"])
 
@@ -93,6 +102,42 @@ def find_attraction(db: Session, id_or_slug: str) -> Attraction | None:
     return db.scalars(statement).first()
 
 
+def _sample_published(
+    db: Session,
+    limit: int,
+    *,
+    city: str | None = None,
+    region: str | None = None,
+    exclude: list[int] | None = None,
+) -> list[Attraction]:
+    """从已发布景点里随机抽 limit 个互不相同的, 可限定城市/省份并排除指定 id。
+
+    /attractions/random 与 /attractions/nearby 共用这一套抽法: 先数出符合条件的总数 N,
+    再随机取互不相同的下标, 按 ORDER BY id + OFFSET 逐个取。不用 ORDER BY random():
+    那要对全表排序, 而且 SQLite 与 PostgreSQL 的 random() 语义并不一样(前者返回 64 位
+    整数), OFFSET 两边都认。limit 上限 12, 所以最多 12 次走索引的小查询。
+
+    exclude 是必须的: 同省包含同城, 不排掉已选中的 id 就会把同一个景点抽两次。
+    """
+    statement = published()
+    if city is not None:
+        statement = statement.where(Attraction.city == city)
+    if region is not None:
+        statement = statement.where(Attraction.province == region)
+    if exclude:
+        statement = statement.where(Attraction.id.not_in(exclude))
+    total = count_of(db, statement)
+    if total <= 0 or limit <= 0:
+        return []
+    ordered = statement.order_by(Attraction.id.asc())
+    picked: list[Attraction] = []
+    for offset in random.sample(range(total), min(limit, total)):
+        found = db.scalars(ordered.offset(offset).limit(1)).first()
+        if found is not None:
+            picked.append(found)
+    return picked
+
+
 @router.get("", response_model=Page[AttractionListItem], summary="景点列表")
 def list_attractions(
     page: int = Query(1, ge=1),
@@ -127,30 +172,73 @@ def random_attractions(
     limit: int = Query(3, ge=1, le=12, description="抽几个, 默认 3"),
     db: Session = Depends(get_db),
 ) -> list[AttractionListItem]:
-    """完全随机 —— 首页那三个「随手挑的地方」用这个。
+    """完全随机, 不问你在哪儿。
 
     与 /recommendations 的分工: 那边按 (用户, 条数) 缓存, 为的是同一个人的推荐稳定;
     这一块恰恰相反, 每次打开首页都该是新的三个, 所以**不缓存**, 并在响应上显式写
     Cache-Control: no-store —— 否则浏览器或中间层一按, 随机就成了固定。
 
-    怎么随机: 先数出已发布景点总数 N, 再随机取 limit 个互不相同的下标, 按
-    ORDER BY id + OFFSET 逐个取。不用 ORDER BY random(): 那要对全表排序, 而且
-    SQLite 与 PostgreSQL 的 random() 语义并不一样(前者返回 64 位整数)。OFFSET 两边
-    都认。limit 上限 12, 所以最多 12 次走索引的小查询。
+    与 /nearby 的分工: 这条一个外部请求都不发、也不看归属地, 就是「随便看看」。
+    抽法见 _sample_published。
     """
-    total = count_of(db, published())
-    if total == 0:
-        return []
-
-    statement = published().order_by(Attraction.id.asc())
-    picked: list[Attraction] = []
-    for offset in random.sample(range(total), min(limit, total)):
-        found = db.scalars(statement.offset(offset).limit(1)).first()
-        if found is not None:
-            picked.append(found)
-
+    picked = _sample_published(db, limit)
     response.headers["Cache-Control"] = "no-store"
     return [AttractionListItem.model_validate(attraction) for attraction in picked]
+
+
+@router.get(
+    "/nearby",
+    response_model=NearbyResult,
+    summary="按 IP 猜的归属地就近抽几个已发布景点",
+)
+def nearby_attractions(
+    request: Request,
+    response: Response,
+    limit: int = Query(3, ge=1, le=12, description="抽几个, 默认 3"),
+    db: Session = Depends(get_db),
+    settings: Settings = Depends(get_settings),
+) -> NearbyResult:
+    """首页那块「出去走走」用这个。
+
+    与 /attractions/random 只差一点: 尽量抽**近**的。远近分三级算 —— 同城 -> 同省 ->
+    全国, 因为库里的 lat/lon 全是 NULL(见 db/README.md 的数据口径), 算不出公里数。
+    每一级内部仍然是随机抽取, 仍然不缓存(响应写 no-store)。同城/同省抽出来的**必须排
+    在前面**: 三个里前两个在杭州、第三个在北京, 那前两个才是「近的」, 所以结果是按
+    「先近后远」拼起来的, 不再二次排序。
+
+    这不是定位: 归属地只到城市级(直辖市常常只到区), 只在这一次请求里用一下, 不落库、
+    不写 cookie、不返回坐标。认不出来时照常返回全国随机并如实标 scope=nation —— 首页
+    最先看到的那一块不该空着, 也不该假装自己是就近的。
+    """
+    city: str | None = None
+    region: str | None = None
+    location = ip_locate.locate(ip_locate.client_ip(request, settings), settings)
+    if location is not None:
+        city, region = ip_locate.match_place(db, city=location.city, region=location.region)
+
+    levels: list[tuple[NearbyScope, list[Attraction]]] = []
+    if city:
+        levels.append(("city", _sample_published(db, limit, city=city)))
+    taken = [attraction.id for _, row in levels for attraction in row]
+    if region and len(taken) < limit:
+        levels.append(
+            ("region", _sample_published(db, limit - len(taken), region=region, exclude=taken))
+        )
+    taken = [attraction.id for _, row in levels for attraction in row]
+    if len(taken) < limit:
+        levels.append(("nation", _sample_published(db, limit - len(taken), exclude=taken)))
+
+    picked = [attraction for _, row in levels for attraction in row]
+    # scope 取真正出过货的最远那一层: 只有全在同城凑齐才算 city
+    contributed = [name for name, row in levels if row]
+    response.headers["Cache-Control"] = "no-store"
+    return NearbyResult(
+        items=[AttractionListItem.model_validate(attraction) for attraction in picked],
+        located=bool(city or region),
+        scope=contributed[-1] if contributed else "nation",
+        city=city,
+        region=region,
+    )
 
 
 @router.get("/{id_or_slug}", response_model=AttractionDetail, summary="景点详情")

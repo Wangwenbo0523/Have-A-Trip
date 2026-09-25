@@ -89,9 +89,20 @@ WantedBy=multi-user.target
 | `TRIP_GENERATE_RETRIES` | 模型输出不合法(如漏排某一天)时带着失败原因重试几次，默认 1；`0` 表示不重试。重试花的 token 照样计入限额 |
 | `TRIP_POLL_MAX_SECONDS` | 前端轮询上限（秒），随响应下发，默认 90 |
 | `TRIP_STALE_AFTER_SECONDS` | `generating` 超过这么久没心跳视为进程已死，默认 180 |
+| `GEO_IP_PROVIDER` | `none`(默认) / `ipapi` / `custom`。首页「出去走走」按 IP 猜城市用，**默认关闭**：不配就一个外部请求都不发，接口直接退回全国随机 |
+| `GEO_IP_BASE_URL`、`GEO_IP_API_KEY` | `custom` 必须给地址（支持 `{ip}` 占位，没有就拼在路径末尾）；需要鉴权的服务会带成 `Authorization: Bearer <key>` |
+| `GEO_IP_TIMEOUT_SECONDS` | 归属地查询超时，默认 1.5 秒。宁可退回随机，也不让它拖慢首页 |
+| `GEO_TRUST_FORWARDED_FOR` | 默认 `false`。在反向代理后面部署时要打开，否则后端只看到代理的地址（多半是私网，等于永远认不出位置）。打开前请确认代理**覆盖**而不是追加 `X-Forwarded-For` |
 
 健康检查用 `GET /api/v1/healthz`：数据库连不上时它返回 `degraded` 而不是 500，
 所以不要拿 HTTP 200 当「一切正常」，要读 `status` 字段。
+
+**按位置推荐（可选）**：配了 `GEO_IP_PROVIDER` 之后，首页「出去走走」会拿访客 IP 去问一次归属地，
+只取城市/省份名做**同城 → 同省 → 全国**的三级就近抽取（库里的 `lat/lon` 全是 NULL，算不出公里数）。
+三条边界：① 位置只用于这一次查询 —— 不落库、不写 cookie、不返回坐标，日志里也不记；② 服务超时/连不上/
+返回的写法对不上库内取值时一律**退回全国随机**并在响应里标 `scope=nation`，不是报错；③ ip-api 免费档
+45 次/分钟且只提供 http，按「每次打开首页一次」的量级够用，量大了请换自建服务（`GEO_IP_PROVIDER=custom`）。
+**不要把 `GEO_TRUST_FORWARDED_FOR` 当默认打开**：那个头谁都能写，信了就等于让伪造的头把所有人指到同一个城市。
 
 ## 四、前端静态产物
 
@@ -197,6 +208,8 @@ python scripts/reclaim_itineraries.py
 - [ ] 行程限额与预算按预期生效：`TRIP_DAILY_LIMIT` / `TRIP_GLOBAL_DAILY_TOKEN_BUDGET` 压到 1 试一次，第 2 次应返回 429 且 `detail.reason` 对得上
 - [ ] `python scripts/reclaim_itineraries.py --dry-run` 没有长期积压的 `generating`
 - [ ] 若 `EMBEDDING_PROVIDER` 指向云端：确认**景点档案文本**出境已过合规（离线向量化会把景点描述发给服务商，见 `docs/LICENSE-AUDIT.md` 第七节）
+- [ ] 若开了 `GEO_IP_PROVIDER`：从公网访问 `/api/v1/attractions/nearby` 能拿到 `scope=city` 或 `scope=region`（本机 `127.0.0.1` 一定走 `nation`，那是正常的）；反代部署时 `GEO_TRUST_FORWARDED_FOR` 已打开，且代理是**覆盖**而不是追加该头
+- [ ] 若没开 `GEO_IP_PROVIDER`：`/api/v1/attractions/nearby` 仍返回三个且 `scope=nation`，过程中没有任何外部归属地请求
 - [ ] 刷新 `/attraction/<某个 slug>` 不 404（SPA 回落生效）
 - [ ] 静态素材与生成脚本一致：`python scripts/make_favicon.py --check` 与 `python scripts/make_attraction_covers.py --check` 都通过
 - [ ] 前端产物里没有任何地图 SDK：`grep -rIn "leaflet\|mapbox\|ol/" dist/assets` 应为空

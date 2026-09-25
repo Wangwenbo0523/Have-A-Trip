@@ -23,7 +23,7 @@ const HomePage = ({ categories }: HomePageProps) => {
 
   return (
     <main className="page">
-      {/* 首页的「景区推荐」: 打开首页弹出三个景区(随机抽取); 一次会话只弹一次 */}
+      {/* 首页的「出去走走」: 弹出三个尽量近的景点; 认不出位置就退回全国随机。一次会话只弹一次 */}
       <AttractionPicks />
 
       <section className="hero">

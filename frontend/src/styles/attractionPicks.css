@@ -1,5 +1,5 @@
 /*
- * 首页打开时弹出的「景区推荐」。
+ * 首页打开时弹出的「出去走走」。
  *
  * 只从这里取色, 不写死颜色 —— 两套主题共用这一份 (见 src/index.css 的主题变量)。
  * 遮罩与面板都不用 portal: 它跟着 HomePage 一起挂载/卸载, 少一层 DOM 结构要维护。
@@ -47,6 +47,14 @@
   margin: 6px 0 0;
   color: var(--muted);
   font-size: 0.9rem;
+}
+
+/* 位置那一行: 比 lead 更实一点, 它说的是这一次的依据, 不只是招呼 */
+.attractionPicks__where {
+  margin: 4px 0 0;
+  color: var(--text);
+  font-size: 0.86rem;
+  opacity: 0.85;
 }
 
 .attractionPicks__close {

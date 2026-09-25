@@ -116,6 +116,27 @@ export interface Page<T> {
   total: number
 }
 
+/**
+ * 就近推荐用到了哪一层。没有第四档: 库里的 lat/lon 全是 NULL(见 db/README.md 的数据口径),
+ * 算不出公里数, 所以「近」只能是同城 -> 同省 -> 全国。
+ */
+export type NearbyScope = "city" | "region" | "nation"
+
+/**
+ * 首页「出去走走」的结果。契约来源: backend/app/schemas.py 的 NearbyResult。
+ *
+ * `scope` 取结果里最远的那一层 —— 三个里掺进了全国随机就不是纯就近, 页面上必须按它
+ * 如实说明依据。`located` 是「在你库里有收录的城市/省份上对上了」, 不是「认出了你的 IP」。
+ */
+export interface NearbyResult {
+  items: Attraction[]
+  located: boolean
+  scope: NearbyScope
+  /** 库内取值(不是归属地原文), 命中不到就是 null */
+  city: string | null
+  region: string | null
+}
+
 export type EventType = "view" | "favorite" | "rate" | "share"
 
 export interface EventPayload {

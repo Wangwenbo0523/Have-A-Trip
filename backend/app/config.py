@@ -98,6 +98,27 @@ class Settings(BaseSettings):
     # 再要一次通常就对了。0 表示不重试
     trip_generate_retries: int = 1
 
+    # ------------------------------------------------------------ 按位置推荐
+    #
+    # 首页「出去走走」按 IP 猜你在哪儿, 把附近的景点排在前面 —— 只到城市级: 库里的
+    # lat/lon 全是 NULL(见 db/README.md 的数据口径), 算不出公里数, 所以「近」只能是
+    # **同城 -> 同省 -> 全国**这个层级。
+    #
+    # 默认关闭(GEO_IP_PROVIDER=none): 不配就一个外部请求都不发, /attractions/nearby
+    # 直接退回全国随机, 并在响应里如实标 scope=nation。与 LLM_PROVIDER 同一思路 ——
+    # 不配就不连外网。取值: none | ipapi | custom
+    geo_ip_provider: str = "none"
+    # custom 必填、ipapi 留空用预设。支持 {ip} 占位, 没有就拼在路径末尾(TLS 与否由地址决定)。
+    # 取值字段名固定为 city / regionName(或 region) / countryCode, 不为一堆写法各加一条配置
+    geo_ip_base_url: str = ""
+    # 需要鉴权的服务, 带成 Authorization: Bearer <key>
+    geo_ip_api_key: str = ""
+    # 认位置是首页的锦上添花: 宁可超时退回随机, 也不让它拖慢首页
+    geo_ip_timeout_seconds: float = 1.5
+    # 反代后面才打开(GEO_TRUST_FORWARDED_FOR)。默认不信 X-Forwarded-For —— 那个头谁都
+    # 能写, 信了就等于让伪造的头把所有人指到同一个城市
+    geo_trust_forwarded_for: bool = False
+
     @property
     def cors_origin_list(self) -> list[str]:
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
