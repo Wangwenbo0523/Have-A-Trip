@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="梅州市坪山梯田旅游区">
+  <title>梅州市坪山梯田旅游区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#182825"/>
+      <stop offset="1" stop-color="#3b5e4b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="344.8" cy="447.7" r="47.8" fill="#e0d43e" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,455.7 216.0,543.9 344.0,451.7 472.0,543.1 600.0,446.4 728.0,542.1 856.0,456.5 984.0,544.1 1112.0,430.8 1240.0,539.0 1368.0,427.6 1496.0,538.3 1240.0,800.0" fill="#2a473a"/>
+  <polygon points="-40.0,800.0 120.0,552.4 280.0,611.3 440.0,524.1 600.0,605.6 760.0,552.2 920.0,611.2 1080.0,534.4 1240.0,607.7 1400.0,527.2 1560.0,606.2 1240.0,800.0" fill="#1d332c"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#12221e"/>
+  <polygon points="-40.0,800.0 66.7,638.9 173.3,687.8 280.0,624.2 386.7,684.8 493.3,618.2 600.0,683.6 706.7,617.7 813.3,683.5 920.0,604.0 1026.7,680.8 1133.3,606.7 1240.0,681.3 1346.7,619.2 1453.3,683.8 1240.0,800.0" fill="#12221e" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0d43e" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0d43e" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">梅州市坪山梯田旅游区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

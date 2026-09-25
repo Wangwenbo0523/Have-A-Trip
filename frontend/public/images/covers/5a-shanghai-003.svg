@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="上海野生动物园">
+  <title>上海野生动物园</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a281f"/>
+      <stop offset="1" stop-color="#405e40"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="795.9" cy="456.2" r="50.5" fill="#e09555" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,470.5 216.0,546.9 344.0,468.4 472.0,546.5 600.0,465.8 728.0,546.0 856.0,417.6 984.0,536.3 1112.0,445.6 1240.0,541.9 1368.0,418.1 1496.0,536.4 1240.0,800.0" fill="#2e4731"/>
+  <polygon points="-40.0,800.0 120.0,524.3 280.0,605.7 440.0,539.9 600.0,608.8 760.0,547.7 920.0,610.3 1080.0,541.7 1240.0,609.1 1400.0,514.9 1560.0,603.8 1240.0,800.0" fill="#203324"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#142218"/>
+  <polygon points="-40.0,800.0 66.7,635.2 173.3,687.0 280.0,630.3 386.7,686.1 493.3,608.1 600.0,681.6 706.7,606.2 813.3,681.2 920.0,611.6 1026.7,682.3 1133.3,644.2 1240.0,688.8 1346.7,609.4 1453.3,681.9 1240.0,800.0" fill="#142218" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e09555" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e09555" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">上海野生动物园</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

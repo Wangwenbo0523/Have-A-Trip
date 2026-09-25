@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="韶关市江尾农耕文化园景区">
+  <title>韶关市江尾农耕文化园景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b2825"/>
+      <stop offset="1" stop-color="#415e4d"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="825.5" cy="436.0" r="50.7" fill="#e0d159" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,455.2 216.0,543.8 344.0,452.0 472.0,543.2 600.0,461.5 728.0,545.1 856.0,476.6 984.0,548.1 1112.0,430.6 1240.0,538.9 1368.0,431.4 1496.0,539.1 1240.0,800.0" fill="#2f473c"/>
+  <polygon points="-40.0,800.0 120.0,546.0 280.0,610.0 440.0,552.4 600.0,611.3 760.0,535.8 920.0,608.0 1080.0,525.1 1240.0,605.8 1400.0,543.0 1560.0,609.4 1240.0,800.0" fill="#21332c"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#15221e"/>
+  <polygon points="-40.0,800.0 66.7,625.3 173.3,685.1 280.0,616.5 386.7,683.3 493.3,631.3 600.0,686.3 706.7,644.5 813.3,688.9 920.0,642.5 1026.7,688.5 1133.3,609.6 1240.0,681.9 1346.7,608.6 1453.3,681.7 1240.0,800.0" fill="#15221e" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0d159" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0d159" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="70"
+          font-weight="700" fill="#f4f5f7">韶关市江尾农耕文化园景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

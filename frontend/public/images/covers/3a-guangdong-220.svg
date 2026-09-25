@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="梅州市平远县南台卧佛山景区">
+  <title>梅州市平远县南台卧佛山景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#18281f"/>
+      <stop offset="1" stop-color="#3b5e3e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="660.4" cy="444.4" r="45.3" fill="#e09940" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,429.5 216.0,538.7 344.0,442.7 472.0,541.3 600.0,434.0 728.0,539.6 856.0,463.1 984.0,545.4 1112.0,470.0 1240.0,546.8 1368.0,423.7 1496.0,537.5 1240.0,800.0" fill="#2b4730"/>
+  <polygon points="-40.0,800.0 120.0,536.2 280.0,608.0 440.0,560.2 600.0,612.8 760.0,545.0 920.0,609.8 1080.0,542.1 1240.0,609.2 1400.0,546.4 1560.0,610.1 1240.0,800.0" fill="#1e3324"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#122218"/>
+  <polygon points="-40.0,800.0 66.7,633.0 173.3,686.6 280.0,630.6 386.7,686.1 493.3,634.2 600.0,686.8 706.7,618.2 813.3,683.6 920.0,611.1 1026.7,682.2 1133.3,636.5 1240.0,687.3 1346.7,628.2 1453.3,685.6 1240.0,800.0" fill="#122218" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e09940" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e09940" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="64"
+          font-weight="700" fill="#f4f5f7">梅州市平远县南台卧佛山景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

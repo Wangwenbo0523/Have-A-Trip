@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="南充市阆中古城旅游景区">
+  <title>南充市阆中古城旅游景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a2825"/>
+      <stop offset="1" stop-color="#3f5e4c"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="499.4" cy="449.8" r="49.2" fill="#e0ce51" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,439.8 216.0,540.8 344.0,468.4 472.0,546.5 600.0,416.8 728.0,536.2 856.0,423.7 984.0,537.5 1112.0,439.6 1240.0,540.7 1368.0,465.8 1496.0,546.0 1240.0,800.0" fill="#2e473b"/>
+  <polygon points="-40.0,800.0 120.0,534.6 280.0,607.7 440.0,550.3 600.0,610.9 760.0,558.5 920.0,612.5 1080.0,514.5 1240.0,603.7 1400.0,549.3 1560.0,610.7 1240.0,800.0" fill="#20332b"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#14221e"/>
+  <polygon points="-40.0,800.0 66.7,644.2 173.3,688.8 280.0,607.7 386.7,681.5 493.3,636.5 600.0,687.3 706.7,619.6 813.3,683.9 920.0,611.5 1026.7,682.3 1133.3,610.6 1240.0,682.1 1346.7,614.2 1453.3,682.8 1240.0,800.0" fill="#14221e" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0ce51" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0ce51" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="76"
+          font-weight="700" fill="#f4f5f7">南充市阆中古城旅游景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

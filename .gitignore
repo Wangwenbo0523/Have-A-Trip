@@ -19,6 +19,10 @@ frontend/.vite/
 # 数据与产物: 景点原始数据与训练产物不入库(体量大且常带第三方许可)
 data/
 dataset/
+# 例外: db/seed/data/ 是种子数据的**输入**, 要随仓库分发(来历见 db/seed/data/README.md)。
+# 它不是上面说的那种原始数据 —— 只有名称 / 等级 / 省市 / 来源这些事实字段,
+# 体量大、常带第三方许可的原始下载件(xlsx / html / 接口 JSON)不入库。
+!db/seed/data/
 recsys/output/
 recsys/saved/
 # RecBole 把日志写进 ./log 与 ./log_tensorboard(硬编码的 cwd 相对路径)。
@@ -35,6 +39,11 @@ db/seed/drafts/*.sql
 
 # 上游基底缓存(由 scripts/fetch-bases.ps1 生成)
 .cache/
+
+# 中国 A 级景区名录的**过程文件**(原始下载件、含 CC BY-SA 的第三方条目、中间产物)。
+# 进库用的规范化数据已经落在 db/seed/data/, 这里按 docs/LICENSE-AUDIT.md 第三节
+# 「第三方数据不进代码仓库」的规矩隔离在仓库之外。
+/景区名录/
 
 # dev-up.ps1 的临时产物(日志与 pid)
 .dev/

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="襄阳市古隆中景区">
+  <title>襄阳市古隆中景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#182823"/>
+      <stop offset="1" stop-color="#3b5e48"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="382.9" cy="430.8" r="42.4" fill="#e0c440" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,457.3 216.0,544.3 344.0,426.3 472.0,538.1 600.0,429.0 728.0,538.6 856.0,454.4 984.0,543.7 1112.0,417.6 1240.0,536.3 1368.0,418.9 1496.0,536.6 1240.0,800.0" fill="#2b4738"/>
+  <polygon points="-40.0,800.0 120.0,513.7 280.0,603.5 440.0,552.2 600.0,611.2 760.0,549.5 920.0,610.7 1080.0,546.6 1240.0,610.1 1400.0,559.7 1560.0,612.7 1240.0,800.0" fill="#1e3329"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#12221c"/>
+  <polygon points="-40.0,800.0 66.7,636.7 173.3,687.3 280.0,634.3 386.7,686.9 493.3,645.2 600.0,689.0 706.7,615.5 813.3,683.1 920.0,619.4 1026.7,683.9 1133.3,615.0 1240.0,683.0 1346.7,638.6 1453.3,687.7 1240.0,800.0" fill="#12221c" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0c440" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0c440" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">襄阳市古隆中景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

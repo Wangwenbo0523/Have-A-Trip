@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="张掖市七彩丹霞景区">
+  <title>张掖市七彩丹霞景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#182823"/>
+      <stop offset="1" stop-color="#3b5e47"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="418.9" cy="447.4" r="48.6" fill="#e0c23e" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,483.5 216.0,549.5 344.0,431.6 472.0,539.1 600.0,474.2 728.0,547.6 856.0,468.7 984.0,546.5 1112.0,461.0 1240.0,545.0 1368.0,433.5 1496.0,539.5 1240.0,800.0" fill="#2b4737"/>
+  <polygon points="-40.0,800.0 120.0,516.6 280.0,604.1 440.0,524.3 600.0,605.7 760.0,558.5 920.0,612.5 1080.0,510.2 1240.0,602.8 1400.0,536.0 1560.0,608.0 1240.0,800.0" fill="#1d3329"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#12221c"/>
+  <polygon points="-40.0,800.0 66.7,644.2 173.3,688.8 280.0,604.2 386.7,680.8 493.3,625.5 600.0,685.1 706.7,625.3 813.3,685.1 920.0,612.6 1026.7,682.5 1133.3,615.9 1240.0,683.2 1346.7,616.4 1453.3,683.3 1240.0,800.0" fill="#12221c" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0c23e" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0c23e" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">张掖市七彩丹霞景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

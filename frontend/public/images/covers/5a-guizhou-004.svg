@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="毕节市黔西县百里杜鹃景区">
+  <title>毕节市黔西县百里杜鹃景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b281f"/>
+      <stop offset="1" stop-color="#415e41"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="675.2" cy="454.8" r="46.1" fill="#e0985b" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,423.4 216.0,537.5 344.0,435.3 472.0,539.9 600.0,417.6 728.0,536.3 856.0,457.8 984.0,544.4 1112.0,424.5 1240.0,537.7 1368.0,437.4 1496.0,540.3 1240.0,800.0" fill="#304732"/>
+  <polygon points="-40.0,800.0 120.0,531.9 280.0,607.2 440.0,517.0 600.0,604.2 760.0,559.5 920.0,612.7 1080.0,556.3 1240.0,612.1 1400.0,522.3 1560.0,605.3 1240.0,800.0" fill="#213325"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#152218"/>
+  <polygon points="-40.0,800.0 66.7,645.0 173.3,689.0 280.0,642.3 386.7,688.5 493.3,614.2 600.0,682.8 706.7,629.1 813.3,685.8 920.0,628.2 1026.7,685.6 1133.3,643.8 1240.0,688.8 1346.7,625.3 1453.3,685.1 1240.0,800.0" fill="#152218" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0985b" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0985b" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="70"
+          font-weight="700" fill="#f4f5f7">毕节市黔西县百里杜鹃景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

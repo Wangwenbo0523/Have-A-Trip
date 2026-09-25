@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="惠州市广东梁化国家森林公园景区">
+  <title>惠州市广东梁化国家森林公园景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a281f"/>
+      <stop offset="1" stop-color="#405e40"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="353.3" cy="458.2" r="45.1" fill="#e09656" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,460.2 216.0,544.8 344.0,470.5 472.0,546.9 600.0,449.4 728.0,542.7 856.0,427.6 984.0,538.3 1112.0,447.5 1240.0,542.3 1368.0,471.3 1496.0,547.1 1240.0,800.0" fill="#2f4731"/>
+  <polygon points="-40.0,800.0 120.0,553.6 280.0,611.5 440.0,556.7 600.0,612.1 760.0,552.6 920.0,611.3 1080.0,548.7 1240.0,610.5 1400.0,527.4 1560.0,606.3 1240.0,800.0" fill="#213324"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#142218"/>
+  <polygon points="-40.0,800.0 66.7,639.2 173.3,687.8 280.0,636.0 386.7,687.2 493.3,618.4 600.0,683.7 706.7,645.5 813.3,689.1 920.0,632.6 1026.7,686.5 1133.3,643.6 1240.0,688.7 1346.7,628.9 1453.3,685.8 1240.0,800.0" fill="#142218" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e09656" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e09656" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="56"
+          font-weight="700" fill="#f4f5f7">惠州市广东梁化国家森林公园景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

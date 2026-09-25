@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="扬州市瘦西湖风景区">
+  <title>扬州市瘦西湖风景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b2823"/>
+      <stop offset="1" stop-color="#415e4a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="842.5" cy="435.1" r="40.8" fill="#e0c15c" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,427.4 216.0,538.3 344.0,432.4 472.0,539.3 600.0,437.7 728.0,540.3 856.0,423.9 984.0,537.6 1112.0,464.2 1240.0,545.6 1368.0,434.5 1496.0,539.7 1240.0,800.0" fill="#304739"/>
+  <polygon points="-40.0,800.0 120.0,526.2 280.0,606.0 440.0,534.0 600.0,607.6 760.0,551.8 920.0,611.2 1080.0,511.6 1240.0,603.1 1400.0,546.0 1560.0,610.0 1240.0,800.0" fill="#21332a"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#15221c"/>
+  <polygon points="-40.0,800.0 66.7,638.6 173.3,687.7 280.0,605.4 386.7,681.1 493.3,633.8 600.0,686.8 706.7,627.9 813.3,685.6 920.0,606.9 1026.7,681.4 1133.3,619.6 1240.0,683.9 1346.7,644.3 1453.3,688.9 1240.0,800.0" fill="#15221c" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0c15c" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0c15c" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">扬州市瘦西湖风景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

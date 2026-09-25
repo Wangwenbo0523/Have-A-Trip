@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="肇庆市广宁县宝锭山景区">
+  <title>肇庆市广宁县宝锭山景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a281f"/>
+      <stop offset="1" stop-color="#415e40"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="700.6" cy="461.1" r="41.2" fill="#e09156" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,479.8 216.0,548.8 344.0,425.8 472.0,538.0 600.0,429.8 728.0,538.8 856.0,444.6 984.0,541.7 1112.0,447.8 1240.0,542.4 1368.0,459.4 1496.0,544.7 1240.0,800.0" fill="#2f4730"/>
+  <polygon points="-40.0,800.0 120.0,560.4 280.0,612.9 440.0,542.1 600.0,609.2 760.0,540.7 920.0,608.9 1080.0,541.7 1240.0,609.1 1400.0,533.3 1560.0,607.5 1240.0,800.0" fill="#203323"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#142218"/>
+  <polygon points="-40.0,800.0 66.7,629.4 173.3,685.9 280.0,630.3 386.7,686.1 493.3,623.3 600.0,684.7 706.7,646.0 813.3,689.2 920.0,642.5 1026.7,688.5 1133.3,646.7 1240.0,689.3 1346.7,643.0 1453.3,688.6 1240.0,800.0" fill="#142218" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e09156" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e09156" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="76"
+          font-weight="700" fill="#f4f5f7">肇庆市广宁县宝锭山景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

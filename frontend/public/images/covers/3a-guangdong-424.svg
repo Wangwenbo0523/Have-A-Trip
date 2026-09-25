@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="肇庆市阅江楼景区">
+  <title>肇庆市阅江楼景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a2822"/>
+      <stop offset="1" stop-color="#405e47"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="522.7" cy="430.4" r="47.1" fill="#e0b655" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,452.8 216.0,543.4 344.0,434.8 472.0,539.8 600.0,424.2 728.0,537.6 856.0,465.2 984.0,545.8 1112.0,473.4 1240.0,547.5 1368.0,460.2 1496.0,544.8 1240.0,800.0" fill="#2f4737"/>
+  <polygon points="-40.0,800.0 120.0,544.8 280.0,609.8 440.0,556.9 600.0,612.2 760.0,516.8 920.0,604.2 1080.0,532.9 1240.0,607.4 1400.0,543.4 1560.0,609.5 1240.0,800.0" fill="#203328"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#14221b"/>
+  <polygon points="-40.0,800.0 66.7,609.6 173.3,681.9 280.0,623.0 386.7,684.6 493.3,631.6 600.0,686.3 706.7,631.4 813.3,686.3 920.0,641.6 1026.7,688.3 1133.3,625.0 1240.0,685.0 1346.7,621.6 1453.3,684.3 1240.0,800.0" fill="#14221b" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0b655" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0b655" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">肇庆市阅江楼景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

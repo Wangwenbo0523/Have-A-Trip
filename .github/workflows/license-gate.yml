@@ -65,7 +65,14 @@ jobs:
       - name: 校验站点图标与生成脚本一致
         run: python scripts/make_favicon.py --check
 
-      # 景点封面也是脚本生成的。改了 seed.sql 的景点清单却忘了重跑生成脚本,
-      # 靠这一条拦; 手改 public/ 下的 SVG 同样会红。
+      # 景点封面也是脚本生成的。改了 db/seed/ 里两个种子文件(seed.sql 的自采档案与
+      # attractions_cn.sql 的名录条目)的景点清单却忘了重跑生成脚本, 靠这一条拦;
+      # 手改 public/ 下的 SVG 同样会红。
       - name: 校验景点配图与生成脚本一致
         run: python scripts/make_attraction_covers.py --check
+
+      # attractions_cn.sql 同样是生成物(由 db/seed/data/cn_a_level.csv 渲染), 而且比
+      # 封面更要紧 —— 它是直接喂给 psql 的。跑了 --check, 「CSV 是唯一源、没人手改过
+      # 那份 SQL」才有依据; 不跑, 这道锁就只是写在脚本里没人拧。
+      - name: 校验名录种子 SQL 与源 CSV 一致
+        run: python scripts/build_cn_attractions.py --check

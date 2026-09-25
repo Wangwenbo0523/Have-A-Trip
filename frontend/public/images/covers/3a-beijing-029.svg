@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="北京市劳动人民文化宫景区">
+  <title>北京市劳动人民文化宫景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b2825"/>
+      <stop offset="1" stop-color="#425e4d"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="486.7" cy="459.1" r="40.3" fill="#e0cd5e" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,444.3 216.0,541.7 344.0,475.3 472.0,547.9 600.0,428.7 728.0,538.5 856.0,450.1 984.0,542.8 1112.0,463.9 1240.0,545.6 1368.0,451.2 1496.0,543.0 1240.0,800.0" fill="#30473b"/>
+  <polygon points="-40.0,800.0 120.0,524.3 280.0,605.7 440.0,534.0 600.0,607.6 760.0,513.1 920.0,603.4 1080.0,541.9 1240.0,609.2 1400.0,527.6 1560.0,606.3 1240.0,800.0" fill="#22332c"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#15221e"/>
+  <polygon points="-40.0,800.0 66.7,606.5 173.3,681.3 280.0,630.4 386.7,686.1 493.3,618.6 600.0,683.7 706.7,646.7 813.3,689.3 920.0,627.5 1026.7,685.5 1133.3,612.5 1240.0,682.5 1346.7,646.2 1453.3,689.2 1240.0,800.0" fill="#15221e" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0cd5e" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0cd5e" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="70"
+          font-weight="700" fill="#f4f5f7">北京市劳动人民文化宫景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

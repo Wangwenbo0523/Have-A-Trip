@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="汕尾市陆丰石寨古村文化旅游景区">
+  <title>汕尾市陆丰石寨古村文化旅游景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b281f"/>
+      <stop offset="1" stop-color="#415e41"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="698.5" cy="449.3" r="47.6" fill="#e0975b" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,479.3 216.0,548.7 344.0,443.0 472.0,541.4 600.0,465.2 728.0,545.8 856.0,465.5 984.0,545.9 1112.0,431.6 1240.0,539.1 1368.0,452.3 1496.0,543.3 1240.0,800.0" fill="#304731"/>
+  <polygon points="-40.0,800.0 120.0,513.1 280.0,603.4 440.0,517.4 600.0,604.3 760.0,545.2 920.0,609.8 1080.0,550.9 1240.0,611.0 1400.0,518.6 1560.0,604.5 1240.0,800.0" fill="#213324"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#152218"/>
+  <polygon points="-40.0,800.0 66.7,633.1 173.3,686.6 280.0,637.9 386.7,687.6 493.3,611.1 600.0,682.2 706.7,620.4 813.3,684.1 920.0,629.2 1026.7,685.8 1133.3,644.7 1240.0,688.9 1346.7,619.9 1453.3,684.0 1240.0,800.0" fill="#152218" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0975b" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0975b" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="56"
+          font-weight="700" fill="#f4f5f7">汕尾市陆丰石寨古村文化旅游景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

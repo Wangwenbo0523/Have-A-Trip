@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="北京天门山旅游风景区">
+  <title>北京天门山旅游风景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#182824"/>
+      <stop offset="1" stop-color="#3b5e4a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="546.0" cy="440.4" r="49.6" fill="#e0ce41" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,427.9 216.0,538.4 344.0,450.7 472.0,542.9 600.0,480.9 728.0,549.0 856.0,433.5 984.0,539.5 1112.0,420.8 1240.0,537.0 1368.0,480.6 1496.0,548.9 1240.0,800.0" fill="#2b4739"/>
+  <polygon points="-40.0,800.0 120.0,528.0 280.0,606.4 440.0,546.0 600.0,610.0 760.0,513.9 920.0,603.6 1080.0,544.8 1240.0,609.8 1400.0,556.1 1560.0,612.0 1240.0,800.0" fill="#1e332b"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#12221d"/>
+  <polygon points="-40.0,800.0 66.7,607.2 173.3,681.4 280.0,632.8 386.7,686.6 493.3,642.1 600.0,688.4 706.7,628.7 813.3,685.7 920.0,628.2 1026.7,685.6 1133.3,610.1 1240.0,682.0 1346.7,612.6 1453.3,682.5 1240.0,800.0" fill="#12221d" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0ce41" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0ce41" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">北京天门山旅游风景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

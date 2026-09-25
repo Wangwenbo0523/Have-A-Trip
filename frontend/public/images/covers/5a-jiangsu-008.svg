@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="徐州市云龙湖景区">
+  <title>徐州市云龙湖景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#18281f"/>
+      <stop offset="1" stop-color="#3b5e3d"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="683.6" cy="443.7" r="47.5" fill="#e0953e" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,456.5 216.0,544.1 344.0,480.1 472.0,548.8 600.0,445.6 728.0,541.9 856.0,417.9 984.0,536.4 1112.0,470.8 1240.0,547.0 1368.0,463.4 1496.0,545.5 1240.0,800.0" fill="#2a472f"/>
+  <polygon points="-40.0,800.0 120.0,526.2 280.0,606.0 440.0,510.0 600.0,602.8 760.0,555.9 920.0,612.0 1080.0,560.8 1240.0,613.0 1400.0,519.2 1560.0,604.6 1240.0,800.0" fill="#1d3323"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#122218"/>
+  <polygon points="-40.0,800.0 66.7,641.9 173.3,688.4 280.0,646.0 386.7,689.2 493.3,611.6 600.0,682.3 706.7,626.4 813.3,685.3 920.0,616.2 1026.7,683.2 1133.3,638.1 1240.0,687.6 1346.7,620.3 1453.3,684.1 1240.0,800.0" fill="#122218" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0953e" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0953e" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">徐州市云龙湖景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

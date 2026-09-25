@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="佛山市顺德罗浮宫国际家具艺术博览中心景区">
+  <title>佛山市顺德罗浮宫国际家具艺术博览中心景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b2822"/>
+      <stop offset="1" stop-color="#425e46"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="723.9" cy="447.3" r="45.0" fill="#e0af5f" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,441.4 216.0,541.1 344.0,467.1 472.0,546.2 600.0,459.7 728.0,544.7 856.0,470.5 984.0,546.9 1112.0,479.8 1240.0,548.8 1368.0,460.7 1496.0,544.9 1240.0,800.0" fill="#304736"/>
+  <polygon points="-40.0,800.0 120.0,531.9 280.0,607.2 440.0,547.3 600.0,610.3 760.0,511.4 920.0,603.1 1080.0,540.3 1240.0,608.9 1400.0,555.2 1560.0,611.8 1240.0,800.0" fill="#223328"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#15221b"/>
+  <polygon points="-40.0,800.0 66.7,605.2 173.3,681.0 280.0,629.1 386.7,685.8 493.3,641.4 600.0,688.3 706.7,628.2 813.3,685.6 920.0,610.6 1026.7,682.1 1133.3,631.1 1240.0,686.2 1346.7,629.2 1453.3,685.8 1240.0,800.0" fill="#15221b" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0af5f" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0af5f" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="42"
+          font-weight="700" fill="#f4f5f7">佛山市顺德罗浮宫国际家具艺术博览中心景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

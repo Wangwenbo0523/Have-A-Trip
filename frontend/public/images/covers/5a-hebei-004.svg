@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="保定市野三坡景区">
+  <title>保定市野三坡景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#182820"/>
+      <stop offset="1" stop-color="#3c5e3f"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="353.3" cy="450.3" r="42.5" fill="#e09d42" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,441.1 216.0,541.0 344.0,459.1 472.0,544.6 600.0,455.2 728.0,543.8 856.0,460.5 984.0,544.9 1112.0,420.0 1240.0,536.8 1368.0,455.4 1496.0,543.9 1240.0,800.0" fill="#2b4731"/>
+  <polygon points="-40.0,800.0 120.0,526.6 280.0,606.1 440.0,537.0 600.0,608.2 760.0,540.1 920.0,608.8 1080.0,543.2 1240.0,609.4 1400.0,516.8 1560.0,604.2 1240.0,800.0" fill="#1e3324"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#122218"/>
+  <polygon points="-40.0,800.0 66.7,628.9 173.3,685.8 280.0,631.4 386.7,686.3 493.3,609.6 600.0,681.9 706.7,642.6 813.3,688.5 920.0,619.4 1026.7,683.9 1133.3,634.7 1240.0,686.9 1346.7,638.1 1453.3,687.6 1240.0,800.0" fill="#122218" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e09d42" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e09d42" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">保定市野三坡景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="中山市孙中山故里旅游区">
+  <title>中山市孙中山故里旅游区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a2821"/>
+      <stop offset="1" stop-color="#3e5e44"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="499.4" cy="432.4" r="42.0" fill="#e0ac4f" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,441.7 216.0,541.1 344.0,463.9 472.0,545.6 600.0,468.1 728.0,546.4 856.0,472.6 984.0,547.3 1112.0,424.2 1240.0,537.6 1368.0,452.3 1496.0,543.3 1240.0,800.0" fill="#2d4734"/>
+  <polygon points="-40.0,800.0 120.0,530.3 280.0,606.9 440.0,544.6 600.0,609.7 760.0,535.6 920.0,607.9 1080.0,555.0 1240.0,611.8 1400.0,551.1 1560.0,611.0 1240.0,800.0" fill="#203327"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#14221a"/>
+  <polygon points="-40.0,800.0 66.7,625.2 173.3,685.0 280.0,641.3 386.7,688.3 493.3,638.1 600.0,687.6 706.7,636.2 813.3,687.2 920.0,616.2 1026.7,683.2 1133.3,629.2 1240.0,685.8 1346.7,640.1 1453.3,688.0 1240.0,800.0" fill="#14221a" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0ac4f" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0ac4f" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="76"
+          font-weight="700" fill="#f4f5f7">中山市孙中山故里旅游区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

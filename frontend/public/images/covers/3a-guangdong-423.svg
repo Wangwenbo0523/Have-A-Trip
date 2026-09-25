@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="肇庆市金象山森林公园景区">
+  <title>肇庆市金象山森林公园景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a2826"/>
+      <stop offset="1" stop-color="#405e4e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="709.1" cy="454.1" r="48.4" fill="#e0d956" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,463.6 216.0,545.5 344.0,451.5 472.0,543.1 600.0,423.1 728.0,537.4 856.0,467.4 984.0,546.3 1112.0,432.7 1240.0,539.3 1368.0,483.2 1496.0,549.4 1240.0,800.0" fill="#2f473d"/>
+  <polygon points="-40.0,800.0 120.0,527.2 280.0,606.2 440.0,511.8 600.0,603.2 760.0,513.3 920.0,603.5 1080.0,552.4 1240.0,611.3 1400.0,516.6 1560.0,604.1 1240.0,800.0" fill="#21332d"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#14221f"/>
+  <polygon points="-40.0,800.0 66.7,606.7 173.3,681.3 280.0,639.1 386.7,687.8 493.3,609.4 600.0,681.9 706.7,626.9 813.3,685.4 920.0,605.4 1026.7,681.1 1133.3,604.8 1240.0,681.0 1346.7,617.0 1453.3,683.4 1240.0,800.0" fill="#14221f" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0d956" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0d956" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="70"
+          font-weight="700" fill="#f4f5f7">肇庆市金象山森林公园景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

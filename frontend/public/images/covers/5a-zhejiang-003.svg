@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="台州市台州府城文化旅游区">
+  <title>台州市台州府城文化旅游区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#18281e"/>
+      <stop offset="1" stop-color="#3b5e3c"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="634.9" cy="441.9" r="42.4" fill="#e08e3e" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,446.7 216.0,542.1 344.0,420.0 472.0,536.8 600.0,441.7 728.0,541.1 856.0,431.9 984.0,539.2 1112.0,438.2 1240.0,540.4 1368.0,467.9 1496.0,546.4 1240.0,800.0" fill="#2a472e"/>
+  <polygon points="-40.0,800.0 120.0,517.2 280.0,604.2 440.0,555.2 600.0,611.8 760.0,554.4 920.0,611.7 1080.0,523.7 1240.0,605.5 1400.0,540.9 1560.0,609.0 1240.0,800.0" fill="#1d3322"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#122217"/>
+  <polygon points="-40.0,800.0 66.7,640.8 173.3,688.2 280.0,615.4 386.7,683.1 493.3,629.6 600.0,685.9 706.7,635.8 813.3,687.2 920.0,616.9 1026.7,683.4 1133.3,641.1 1240.0,688.2 1346.7,638.4 1453.3,687.7 1240.0,800.0" fill="#122217" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e08e3e" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e08e3e" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="70"
+          font-weight="700" fill="#f4f5f7">台州市台州府城文化旅游区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

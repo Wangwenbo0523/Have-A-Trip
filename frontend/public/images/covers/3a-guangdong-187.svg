@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="揭阳市利泰飞鹅岭农业公园景区">
+  <title>揭阳市利泰飞鹅岭农业公园景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a2822"/>
+      <stop offset="1" stop-color="#3f5e47"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="829.8" cy="461.2" r="44.5" fill="#e0b654" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,473.4 216.0,547.5 344.0,479.0 472.0,548.6 600.0,461.0 728.0,545.0 856.0,478.5 984.0,548.5 1112.0,437.7 1240.0,540.3 1368.0,477.4 1496.0,548.3 1240.0,800.0" fill="#2e4736"/>
+  <polygon points="-40.0,800.0 120.0,528.4 280.0,606.5 440.0,544.6 600.0,609.7 760.0,530.1 920.0,606.8 1080.0,529.0 1240.0,606.6 1400.0,550.3 1560.0,610.9 1240.0,800.0" fill="#203328"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#14221b"/>
+  <polygon points="-40.0,800.0 66.7,620.6 173.3,684.1 280.0,619.8 386.7,684.0 493.3,637.4 600.0,687.5 706.7,608.7 813.3,681.7 920.0,614.2 1026.7,682.8 1133.3,624.7 1240.0,684.9 1346.7,630.9 1453.3,686.2 1240.0,800.0" fill="#14221b" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0b654" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0b654" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="60"
+          font-weight="700" fill="#f4f5f7">揭阳市利泰飞鹅岭农业公园景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

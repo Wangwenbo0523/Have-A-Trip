@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="深圳市华强北步行街景区">
+  <title>深圳市华强北步行街景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a281f"/>
+      <stop offset="1" stop-color="#405e40"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="759.9" cy="444.9" r="41.6" fill="#e09355" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,425.8 216.0,538.0 344.0,445.6 472.0,541.9 600.0,475.8 728.0,548.0 856.0,476.6 984.0,548.1 1112.0,431.9 1240.0,539.2 1368.0,418.6 1496.0,536.5 1240.0,800.0" fill="#2f4731"/>
+  <polygon points="-40.0,800.0 120.0,519.6 280.0,604.7 440.0,533.5 600.0,607.5 760.0,519.4 920.0,604.7 1080.0,544.4 1240.0,609.7 1400.0,516.8 1560.0,604.2 1240.0,800.0" fill="#203324"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#142218"/>
+  <polygon points="-40.0,800.0 66.7,611.8 173.3,682.4 280.0,632.5 386.7,686.5 493.3,609.6 600.0,681.9 706.7,619.1 813.3,683.8 920.0,645.8 1026.7,689.2 1133.3,645.0 1240.0,689.0 1346.7,641.4 1453.3,688.3 1240.0,800.0" fill="#142218" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e09355" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e09355" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="76"
+          font-weight="700" fill="#f4f5f7">深圳市华强北步行街景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

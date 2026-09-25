@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="湛江市角尾乡放坡村旅游景区">
+  <title>湛江市角尾乡放坡村旅游景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b281f"/>
+      <stop offset="1" stop-color="#425e41"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="649.8" cy="460.6" r="47.6" fill="#e0975c" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,453.9 216.0,543.6 344.0,479.0 472.0,548.6 600.0,435.6 728.0,539.9 856.0,478.5 984.0,548.5 1112.0,458.6 1240.0,544.5 1368.0,467.1 1496.0,546.2 1240.0,800.0" fill="#304731"/>
+  <polygon points="-40.0,800.0 120.0,522.3 280.0,605.3 440.0,530.1 600.0,606.8 760.0,553.8 920.0,611.6 1080.0,548.1 1240.0,610.4 1400.0,533.1 1560.0,607.4 1240.0,800.0" fill="#213324"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#152218"/>
+  <polygon points="-40.0,800.0 66.7,640.3 173.3,688.1 280.0,635.5 386.7,687.1 493.3,623.1 600.0,684.6 706.7,632.3 813.3,686.5 920.0,634.0 1026.7,686.8 1133.3,645.5 1240.0,689.1 1346.7,619.8 1453.3,684.0 1240.0,800.0" fill="#152218" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0975c" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0975c" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="64"
+          font-weight="700" fill="#f4f5f7">湛江市角尾乡放坡村旅游景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

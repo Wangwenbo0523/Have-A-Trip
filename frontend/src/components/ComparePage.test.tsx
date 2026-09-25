@@ -137,7 +137,7 @@ describe("ComparePage", () => {
   })
 
   it("景点多到一页装不下时把后面几页也取回来 —— 下拉里要能选到全部", async () => {
-    // 后端 max_page_size = 100, 所以 156 个景点不可能一页取完
+    // 后端 max_page_size = 100, 所以 1385 个景点不可能一页取完
     const firstPage = Array.from({ length: 100 }, (_, index) =>
       listItem(index + 1, `first-${index + 1}`, `第一页第 ${index + 1} 个`),
     )

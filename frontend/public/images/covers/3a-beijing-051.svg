@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="北京房山区张坊宋辽古城景区">
+  <title>北京房山区张坊宋辽古城景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#18281e"/>
+      <stop offset="1" stop-color="#3c5e3d"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="397.8" cy="459.5" r="47.9" fill="#e09242" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,427.9 216.0,538.4 344.0,467.9 472.0,546.4 600.0,436.4 728.0,540.1 856.0,444.9 984.0,541.8 1112.0,449.6 1240.0,542.7 1368.0,419.2 1496.0,536.6 1240.0,800.0" fill="#2b472f"/>
+  <polygon points="-40.0,800.0 120.0,551.8 280.0,611.2 440.0,542.3 600.0,609.3 760.0,532.3 920.0,607.3 1080.0,517.8 1240.0,604.4 1400.0,540.7 1560.0,608.9 1240.0,800.0" fill="#1e3323"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#122217"/>
+  <polygon points="-40.0,800.0 66.7,622.5 173.3,684.5 280.0,610.4 386.7,682.1 493.3,629.4 600.0,685.9 706.7,631.3 813.3,686.3 920.0,620.6 1026.7,684.1 1133.3,640.3 1240.0,688.1 1346.7,618.9 1453.3,683.8 1240.0,800.0" fill="#122217" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e09242" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e09242" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="64"
+          font-weight="700" fill="#f4f5f7">北京房山区张坊宋辽古城景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

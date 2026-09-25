@@ -174,7 +174,7 @@ const ComparePage = () => {
   const rightItem = profiles?.[rightSlug] ?? null
 
   /**
-   * 用可搜索的组合框而不是 `<select>`: 候选是**全库**(见 fetchAllAttractions), 156 行
+   * 用可搜索的组合框而不是 `<select>`: 候选是**全库**(见 fetchAllAttractions), 1385 行
    * 一次铺开既搜不了也扫不动。选中后写回 URL 的仍是 slug, 契约没变。
    */
   const picker = (side: "a" | "b", value: string, label: string) => (

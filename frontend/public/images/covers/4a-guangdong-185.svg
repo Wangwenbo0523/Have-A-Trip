@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="肇庆市封开贺江碧道画廊景区">
+  <title>肇庆市封开贺江碧道画廊景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#182824"/>
+      <stop offset="1" stop-color="#3b5e48"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="359.6" cy="436.7" r="51.6" fill="#e0c740" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,429.8 216.0,538.8 344.0,421.8 472.0,537.2 600.0,431.1 728.0,539.0 856.0,449.6 984.0,542.7 1112.0,480.6 1240.0,548.9 1368.0,469.5 1496.0,546.7 1240.0,800.0" fill="#2b4738"/>
+  <polygon points="-40.0,800.0 120.0,535.6 280.0,607.9 440.0,515.3 600.0,603.9 760.0,542.5 920.0,609.3 1080.0,535.8 1240.0,608.0 1400.0,527.4 1560.0,606.3 1240.0,800.0" fill="#1e332a"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#12221d"/>
+  <polygon points="-40.0,800.0 66.7,630.9 173.3,686.2 280.0,625.3 386.7,685.1 493.3,618.4 600.0,683.7 706.7,626.2 813.3,685.2 920.0,646.0 1026.7,689.2 1133.3,613.3 1240.0,682.7 1346.7,605.4 1453.3,681.1 1240.0,800.0" fill="#12221d" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0c740" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0c740" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="64"
+          font-weight="700" fill="#f4f5f7">肇庆市封开贺江碧道画廊景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

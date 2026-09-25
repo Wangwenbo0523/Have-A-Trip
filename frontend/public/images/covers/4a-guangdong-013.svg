@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="东莞市香市文化旅游区">
+  <title>东莞市香市文化旅游区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#19281f"/>
+      <stop offset="1" stop-color="#3d5e40"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="408.4" cy="455.1" r="49.8" fill="#e09a4b" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,475.8 216.0,548.0 344.0,439.6 472.0,540.7 600.0,475.0 728.0,547.8 856.0,467.4 984.0,546.3 1112.0,460.7 1240.0,544.9 1368.0,468.9 1496.0,546.6 1240.0,800.0" fill="#2d4731"/>
+  <polygon points="-40.0,800.0 120.0,517.8 280.0,604.4 440.0,531.7 600.0,607.1 760.0,520.8 920.0,605.0 1080.0,551.6 1240.0,611.1 1400.0,527.8 1560.0,606.4 1240.0,800.0" fill="#1f3324"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#132218"/>
+  <polygon points="-40.0,800.0 66.7,613.0 173.3,682.6 280.0,638.4 386.7,687.7 493.3,618.7 600.0,683.7 706.7,632.6 813.3,686.5 920.0,608.1 1026.7,681.6 1133.3,638.2 1240.0,687.6 1346.7,612.0 1453.3,682.4 1240.0,800.0" fill="#132218" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e09a4b" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e09a4b" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">东莞市香市文化旅游区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

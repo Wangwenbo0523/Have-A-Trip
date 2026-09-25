@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="梅州市南药梅片特色产业旅游区">
+  <title>梅州市南药梅片特色产业旅游区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a2825"/>
+      <stop offset="1" stop-color="#3f5e4c"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="764.1" cy="441.3" r="50.6" fill="#e0d150" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,433.7 216.0,539.5 344.0,477.4 472.0,548.3 600.0,424.5 728.0,537.7 856.0,431.9 984.0,539.2 1112.0,477.9 1240.0,548.4 1368.0,430.3 1496.0,538.9 1240.0,800.0" fill="#2e473b"/>
+  <polygon points="-40.0,800.0 120.0,542.5 280.0,609.3 440.0,523.9 600.0,605.6 760.0,524.7 920.0,605.7 1080.0,525.4 1240.0,605.9 1400.0,549.3 1560.0,610.7 1240.0,800.0" fill="#20332c"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#14221e"/>
+  <polygon points="-40.0,800.0 66.7,616.2 173.3,683.2 280.0,616.7 386.7,683.3 493.3,636.5 600.0,687.3 706.7,616.0 813.3,683.2 920.0,618.7 1026.7,683.7 1133.3,609.4 1240.0,681.9 1346.7,609.1 1453.3,681.8 1240.0,800.0" fill="#14221e" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0d150" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0d150" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="60"
+          font-weight="700" fill="#f4f5f7">梅州市南药梅片特色产业旅游区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

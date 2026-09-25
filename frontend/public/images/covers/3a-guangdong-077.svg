@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="广州地铁博物馆">
+  <title>广州地铁博物馆</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#192820"/>
+      <stop offset="1" stop-color="#3e5e41"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="450.7" cy="460.9" r="48.9" fill="#e09e4c" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,457.6 216.0,544.3 344.0,430.6 472.0,538.9 600.0,470.3 728.0,546.9 856.0,471.9 984.0,547.2 1112.0,427.6 1240.0,538.3 1368.0,420.5 1496.0,536.9 1240.0,800.0" fill="#2d4732"/>
+  <polygon points="-40.0,800.0 120.0,525.8 280.0,606.0 440.0,554.2 600.0,611.6 760.0,517.2 920.0,604.2 1080.0,539.9 1240.0,608.8 1400.0,511.2 1560.0,603.0 1240.0,800.0" fill="#1f3325"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#132219"/>
+  <polygon points="-40.0,800.0 66.7,609.9 173.3,682.0 280.0,628.7 386.7,685.7 493.3,605.0 600.0,681.0 706.7,643.3 813.3,688.7 920.0,622.6 1026.7,684.5 1133.3,636.4 1240.0,687.3 1346.7,615.0 1453.3,683.0 1240.0,800.0" fill="#132219" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e09e4c" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e09e4c" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">广州地铁博物馆</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

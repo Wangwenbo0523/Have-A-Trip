@@ -43,11 +43,12 @@ jobs:
             psql -h 127.0.0.1 -U postgres -d attraction_atlas -v ON_ERROR_STOP=1 -q -f db/schema.sql
           done
 
-      - name: 应用 seed.sql 与 images.sql 各两次(验证幂等)
+      - name: 应用 seed.sql / attractions_cn.sql / images.sql 各两次(验证幂等)
         run: |
           for i in 1 2; do
             echo "--- 第 $i 次 ---"
             psql -h 127.0.0.1 -U postgres -d attraction_atlas -v ON_ERROR_STOP=1 -q -f db/seed/seed.sql
+            psql -h 127.0.0.1 -U postgres -d attraction_atlas -v ON_ERROR_STOP=1 -q -f db/seed/attractions_cn.sql
             psql -h 127.0.0.1 -U postgres -d attraction_atlas -v ON_ERROR_STOP=1 -q -f db/seed/images.sql
           done
 
@@ -64,10 +65,13 @@ jobs:
           expect 1 "$(q "select count(*) from information_schema.views where table_schema='public';")" "视图数量"
           expect 1 "$(q "select count(*) from information_schema.triggers where trigger_name='trg_attraction_updated_at';")" "updated_at 触发器"
 
-          # 种子数据规模。改了 db/seed/seed.sql 就要一起改这里的数字, 否则 CI 会拦下来
-          expect 9 "$(q "select count(*) from category;")" "category 行数"
+          # 种子数据规模。改了 db/seed/ 里的种子文件就要一起改这里的数字, 否则 CI 会拦下来
+          expect 10 "$(q "select count(*) from category;")" "category 行数"
           expect 32 "$(q "select count(*) from tag;")" "tag 行数"
-          expect 156 "$(q "select count(*) from attraction;")" "attraction 行数(重跑未重复插入)"
+          expect 1385 "$(q "select count(*) from attraction;")" "attraction 行数(重跑未重复插入)"
+          # 官方名录条目(attractions_cn.sql)与自采档案(seed.sql)是两批东西, 各自钉一个数字
+          expect 1229 "$(q "select count(*) from attraction where license = '政府公开信息（官方名录）';")" "来自官方名录的景点数"
+          expect 156 "$(q "select count(*) from attraction where source = 'Have-A-Trip 自采（公开事实信息）';")" "自采景点数"
           expect 552 "$(q "select count(*) from attraction_tag;")" "attraction_tag 行数"
           expect 1 "$(q "select count(*) from schema_version where version='0001_init';")" "schema_version 0001 记录数"
           expect 1 "$(q "select count(*) from schema_version where version='0002_plans';")" "schema_version 0002 记录数"
@@ -83,20 +87,22 @@ jobs:
           expect 0 "$(q "select count(*) from attraction where lat is not null or lon is not null;")" "带坐标的种子景点数(一期不做地图与定位)"
           expect 0 "$(q "select count(*) from attraction where rating_avg <> 0 or rating_count <> 0;")" "带评分的种子景点数(评分只能由 behavior_log 聚合)"
           expect 0 "$(q "select count(*) from attraction where ticket_price is not null and ticket_price <> 0;")" "写了票价但不确定免费的景点数"
-          expect 156 "$(q "select count(*) from attraction_image;")" "图片行数"
-          expect 156 "$(q "select count(distinct attraction_id) from attraction_image;")" "有配图的景点数"
+          expect 1385 "$(q "select count(*) from attraction_image;")" "图片行数"
+          expect 1385 "$(q "select count(distinct attraction_id) from attraction_image;")" "有配图的景点数"
           expect 0 "$(q "select count(*) from attraction_image where credit is null or credit = '' or license is null or license = '';")" "缺 credit/license 的图片数"
-          expect 0 "$(q "select count(*) from attraction a where not exists (select 1 from attraction_tag x where x.attraction_id = a.id);")" "没有任何标签的景点数"
+          # 标签与方案只对自采档案有要求: 官方名录条目是名称条目, 没有主题标签,
+          # 也没有逐条写过的行程建议。给它们编一套就是造假, 所以这两条只查自采的那 156 条。
+          expect 0 "$(q "select count(*) from attraction a where a.source = 'Have-A-Trip 自采（公开事实信息）' and not exists (select 1 from attraction_tag x where x.attraction_id = a.id);")" "自采景点里没有任何标签的数"
           expect 0 "$(q "select count(*) from category c where not exists (select 1 from attraction a where a.category_id = c.id);")" "没有景点的分类数"
           expect 0 "$(q "select count(*) from tag g where not exists (select 1 from attraction_tag x where x.tag_id = g.id);")" "没被用到的标签数"
 
           # v2.0: 景区等级 / 世界遗产 / 旅游方案
-          expect 50 "$(q "select count(*) from attraction where a_level is not null;")" "填了 a_level 的景点数"
+          expect 1279 "$(q "select count(*) from attraction where a_level is not null;")" "填了 a_level 的景点数(自采 50 + 官方名录 1229)"
           expect 63 "$(q "select count(*) from attraction where heritage is not null;")" "填了 heritage 的景点数"
           expect 0 "$(q "select count(*) from attraction where country_code <> 'CN' and a_level is not null;")" "境外景点带 a_level 的数(A 级只针对中国大陆景区)"
           expect 156 "$(q "select count(*) from attraction_plan;")" "旅游方案数"
           expect 506 "$(q "select count(*) from attraction_plan_step;")" "方案步骤数"
-          expect 0 "$(q "select count(*) from attraction a where not exists (select 1 from attraction_plan p where p.attraction_id = a.id);")" "没有方案的景点数"
+          expect 0 "$(q "select count(*) from attraction a where a.source = 'Have-A-Trip 自采（公开事实信息）' and not exists (select 1 from attraction_plan p where p.attraction_id = a.id);")" "自采景点里没有方案的数"
           expect 0 "$(q "select count(*) from attraction_plan p where not exists (select 1 from attraction_plan_step s where s.plan_id = p.id);")" "没有步骤的方案数"
           expect 0 "$(q "select count(*) from (select plan_id, day_no, sort from attraction_plan_step group by 1,2,3 having count(*) > 1) x;")" "同一方案同一天内重复的步骤序号数"
           expect 0 "$(q "select count(*) from attraction_plan_step where detail is null or btrim(detail) = '';")" "缺 detail 的步骤数"
@@ -116,7 +122,12 @@ jobs:
           q "delete from attraction_tag where attraction_id = (select id from attraction where slug='west-lake');" > /dev/null
           q "delete from attraction_plan_step where plan_id = (select id from attraction_plan where slug='west-lake-plan');" > /dev/null
 
+          # 名录条目由另一个文件维护(db/seed/attractions_cn.sql), 它的自愈也要验:
+          # 等级被摘牌、状态被改成 draft、来源被改坏, 重跑都要修回来
+          q "update attraction set name='旧名字', a_level='4A', status='draft', license='被改坏了', source_url='http://x' where slug='5a-shanghai-001';" > /dev/null
+
           psql -h 127.0.0.1 -U postgres -d attraction_atlas -v ON_ERROR_STOP=1 -q -f db/seed/seed.sql
+          psql -h 127.0.0.1 -U postgres -d attraction_atlas -v ON_ERROR_STOP=1 -q -f db/seed/attractions_cn.sql
 
           expect "西湖" "$(q "select name from attraction where slug='west-lake';")" "name 被同步回文件里的版本"
           expect 1 "$(q "select count(*) from attraction where slug='west-lake' and lat is null and lon is null;")" "坐标被清回 NULL"
@@ -125,7 +136,11 @@ jobs:
           expect "5A" "$(q "select a_level from attraction where slug='west-lake';")" "手工改过的 a_level 被同步回文件里的版本"
           expect "cultural" "$(q "select heritage from attraction where slug='west-lake';")" "手工改过的 heritage 被同步回文件里的版本"
           expect 4 "$(q "select count(*) from attraction_plan_step where plan_id = (select id from attraction_plan where slug='west-lake-plan');")" "被删掉的方案步骤被重建"
-          expect 156 "$(q "select count(*) from attraction;")" "重跑后景点数仍是 156, 没有多出来"
+          expect "西沙明珠湖景区" "$(q "select name from attraction where slug='5a-shanghai-001';")" "名录条目的 name 被同步回文件里的版本"
+          expect "5A" "$(q "select a_level from attraction where slug='5a-shanghai-001';")" "名录条目的 a_level 被同步回文件里的版本"
+          expect "published" "$(q "select status from attraction where slug='5a-shanghai-001';")" "名录条目的 status 被同步回 published"
+          expect "政府公开信息（官方名录）" "$(q "select license from attraction where slug='5a-shanghai-001';")" "名录条目的 license 被同步回文件里的版本"
+          expect 1385 "$(q "select count(*) from attraction;")" "重跑后景点数仍是 1385, 没有多出来"
           expect 156 "$(q "select count(*) from attraction_plan;")" "重跑后方案数仍是 156, 没有多出来"
 
       - name: 断言 CHECK 约束真的拦得住

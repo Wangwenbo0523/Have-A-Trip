@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="韶关市新丰县云髻山景区">
+  <title>韶关市新丰县云髻山景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#182820"/>
+      <stop offset="1" stop-color="#3b5e40"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="332.1" cy="453.5" r="40.7" fill="#e0a13f" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,423.4 216.0,537.5 344.0,422.4 472.0,537.3 600.0,435.3 728.0,539.9 856.0,483.5 984.0,549.5 1112.0,443.3 1240.0,541.5 1368.0,418.4 1496.0,536.5 1240.0,800.0" fill="#2b4731"/>
+  <polygon points="-40.0,800.0 120.0,532.3 280.0,607.3 440.0,512.0 600.0,603.2 760.0,555.2 920.0,611.8 1080.0,524.3 1240.0,605.7 1400.0,517.8 1560.0,604.4 1240.0,800.0" fill="#1e3325"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#122219"/>
+  <polygon points="-40.0,800.0 66.7,641.4 173.3,688.3 280.0,615.9 386.7,683.2 493.3,610.4 600.0,682.1 706.7,616.9 813.3,683.4 920.0,631.8 1026.7,686.4 1133.3,632.3 1240.0,686.5 1346.7,644.8 1453.3,689.0 1240.0,800.0" fill="#122219" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0a13f" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0a13f" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="76"
+          font-weight="700" fill="#f4f5f7">韶关市新丰县云髻山景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

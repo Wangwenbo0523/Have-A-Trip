@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="湛江市廉江安铺骑楼老街旅游景区">
+  <title>湛江市廉江安铺骑楼老街旅游景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a2825"/>
+      <stop offset="1" stop-color="#3f5e4d"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="431.6" cy="430.4" r="44.8" fill="#e0d653" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,432.7 216.0,539.3 344.0,477.4 472.0,548.3 600.0,433.5 728.0,539.5 856.0,441.7 984.0,541.1 1112.0,445.4 1240.0,541.9 1368.0,440.9 1496.0,541.0 1240.0,800.0" fill="#2e473c"/>
+  <polygon points="-40.0,800.0 120.0,516.8 280.0,604.2 440.0,551.1 600.0,611.0 760.0,556.7 920.0,612.1 1080.0,519.2 1240.0,604.6 1400.0,529.7 1560.0,606.7 1240.0,800.0" fill="#20332d"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#14221e"/>
+  <polygon points="-40.0,800.0 66.7,642.6 173.3,688.5 280.0,611.6 386.7,682.3 493.3,620.3 600.0,684.1 706.7,644.7 813.3,688.9 920.0,637.0 1026.7,687.4 1133.3,606.7 1240.0,681.3 1346.7,629.9 1453.3,686.0 1240.0,800.0" fill="#14221e" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0d653" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0d653" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="56"
+          font-weight="700" fill="#f4f5f7">湛江市廉江安铺骑楼老街旅游景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

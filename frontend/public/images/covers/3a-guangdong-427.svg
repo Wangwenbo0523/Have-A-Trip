@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="肇庆市高要区黎槎古村八卦景区">
+  <title>肇庆市高要区黎槎古村八卦景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a281f"/>
+      <stop offset="1" stop-color="#3f5e40"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="755.6" cy="445.8" r="50.0" fill="#e09851" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,435.9 216.0,540.0 344.0,475.0 472.0,547.8 600.0,478.5 728.0,548.5 856.0,479.5 984.0,548.7 1112.0,428.7 1240.0,538.5 1368.0,417.3 1496.0,536.3 1240.0,800.0" fill="#2e4731"/>
+  <polygon points="-40.0,800.0 120.0,549.1 280.0,610.6 440.0,526.6 600.0,606.1 760.0,517.8 920.0,604.4 1080.0,516.1 1240.0,604.0 1400.0,516.3 1560.0,604.1 1240.0,800.0" fill="#203324"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#142218"/>
+  <polygon points="-40.0,800.0 66.7,610.4 173.3,682.1 280.0,609.1 386.7,681.8 493.3,609.3 600.0,681.9 706.7,609.6 813.3,681.9 920.0,646.2 1026.7,689.2 1133.3,641.4 1240.0,688.3 1346.7,611.1 1453.3,682.2 1240.0,800.0" fill="#142218" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e09851" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e09851" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="60"
+          font-weight="700" fill="#f4f5f7">肇庆市高要区黎槎古村八卦景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

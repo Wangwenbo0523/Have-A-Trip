@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="珠海市外伶仃岛旅游度假区">
+  <title>珠海市外伶仃岛旅游度假区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#182822"/>
+      <stop offset="1" stop-color="#3b5e45"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="363.9" cy="456.4" r="41.0" fill="#e0b741" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,462.1 216.0,545.2 344.0,464.7 472.0,545.7 600.0,475.0 728.0,547.8 856.0,435.9 984.0,540.0 1112.0,476.6 1240.0,548.1 1368.0,427.1 1496.0,538.2 1240.0,800.0" fill="#2b4735"/>
+  <polygon points="-40.0,800.0 120.0,561.0 280.0,613.0 440.0,556.1 600.0,612.0 760.0,528.0 920.0,606.4 1080.0,511.8 1240.0,603.2 1400.0,522.5 1560.0,605.3 1240.0,800.0" fill="#1e3328"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#12221b"/>
+  <polygon points="-40.0,800.0 66.7,618.9 173.3,683.8 280.0,605.5 386.7,681.1 493.3,614.3 600.0,682.9 706.7,646.9 813.3,689.4 920.0,640.1 1026.7,688.0 1133.3,621.6 1240.0,684.3 1346.7,643.5 1453.3,688.7 1240.0,800.0" fill="#12221b" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0b741" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0b741" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="70"
+          font-weight="700" fill="#f4f5f7">珠海市外伶仃岛旅游度假区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

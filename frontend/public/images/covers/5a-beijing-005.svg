@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="恭王府景区">
+  <title>恭王府景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b2820"/>
+      <stop offset="1" stop-color="#405e42"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="510.0" cy="453.3" r="45.6" fill="#e09f58" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,473.2 216.0,547.4 344.0,419.4 472.0,536.7 600.0,431.6 728.0,539.1 856.0,431.6 984.0,539.1 1112.0,458.4 1240.0,544.5 1368.0,467.9 1496.0,546.4 1240.0,800.0" fill="#2f4733"/>
+  <polygon points="-40.0,800.0 120.0,514.7 280.0,603.7 440.0,524.9 600.0,605.8 760.0,544.6 920.0,609.7 1080.0,514.1 1240.0,603.6 1400.0,545.0 1560.0,609.8 1240.0,800.0" fill="#213325"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#152219"/>
+  <polygon points="-40.0,800.0 66.7,632.6 173.3,686.5 280.0,607.4 386.7,681.5 493.3,633.0 600.0,686.6 706.7,645.2 813.3,689.0 920.0,627.9 1026.7,685.6 1133.3,639.1 1240.0,687.8 1346.7,627.2 1453.3,685.4 1240.0,800.0" fill="#152219" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e09f58" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e09f58" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">恭王府景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

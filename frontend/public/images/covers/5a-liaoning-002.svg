@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="大连市金石滩景区">
+  <title>大连市金石滩景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b2824"/>
+      <stop offset="1" stop-color="#425e4b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="709.1" cy="439.4" r="43.2" fill="#e0c660" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,429.0 216.0,538.6 344.0,478.5 472.0,548.5 600.0,472.1 728.0,547.2 856.0,436.4 984.0,540.1 1112.0,482.7 1240.0,549.3 1368.0,420.8 1496.0,537.0 1240.0,800.0" fill="#30473a"/>
+  <polygon points="-40.0,800.0 120.0,531.7 280.0,607.1 440.0,527.2 600.0,606.2 760.0,550.1 920.0,610.8 1080.0,537.2 1240.0,608.2 1400.0,529.0 1560.0,606.6 1240.0,800.0" fill="#22332b"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#15221d"/>
+  <polygon points="-40.0,800.0 66.7,637.2 173.3,687.4 280.0,626.5 386.7,685.3 493.3,619.8 600.0,684.0 706.7,615.5 813.3,683.1 920.0,643.8 1026.7,688.8 1133.3,617.0 1240.0,683.4 1346.7,635.7 1453.3,687.1 1240.0,800.0" fill="#15221d" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0c660" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0c660" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">大连市金石滩景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

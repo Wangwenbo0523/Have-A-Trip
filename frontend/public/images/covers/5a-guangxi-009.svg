@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="百色市百色起义纪念园景区">
+  <title>百色市百色起义纪念园景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#18281e"/>
+      <stop offset="1" stop-color="#3b5e3c"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="704.8" cy="445.4" r="45.7" fill="#e09040" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,458.4 216.0,544.5 344.0,449.9 472.0,542.8 600.0,420.0 728.0,536.8 856.0,477.1 984.0,548.2 1112.0,475.8 1240.0,548.0 1368.0,453.3 1496.0,543.5 1240.0,800.0" fill="#2b472e"/>
+  <polygon points="-40.0,800.0 120.0,515.5 280.0,603.9 440.0,524.7 600.0,605.7 760.0,544.8 920.0,609.8 1080.0,544.2 1240.0,609.6 1400.0,518.4 1560.0,604.5 1240.0,800.0" fill="#1e3322"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#122217"/>
+  <polygon points="-40.0,800.0 66.7,632.8 173.3,686.6 280.0,632.3 386.7,686.5 493.3,610.9 600.0,682.2 706.7,628.7 813.3,685.7 920.0,634.8 1026.7,687.0 1133.3,641.1 1240.0,688.2 1346.7,626.7 1453.3,685.3 1240.0,800.0" fill="#122217" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e09040" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e09040" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="70"
+          font-weight="700" fill="#f4f5f7">百色市百色起义纪念园景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

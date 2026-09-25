@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="广州市太古仓码头">
+  <title>广州市太古仓码头</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#19281e"/>
+      <stop offset="1" stop-color="#3c5e3c"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="461.3" cy="461.7" r="50.3" fill="#e08a44" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,469.5 216.0,546.7 344.0,483.5 472.0,549.5 600.0,454.6 728.0,543.7 856.0,441.4 984.0,541.1 1112.0,447.5 1240.0,542.3 1368.0,471.1 1496.0,547.0 1240.0,800.0" fill="#2c472e"/>
+  <polygon points="-40.0,800.0 120.0,558.7 280.0,612.5 440.0,547.3 600.0,610.3 760.0,511.4 920.0,603.1 1080.0,543.4 1240.0,609.5 1400.0,514.1 1560.0,603.6 1240.0,800.0" fill="#1e3322"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#132217"/>
+  <polygon points="-40.0,800.0 66.7,605.2 173.3,681.0 280.0,631.6 386.7,686.3 493.3,607.4 600.0,681.5 706.7,643.0 813.3,688.6 920.0,616.5 1026.7,683.3 1133.3,644.8 1240.0,689.0 1346.7,610.1 1453.3,682.0 1240.0,800.0" fill="#132217" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e08a44" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e08a44" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">广州市太古仓码头</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="韶关市金喆园景区">
+  <title>韶关市金喆园景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#192825"/>
+      <stop offset="1" stop-color="#3e5e4c"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="486.7" cy="431.6" r="43.6" fill="#e0d44d" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,434.3 216.0,539.7 344.0,416.0 472.0,536.0 600.0,447.8 728.0,542.4 856.0,421.6 984.0,537.1 1112.0,461.0 1240.0,545.0 1368.0,477.1 1496.0,548.2 1240.0,800.0" fill="#2d473b"/>
+  <polygon points="-40.0,800.0 120.0,532.1 280.0,607.2 440.0,518.4 600.0,604.5 760.0,549.3 920.0,610.7 1080.0,545.6 1240.0,609.9 1400.0,551.8 1560.0,611.2 1240.0,800.0" fill="#1f332c"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#13221e"/>
+  <polygon points="-40.0,800.0 66.7,636.5 173.3,687.3 280.0,633.5 386.7,686.7 493.3,638.6 600.0,687.7 706.7,620.9 813.3,684.2 920.0,633.8 1026.7,686.8 1133.3,607.4 1240.0,681.5 1346.7,634.2 1453.3,686.8 1240.0,800.0" fill="#13221e" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0d44d" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0d44d" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">韶关市金喆园景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

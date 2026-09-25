@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="广州市陈家祠旅游景区">
+  <title>广州市陈家祠旅游景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a281f"/>
+      <stop offset="1" stop-color="#3f5e40"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="694.2" cy="453.8" r="47.6" fill="#e09751" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,449.1 216.0,542.6 344.0,436.4 472.0,540.1 600.0,435.1 728.0,539.8 856.0,449.4 984.0,542.7 1112.0,480.9 1240.0,549.0 1368.0,466.8 1496.0,546.2 1240.0,800.0" fill="#2e4731"/>
+  <polygon points="-40.0,800.0 120.0,547.3 280.0,610.3 440.0,558.1 600.0,612.4 760.0,553.0 920.0,611.4 1080.0,539.5 1240.0,608.7 1400.0,546.4 1560.0,610.1 1240.0,800.0" fill="#203324"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#142218"/>
+  <polygon points="-40.0,800.0 66.7,639.6 173.3,687.9 280.0,628.4 386.7,685.7 493.3,634.2 600.0,686.8 706.7,625.3 813.3,685.1 920.0,630.6 1026.7,686.1 1133.3,641.8 1240.0,688.4 1346.7,619.9 1453.3,684.0 1240.0,800.0" fill="#142218" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e09751" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e09751" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">广州市陈家祠旅游景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

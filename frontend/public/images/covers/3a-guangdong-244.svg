@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="汕头市小公园开埠区旅游区">
+  <title>汕头市小公园开埠区旅游区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b2820"/>
+      <stop offset="1" stop-color="#405e42"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="482.5" cy="457.9" r="46.9" fill="#e0a158" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,431.6 216.0,539.1 344.0,468.1 472.0,546.4 600.0,454.1 728.0,543.6 856.0,443.8 984.0,541.6 1112.0,463.9 1240.0,545.6 1368.0,474.0 1496.0,547.6 1240.0,800.0" fill="#2f4733"/>
+  <polygon points="-40.0,800.0 120.0,522.1 280.0,605.2 440.0,527.2 600.0,606.2 760.0,561.0 920.0,613.0 1080.0,544.0 1240.0,609.6 1400.0,551.8 1560.0,611.2 1240.0,800.0" fill="#213326"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#152219"/>
+  <polygon points="-40.0,800.0 66.7,646.2 173.3,689.2 280.0,632.1 386.7,686.4 493.3,638.6 600.0,687.7 706.7,618.4 813.3,683.7 920.0,646.0 1026.7,689.2 1133.3,637.9 1240.0,687.6 1346.7,622.5 1453.3,684.5 1240.0,800.0" fill="#152219" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0a158" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0a158" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="70"
+          font-weight="700" fill="#f4f5f7">汕头市小公园开埠区旅游区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

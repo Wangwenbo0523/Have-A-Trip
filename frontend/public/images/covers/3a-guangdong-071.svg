@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="中国（广州）超高清视频创新产业示范园旅游区">
+  <title>中国（广州）超高清视频创新产业示范园旅游区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a2823"/>
+      <stop offset="1" stop-color="#3f5e48"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="535.4" cy="459.2" r="49.3" fill="#e0bc52" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,471.6 216.0,547.1 344.0,457.6 472.0,544.3 600.0,468.7 728.0,546.5 856.0,421.0 984.0,537.0 1112.0,450.7 1240.0,542.9 1368.0,445.9 1496.0,542.0 1240.0,800.0" fill="#2e4737"/>
+  <polygon points="-40.0,800.0 120.0,540.1 280.0,608.8 440.0,558.5 600.0,612.5 760.0,513.3 920.0,603.5 1080.0,532.1 1240.0,607.2 1400.0,559.7 1560.0,612.7 1240.0,800.0" fill="#203329"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#14221c"/>
+  <polygon points="-40.0,800.0 66.7,606.7 173.3,681.3 280.0,622.3 386.7,684.5 493.3,645.2 600.0,689.0 706.7,634.8 813.3,687.0 920.0,608.7 1026.7,681.7 1133.3,620.8 1240.0,684.2 1346.7,613.7 1453.3,682.7 1240.0,800.0" fill="#14221c" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0bc52" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0bc52" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="40"
+          font-weight="700" fill="#f4f5f7">中国（广州）超高清视频创新产业示范园旅游区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

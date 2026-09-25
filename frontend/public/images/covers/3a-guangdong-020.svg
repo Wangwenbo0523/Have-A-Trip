@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="中山市大尖山露营公园景区">
+  <title>中山市大尖山露营公园景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#19281e"/>
+      <stop offset="1" stop-color="#3d5e3c"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="785.3" cy="436.1" r="50.7" fill="#e08944" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,436.4 216.0,540.1 344.0,420.5 472.0,536.9 600.0,436.6 728.0,540.1 856.0,443.0 984.0,541.4 1112.0,426.6 1240.0,538.1 1368.0,462.9 1496.0,545.4 1240.0,800.0" fill="#2c472e"/>
+  <polygon points="-40.0,800.0 120.0,554.4 280.0,611.7 440.0,551.8 600.0,611.2 760.0,537.0 920.0,608.2 1080.0,539.7 1240.0,608.7 1400.0,548.7 1560.0,610.5 1240.0,800.0" fill="#1e3322"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#132216"/>
+  <polygon points="-40.0,800.0 66.7,626.4 173.3,685.3 280.0,628.6 386.7,685.7 493.3,636.0 600.0,687.2 706.7,630.3 813.3,686.1 920.0,607.9 1026.7,681.6 1133.3,645.5 1240.0,689.1 1346.7,608.6 1453.3,681.7 1240.0,800.0" fill="#132216" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e08944" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e08944" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="70"
+          font-weight="700" fill="#f4f5f7">中山市大尖山露营公园景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

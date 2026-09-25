@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="孔庙和国子监博物馆景区">
+  <title>孔庙和国子监博物馆景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#18281e"/>
+      <stop offset="1" stop-color="#3b5e3b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="827.6" cy="453.6" r="41.3" fill="#e08c3e" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,436.1 216.0,540.0 344.0,440.9 472.0,541.0 600.0,447.0 728.0,542.2 856.0,423.9 984.0,537.6 1112.0,470.0 1240.0,546.8 1368.0,436.1 1496.0,540.0 1240.0,800.0" fill="#2a472e"/>
+  <polygon points="-40.0,800.0 120.0,543.6 280.0,609.5 440.0,542.1 600.0,609.2 760.0,512.3 920.0,603.3 1080.0,533.3 1240.0,607.5 1400.0,521.9 1560.0,605.2 1240.0,800.0" fill="#1d3322"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#122217"/>
+  <polygon points="-40.0,800.0 66.7,605.9 173.3,681.2 280.0,623.3 386.7,684.7 493.3,613.8 600.0,682.8 706.7,620.1 813.3,684.0 920.0,616.0 1026.7,683.2 1133.3,642.1 1240.0,688.4 1346.7,642.6 1453.3,688.5 1240.0,800.0" fill="#122217" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e08c3e" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e08c3e" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="76"
+          font-weight="700" fill="#f4f5f7">孔庙和国子监博物馆景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

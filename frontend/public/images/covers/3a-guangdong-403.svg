@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="肇庆市封开县黄岩洞景区">
+  <title>肇庆市封开县黄岩洞景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b2824"/>
+      <stop offset="1" stop-color="#405e4b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="840.4" cy="434.6" r="48.7" fill="#e0c859" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,456.8 216.0,544.2 344.0,427.4 472.0,538.3 600.0,471.6 728.0,547.1 856.0,459.9 984.0,544.8 1112.0,441.4 1240.0,541.1 1368.0,458.4 1496.0,544.5 1240.0,800.0" fill="#2f473a"/>
+  <polygon points="-40.0,800.0 120.0,552.0 280.0,611.2 440.0,538.5 600.0,608.5 760.0,548.9 920.0,610.6 1080.0,547.9 1240.0,610.4 1400.0,532.9 1560.0,607.4 1240.0,800.0" fill="#21332b"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#15221d"/>
+  <polygon points="-40.0,800.0 66.7,636.2 173.3,687.2 280.0,635.3 386.7,687.1 493.3,623.0 600.0,684.6 706.7,640.8 813.3,688.2 920.0,606.9 1026.7,681.4 1133.3,614.8 1240.0,683.0 1346.7,616.0 1453.3,683.2 1240.0,800.0" fill="#15221d" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0c859" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0c859" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="76"
+          font-weight="700" fill="#f4f5f7">肇庆市封开县黄岩洞景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

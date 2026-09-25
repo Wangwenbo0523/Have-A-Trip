@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="佛山市三水森林公园">
+  <title>佛山市三水森林公园</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b2824"/>
+      <stop offset="1" stop-color="#405e4c"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="438.0" cy="436.8" r="44.3" fill="#e0cc57" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,450.7 216.0,542.9 344.0,418.6 472.0,536.5 600.0,464.2 728.0,545.6 856.0,419.7 984.0,536.7 1112.0,467.4 1240.0,546.3 1368.0,436.9 1496.0,540.2 1240.0,800.0" fill="#2f473b"/>
+  <polygon points="-40.0,800.0 120.0,513.9 280.0,603.6 440.0,533.3 600.0,607.5 760.0,545.0 920.0,609.8 1080.0,558.9 1240.0,612.6 1400.0,514.7 1560.0,603.7 1240.0,800.0" fill="#21332b"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#15221d"/>
+  <polygon points="-40.0,800.0 66.7,633.0 173.3,686.6 280.0,644.5 386.7,688.9 493.3,607.9 600.0,681.6 706.7,608.6 813.3,681.7 920.0,626.0 1026.7,685.2 1133.3,612.5 1240.0,682.5 1346.7,631.6 1453.3,686.3 1240.0,800.0" fill="#15221d" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0cc57" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0cc57" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">佛山市三水森林公园</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

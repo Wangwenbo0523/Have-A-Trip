@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="绍兴市鲁迅故里•沈园景区">
+  <title>绍兴市鲁迅故里•沈园景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#182825"/>
+      <stop offset="1" stop-color="#3a5e4b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="613.8" cy="456.6" r="50.2" fill="#e0d63d" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,429.0 216.0,538.6 344.0,480.3 472.0,548.9 600.0,432.1 728.0,539.2 856.0,472.6 984.0,547.3 1112.0,473.4 1240.0,547.5 1368.0,469.5 1496.0,546.7 1240.0,800.0" fill="#2a473b"/>
+  <polygon points="-40.0,800.0 120.0,510.0 280.0,602.8 440.0,520.6 600.0,604.9 760.0,523.1 920.0,605.4 1080.0,548.7 1240.0,610.5 1400.0,538.2 1560.0,608.4 1240.0,800.0" fill="#1d332c"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#12221e"/>
+  <polygon points="-40.0,800.0 66.7,614.8 173.3,683.0 280.0,636.0 386.7,687.2 493.3,627.4 600.0,685.5 706.7,613.5 813.3,682.7 920.0,621.8 1026.7,684.4 1133.3,605.7 1240.0,681.1 1346.7,610.4 1453.3,682.1 1240.0,800.0" fill="#12221e" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0d63d" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0d63d" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="70"
+          font-weight="700" fill="#f4f5f7">绍兴市鲁迅故里•沈园景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

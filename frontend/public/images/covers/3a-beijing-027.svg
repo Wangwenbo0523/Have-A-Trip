@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="北京市东城区青年湖公园景区">
+  <title>北京市东城区青年湖公园景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a2823"/>
+      <stop offset="1" stop-color="#3f5e49"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="435.9" cy="449.1" r="44.1" fill="#e0c254" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,437.2 216.0,540.2 344.0,482.4 472.0,549.3 600.0,469.2 728.0,546.6 856.0,471.9 984.0,547.2 1112.0,429.2 1240.0,538.6 1368.0,417.6 1496.0,536.3 1240.0,800.0" fill="#2e4739"/>
+  <polygon points="-40.0,800.0 120.0,548.3 280.0,610.5 440.0,556.3 600.0,612.1 760.0,524.1 920.0,605.6 1080.0,543.6 1240.0,609.5 1400.0,553.0 1560.0,611.4 1240.0,800.0" fill="#20332a"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#14221c"/>
+  <polygon points="-40.0,800.0 66.7,615.7 173.3,683.1 280.0,631.8 386.7,686.4 493.3,639.6 600.0,687.9 706.7,617.2 813.3,683.4 920.0,610.9 1026.7,682.2 1133.3,617.9 1240.0,683.6 1346.7,632.5 1453.3,686.5 1240.0,800.0" fill="#14221c" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0c254" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0c254" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="64"
+          font-weight="700" fill="#f4f5f7">北京市东城区青年湖公园景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

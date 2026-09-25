@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="茂名市建国生态天鹅湖旅游区">
+  <title>茂名市建国生态天鹅湖旅游区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b2822"/>
+      <stop offset="1" stop-color="#405e46"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="791.6" cy="438.7" r="50.4" fill="#e0af59" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,466.3 216.0,546.1 344.0,470.8 472.0,547.0 600.0,460.7 728.0,544.9 856.0,461.8 984.0,545.2 1112.0,429.0 1240.0,538.6 1368.0,430.3 1496.0,538.9 1240.0,800.0" fill="#2f4736"/>
+  <polygon points="-40.0,800.0 120.0,510.4 280.0,602.9 440.0,537.8 600.0,608.4 760.0,557.1 920.0,612.2 1080.0,532.7 1240.0,607.3 1400.0,540.7 1560.0,608.9 1240.0,800.0" fill="#213328"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#15221b"/>
+  <polygon points="-40.0,800.0 66.7,643.0 173.3,688.6 280.0,622.8 386.7,684.6 493.3,629.4 600.0,685.9 706.7,608.9 813.3,681.8 920.0,621.8 1026.7,684.4 1133.3,629.8 1240.0,686.0 1346.7,609.8 1453.3,682.0 1240.0,800.0" fill="#15221b" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0af59" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0af59" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="64"
+          font-weight="700" fill="#f4f5f7">茂名市建国生态天鹅湖旅游区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

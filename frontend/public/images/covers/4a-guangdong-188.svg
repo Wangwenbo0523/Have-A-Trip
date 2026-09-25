@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="肇庆市德庆学宫景区">
+  <title>肇庆市德庆学宫景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#182821"/>
+      <stop offset="1" stop-color="#3b5e42"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="482.5" cy="441.4" r="46.9" fill="#e0a941" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,462.9 216.0,545.4 344.0,438.5 472.0,540.5 600.0,452.5 728.0,543.3 856.0,459.1 984.0,544.6 1112.0,428.2 1240.0,538.4 1368.0,426.6 1496.0,538.1 1240.0,800.0" fill="#2b4733"/>
+  <polygon points="-40.0,800.0 120.0,547.7 280.0,610.3 440.0,510.2 600.0,602.8 760.0,546.4 920.0,610.1 1080.0,545.0 1240.0,609.8 1400.0,528.4 1560.0,606.5 1240.0,800.0" fill="#1e3326"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#12221a"/>
+  <polygon points="-40.0,800.0 66.7,634.2 173.3,686.8 280.0,633.0 386.7,686.6 493.3,619.2 600.0,683.8 706.7,644.2 813.3,688.8 920.0,628.9 1026.7,685.8 1133.3,628.6 1240.0,685.7 1346.7,622.5 1453.3,684.5 1240.0,800.0" fill="#12221a" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0a941" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0a941" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">肇庆市德庆学宫景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

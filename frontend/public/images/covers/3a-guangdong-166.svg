@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="惠州市日出东山海旅游景区">
+  <title>惠州市日出东山海旅游景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#182821"/>
+      <stop offset="1" stop-color="#3b5e42"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="427.4" cy="443.4" r="41.9" fill="#e0a93f" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,416.3 216.0,536.1 344.0,470.3 472.0,546.9 600.0,448.6 728.0,542.5 856.0,439.3 984.0,540.7 1112.0,450.9 1240.0,543.0 1368.0,417.3 1496.0,536.3 1240.0,800.0" fill="#2b4733"/>
+  <polygon points="-40.0,800.0 120.0,546.8 280.0,610.2 440.0,539.9 600.0,608.8 760.0,548.9 920.0,610.6 1080.0,514.5 1240.0,603.7 1400.0,519.8 1560.0,604.8 1240.0,800.0" fill="#1e3326"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#12221a"/>
+  <polygon points="-40.0,800.0 66.7,636.2 173.3,687.2 280.0,607.7 386.7,681.5 493.3,612.1 600.0,682.4 706.7,612.5 813.3,682.5 920.0,626.4 1026.7,685.3 1133.3,628.4 1240.0,685.7 1346.7,640.3 1453.3,688.1 1240.0,800.0" fill="#12221a" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0a93f" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0a93f" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="70"
+          font-weight="700" fill="#f4f5f7">惠州市日出东山海旅游景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

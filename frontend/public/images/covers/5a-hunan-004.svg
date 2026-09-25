@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="株洲市炎帝陵景区">
+  <title>株洲市炎帝陵景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#192820"/>
+      <stop offset="1" stop-color="#3d5e41"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="376.6" cy="451.3" r="44.0" fill="#e0a448" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,418.1 216.0,536.4 344.0,466.3 472.0,546.1 600.0,462.6 728.0,545.3 856.0,424.7 984.0,537.7 1112.0,417.9 1240.0,536.4 1368.0,465.5 1496.0,545.9 1240.0,800.0" fill="#2c4733"/>
+  <polygon points="-40.0,800.0 120.0,534.4 280.0,607.7 440.0,548.5 600.0,610.5 760.0,537.2 920.0,608.2 1080.0,524.1 1240.0,605.6 1400.0,547.1 1560.0,610.2 1240.0,800.0" fill="#1f3325"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#132219"/>
+  <polygon points="-40.0,800.0 66.7,626.5 173.3,685.3 280.0,615.7 386.7,683.1 493.3,634.7 600.0,686.9 706.7,639.2 813.3,687.8 920.0,617.7 1026.7,683.5 1133.3,632.6 1240.0,686.5 1346.7,632.6 1453.3,686.5 1240.0,800.0" fill="#132219" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0a448" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0a448" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">株洲市炎帝陵景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="惠州市龙门山下白芒坑景区">
+  <title>惠州市龙门山下白芒坑景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#192821"/>
+      <stop offset="1" stop-color="#3c5e42"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="798.0" cy="431.0" r="40.8" fill="#e0a746" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,445.6 216.0,541.9 344.0,450.1 472.0,542.8 600.0,457.6 728.0,544.3 856.0,428.4 984.0,538.5 1112.0,447.2 1240.0,542.2 1368.0,466.3 1496.0,546.1 1240.0,800.0" fill="#2c4733"/>
+  <polygon points="-40.0,800.0 120.0,533.7 280.0,607.5 440.0,557.7 600.0,612.3 760.0,555.4 920.0,611.9 1080.0,518.6 1240.0,604.5 1400.0,539.3 1560.0,608.7 1240.0,800.0" fill="#1e3326"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#132219"/>
+  <polygon points="-40.0,800.0 66.7,641.6 173.3,688.3 280.0,611.1 386.7,682.2 493.3,628.2 600.0,685.6 706.7,621.6 813.3,684.3 920.0,638.9 1026.7,687.8 1133.3,630.4 1240.0,686.1 1346.7,644.5 1453.3,688.9 1240.0,800.0" fill="#132219" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0a746" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0a746" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="70"
+          font-weight="700" fill="#f4f5f7">惠州市龙门山下白芒坑景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

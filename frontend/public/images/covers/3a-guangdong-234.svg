@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="梅州市蕉岭县桃花源休闲农业旅游区">
+  <title>梅州市蕉岭县桃花源休闲农业旅游区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a2822"/>
+      <stop offset="1" stop-color="#3f5e46"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="696.4" cy="439.8" r="41.9" fill="#e0b352" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,459.7 216.0,544.7 344.0,478.7 472.0,548.5 600.0,466.6 728.0,546.1 856.0,466.0 984.0,546.0 1112.0,431.4 1240.0,539.1 1368.0,425.3 1496.0,537.9 1240.0,800.0" fill="#2e4736"/>
+  <polygon points="-40.0,800.0 120.0,560.6 280.0,612.9 440.0,539.9 600.0,608.8 760.0,533.5 920.0,607.5 1080.0,526.4 1240.0,606.1 1400.0,552.8 1560.0,611.4 1240.0,800.0" fill="#203328"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#14221b"/>
+  <polygon points="-40.0,800.0 66.7,623.5 173.3,684.7 280.0,617.6 386.7,683.5 493.3,639.4 600.0,687.9 706.7,619.8 813.3,684.0 920.0,641.8 1026.7,688.4 1133.3,626.2 1240.0,685.2 1346.7,640.4 1453.3,688.1 1240.0,800.0" fill="#14221b" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0b352" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0b352" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="52"
+          font-weight="700" fill="#f4f5f7">梅州市蕉岭县桃花源休闲农业旅游区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

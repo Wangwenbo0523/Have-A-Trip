@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="洛阳市龙潭大峡谷景区">
+  <title>洛阳市龙潭大峡谷景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b2824"/>
+      <stop offset="1" stop-color="#425e4b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="482.5" cy="459.0" r="51.8" fill="#e0c75f" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,431.6 216.0,539.1 344.0,477.7 472.0,548.3 600.0,420.2 728.0,536.8 856.0,467.9 984.0,546.4 1112.0,466.6 1240.0,546.1 1368.0,439.3 1496.0,540.7 1240.0,800.0" fill="#30473a"/>
+  <polygon points="-40.0,800.0 120.0,523.1 280.0,605.4 440.0,549.9 600.0,610.8 760.0,540.7 920.0,608.9 1080.0,556.5 1240.0,612.1 1400.0,553.4 1560.0,611.5 1240.0,800.0" fill="#22332b"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#15221d"/>
+  <polygon points="-40.0,800.0 66.7,629.4 173.3,685.9 280.0,642.5 386.7,688.5 493.3,639.9 600.0,688.0 706.7,632.5 813.3,686.5 920.0,616.0 1026.7,683.2 1133.3,616.2 1240.0,683.2 1346.7,604.8 1453.3,681.0 1240.0,800.0" fill="#15221d" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0c75f" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0c75f" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">洛阳市龙潭大峡谷景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

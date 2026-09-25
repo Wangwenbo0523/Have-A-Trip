@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="东莞市寮步牙香街文化旅游区">
+  <title>东莞市寮步牙香街文化旅游区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#182822"/>
+      <stop offset="1" stop-color="#3b5e44"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="711.2" cy="458.6" r="50.5" fill="#e0b63f" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,468.7 216.0,546.5 344.0,461.8 472.0,545.2 600.0,449.1 728.0,542.6 856.0,459.9 984.0,544.8 1112.0,466.6 1240.0,546.1 1368.0,442.5 1496.0,541.3 1240.0,800.0" fill="#2b4735"/>
+  <polygon points="-40.0,800.0 120.0,513.3 280.0,603.5 440.0,557.3 600.0,612.3 760.0,556.3 920.0,612.1 1080.0,555.6 1240.0,611.9 1400.0,522.3 1560.0,605.3 1240.0,800.0" fill="#1d3328"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#12221b"/>
+  <polygon points="-40.0,800.0 66.7,642.3 173.3,688.5 280.0,641.8 386.7,688.4 493.3,614.2 600.0,682.8 706.7,609.8 813.3,682.0 920.0,634.3 1026.7,686.9 1133.3,621.8 1240.0,684.4 1346.7,609.4 1453.3,681.9 1240.0,800.0" fill="#12221b" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0b63f" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0b63f" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="64"
+          font-weight="700" fill="#f4f5f7">东莞市寮步牙香街文化旅游区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

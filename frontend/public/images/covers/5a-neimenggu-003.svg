@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="呼伦贝尔市呼伦贝尔大草原·莫尔格勒河景区">
+  <title>呼伦贝尔市呼伦贝尔大草原·莫尔格勒河景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b2824"/>
+      <stop offset="1" stop-color="#405e4c"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="522.7" cy="461.6" r="51.2" fill="#e0cc59" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,457.8 216.0,544.4 344.0,449.4 472.0,542.7 600.0,463.9 728.0,545.6 856.0,446.7 984.0,542.1 1112.0,458.1 1240.0,544.4 1368.0,426.6 1496.0,538.1 1240.0,800.0" fill="#2f473b"/>
+  <polygon points="-40.0,800.0 120.0,532.7 280.0,607.3 440.0,544.6 600.0,609.7 760.0,511.0 920.0,603.0 1080.0,527.2 1240.0,606.2 1400.0,528.0 1560.0,606.4 1240.0,800.0" fill="#21332b"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#15221e"/>
+  <polygon points="-40.0,800.0 66.7,604.8 173.3,681.0 280.0,618.2 386.7,683.6 493.3,618.9 600.0,683.8 706.7,623.5 813.3,684.7 920.0,610.6 1026.7,682.1 1133.3,612.5 1240.0,682.5 1346.7,607.0 1453.3,681.4 1240.0,800.0" fill="#15221e" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0cc59" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0cc59" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="42"
+          font-weight="700" fill="#f4f5f7">呼伦贝尔市呼伦贝尔大草原·莫尔格勒河景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

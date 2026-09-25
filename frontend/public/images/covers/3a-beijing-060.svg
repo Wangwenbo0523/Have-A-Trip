@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="北京草莓博览园景区">
+  <title>北京草莓博览园景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b2820"/>
+      <stop offset="1" stop-color="#415e42"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="870.0" cy="440.3" r="48.8" fill="#e0a059" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,483.2 216.0,549.4 344.0,467.4 472.0,546.3 600.0,450.7 728.0,542.9 856.0,426.1 984.0,538.0 1112.0,456.0 1240.0,544.0 1368.0,457.3 1496.0,544.3 1240.0,800.0" fill="#2f4733"/>
+  <polygon points="-40.0,800.0 120.0,537.4 280.0,608.3 440.0,526.4 600.0,606.1 760.0,537.2 920.0,608.2 1080.0,541.7 1240.0,609.1 1400.0,519.6 1560.0,604.7 1240.0,800.0" fill="#213326"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#152219"/>
+  <polygon points="-40.0,800.0 66.7,626.5 173.3,685.3 280.0,630.3 386.7,686.1 493.3,612.0 600.0,682.4 706.7,618.4 813.3,683.7 920.0,630.4 1026.7,686.1 1133.3,638.6 1240.0,687.7 1346.7,615.5 1453.3,683.1 1240.0,800.0" fill="#152219" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0a059" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0a059" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">北京草莓博览园景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

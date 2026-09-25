@@ -30,7 +30,13 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-SEED_PATH = REPO_ROOT / "db" / "seed" / "seed.sql"
+# 景点 INSERT 分散在两个种子文件里: seed.sql 是逐条审过的自采档案,
+# attractions_cn.sql 是脚本生成的名录条目。两个都要覆盖 —— 列表页的卡片
+# 都以 sort = 0 的封面作首图, 漏掉一个文件就等于一批景点没有图。
+SEED_PATHS = (
+    REPO_ROOT / "db" / "seed" / "seed.sql",
+    REPO_ROOT / "db" / "seed" / "attractions_cn.sql",
+)
 IMAGES_SQL_PATH = REPO_ROOT / "db" / "seed" / "images.sql"
 COVER_DIR = REPO_ROOT / "frontend" / "public" / "images" / "covers"
 
@@ -94,6 +100,12 @@ PALETTES = {
         (0x1A, 0x21, 0x29), (0x4E, 0x53, 0x43), (0x71, 0x65, 0x49),
         (0x55, 0x4B, 0x36), (0x2F, 0x29, 0x1F), (0xE0, 0xA8, 0x4E),
     ],
+    # 名录条目共用的分类。它们的主题在官方名录里没有, 所以不套用上面任何一套配色,
+    # 单独给一套偏绿的, 与 "nature" 的青蓝区分开。
+    "scenic-area": [
+        (0x1A, 0x28, 0x22), (0x3F, 0x5E, 0x46), (0x2E, 0x47, 0x36),
+        (0x20, 0x33, 0x28), (0x14, 0x22, 0x1B), (0xE0, 0xB4, 0x52),
+    ],
 }
 
 CATEGORY_LABELS = {
@@ -101,6 +113,7 @@ CATEGORY_LABELS = {
     "landmark": "城市地标", "religion": "宗教场所",
     "ancient-town": "古镇村落", "theme-park": "主题乐园",
     "palace": "宫殿城堡", "archaeology": "考古遗址",
+    "scenic-area": "A 级景区",
 }
 
 FONT_STACK = "'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif"
@@ -137,20 +150,33 @@ def rand01(slug: str):
 
 
 def parse_attractions(text: str):
-    """从 seed.sql 里抽出 (slug, name, category)。
+    """从种子 SQL 里抽出 (slug, name, category)。
 
-    只认 seed.sql 里「单独一行左括号, 下一行是 'slug', '名称', 'Name',」的固定写法:
+    只认「单独一行左括号, 下一行是 'slug', '名称', 英文名(或 NULL),」的固定写法:
     比整份 SQL 解析可靠得多, 而且不用连数据库(所以 --check 在 CI 里也能裸跑)。
+    两个种子文件(seed.sql / attractions_cn.sql)都走这一套写法, 所以都由它覆盖。
+
+    返回 (rows, skipped)。**认出来的条目一律不许悄悄丢掉**: 形状对得上就说明它是一个
+    景点元组, 此时取不到分类要记账 —— 被丢掉的后果是「这个景点没有封面」, 而封面缺失
+    在界面上只表现为一张空白首图, 不报任何错, 是最难回头发现的一类回归。
+    (v4.2 就吃过一次同类的亏: 旧正则遇到名字里的转义单引号 `''` 会把整行漏掉。)
     """
     rows = []
+    skipped = []
     lines = text.split("\n")
     for i, line in enumerate(lines):
         if line.strip() != "(" or i + 1 >= len(lines):
             continue
-        m = re.match(r"^\s*'([a-z0-9-]+)',\s*'([^']+)',\s*'[^']*',\s*$", lines[i + 1])
+        # 第三列是 name_en: 自采档案写英文名, 名录条目一律 NULL, 两种都要认。
+        # 名字里的单引号在 SQL 里写成两个(''), 这里按同样的规则认回来并还原
+        # (库里的值就是还原后的, 图上的标题必须跟库里一致)。
+        m = re.match(
+            r"^\s*'([a-z0-9-]+)',\s*'((?:[^']|'')+)',\s*(?:'(?:[^']|'')*'|NULL),\s*$",
+            lines[i + 1],
+        )
         if not m:
             continue
-        slug, name = m.group(1), m.group(2)
+        slug, name = m.group(1), m.group(2).replace("''", "'")
         category = None
         for j in range(i + 1, min(i + 40, len(lines))):
             cm = re.search(r"category WHERE slug = '([a-z-]+)'", lines[j])
@@ -161,7 +187,9 @@ def parse_attractions(text: str):
                 break
         if category:
             rows.append((slug, name, category))
-    return rows
+        else:
+            skipped.append((slug, i + 2))
+    return rows, skipped
 
 
 # ------------------------------------------------------------------ 场景绘制
@@ -407,6 +435,7 @@ SCENES = {
     "theme-park": scene_theme_park,
     "palace": scene_palace,
     "archaeology": scene_ruins,
+    "scenic-area": scene_nature,
 }
 
 
@@ -489,10 +518,27 @@ COMMIT;
 
 
 def main() -> int:
-    seed_text = io.open(SEED_PATH, encoding="utf-8").read()
-    rows = parse_attractions(seed_text)
+    rows = []
+    problems = []
+    for seed_path in SEED_PATHS:
+        where = seed_path.relative_to(REPO_ROOT)
+        parsed, skipped = parse_attractions(io.open(seed_path, encoding="utf-8").read())
+        for slug, line_no in skipped:
+            problems.append(f"{where}:{line_no} 认出了景点元组 {slug!r} 却找不到分类")
+        rows.extend(parsed)
+    # 重复的 slug 会被 files 这个 dict 静默吃掉(images.sql 也会对同一个 slug upsert
+    # 两次), 与其等图对不上再回头找, 不如在这里就拦下。
+    seen: dict[str, int] = {}
+    for slug, _, _ in rows:
+        seen[slug] = seen.get(slug, 0) + 1
+    problems += [f"slug 重复 {n} 次: {slug}" for slug, n in sorted(seen.items()) if n > 1]
+    if problems:
+        print("种子文件有问题, 先修好再生成:")
+        for item in problems:
+            print("  -", item)
+        return 1
     if not rows:
-        print("没有从 db/seed/seed.sql 里解析出任何景点, 先检查文件格式")
+        print("没有从 db/seed/ 的种子文件里解析出任何景点, 先检查文件格式")
         return 1
 
     files = {slug: build_svg(slug, name, category) for slug, name, category in rows}

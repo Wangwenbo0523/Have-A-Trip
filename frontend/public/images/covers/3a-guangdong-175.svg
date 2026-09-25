@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="惠州市雅居乐白鹭湖体育旅游小镇景区">
+  <title>惠州市雅居乐白鹭湖体育旅游小镇景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b2822"/>
+      <stop offset="1" stop-color="#415e47"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="569.3" cy="460.1" r="50.1" fill="#e0b35c" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,425.5 216.0,537.9 344.0,477.7 472.0,548.3 600.0,475.0 728.0,547.8 856.0,481.1 984.0,549.0 1112.0,445.6 1240.0,541.9 1368.0,423.9 1496.0,537.6 1240.0,800.0" fill="#304736"/>
+  <polygon points="-40.0,800.0 120.0,539.5 280.0,608.7 440.0,556.1 600.0,612.0 760.0,547.5 920.0,610.3 1080.0,510.2 1240.0,602.8 1400.0,543.0 1560.0,609.4 1240.0,800.0" fill="#213328"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#15221b"/>
+  <polygon points="-40.0,800.0 66.7,635.0 173.3,687.0 280.0,604.2 386.7,680.8 493.3,631.3 600.0,686.3 706.7,630.9 813.3,686.2 920.0,627.5 1026.7,685.5 1133.3,628.2 1240.0,685.6 1346.7,610.8 1453.3,682.2 1240.0,800.0" fill="#15221b" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0b35c" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0b35c" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="49"
+          font-weight="700" fill="#f4f5f7">惠州市雅居乐白鹭湖体育旅游小镇景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

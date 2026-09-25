@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="佛山市盈香心动乐园景区">
+  <title>佛山市盈香心动乐园景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#19281f"/>
+      <stop offset="1" stop-color="#3c5e3e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="590.5" cy="450.2" r="47.7" fill="#e09345" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,438.5 216.0,540.5 344.0,416.0 472.0,536.0 600.0,457.3 728.0,544.3 856.0,465.2 984.0,545.8 1112.0,463.9 1240.0,545.6 1368.0,441.4 1496.0,541.1 1240.0,800.0" fill="#2c472f"/>
+  <polygon points="-40.0,800.0 120.0,532.7 280.0,607.3 440.0,534.6 600.0,607.7 760.0,516.6 920.0,604.1 1080.0,510.4 1240.0,602.9 1400.0,557.9 1560.0,612.4 1240.0,800.0" fill="#1e3323"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#132218"/>
+  <polygon points="-40.0,800.0 66.7,609.4 173.3,681.9 280.0,604.3 386.7,680.9 493.3,643.6 600.0,688.7 706.7,643.5 813.3,688.7 920.0,608.1 1026.7,681.6 1133.3,640.4 1240.0,688.1 1346.7,619.4 1453.3,683.9 1240.0,800.0" fill="#132218" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e09345" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e09345" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="76"
+          font-weight="700" fill="#f4f5f7">佛山市盈香心动乐园景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

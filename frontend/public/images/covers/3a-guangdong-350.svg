@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="清远市英德市连樟乡村旅游区">
+  <title>清远市英德市连樟乡村旅游区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b2826"/>
+      <stop offset="1" stop-color="#415e4f"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="444.4" cy="446.1" r="47.5" fill="#e0d75c" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,438.8 216.0,540.6 344.0,427.4 472.0,538.3 600.0,478.2 728.0,548.4 856.0,434.0 984.0,539.6 1112.0,466.3 1240.0,546.1 1368.0,459.4 1496.0,544.7 1240.0,800.0" fill="#30473d"/>
+  <polygon points="-40.0,800.0 120.0,518.6 280.0,604.5 440.0,550.7 600.0,610.9 760.0,548.7 920.0,610.5 1080.0,540.1 1240.0,608.8 1400.0,512.9 1560.0,603.4 1240.0,800.0" fill="#21332d"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#15221f"/>
+  <polygon points="-40.0,800.0 66.7,636.0 173.3,687.2 280.0,628.9 386.7,685.8 493.3,606.4 600.0,681.3 706.7,615.5 813.3,683.1 920.0,612.0 1026.7,682.4 1133.3,606.4 1240.0,681.3 1346.7,620.3 1453.3,684.1 1240.0,800.0" fill="#15221f" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0d75c" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0d75c" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="64"
+          font-weight="700" fill="#f4f5f7">清远市英德市连樟乡村旅游区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

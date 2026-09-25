@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="中山市中国（大涌）红木文化博览城景区">
+  <title>中山市中国（大涌）红木文化博览城景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b2824"/>
+      <stop offset="1" stop-color="#425e4c"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="802.2" cy="460.9" r="49.7" fill="#e0cb60" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,436.6 216.0,540.1 344.0,477.1 472.0,548.2 600.0,435.3 728.0,539.9 856.0,427.6 984.0,538.3 1112.0,426.6 1240.0,538.1 1368.0,447.5 1496.0,542.3 1240.0,800.0" fill="#30473b"/>
+  <polygon points="-40.0,800.0 120.0,521.9 280.0,605.2 440.0,525.6 600.0,605.9 760.0,532.9 920.0,607.4 1080.0,514.1 1240.0,603.6 1400.0,537.2 1560.0,608.2 1240.0,800.0" fill="#22332c"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#15221d"/>
+  <polygon points="-40.0,800.0 66.7,623.0 173.3,684.6 280.0,607.4 386.7,681.5 493.3,626.5 600.0,685.3 706.7,617.4 813.3,683.5 920.0,619.9 1026.7,684.0 1133.3,614.2 1240.0,682.8 1346.7,612.1 1453.3,682.4 1240.0,800.0" fill="#15221d" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0cb60" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0cb60" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="46"
+          font-weight="700" fill="#f4f5f7">中山市中国（大涌）红木文化博览城景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

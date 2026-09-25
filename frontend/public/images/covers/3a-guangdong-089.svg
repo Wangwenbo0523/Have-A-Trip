@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="广州市南平静修小镇旅游区">
+  <title>广州市南平静修小镇旅游区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b2823"/>
+      <stop offset="1" stop-color="#415e4a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="378.7" cy="443.2" r="50.5" fill="#e0c25a" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,462.1 216.0,545.2 344.0,436.1 472.0,540.0 600.0,440.4 728.0,540.9 856.0,459.4 984.0,544.7 1112.0,463.1 1240.0,545.4 1368.0,452.5 1496.0,543.3 1240.0,800.0" fill="#2f4739"/>
+  <polygon points="-40.0,800.0 120.0,536.8 280.0,608.2 440.0,534.4 600.0,607.7 760.0,559.5 920.0,612.7 1080.0,536.2 1240.0,608.0 1400.0,546.2 1560.0,610.0 1240.0,800.0" fill="#21332a"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#15221d"/>
+  <polygon points="-40.0,800.0 66.7,645.0 173.3,689.0 280.0,625.7 386.7,685.1 493.3,634.0 600.0,686.8 706.7,630.6 813.3,686.1 920.0,640.4 1026.7,688.1 1133.3,618.7 1240.0,683.7 1346.7,609.4 1453.3,681.9 1240.0,800.0" fill="#15221d" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0c25a" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0c25a" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="70"
+          font-weight="700" fill="#f4f5f7">广州市南平静修小镇旅游区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

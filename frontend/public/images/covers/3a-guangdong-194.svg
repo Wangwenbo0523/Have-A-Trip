@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="揭阳市揭东万竹园旅游景区">
+  <title>揭阳市揭东万竹园旅游景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#182821"/>
+      <stop offset="1" stop-color="#3b5e43"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="423.2" cy="437.7" r="48.5" fill="#e0b13e" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,469.7 216.0,546.7 344.0,481.1 472.0,549.0 600.0,423.1 728.0,537.4 856.0,428.4 984.0,538.5 1112.0,479.8 1240.0,548.8 1368.0,433.5 1496.0,539.5 1240.0,800.0" fill="#2a4734"/>
+  <polygon points="-40.0,800.0 120.0,535.2 280.0,607.8 440.0,560.2 600.0,612.8 760.0,517.4 920.0,604.3 1080.0,539.5 1240.0,608.7 1400.0,513.7 1560.0,603.5 1240.0,800.0" fill="#1d3327"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#12221a"/>
+  <polygon points="-40.0,800.0 66.7,610.1 173.3,682.0 280.0,628.4 386.7,685.7 493.3,607.0 600.0,681.4 706.7,608.4 813.3,681.7 920.0,641.4 1026.7,688.3 1133.3,624.2 1240.0,684.8 1346.7,616.5 1453.3,683.3 1240.0,800.0" fill="#12221a" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0b13e" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0b13e" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="70"
+          font-weight="700" fill="#f4f5f7">揭阳市揭东万竹园旅游景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

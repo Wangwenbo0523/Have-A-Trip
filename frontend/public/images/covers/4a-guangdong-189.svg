@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="肇庆市盘龙峡景区">
+  <title>肇庆市盘龙峡景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#192824"/>
+      <stop offset="1" stop-color="#3c5e49"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="857.3" cy="458.4" r="51.2" fill="#e0c944" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,422.6 216.0,537.3 344.0,452.8 472.0,543.4 600.0,433.7 728.0,539.5 856.0,423.1 984.0,537.4 1112.0,427.4 1240.0,538.3 1368.0,475.8 1496.0,548.0 1240.0,800.0" fill="#2b4739"/>
+  <polygon points="-40.0,800.0 120.0,516.3 280.0,604.1 440.0,518.2 600.0,604.4 760.0,535.2 920.0,607.8 1080.0,547.5 1240.0,610.3 1400.0,547.5 1560.0,610.3 1240.0,800.0" fill="#1e332a"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#13221d"/>
+  <polygon points="-40.0,800.0 66.7,624.8 173.3,685.0 280.0,635.0 386.7,687.0 493.3,635.0 600.0,687.0 706.7,640.1 813.3,688.0 920.0,622.3 1026.7,684.5 1133.3,612.8 1240.0,682.6 1346.7,606.7 1453.3,681.3 1240.0,800.0" fill="#13221d" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0c944" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0c944" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">肇庆市盘龙峡景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

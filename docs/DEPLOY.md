@@ -242,7 +242,8 @@ python scripts/reclaim_itineraries.py
 - [ ] 若没开 `GEO_IP_PROVIDER`：`/api/v1/attractions/nearby` 仍返回三个、`scope=nation`，且三个的
       `country_code` 全是 `CN`（这就是库内主国那一级在起作用），过程中没有任何外部归属地请求
 - [ ] 刷新 `/attraction/<某个 slug>` 不 404（SPA 回落生效）
-- [ ] 静态素材与生成脚本一致：`python scripts/make_favicon.py --check` 与 `python scripts/make_attraction_covers.py --check` 都通过
+- [ ] 静态素材与生成脚本一致：`python scripts/make_favicon.py --check`、`python scripts/make_attraction_covers.py --check`
+      与 `python scripts/build_cn_attractions.py --check` 都通过（一次跑完用 `python scripts/verify_all.py`）
 - [ ] 前端产物里没有任何地图 SDK：`grep -rIn "leaflet\|mapbox\|ol/" dist/assets` 应为空
 - [ ] （可选）要用模型补景点简介时, 在**本地**跑 `python scripts/draft_attraction_summaries.py`, 逐条核对生成的待审 SQL 后再抄进 `db/seed/seed.sql`;
       **不要在部署机上直接执行** `db/seed/drafts/` 里的文件

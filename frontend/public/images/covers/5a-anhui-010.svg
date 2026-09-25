@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="马鞍山市长江采石矶文化生态旅游区">
+  <title>马鞍山市长江采石矶文化生态旅游区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#182825"/>
+      <stop offset="1" stop-color="#3a5e4a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="814.9" cy="444.3" r="45.9" fill="#e0d23d" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,459.4 216.0,544.7 344.0,478.2 472.0,548.4 600.0,482.4 728.0,549.3 856.0,420.8 984.0,537.0 1112.0,456.0 1240.0,544.0 1368.0,470.5 1496.0,546.9 1240.0,800.0" fill="#2a473a"/>
+  <polygon points="-40.0,800.0 120.0,510.8 280.0,603.0 440.0,510.8 600.0,603.0 760.0,528.2 920.0,606.4 1080.0,532.5 1240.0,607.3 1400.0,516.3 1560.0,604.1 1240.0,800.0" fill="#1d332b"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#12221e"/>
+  <polygon points="-40.0,800.0 66.7,619.1 173.3,683.8 280.0,622.6 386.7,684.5 493.3,609.3 600.0,681.9 706.7,621.4 813.3,684.3 920.0,632.0 1026.7,686.4 1133.3,607.9 1240.0,681.6 1346.7,625.9 1453.3,685.2 1240.0,800.0" fill="#12221e" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0d23d" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0d23d" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="52"
+          font-weight="700" fill="#f4f5f7">马鞍山市长江采石矶文化生态旅游区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="平顶山市尧山-中原大佛景区">
+  <title>平顶山市尧山-中原大佛景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#192824"/>
+      <stop offset="1" stop-color="#3d5e4a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="423.2" cy="439.2" r="49.0" fill="#e0ca4b" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,462.1 216.0,545.2 344.0,470.3 472.0,546.9 600.0,421.8 728.0,537.2 856.0,450.4 984.0,542.9 1112.0,430.3 1240.0,538.9 1368.0,474.0 1496.0,547.6 1240.0,800.0" fill="#2d4739"/>
+  <polygon points="-40.0,800.0 120.0,532.7 280.0,607.3 440.0,525.6 600.0,605.9 760.0,557.1 920.0,612.2 1080.0,512.9 1240.0,603.4 1400.0,511.8 1560.0,603.2 1240.0,800.0" fill="#1f332b"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#13221d"/>
+  <polygon points="-40.0,800.0 66.7,643.0 173.3,688.6 280.0,606.4 386.7,681.3 493.3,605.5 600.0,681.1 706.7,606.7 813.3,681.3 920.0,637.9 1026.7,687.6 1133.3,612.8 1240.0,682.6 1346.7,614.7 1453.3,682.9 1240.0,800.0" fill="#13221d" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0ca4b" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0ca4b" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="64"
+          font-weight="700" fill="#f4f5f7">平顶山市尧山-中原大佛景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

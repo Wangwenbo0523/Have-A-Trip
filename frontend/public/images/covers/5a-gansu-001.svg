@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="临夏州炳灵寺世界文化遗产旅游区">
+  <title>临夏州炳灵寺世界文化遗产旅游区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#18281d"/>
+      <stop offset="1" stop-color="#3b5e3b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="497.3" cy="438.9" r="47.5" fill="#e0873e" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,445.1 216.0,541.8 344.0,461.3 472.0,545.1 600.0,424.7 728.0,537.7 856.0,441.7 984.0,541.1 1112.0,422.1 1240.0,537.2 1368.0,421.6 1496.0,537.1 1240.0,800.0" fill="#2a472d"/>
+  <polygon points="-40.0,800.0 120.0,520.2 280.0,604.8 440.0,527.8 600.0,606.4 760.0,558.9 920.0,612.6 1080.0,524.9 1240.0,605.8 1400.0,524.1 1560.0,605.6 1240.0,800.0" fill="#1d3321"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#122216"/>
+  <polygon points="-40.0,800.0 66.7,644.5 173.3,688.9 280.0,616.4 386.7,683.3 493.3,615.7 600.0,683.1 706.7,630.3 813.3,686.1 920.0,616.0 1026.7,683.2 1133.3,644.5 1240.0,688.9 1346.7,620.1 1453.3,684.0 1240.0,800.0" fill="#122216" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0873e" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0873e" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="56"
+          font-weight="700" fill="#f4f5f7">临夏州炳灵寺世界文化遗产旅游区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

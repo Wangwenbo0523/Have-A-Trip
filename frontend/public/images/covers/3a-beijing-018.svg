@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="北京呀路古热带植物园景区">
+  <title>北京呀路古热带植物园景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#192820"/>
+      <stop offset="1" stop-color="#3d5e41"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="444.4" cy="448.3" r="48.3" fill="#e09f4a" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,425.8 216.0,538.0 344.0,481.4 472.0,549.1 600.0,456.8 728.0,544.2 856.0,471.1 984.0,547.0 1112.0,447.8 1240.0,542.4 1368.0,423.7 1496.0,537.5 1240.0,800.0" fill="#2d4732"/>
+  <polygon points="-40.0,800.0 120.0,539.3 280.0,608.7 440.0,560.8 600.0,613.0 760.0,534.4 920.0,607.7 1080.0,531.1 1240.0,607.0 1400.0,532.1 1560.0,607.2 1240.0,800.0" fill="#1f3325"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#132219"/>
+  <polygon points="-40.0,800.0 66.7,624.2 173.3,684.8 280.0,621.4 386.7,684.3 493.3,622.3 600.0,684.5 706.7,606.5 813.3,681.3 920.0,634.8 1026.7,687.0 1133.3,635.7 1240.0,687.1 1346.7,617.4 1453.3,683.5 1240.0,800.0" fill="#132219" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e09f4a" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e09f4a" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="70"
+          font-weight="700" fill="#f4f5f7">北京呀路古热带植物园景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="崇左市德天跨国瀑布景区">
+  <title>崇左市德天跨国瀑布景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#18281f"/>
+      <stop offset="1" stop-color="#3b5e3f"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="662.5" cy="448.3" r="46.9" fill="#e09d3e" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,476.4 216.0,548.1 344.0,424.5 472.0,537.7 600.0,464.7 728.0,545.7 856.0,454.9 984.0,543.8 1112.0,458.9 1240.0,544.6 1368.0,420.5 1496.0,536.9 1240.0,800.0" fill="#2b4731"/>
+  <polygon points="-40.0,800.0 120.0,555.2 280.0,611.8 440.0,518.2 600.0,604.4 760.0,545.2 920.0,609.8 1080.0,516.3 1240.0,604.1 1400.0,546.4 1560.0,610.1 1240.0,800.0" fill="#1d3324"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#122218"/>
+  <polygon points="-40.0,800.0 66.7,633.1 173.3,686.6 280.0,609.3 386.7,681.9 493.3,634.2 600.0,686.8 706.7,629.8 813.3,686.0 920.0,644.0 1026.7,688.8 1133.3,634.0 1240.0,686.8 1346.7,622.3 1453.3,684.5 1240.0,800.0" fill="#122218" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e09d3e" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e09d3e" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="76"
+          font-weight="700" fill="#f4f5f7">崇左市德天跨国瀑布景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

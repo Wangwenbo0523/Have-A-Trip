@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="广州洪秀全故居纪念馆">
+  <title>广州洪秀全故居纪念馆</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#192823"/>
+      <stop offset="1" stop-color="#3c5e48"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="850.9" cy="460.0" r="44.3" fill="#e0c144" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,423.1 216.0,537.4 344.0,422.9 472.0,537.4 600.0,418.4 728.0,536.5 856.0,440.4 984.0,540.9 1112.0,426.9 1240.0,538.2 1368.0,425.5 1496.0,537.9 1240.0,800.0" fill="#2c4737"/>
+  <polygon points="-40.0,800.0 120.0,535.8 280.0,608.0 440.0,542.5 600.0,609.3 760.0,560.6 920.0,612.9 1080.0,553.2 1240.0,611.4 1400.0,553.4 1560.0,611.5 1240.0,800.0" fill="#1e3329"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#13221c"/>
+  <polygon points="-40.0,800.0 66.7,645.8 173.3,689.2 280.0,639.7 386.7,687.9 493.3,639.9 600.0,688.0 706.7,639.7 813.3,687.9 920.0,629.4 1026.7,685.9 1133.3,616.5 1240.0,683.3 1346.7,631.8 1453.3,686.4 1240.0,800.0" fill="#13221c" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0c144" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0c144" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">广州洪秀全故居纪念馆</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

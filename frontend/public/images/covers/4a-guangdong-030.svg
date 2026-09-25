@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="佛山市清晖园">
+  <title>佛山市清晖园</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#192823"/>
+      <stop offset="1" stop-color="#3e5e48"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="861.5" cy="460.1" r="48.4" fill="#e0c04c" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,430.8 216.0,539.0 344.0,423.9 472.0,537.6 600.0,431.6 728.0,539.1 856.0,440.1 984.0,540.8 1112.0,426.3 1240.0,538.1 1368.0,480.3 1496.0,548.9 1240.0,800.0" fill="#2d4738"/>
+  <polygon points="-40.0,800.0 120.0,555.9 280.0,612.0 440.0,514.1 600.0,603.6 760.0,550.3 920.0,610.9 1080.0,552.2 1240.0,611.2 1400.0,549.7 1560.0,610.7 1240.0,800.0" fill="#1f3329"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#13221c"/>
+  <polygon points="-40.0,800.0 66.7,637.4 173.3,687.5 280.0,638.9 386.7,687.8 493.3,636.9 600.0,687.4 706.7,632.0 813.3,686.4 920.0,625.5 1026.7,685.1 1133.3,618.1 1240.0,683.6 1346.7,616.9 1453.3,683.4 1240.0,800.0" fill="#13221c" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0c04c" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0c04c" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">佛山市清晖园</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

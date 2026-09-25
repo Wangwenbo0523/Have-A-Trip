@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="茂名市化州化橘红历史文化产业园景区">
+  <title>茂名市化州化橘红历史文化产业园景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b2820"/>
+      <stop offset="1" stop-color="#415e42"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="620.1" cy="454.8" r="40.3" fill="#e09e5a" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,474.0 216.0,547.6 344.0,421.6 472.0,537.1 600.0,475.3 728.0,547.9 856.0,445.4 984.0,541.9 1112.0,465.5 1240.0,545.9 1368.0,441.7 1496.0,541.1 1240.0,800.0" fill="#2f4733"/>
+  <polygon points="-40.0,800.0 120.0,522.3 280.0,605.3 440.0,528.2 600.0,606.4 760.0,552.4 920.0,611.3 1080.0,539.9 1240.0,608.8 1400.0,546.0 1560.0,610.0 1240.0,800.0" fill="#213325"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#152219"/>
+  <polygon points="-40.0,800.0 66.7,639.1 173.3,687.8 280.0,628.7 386.7,685.7 493.3,633.8 600.0,686.8 706.7,637.4 813.3,687.5 920.0,646.0 1026.7,689.2 1133.3,640.1 1240.0,688.0 1346.7,646.0 1453.3,689.2 1240.0,800.0" fill="#152219" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e09e5a" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e09e5a" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="49"
+          font-weight="700" fill="#f4f5f7">茂名市化州化橘红历史文化产业园景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

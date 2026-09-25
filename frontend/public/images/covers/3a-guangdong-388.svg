@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="潮州市百师园创意馆">
+  <title>潮州市百师园创意馆</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b2825"/>
+      <stop offset="1" stop-color="#405e4e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="742.9" cy="459.6" r="50.9" fill="#e0d657" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,473.4 216.0,547.5 344.0,423.4 472.0,537.5 600.0,434.0 728.0,539.6 856.0,419.4 984.0,536.7 1112.0,440.4 1240.0,540.9 1368.0,442.7 1496.0,541.3 1240.0,800.0" fill="#2f473c"/>
+  <polygon points="-40.0,800.0 120.0,547.9 280.0,610.4 440.0,560.2 600.0,612.8 760.0,523.7 920.0,605.5 1080.0,552.0 1240.0,611.2 1400.0,542.5 1560.0,609.3 1240.0,800.0" fill="#21332d"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#15221e"/>
+  <polygon points="-40.0,800.0 66.7,615.4 173.3,683.1 280.0,638.7 386.7,687.7 493.3,630.9 600.0,686.2 706.7,637.7 813.3,687.5 920.0,629.1 1026.7,685.8 1133.3,606.9 1240.0,681.4 1346.7,607.9 1453.3,681.6 1240.0,800.0" fill="#15221e" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0d657" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0d657" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">潮州市百师园创意馆</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="清远市南岗千年瑶寨景区">
+  <title>清远市南岗千年瑶寨景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#192825"/>
+      <stop offset="1" stop-color="#3e5e4c"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="738.7" cy="449.1" r="49.4" fill="#e0d14b" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,418.4 216.0,536.5 344.0,452.5 472.0,543.3 600.0,472.4 728.0,547.3 856.0,435.9 984.0,540.0 1112.0,449.4 1240.0,542.7 1368.0,462.3 1496.0,545.3 1240.0,800.0" fill="#2d473b"/>
+  <polygon points="-40.0,800.0 120.0,531.9 280.0,607.2 440.0,535.2 600.0,607.8 760.0,559.1 920.0,612.6 1080.0,547.7 1240.0,610.3 1400.0,528.0 1560.0,606.4 1240.0,800.0" fill="#1f332c"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#13221e"/>
+  <polygon points="-40.0,800.0 66.7,644.7 173.3,688.9 280.0,635.2 386.7,687.0 493.3,618.9 600.0,683.8 706.7,629.4 813.3,685.9 920.0,627.0 1026.7,685.4 1133.3,608.7 1240.0,681.7 1346.7,613.5 1453.3,682.7 1240.0,800.0" fill="#13221e" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0d14b" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0d14b" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="76"
+          font-weight="700" fill="#f4f5f7">清远市南岗千年瑶寨景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

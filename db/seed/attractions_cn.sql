@@ -1,0 +1,8655 @@
+-- Have-A-Trip · 中国 A 级旅游景区名录(种子数据)
+--
+-- 本文件由 scripts/build_cn_attractions.py 生成, **不要手改**。
+-- 改数据请改 db/seed/data/cn_a_level.csv 再重跑脚本。
+--
+-- 内容: 1229 条中国大陆 A 级旅游景区(5A 331 / 4A 284 / 3A 614), 覆盖 31 个省级行政区、
+-- 233 个地市。全部来自政府公开名录, 来源与口径见 db/seed/data/README.md。
+--
+-- 刻意不造假的数据(与 db/seed/seed.sql 同一套口径):
+--   * name_en / summary / description 一律 NULL —— 名录只有名称, 没有简介;
+--     前端对空简介与空方案都有兜底文案(detail.descriptionEmpty / card.summary.none)。
+--   * lat / lon 一律 NULL —— 一期不做地图与定位。文旅部的接口其实带经纬度, 但
+--     本项目的坐标口径是「不填」, 不是「没查到」, 所以不引。
+--   * ticket_price 一律 NULL, rating_avg / rating_count 一律 0。
+--   * a_level 只写官方名录里核实过的等级, 不推算、不外推。
+--   * **没有标签、没有旅游方案** —— 见文件头说明; 这两样只对自采档案有要求。
+--
+-- 幂等: 用 upsert, 重跑会把内容列同步成本文件里的版本(等级被摘牌也会跟着改)。
+--
+-- 执行(在 db/seed/seed.sql 之后):
+--   psql -d attraction_atlas -v ON_ERROR_STOP=1 -f db/seed/attractions_cn.sql
+
+BEGIN;
+
+-- ---------------------------------------------------------------- 分类
+-- 这批条目共用一个分类, 理由见文件头。
+
+INSERT INTO category (slug, name, sort) VALUES
+    ('scenic-area', 'A 级景区', 100)
+ON CONFLICT (slug) DO UPDATE SET
+    name = EXCLUDED.name,
+    sort = EXCLUDED.sort;
+
+-- ---------------------------------------------------------------- 景点
+
+INSERT INTO attraction (
+    slug, name, name_en, category_id, country_code, province, city,
+    a_level, best_season, suggested_hours, ticket_price,
+    status, source, license, source_url
+) VALUES
+(
+    '5a-shanghai-001', '西沙明珠湖景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '上海市', '崇明区',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shanghai-002', '上海科技馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '上海市', '浦东新区',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shanghai-003', '上海野生动物园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '上海市', '浦东新区',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shanghai-004', '中国共产党一大•二大•四大纪念馆景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '上海市', '黄浦区',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-yunnan-001', '丽江市玉龙雪山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '云南省', '丽江市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-yunnan-002', '保山市火山热海旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '云南省', '保山市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-yunnan-003', '腾冲市和顺古镇景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '云南省', '保山市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-yunnan-004', '大理州崇圣寺三塔文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '云南省', '大理白族自治州',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-yunnan-005', '文山州普者黑旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '云南省', '文山壮族苗族自治州',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-yunnan-006', '昆明市昆明世博园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '云南省', '昆明市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-yunnan-007', '西双版纳州中科院西双版纳热带植物园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '云南省', '西双版纳傣族自治州',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-yunnan-008', '迪庆州普达措国家公园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '云南省', '迪庆藏族自治州',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-neimenggu-001', '兴安盟阿尔山-柴河旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '内蒙古自治区', '呼伦贝尔市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-neimenggu-002', '呼伦贝尔市中俄边境旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '内蒙古自治区', '呼伦贝尔市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-neimenggu-003', '呼伦贝尔市呼伦贝尔大草原·莫尔格勒河景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '内蒙古自治区', '呼伦贝尔市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-neimenggu-004', '呼和浩特市老牛湾黄河大峡谷旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '内蒙古自治区', '呼和浩特市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-neimenggu-005', '赤峰市阿斯哈图石林景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '内蒙古自治区', '赤峰市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-neimenggu-006', '鄂尔多斯市响沙湾旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '内蒙古自治区', '鄂尔多斯市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-neimenggu-007', '鄂尔多斯市成吉思汗陵旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '内蒙古自治区', '鄂尔多斯市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-neimenggu-008', '阿拉善盟胡杨林旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '内蒙古自治区', '阿拉善盟',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-beijing-001', '北京奥林匹克公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '5A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '5a-beijing-002', '北京（通州）大运河文化旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '5A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '5a-beijing-003', '圆明园遗址公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '5A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '5a-beijing-004', '天坛公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '5A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '5a-beijing-005', '恭王府景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '5A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '5a-beijing-006', '慕田峪长城景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '5A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '5a-beijing-007', '明十三陵景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '5A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '5a-jilin-001', '延边州六鼎山文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '吉林省', '延边朝鲜族自治州',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jilin-002', '松原市前郭查干湖景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '吉林省', '松原市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jilin-003', '白城市大安嫩江湾旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '吉林省', '白城市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jilin-004', '通化市高句丽文物古迹旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '吉林省', '通化市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jilin-005', '长春市世界雕塑公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '吉林省', '长春市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jilin-006', '长春市净月潭景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '吉林省', '长春市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jilin-007', '长春市长影世纪城景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '吉林省', '长春市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-sichuan-001', '南充市朱德故里景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '四川省', '南充市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-sichuan-002', '南充市阆中古城旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '四川省', '南充市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-sichuan-003', '巴中市光雾山旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '四川省', '巴中市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-sichuan-004', '广元市剑门蜀道剑门关旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '四川省', '广元市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-sichuan-005', '广安市邓小平故里旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '四川省', '广安市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-sichuan-006', '成都市天台山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '四川省', '成都市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-sichuan-007', '成都市安仁古镇景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '四川省', '成都市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-sichuan-008', '成都市青城山-都江堰旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '四川省', '成都市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-sichuan-009', '甘孜州海螺沟景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '四川省', '甘孜藏族自治州',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-sichuan-010', '甘孜州稻城亚丁旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '四川省', '甘孜藏族自治州',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-sichuan-011', '绵阳市羌城旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '四川省', '绵阳市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-sichuan-012', '阿坝州九寨沟景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '四川省', '阿坝藏族羌族自治州',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-sichuan-013', '阿坝州四姑娘山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '四川省', '阿坝藏族羌族自治州',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-sichuan-014', '阿坝州汶川特别旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '四川省', '阿坝藏族羌族自治州',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-sichuan-015', '阿坝州黄龙风景名胜区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '四川省', '阿坝藏族羌族自治州',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-sichuan-016', '雅安市碧峰峡旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '四川省', '雅安市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-tianjin-001', '天津古文化街旅游区（津门故里）', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '天津市', '南开区',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-tianjin-002', '盘山风景名胜区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '天津市', '蓟州区',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-ningxia-001', '中卫市沙坡头旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '宁夏回族自治区', '中卫市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-ningxia-002', '吴忠市青铜峡黄河大峡谷旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '宁夏回族自治区', '吴忠市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-ningxia-003', '固原市六盘山红军长征旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '宁夏回族自治区', '固原市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-ningxia-004', '石嘴山市沙湖旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '宁夏回族自治区', '石嘴山市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-ningxia-005', '银川市宁夏镇北堡西部影视城', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '宁夏回族自治区', '银川市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-ningxia-006', '银川市水洞沟旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '宁夏回族自治区', '银川市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-anhui-001', '六安市万佛湖风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '安徽省', '六安市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-anhui-002', '六安市天堂寨旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '安徽省', '六安市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-anhui-003', '合肥市三河古镇景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '安徽省', '合肥市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-anhui-004', '安庆市天柱山风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '安徽省', '安庆市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-anhui-005', '宣城市龙川景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '安徽省', '宣城市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-anhui-006', '池州市九华山风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '安徽省', '池州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-anhui-007', '滁州市琅琊山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '安徽省', '滁州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-anhui-008', '芜湖市方特旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '安徽省', '芜湖市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-anhui-009', '阜阳市八里河风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '安徽省', '阜阳市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-anhui-010', '马鞍山市长江采石矶文化生态旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '安徽省', '马鞍山市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-anhui-011', '黄山市古徽州文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '安徽省', '黄山市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-anhui-012', '黄山市皖南古村落-西递宏村', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '安徽省', '黄山市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shandong-001', '东营市黄河口生态旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '山东省', '东营市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shandong-002', '临沂市萤火虫水洞•地下大峡谷旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '山东省', '临沂市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shandong-003', '沂蒙山旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '山东省', '临沂市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shandong-004', '威海市刘公岛景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '山东省', '威海市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shandong-005', '威海市威海华夏城景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '山东省', '威海市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shandong-006', '枣庄市台儿庄古城景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '山东省', '枣庄市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shandong-007', '济南市天下第一泉景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '山东省', '济南市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shandong-008', '济宁市微山湖旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '山东省', '济宁市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shandong-009', '济宁市明故城三孔旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '山东省', '济宁市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shandong-010', '淄博市周村古商城景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '山东省', '淄博市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shandong-011', '潍坊市青州古城景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '山东省', '潍坊市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shandong-012', '烟台市南山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '山东省', '烟台市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shandong-013', '烟台市蓬莱阁-三仙山-八仙过海旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '山东省', '烟台市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shandong-014', '青岛市奥帆海洋文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '山东省', '青岛市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shandong-015', '青岛市崂山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '山东省', '青岛市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shanxi-001', '临汾市云丘山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '山西省', '临汾市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shanxi-002', '临汾市洪洞大槐树寻根祭祖园旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '山西省', '临汾市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shanxi-003', '黄河壶口瀑布旅游区(陕西省延安市·山西省临汾市)', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '山西省', '临汾市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shanxi-004', '太原市晋祠天龙山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '山西省', '太原市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shanxi-005', '忻州市五台山风景名胜区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '山西省', '忻州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shanxi-006', '忻州市雁门关景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '山西省', '忻州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shanxi-007', '晋中市乔家大院景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '山西省', '晋中市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shanxi-008', '晋中市绵山风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '山西省', '晋中市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shanxi-009', '晋城市皇城相府生态文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '山西省', '晋城市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shanxi-010', '长治市太行山大峡谷八泉峡景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '山西省', '长治市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-guangdong-001', '中山市孙中山故里旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '中山市',
+    '5A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '5a-guangdong-002', '佛山市西樵山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '5A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '5a-guangdong-003', '佛山市长鹿旅游休博园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '5A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '5a-guangdong-004', '广州市白云山风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '5A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '5a-guangdong-005', '广州市长隆旅游度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '5A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '5a-guangdong-006', '惠州市罗浮山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '5A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '5a-guangdong-007', '惠州市西湖旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '5A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '5a-guangdong-008', '梅州市雁南飞茶田景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '5A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '5a-guangdong-009', '江门市开平碉楼文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '5A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '5a-guangdong-010', '河源市万绿湖风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '5A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '5a-guangdong-011', '深圳市华侨城旅游度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '深圳市',
+    '5A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '5a-guangdong-012', '深圳市观澜湖休闲度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '深圳市',
+    '5A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '5a-guangdong-013', '清远市连州地下河旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '5A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '5a-guangdong-014', '肇庆市七星岩-鼎湖山旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '5A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '5a-guangdong-015', '阳江市海陵岛大角湾海上丝路旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '阳江市',
+    '5A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '5a-guangdong-016', '韶关市丹霞山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '5A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '5a-guangxi-001', '北海市涠洲岛南湾鳄鱼山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广西壮族自治区', '北海市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-guangxi-002', '南宁市青秀山风景名胜旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广西壮族自治区', '南宁市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-guangxi-003', '崇左市德天跨国瀑布景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广西壮族自治区', '崇左市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-guangxi-004', '崇左市花山岩画景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广西壮族自治区', '崇左市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-guangxi-005', '柳州市程阳八寨景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广西壮族自治区', '柳州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-guangxi-006', '桂林市两江四湖•象山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广西壮族自治区', '桂林市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-guangxi-007', '桂林市漓江风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广西壮族自治区', '桂林市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-guangxi-008', '桂林市独秀峰•靖江王城景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广西壮族自治区', '桂林市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-guangxi-009', '百色市百色起义纪念园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广西壮族自治区', '百色市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-guangxi-010', '贺州市黄姚古镇景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广西壮族自治区', '贺州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-xinjiang-001', '乌鲁木齐市天山大峡谷', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '新疆维吾尔自治区', '乌鲁木齐市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-xinjiang-002', '伊犁哈萨克自治州喀拉峻景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '新疆维吾尔自治区', '伊犁哈萨克自治州',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-xinjiang-003', '伊犁哈萨克自治州那拉提旅游风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '新疆维吾尔自治区', '伊犁哈萨克自治州',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-xinjiang-004', '克拉玛依市世界魔鬼城景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '新疆维吾尔自治区', '克拉玛依市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-xinjiang-005', '博尔塔拉蒙古自治州赛里木湖景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '新疆维吾尔自治区', '博尔塔拉蒙古自治州',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-xinjiang-006', '吐鲁番市葡萄沟风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '新疆维吾尔自治区', '吐鲁番地区',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-xinjiang-007', '喀什地区喀什古城景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '新疆维吾尔自治区', '喀什地区',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-xinjiang-008', '喀什地区帕米尔旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '新疆维吾尔自治区', '喀什地区',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-xinjiang-009', '喀什地区金湖杨景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '新疆维吾尔自治区', '喀什地区',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-xinjiang-010', '巴音郭楞蒙古自治州博斯腾湖景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '新疆维吾尔自治区', '巴音郭楞蒙古自治州',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-xinjiang-011', '巴音郭楞蒙古自治州巴音布鲁克景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '新疆维吾尔自治区', '巴音郭楞蒙古自治州',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-xinjiang-012', '昌吉回族自治州天山天池风景名胜区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '新疆维吾尔自治区', '昌吉回族自治州',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-xinjiang-013', '昌吉回族自治州江布拉克景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '新疆维吾尔自治区', '昌吉回族自治州',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-xinjiang-014', '阿克苏地区天山托木尔景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '新疆维吾尔自治区', '阿克苏地区',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-xinjiang-015', '兵团十师185团白沙湖景区（阿勒泰地区）', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '新疆维吾尔自治区', '阿勒泰地区',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-xinjiang-016', '阿勒泰地区可可托海景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '新疆维吾尔自治区', '阿勒泰地区',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-xinjiang-017', '兵团阿拉尔市塔克拉玛干•三五九旅文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '新疆维吾尔自治区', '阿拉尔市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangsu-001', '南京市夫子庙-秦淮风光带', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江苏省', '南京市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangsu-002', '南京市钟山风景名胜区-中山陵园风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江苏省', '南京市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangsu-003', '南通市濠河风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江苏省', '南通市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangsu-004', '宿迁市洪泽湖湿地景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江苏省', '宿迁市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangsu-005', '常州市天目湖景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江苏省', '常州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangsu-006', '常州市春秋淹城旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江苏省', '常州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangsu-007', '常州市环球恐龙城休闲旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江苏省', '常州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangsu-008', '徐州市云龙湖景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江苏省', '徐州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangsu-009', '扬州市瘦西湖风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江苏省', '扬州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangsu-010', '无锡市中央电视台无锡影视基地三国水浒城景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江苏省', '无锡市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangsu-011', '无锡市惠山古镇景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江苏省', '无锡市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangsu-012', '无锡市灵山大佛景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江苏省', '无锡市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangsu-013', '无锡市鼋头渚旅游风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江苏省', '无锡市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangsu-014', '泰州市溱湖旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江苏省', '泰州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangsu-015', '淮安市周恩来故里景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江苏省', '淮安市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangsu-016', '盐城市中华麋鹿园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江苏省', '盐城市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangsu-017', '苏州市同里古镇景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江苏省', '苏州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangsu-018', '苏州市周庄古镇景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江苏省', '苏州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangsu-019', '苏州市太湖旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江苏省', '苏州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangsu-020', '苏州市沙家浜-虞山尚湖旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江苏省', '苏州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangsu-021', '苏州市苏州园林（拙政园-留园-虎丘）', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江苏省', '苏州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangsu-022', '苏州市金鸡湖旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江苏省', '苏州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangsu-023', '连云港市花果山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江苏省', '连云港市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangsu-024', '连云港市连岛景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江苏省', '连云港市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangsu-025', '镇江市茅山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江苏省', '镇江市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangsu-026', '镇江市金山•焦山•北固山风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江苏省', '镇江市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangxi-001', '上饶市婺源县江湾景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江西省', '上饶市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangxi-002', '上饶市弋阳县龟峰景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江西省', '上饶市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangxi-003', '上饶市玉山县三清山风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江西省', '上饶市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangxi-004', '上饶市篁岭景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江西省', '上饶市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangxi-005', '九江市庐山市庐山风景名胜区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江西省', '九江市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangxi-006', '九江市永修县庐山西海景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江西省', '九江市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangxi-007', '南昌市东湖区滕王阁旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江西省', '南昌市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangxi-008', '吉安市井冈山市井冈山风景旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江西省', '吉安市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangxi-009', '宜春市袁州区明月山旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江西省', '宜春市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangxi-010', '抚州市资溪县大觉山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江西省', '抚州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangxi-011', '景德镇市昌江区古窑民俗博览区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江西省', '景德镇市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangxi-012', '萍乡市芦溪县萍乡武功山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江西省', '萍乡市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangxi-013', '赣州市三百山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江西省', '赣州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangxi-014', '赣州市瑞金市共和国摇篮景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江西省', '赣州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-jiangxi-015', '鹰潭市贵溪市龙虎山风景名胜区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '江西省', '鹰潭市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hebei-001', '保定市清西陵景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '河北省', '保定市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hebei-002', '保定市白洋淀景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '河北省', '保定市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hebei-003', '保定市白石山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '河北省', '保定市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hebei-004', '保定市野三坡景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '河北省', '保定市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hebei-005', '唐山市南湖·开滦旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '河北省', '唐山市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hebei-006', '唐山市清东陵景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '河北省', '唐山市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hebei-007', '承德市承德避暑山庄及周围寺庙景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '河北省', '承德市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hebei-008', '承德市金山岭长城景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '河北省', '承德市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hebei-009', '石家庄市西柏坡景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '河北省', '石家庄市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hebei-010', '秦皇岛市山海关景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '河北省', '秦皇岛市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hebei-011', '衡水市衡水湖旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '河北省', '衡水市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hebei-012', '邯郸市娲皇宫景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '河北省', '邯郸市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hebei-013', '邯郸市广府古城景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '河北省', '邯郸市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-henan-001', '信阳市鸡公山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '河南省', '信阳市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-henan-002', '南阳市西峡恐龙遗迹园-伏牛山-老界岭旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '河南省', '南阳市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-henan-003', '周口市太昊伏羲陵文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '河南省', '周口市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-henan-004', '商丘市芒砀山汉文化旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '河南省', '商丘市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-henan-005', '安阳市红旗渠-太行大峡谷旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '河南省', '安阳市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-henan-006', '平顶山市尧山-中原大佛景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '河南省', '平顶山市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-henan-007', '开封市清明上河园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '河南省', '开封市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-henan-008', '新乡市八里沟景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '河南省', '新乡市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-henan-009', '新乡市宝泉旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '河南省', '新乡市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-henan-010', '洛阳市白云山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '河南省', '洛阳市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-henan-011', '洛阳市老君山-鸡冠洞旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '河南省', '洛阳市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-henan-012', '洛阳市龙潭大峡谷景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '河南省', '洛阳市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-henan-013', '焦作市云台山-神农山-青天河风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '河南省', '焦作市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-henan-014', '郑州市嵩山少林景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '河南省', '郑州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-henan-015', '驻马店市嵖岈山旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '河南省', '驻马店市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-zhejiang-001', '丽水市云和梯田景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '浙江省', '丽水市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-zhejiang-002', '丽水市缙云仙都景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '浙江省', '丽水市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-zhejiang-003', '台州市台州府城文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '浙江省', '台州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-zhejiang-004', '台州市天台山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '浙江省', '台州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-zhejiang-005', '台州市神仙居景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '浙江省', '台州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-zhejiang-006', '嘉兴市乌镇古镇旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '浙江省', '嘉兴市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-zhejiang-007', '嘉兴市南湖旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '浙江省', '嘉兴市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-zhejiang-008', '嘉兴市西塘古镇旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '浙江省', '嘉兴市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-zhejiang-009', '宁波市天一阁•月湖景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '浙江省', '宁波市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-zhejiang-010', '宁波市溪口-滕头旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '浙江省', '宁波市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-zhejiang-011', '杭州市千岛湖风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '浙江省', '杭州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-zhejiang-012', '杭州市杭州西湖风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '浙江省', '杭州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-zhejiang-013', '杭州市西溪湿地旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '浙江省', '杭州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-zhejiang-014', '温州市刘伯温故里景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '浙江省', '温州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-zhejiang-015', '湖州市南浔古镇景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '浙江省', '湖州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-zhejiang-016', '绍兴市鲁迅故里•沈园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '浙江省', '绍兴市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-zhejiang-017', '舟山市普陀山风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '浙江省', '舟山市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-zhejiang-018', '衢州市根宫佛国文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '浙江省', '衢州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-zhejiang-019', '衢州市江郎山•廿八都旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '浙江省', '衢州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-zhejiang-020', '金华市双龙风景旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '浙江省', '金华市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-zhejiang-021', '金华市横店影视城景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '浙江省', '金华市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hainan-001', '三亚市南山大小洞天旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '海南省', '三亚市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hainan-002', '三亚市南山文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '海南省', '三亚市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hainan-003', '保亭县呀诺达雨林文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '海南省', '保亭黎族苗族自治县',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hainan-004', '保亭县海南槟榔谷黎苗文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '海南省', '保亭黎族苗族自治县',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hainan-005', '陵水县分界洲岛旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '海南省', '陵水黎族自治县',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hubei-001', '咸宁市三国赤壁古战场景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '湖北省', '咸宁市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hubei-002', '宜昌市三峡人家风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '湖北省', '宜昌市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hubei-003', '宜昌市三峡大坝-屈原故里文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '湖北省', '宜昌市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hubei-004', '宜昌市三峡大瀑布景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '湖北省', '宜昌市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hubei-005', '宜昌市清江画廊景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '湖北省', '宜昌市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hubei-006', '神农架生态旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '湖北省', '宜昌市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hubei-007', '恩施州恩施大峡谷景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '湖北省', '恩施土家族苗族自治州',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hubei-008', '恩施州神农溪纤夫文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '湖北省', '恩施土家族苗族自治州',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hubei-009', '恩施州腾龙洞景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '湖北省', '恩施土家族苗族自治州',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hubei-010', '武汉市木兰文化生态旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '湖北省', '武汉市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hubei-011', '湖北省武汉市东湖景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '湖北省', '武汉市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hubei-012', '荆门市明显陵文化旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '湖北省', '荆门市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hubei-013', '襄阳市古隆中景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '湖北省', '襄阳市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hubei-014', '黄冈市麻城龟峰山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '湖北省', '黄冈市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hunan-001', '岳阳市岳阳楼-君山岛景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '湖南省', '岳阳市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hunan-002', '常德市桃花源旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '湖南省', '常德市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hunan-003', '张家界市武陵源-天门山旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '湖南省', '张家界市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hunan-004', '株洲市炎帝陵景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '湖南省', '株洲市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hunan-005', '湘潭市韶山旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '湖南省', '湘潭市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hunan-006', '湘西州凤凰古城旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '湖南省', '湘西土家族苗族自治州',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hunan-007', '湘西州吉首市矮寨•十八洞•德夯大峡谷景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '湖南省', '湘西土家族苗族自治州',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hunan-008', '衡阳市衡山旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '湖南省', '衡阳市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hunan-009', '邵阳市崀山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '湖南省', '邵阳市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hunan-010', '郴州市东江湖旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '湖南省', '郴州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hunan-011', '长沙市岳麓山-橘子洲旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '湖南省', '长沙市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-hunan-012', '长沙市花明楼景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '湖南省', '长沙市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-gansu-001', '临夏州炳灵寺世界文化遗产旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '甘肃省', '临夏回族自治州',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-gansu-002', '嘉峪关市嘉峪关文物景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '甘肃省', '嘉峪关市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-gansu-003', '天水市麦积山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '甘肃省', '天水市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-gansu-004', '平凉市崆峒山风景名胜区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '甘肃省', '平凉市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-gansu-005', '张掖市七彩丹霞景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '甘肃省', '张掖市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-gansu-006', '甘南州冶力关旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '甘肃省', '甘南藏族自治州',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-gansu-007', '酒泉市鸣沙山月牙泉景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '甘肃省', '酒泉市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-gansu-008', '陇南市官鹅沟景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '甘肃省', '陇南市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-fujian-001', '三明市泰宁风景旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '福建省', '三明市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-fujian-002', '南平市武夷山风景名胜区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '福建省', '南平市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-fujian-003', '厦门市厦门园林植物园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '福建省', '厦门市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-fujian-004', '宁德市太姥山旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '福建省', '宁德市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-fujian-005', '宁德市（白水洋•鸳鸯溪）旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '福建省', '宁德市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-fujian-006', '泉州市清源山风景名胜区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '福建省', '泉州市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-fujian-007', '莆田市湄洲岛妈祖文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '福建省', '莆田市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-fujian-008', '福建土楼（永定•南靖）旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '福建省', '龙岩市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-fujian-009', '龙岩市冠豸山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '福建省', '龙岩市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-fujian-010', '龙岩市古田旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '福建省', '龙岩市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-xizang-001', '拉萨市大昭寺景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '西藏自治区', '拉萨市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-xizang-002', '日喀则市扎什伦布寺景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '西藏自治区', '日喀则地区',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-xizang-003', '林芝市巴松措景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '西藏自治区', '林芝地区',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-xizang-004', '林芝市雅鲁藏布大峡谷景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '西藏自治区', '林芝地区',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-guizhou-001', '安顺市西秀区龙宫景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '贵州省', '安顺市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-guizhou-002', '安顺市黄果树瀑布景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '贵州省', '安顺市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-guizhou-003', '毕节市织金洞景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '贵州省', '毕节市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-guizhou-004', '毕节市黔西县百里杜鹃景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '贵州省', '毕节市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-guizhou-005', '贵阳市花溪区青岩古镇景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '贵州省', '贵阳市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-guizhou-006', '遵义市赤水市赤水丹霞旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '贵州省', '遵义市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-guizhou-007', '铜仁市江口县梵净山旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '贵州省', '铜仁地区',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-guizhou-008', '黔东南州镇远县镇远古城旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '贵州省', '黔东南苗族侗族自治州',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-guizhou-009', '黔南布依族苗族自治州荔波县樟江景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '贵州省', '黔南布依族苗族自治州',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-guizhou-010', '黔西南州万峰林景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '贵州省', '黔西南布依族苗族自治州',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-liaoning-001', '大连市老虎滩海洋公园—老虎滩极地馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '辽宁省', '大连市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-liaoning-002', '大连市金石滩景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '辽宁省', '大连市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-liaoning-003', '本溪市五女山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '辽宁省', '本溪市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-liaoning-004', '本溪市本溪水洞景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '辽宁省', '本溪市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-liaoning-005', '沈阳市沈阳植物园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '辽宁省', '沈阳市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-liaoning-006', '盘锦市红海滩风景廊道景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '辽宁省', '盘锦市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-liaoning-007', '鞍山市千山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '辽宁省', '鞍山市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-chongqing-001', '龙缸景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '重庆市', '云阳县',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-chongqing-002', '金佛山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '重庆市', '南川区',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-chongqing-003', '大足石刻景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '重庆市', '大足县',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-chongqing-004', '白帝城•瞿塘峡景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '重庆市', '奉节县',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-chongqing-005', '小三峡-小小三峡旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '重庆市', '巫山县',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-chongqing-006', '阿依河景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '重庆市', '彭水苗族土家族自治县',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-chongqing-007', '喀斯特旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '重庆市', '武隆县',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-chongqing-008', '四面山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '重庆市', '江津区',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-chongqing-009', '武陵山大裂谷景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '重庆市', '涪陵区',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-chongqing-010', '万盛黑山谷-龙鳞石海风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '重庆市', '綦江县',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-chongqing-011', '桃花源旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '重庆市', '酉阳土家族苗族自治县',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-chongqing-012', '濯水景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '重庆市', '黔江区',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shaanxi-001', '咸阳市乾陵景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '陕西省', '咸阳市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shaanxi-002', '商洛市金丝峡景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '陕西省', '商洛市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shaanxi-003', '宝鸡市太白山旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '陕西省', '宝鸡市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shaanxi-004', '宝鸡市法门文化景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '陕西省', '宝鸡市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shaanxi-005', '延安市延安革命纪念地景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '陕西省', '延安市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shaanxi-006', '延安市延川黄河乾坤湾景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '陕西省', '延安市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shaanxi-007', '延安市黄帝陵景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '陕西省', '延安市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shaanxi-008', '黄河壶口瀑布旅游区(陕西省延安市·山西省临汾市)', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '陕西省', '延安市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shaanxi-009', '西安市城墙•碑林历史文化景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '陕西省', '西安市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shaanxi-010', '西安市大明宫旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '陕西省', '西安市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shaanxi-011', '西安市大雁塔-大唐芙蓉园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '陕西省', '西安市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-shaanxi-012', '西安市秦始皇帝陵博物院景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '陕西省', '西安市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-qinghai-001', '海东市互助土族故土园旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '青海省', '海东地区',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-qinghai-002', '海北州阿咪东索景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '青海省', '海北藏族自治州',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-heilongjiang-001', '伊春市林海奇石景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '黑龙江省', '伊春市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-heilongjiang-002', '哈尔滨市太阳岛景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '黑龙江省', '哈尔滨市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-heilongjiang-003', '大兴安岭地区北极村旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '黑龙江省', '大兴安岭',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-heilongjiang-004', '牡丹江市镜泊湖景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '黑龙江省', '牡丹江市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-heilongjiang-005', '鸡西市虎头旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '黑龙江省', '鸡西市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-heilongjiang-006', '黑河市五大连池景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '黑龙江省', '黑河市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '5a-heilongjiang-007', '齐齐哈尔市扎龙生态旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '黑龙江省', '齐齐哈尔市',
+    '5A', NULL, NULL, NULL,
+    'published', '文化和旅游部 · 全国5A级旅游景区名录', '政府公开信息（官方名录）', 'https://lyfw.mct.gov.cn/site/special/scenic'
+),
+(
+    '4a-beijing-001', '世界公园30景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-002', '世界花卉大观园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-003', '东城区龙潭公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-004', '中国人民抗日战争纪念馆景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-005', '中国紫檀博物馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-006', '中国航空博物馆旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-007', '中央电视塔景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-008', '丰台区中国园林博物馆景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-009', '丰台区北宫森林公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-010', '乐多港假日广场景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-011', '仙居谷风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-012', '八大处公园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-013', '八奇洞景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-014', '八达岭水关长城景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-015', '北京世园公园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-016', '北京凤凰岭景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-017', '北京动物园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-018', '北京十渡风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-019', '北京园博园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-020', '北京国际鲜花港景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-021', '北京圣莲山旅游风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-022', '北京天文馆景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-023', '北京密云司马台长城景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-024', '北京市东城区地坛公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-025', '北京市中山公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-026', '北京市北海公园旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-027', '北京市平谷区丫髻山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-028', '北京市怀柔区红螺寺景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-029', '北京市房山区云居寺景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-030', '北京市房山区周口店遗址景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-031', '北京市房山区石花洞景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-032', '北京市景山公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-033', '北京市欢乐谷景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-034', '北京市玉渊潭公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-035', '北京市门头沟区戒台寺景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-036', '北京市陶然亭公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-037', '北京市香山公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-038', '北京延庆百里山水画廊景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-039', '北京张裕爱斐堡国际酒庄旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-040', '北京汽车博物馆景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-041', '北京海洋馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-042', '北京石景山游乐园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-043', '北京野生动物园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-044', '北京雁栖湖景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-045', '北京韩美林艺术馆文化景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-046', '北京黄花城水长城旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-047', '北京龙脉温泉景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-048', '南宫旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-049', '国家植物园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-050', '孔庙和国子监博物馆景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-051', '小汤山现代农业科技示范园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-052', '居庸关长城景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-053', '平谷京东大峡谷旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-054', '平谷区京东石林峡风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-055', '延庆区龙庆峡旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-056', '怀柔青龙峡旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-057', '明城墙遗址公园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-058', '朝阳公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-059', '潭柘寺景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-060', '紫竹院公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-061', '谷山村景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-062', '野鸭湖景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-063', '金海湖风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-064', '银山塔林风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-065', '顺义奥林匹克水上公园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-066', '首都博物馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-beijing-067', '黑龙潭旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '4A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '4a-guangdong-001', '东莞市华阳湖湿地公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '东莞市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-002', '东莞市南社村和塘尾村古建筑群景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '东莞市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-003', '东莞市可园博物馆景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '东莞市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-004', '东莞市展览馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '东莞市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-005', '东莞市广东东江纵队旧址景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '东莞市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-006', '东莞市广东观音山国家森林公园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '东莞市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-007', '东莞市松山湖生态景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '东莞市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-008', '东莞市清溪银瓶山森林公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '东莞市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-009', '东莞市科学技术博物馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '东莞市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-010', '东莞市逸颐艺舍博物馆景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '东莞市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-011', '东莞市隐贤山庄', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '东莞市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-012', '东莞市香市动物园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '东莞市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-013', '东莞市香市文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '东莞市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-014', '东莞市鸦片战争博物馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '东莞市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-015', '东莞市龙凤山庄影视旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '东莞市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-016', '中山市中国（大涌）红木文化博览城景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '中山市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-017', '中山市中山华艺广场景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '中山市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-018', '中山市詹园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '中山市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-019', '云浮市六祖故里旅游度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '云浮市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-020', '云浮市广东天露山旅游度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '云浮市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-021', '云浮市翔顺金水台温泉小镇景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '云浮市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-022', '佛山市三水森林公园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-023', '佛山市三水荷花世界', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-024', '佛山市中央电视台南海影视城景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-025', '佛山市乐从国际家居汇展中心景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-026', '佛山市南海平洲玉器街景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-027', '佛山市南海湾森林生态园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-028', '佛山市南风古灶旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-029', '佛山市梦里水乡景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-030', '佛山市清晖园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-031', '佛山市皂幕山旅游风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-032', '佛山市盈香心动乐园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-033', '佛山市祖庙博物馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-034', '佛山市紫南文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-035', '佛山市顺德罗浮宫国际家具艺术博览中心景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-036', '佛山市（顺德区）陈村花卉世界', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-037', '中国科学院华南植物园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-038', '广东科学中心', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-039', '广州动物园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-040', '广州市七彩澳游世界旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-041', '广州市中国共产党第三次全国代表大会会址纪念馆旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-042', '广州市中山纪念堂', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-043', '广州市九龙湖度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-044', '广州市从化碧水湾温泉度假村', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-045', '广州市余荫山房景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-046', '广州市北京路文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-047', '广州市南沙天后宫', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-048', '广州市南沙滨海湿地景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-049', '广州市南海神庙景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-050', '广州市南越王博物院（王墓展区）景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-051', '广州市城市规划展览中心旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-052', '广州市天人山水旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-053', '广州市宝墨园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-054', '广州市岭南印象园旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-055', '广州市帽峰山森林公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-056', '广州市广州起义纪念馆旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-057', '广州市正佳广场商贸旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-058', '广州市毛泽东同志主办农民运动讲习所旧址纪念馆旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-059', '广州市沙湾古镇景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-060', '广州市海珠湿地公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-061', '广州市番禺莲花山旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-062', '广州市白水寨旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-063', '广州市石头记矿物园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-064', '广州市石门国家森林公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-065', '广州市融创文旅城旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-066', '广州市西关永庆坊旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-067', '广州市越秀公园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-068', '广州市陈家祠旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-069', '广州市黄埔军校旧址纪念馆旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-070', '广州市黄花岗公园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-071', '广州神农草堂中医药博物馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-072', '广州起义烈士陵园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-073', '惠州·巽寮国际滨海旅游度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-074', '惠州市五矿·哈施塔特旅游小镇', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-075', '惠州市南昆山云顶旅游度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-076', '惠州市南昆山大观园生态度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-077', '惠州市叶挺将军纪念园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-078', '惠州市大亚湾红树林城市湿地公园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-079', '惠州市尚天然花海温泉小镇', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-080', '惠州市海滨温泉旅游度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-081', '惠州市龙门县南昆山生态旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-082', '惠州市龙门铁泉旅游度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-083', '揭阳市大洋国际生态旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '揭阳市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-084', '揭阳市广东望天湖生态旅游度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '揭阳市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-085', '揭阳市揭西黄满寨瀑布旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '揭阳市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-086', '揭阳市阳美玉都旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '揭阳市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-087', '梅州市三河坝战役纪念园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-088', '梅州市五指石风景名胜区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-089', '梅州市南寿峰旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-090', '梅州市叶剑英纪念园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-091', '梅州市客天下景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-092', '梅州市张弼士故居旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-093', '梅州市泰安楼客家文化旅游产业园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-094', '梅州市灵光寺旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-095', '梅州市熙和湾客乡文化产业园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-096', '梅州市球王故里文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-097', '梅州市百侯名镇旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-098', '梅州市神光山旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-099', '梅州市长潭旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-100', '梅州市雁山湖国际花园度假村', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-101', '梅州市韩山历史文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-102', '梅州市鹿湖温泉度假村', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-103', '汕头市中海黄金海岸旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕头市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-104', '汕头市前美古村侨文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕头市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-105', '汕头市南澳岛生态旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕头市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-106', '汕头市妈屿岛旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕头市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-107', '汕头市潮阳莲花峰风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕头市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-108', '汕头市澄海区莲华乡村旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕头市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-109', '汕头市礐石风景名胜区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕头市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-110', '汕头市蓝水星欢乐世界', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕头市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-111', '汕尾市海丰县新山红色旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕尾市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-112', '汕尾市海丰红宫红场旧址·彭湃烈士故居红色旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕尾市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-113', '汕尾市海丰莲花山度假村', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕尾市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-114', '汕尾市玄武山旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕尾市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-115', '汕尾市红海湾旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕尾市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-116', '汕尾市陆河县螺洞世外梅园旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕尾市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-117', '江门古劳水乡旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-118', '江门市启超故里·小鸟天堂文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-119', '江门市圭峰山风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-120', '江门市大雁山风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-121', '江门市山泉湾旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-122', '江门市川岛旅游度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-123', '江门市康桥温泉景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-124', '江门市恩平泉林黄金小镇休闲旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-125', '江门市新会古兜温泉旅游度假村', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-126', '江门市那琴半岛地质海洋公园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-127', '江门市锦江温泉旅游度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-128', '河源市佗城景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-129', '河源市叶园温泉旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-130', '河源市和平温泉之都旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-131', '河源市巴伐利亚庄园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-132', '河源市御临门温泉度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-133', '河源市恐龙文博园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-134', '河源市苏家围·东江画廊旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-135', '河源市霍山旅游风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-136', '河源市黄龙岩畲族风情旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-137', '水底山旅游度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '深圳市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-138', '深圳市东部华侨城旅游度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '深圳市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-139', '深圳市仙湖植物园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '深圳市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-140', '深圳市光明农场大观园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '深圳市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-141', '深圳市欢乐港湾旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '深圳市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-142', '深圳市西部海上田园旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '深圳市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-143', '深圳市观澜山水田园农庄景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '深圳市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-144', '深圳市野生动物园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '深圳市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-145', '深圳市青青世界旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '深圳市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-146', '清远市九龙峰林小镇景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-147', '清远市南岗千年瑶寨景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-148', '清远市古龙峡生态旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-149', '清远市宝晶宫景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-150', '清远市广东瑶族博物馆景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-151', '清远市广东第一峰旅游风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-152', '清远市新银盏温泉景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-153', '清远市森波拉度假森林景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-154', '清远市河中温泉旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-155', '清远市洞天仙境生态旅游度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-156', '清远市湟川三峡-龙潭文化生态旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-157', '清远市熹乐谷温泉旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-158', '清远市玄真旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-159', '清远市积庆里仙湖旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-160', '清远市聚龙湾旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-161', '清远市连南瑶族自治县万山朝王景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-162', '清远市金子山原生态休闲度假旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-163', '清远市黄腾峡生态旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-164', '湛江市三岭山森林公园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '湛江市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-165', '湛江市湖光岩风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '湛江市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-166', '湛江市茂德公鼓城度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '湛江市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-167', '湛江市蓝月湾温泉度假邨', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '湛江市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-168', '湛江市遂溪孔子文化城景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '湛江市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-169', '湛江市金沙湾滨海休闲旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '湛江市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-170', '湛江市鼎龙湾国际海洋旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '湛江市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-171', '潮州市东山湖度假村景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '潮州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-172', '潮州市广济桥文物旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '潮州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-173', '潮州市淡浮收藏院', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '潮州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-174', '潮州市绿太阳景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '潮州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-175', '潮州市绿岛旅游山庄', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '潮州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-176', '潮州市韩文公祠', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '潮州市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-177', '珠海市东澳岛旅游度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '珠海市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-178', '珠海市圆明新园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '珠海市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-179', '珠海市外伶仃岛旅游度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '珠海市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-180', '珠海市御温泉度假村景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '珠海市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-181', '珠海市桂山岛风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '珠海市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-182', '珠海市汤臣倍健透明工厂景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '珠海市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-183', '珠海市罗西尼工业旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '珠海市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-184', '肇庆市四会奇石河景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-185', '肇庆市封开贺江碧道画廊景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-186', '肇庆市封开龙山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-187', '肇庆市广宁绥江竹海生态旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-188', '肇庆市德庆学宫景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-189', '肇庆市盘龙峡景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-190', '肇庆市高要猫爪谷景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-191', '肇庆市龙母祖庙景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-192', '茂名市信宜窦州古城景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-193', '茂名市信宜莲花湖庄园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-194', '茂名市冼太夫人故里文化旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-195', '茂名市南海旅游岛·中国第一滩景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-196', '茂名市广东茂名森林公园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-197', '茂名市广垦（茂名）国家热带农业公园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-198', '茂名市放鸡岛海上游乐世界', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-199', '茂名市柏桥荔博园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-200', '茂名市浪漫海岸景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-201', '茂名市电白御水古温泉度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-202', '茂名市高州仙人洞旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-203', '阳江市凌霄岩风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '阳江市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-204', '阳江市春湾风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '阳江市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-205', '阳江市阳东区大澳渔村旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '阳江市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-206', '阳江市阳西咸水矿温泉景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '阳江市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-207', '韶关市东华山风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-208', '韶关市丽宫旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-209', '韶关市云门山生态文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-210', '韶关市古佛洞天景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-211', '韶关市始兴县满堂客家大围景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-212', '韶关市帽子峰旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-213', '韶关市广东大峡谷景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-214', '韶关市新丰云天海原始森林度假村景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-215', '韶关市曹溪温泉假日度假村', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-216', '韶关市珠玑古巷·梅关古道景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '4a-guangdong-217', '韶关市经律论文化旅游小镇景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '4A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-beijing-001', '上方山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-002', '中国印刷博物馆景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-003', '中国地质博物馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-004', '乐谷银滩风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-005', '云梦仙境景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-006', '仙栖洞景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-007', '八达岭古长城景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-008', '兴隆公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-009', '前门大街景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-010', '北京二锅头酒博物馆景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-011', '北京云峰山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-012', '北京京西古道景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-013', '北京冶仙塔旅游风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-014', '北京南海子麋鹿苑博物馆景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-015', '北京双龙峡自然风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-016', '北京古崖居原始部落旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-017', '北京古御道生态旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-018', '北京呀路古热带植物园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-019', '北京响水湖长城旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-020', '北京喇叭沟原始森林公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-021', '北京圣泉山旅游风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-022', '北京大观园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-023', '北京大觉寺景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-024', '北京天门山旅游风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-025', '北京太平洋海底世界博览馆景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-026', '北京密云桃源仙谷风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-027', '北京市东城区青年湖公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-028', '北京市京西十八潭景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-029', '北京市劳动人民文化宫景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-030', '北京市宣南文化博物馆景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-031', '北京市宣武艺园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-032', '北京市密云区云龙涧景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-033', '北京市怀柔区九谷口自然风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-034', '北京市怀柔区生存岛新概念旅游基地景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-035', '北京市房山世界地质公园博物馆景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-036', '北京市房山区韩村河景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-037', '北京市昌平区南口镇艺麓园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-038', '北京市朝阳区京城梨园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-039', '北京市朝阳区古塔公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-040', '北京市朝阳区四得公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-041', '北京市朝阳区团结湖公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-042', '北京市朝阳区大望京公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-043', '北京市朝阳区庆丰公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-044', '北京市朝阳区日坛公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-045', '北京市朝阳区白鹿公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-046', '北京市朝阳区红领巾公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-047', '北京市海淀百望山森林公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-048', '北京市留民营生态旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-049', '北京市门头沟区灵水景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-050', '北京幽谷神潭自然风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-051', '北京房山区张坊宋辽古城景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-052', '北京月坛公园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-053', '北京河北村民俗园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-054', '北京湖广会馆大戏楼景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-055', '北京焦庄户地道战遗址纪念馆景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-056', '北京白草畔自然风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-057', '北京百瑞谷景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-058', '北京百花山旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-059', '北京老舍茶馆景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-060', '北京草莓博览园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-061', '北京莱恩堡国际酒庄景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-062', '北京蟒山森林公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-063', '北京西山国家森林公园(昌华景区)', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-064', '北京邑仕庄园国际酒庄景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-065', '北京陶瓷艺术馆景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-066', '北京雾灵西峰景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-067', '北京青龙湖公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-068', '北京顺义汉石桥湿地景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-069', '北京鹫峰森林公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-070', '北小河公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-071', '南石洋大峡谷景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-072', '南苑森林湿地公园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-073', '坡峰岭风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-074', '妙峰山风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-075', '宋庆龄故居景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-076', '定都阁景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-077', '密云玫瑰情园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-078', '将府公园旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-079', '延庆区八达岭野生动物世界景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-080', '抗日战争纪念雕塑园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-081', '捧河湾自然风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-082', '斯普瑞斯奧特萊斯旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-083', '檀谷景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-084', '清凉谷旅游风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-085', '爨柏景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-086', '琉璃渠景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-087', '百花山自然风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-088', '皇家菜博物馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-089', '石门山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-090', '碓臼石景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-091', '神泉峡景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-092', '聚灵峡（灵山古道）景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-093', '蓝调庄园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-094', '蜜蜂大世界景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-095', '西藏文化博物馆景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-096', '金中都公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-097', '金水湖景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-098', '长寿山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-099', '阳台山自然风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-100', '静之湖度假区景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-101', '顺义区东江公园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-102', '首钢工业文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-103', '马栏旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-104', '黄芩仙谷景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-beijing-105', '龙门生态园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '北京市', '北京市',
+    '3A', NULL, NULL, NULL,
+    'published', '北京市文化和旅游局 · 北京旅游网景点链接列表', '政府公开信息（官方名录）', 'https://whlyj.beijing.gov.cn/ggfw/ly/202511/t20251119_4287815.html'
+),
+(
+    '3a-guangdong-001', '东莞市仙溪福地欧公文化景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '东莞市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-002', '东莞市唯美陶瓷博物馆景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '东莞市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-003', '东莞市太粮米饭探知馆景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '东莞市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-004', '东莞市寒溪水文化旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '东莞市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-005', '东莞市寮步牙香街文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '东莞市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-006', '东莞市清溪大王山森林公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '东莞市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-007', '东莞市稻香饮食文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '东莞市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-008', '东莞市粤晖园旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '东莞市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-009', '东莞市茶酒文旅博览园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '东莞市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-010', '东莞市鑫源食品文化体验区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '东莞市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-011', '东莞市黄大仙公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '东莞市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-012', '中山市三角镇迪茵湖田家舍生态农场', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '中山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-013', '中山市丫髻山宥南旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '中山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-014', '中山市仙踪龙园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '中山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-015', '中山市创益文化园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '中山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-016', '中山市南桥村红色旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '中山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-017', '中山市博物馆旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '中山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-018', '中山市参宫野参文化博物馆景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '中山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-019', '中山市咀香园工业旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '中山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-020', '中山市大尖山露营公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '中山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-021', '中山市大盛陶艺景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '中山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-022', '中山市孙文西路文化旅游步行街景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '中山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-023', '中山市左步村乡村旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '中山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-024', '中山市星光联盟·全球品牌灯饰中心景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '中山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-025', '中山市曹边村乡村旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '中山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-026', '中山市桂南村乡村旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '中山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-027', '中山市泉林欢乐世界景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '中山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-028', '中山市瀚蓝中山生态科普研学基地景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '中山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-029', '中山市火炬开发区厨邦酱油文化博览馆景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '中山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-030', '中山市罗三妹山“不走回头路”主题公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '中山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-031', '中山市荔景苑景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '中山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-032', '中山市里溪·鲤印象景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '中山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-033', '云浮市南江田园文化旅游小镇景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '云浮市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-034', '云浮市大金山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '云浮市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-035', '云浮市悦天下生态旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '云浮市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-036', '云浮市新兴县天堂小镇旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '云浮市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-037', '云浮市新兴县禅域小镇景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '云浮市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-038', '云浮市新兴县象窝山生态园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '云浮市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-039', '云浮市新兴县青山绿水温泉旅游度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '云浮市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-040', '云浮市欧德罗厨具博物馆景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '云浮市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-041', '云浮市罗定喜来谷动植物生态园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '云浮市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-042', '云浮市罗定梁家庄园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '云浮市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-043', '云浮市罗定长岗坡文化休闲旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '云浮市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-044', '云浮市蟠龙洞景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '云浮市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-045', '云浮市衍生健康医药旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '云浮市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-046', '云浮市郁南县大王山国家森林公园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '云浮市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-047', '云浮市郁南县桂圩镇龙岗田园综合体', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '云浮市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-048', '佛山市三水区南丹山森林王国景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-049', '佛山市三水区百威（佛山）啤酒工业旅游体验园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-050', '佛山市佛罗伦萨小镇景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-051', '佛山市创意园文化旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-052', '佛山市南国丝都丝绸博物馆景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-053', '佛山市南海区九江双蒸博物馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-054', '佛山市南海区赤山古村文化旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-055', '佛山市容桂渔人码头景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-056', '佛山市岭南金融博物馆景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-057', '佛山市文创古镇景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-058', '佛山市梁园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-059', '佛山市碧江金楼景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-060', '佛山市禅城区柏林艺术馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-061', '佛山市西樵松塘翰林村景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-062', '佛山市陈太吉酒庄景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-063', '佛山市顺德区周大福珠宝文化中心', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-064', '佛山市顺德区岭南和园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-065', '佛山市顺德区李小龙乐园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-066', '佛山市顺德区杏坛逢简水乡', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-067', '佛山市顺德区欢乐海岸PLUS景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-068', '佛山市顺德区黄连古村景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-069', '佛山市高明区三谭故里红色文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-070', '佛山市高明区娅米的阳光城堡景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '佛山市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-071', '中国（广州）超高清视频创新产业示范园旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-072', '广东修学旅游体验园（广东省旅游职业技术学校）', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-073', '广东环亚美容化妆品博物馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-074', '广东省凉茶博物馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-075', '广东省方志馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-076', '广州博物馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-077', '广州地铁博物馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-078', '广州宝趣玫瑰世界', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-079', '广州市1978电影小镇', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-080', '广州市世间香境七溪地景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-081', '广州市云纱星韵非遗文化园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-082', '广州市人和园—世界农旅之窗景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-083', '广州市从化国医园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-084', '广州市仙村循环经济园旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-085', '广州市北纬23°8''森林营地旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-086', '广州市十九路军淞沪抗日将士陵园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-087', '广州市十香园纪念馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-088', '广州市千泷沟大瀑布旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-089', '广州市南平静修小镇旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-090', '广州市南沙十八罗汉森林公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-091', '广州市南粤先贤馆-五仙古观文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-092', '广州市咏声动画科技馆旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-093', '广州市增城何仙姑景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-094', '广州市增城区瓜岭村——岭南古韵水乡文化旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-095', '广州市增城蒙花布乡村旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-096', '广州市大埔围美丽乡村景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-097', '广州市大岗循环经济产业园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-098', '广州市太古仓码头', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-099', '广州市孙中山大元帅府纪念馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-100', '广州市客天下·广州生态旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-101', '广州市幸福里历史文化街区景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-102', '广州市广东利泰智农生态农业观光园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-103', '广州市文化馆旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-104', '广州市星罗纪大森林景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-105', '广州市梯面红山村景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-106', '广州市正果老街旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-107', '广州市永华艺术馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-108', '广州市沙面·西堤旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-109', '广州市流溪河森林公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-110', '广州市湾区都市农业公园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-111', '广州市溪头旅游村', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-112', '广州市潘鹤雕塑艺术园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-113', '广州市濠迳亲子地质公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-114', '广州市猎德现代化都市旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-115', '广州市珠江琶醍啤酒文化创意艺术区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-116', '广州市生态设计小镇旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-117', '广州市白江湖森林公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-118', '广州市福山循环经济产业园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-119', '广州市紫泥堂文化创意园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-120', '广州市美华航空航天科普基地景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-121', '广州市花都宝桑园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-122', '广州市花都御盛国际马术庄园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-123', '广州市花都炭步镇塱头古村景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-124', '广州市莲塘春色休闲旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-125', '广州市蝴蝶谷生态旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-126', '广州市融德里历史文化街区景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-127', '广州市西坊大院文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-128', '广州市购书中心景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-129', '广州市资政大夫祠景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-130', '广州市赤坭循环经济园旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-131', '广州市辛亥革命纪念馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-132', '广州市迪士普音响博物馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-133', '广州市邓世昌纪念馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-134', '广州市陈李济中药文化园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-135', '广州市香蜜山生态旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-136', '广州市麦田生态园旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-137', '广州市黄埔古港景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-138', '广州水博苑景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-139', '广州洪秀全故居纪念馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-140', '广州白云湖景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-141', '广州艺术博物院（广州美术馆）景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-142', '广州越秀风行生态田园旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-143', '广州近代史博物馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-144', '广州迳下乡村旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-145', '广州钧明欢乐世界景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '广州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-146', '惠州市上东瑶乡风情旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-147', '惠州市上良民宿生态旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-148', '惠州市东平窑陶瓷文化园旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-149', '惠州市亚维浓生态园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-150', '惠州市兰门田园康养生态旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-151', '惠州市凤悦·秋长谷里旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-152', '惠州市劲家庄景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-153', '惠州市千花洲旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-154', '惠州市南昆山居度假景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-155', '惠州市博罗李艺金钱龟生态园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-156', '惠州市墨园古村旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-157', '惠州市安墩旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-158', '惠州市客家婆景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-159', '惠州市富力万洞古村旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-160', '惠州市寿昌湖旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-161', '惠州市广东伊利工业园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-162', '惠州市广东梁化国家森林公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-163', '惠州市广东航天农业科技生态园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-164', '惠州市怀安原乡生态旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-165', '惠州市惠阳环境园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-166', '惠州市日出东山海旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-167', '惠州市栖野·绿石河谷旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-168', '惠州市横江贸宝旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-169', '惠州市海天堂景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-170', '惠州市海龟湾旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-171', '惠州市清水湖农庄景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-172', '惠州市源茵生态园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-173', '惠州市白马易吉旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-174', '惠州市碧海湾旅游度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-175', '惠州市雅居乐白鹭湖体育旅游小镇景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-176', '惠州市雷公峡生态旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-177', '惠州市香溪堡旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-178', '惠州市高潭中洞红色旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-179', '惠州市高潭旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-180', '惠州市龙门山下白芒坑景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '惠州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-181', '揭西县火炬村乡村旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '揭阳市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-182', '揭阳岐山文化博览园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '揭阳市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-183', '揭阳市“八一”南昌起义南下部队指挥部军事决策会议旧址景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '揭阳市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-184', '揭阳市丁日昌纪念馆景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '揭阳市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-185', '揭阳市世铿院', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '揭阳市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-186', '揭阳市京明温泉度假村', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '揭阳市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-187', '揭阳市利泰飞鹅岭农业公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '揭阳市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-188', '揭阳市博物馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '揭阳市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-189', '揭阳市大南山八国风情园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '揭阳市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-190', '揭阳市市外桃园旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '揭阳市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-191', '揭阳市惠来县海滨度假村景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '揭阳市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-192', '揭阳市惠来滨荷湾旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '揭阳市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-193', '揭阳市惠来锦铧公园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '揭阳市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-194', '揭阳市揭东万竹园旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '揭阳市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-195', '揭阳市揭西大鹿农业公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '揭阳市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-196', '揭阳市揭西山湖村乡村旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '揭阳市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-197', '揭阳市揭西樱山花谷景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '揭阳市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-198', '揭阳市揭阳学宫景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '揭阳市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-199', '揭阳市普宁德安里旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '揭阳市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-200', '揭阳市普宁新溪古村滨河景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '揭阳市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-201', '揭阳市普宁登峰乡村文化旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '揭阳市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-202', '揭阳市普宁盘龙湾温泉度假村', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '揭阳市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-203', '梅州市上举相思谷景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-204', '梅州市中国内地现代足球发源地-五华元坑遗址景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-205', '梅州市中国客家博物馆景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-206', '梅州市丰顺县御逸温泉度假村', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-207', '梅州市丰顺县粤东大峡谷景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-208', '梅州市丰顺县铜鼓峰生态旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-209', '梅州市五华县双龙山旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-210', '梅州市五华县新丰寨旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-211', '梅州市五华热矿泥山庄景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-212', '梅州市兴宁珍珠红诚意酒城旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-213', '梅州市兴宁粤东云山谷生态旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-214', '梅州市北塘乡村旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-215', '梅州市南药梅片特色产业旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-216', '梅州市坪山梯田旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-217', '梅州市大观天下文化旅游产业园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-218', '梅州市客都人家文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-219', '梅州市富大陶瓷工业旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-220', '梅州市平远县南台卧佛山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-221', '梅州市平远县大河背景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-222', '梅州市曼佗山庄景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-223', '梅州市月形山乡村旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-224', '梅州市李光耀祖居旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-225', '梅州市梅县区松口古镇旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-226', '梅州市梅县区麓湖山旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-227', '梅州市汉光超顺农旅园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-228', '梅州市江畔人家休闲度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-229', '梅州市爱丽丝庄园（樱花谷）景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-230', '梅州市瑞山生态旅游度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-231', '梅州市益塘水库旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-232', '梅州市蕉岭县丘成桐祖居文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-233', '梅州市蕉岭县卡拉比-丘数学世界旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-234', '梅州市蕉岭县桃花源休闲农业旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-235', '梅州市金穗休闲旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-236', '梅州市龙归寨瀑布景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-237', '梅州市龙鲸河漂流旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '梅州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-238', '横琴粤澳深度合作区丽新创新方旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '横琴粤澳深度合作区',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-239', '横琴粤澳深度合作区星乐度·露营小镇景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '横琴粤澳深度合作区',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-240', '汕头市东湖社区景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕头市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-241', '汕头市中山公园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕头市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-242', '汕头市仙城翠湖旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕头市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-243', '汕头市宝奥玩具文旅产业园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕头市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-244', '汕头市小公园开埠区旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕头市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-245', '汕头市广东丹樱生态园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕头市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-246', '汕头市桥陈红色旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕头市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-247', '汕头市潮南区东华潮乡旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕头市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-248', '汕头市潮阳区和平大峰风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕头市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-249', '汕头市红场大南山红色旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕头市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-250', '汕头市绿梦欢乐世界景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕头市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-251', '汕头市金寿生态园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕头市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-252', '汕尾市中弘生态园旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕尾市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-253', '汕尾市凤山民俗文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕尾市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-254', '汕尾市城区晨洲蚝乡旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕尾市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-255', '汕尾市海丰县大湖滨海生态旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕尾市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-256', '汕尾市海丰莲花村生态旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕尾市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-257', '汕尾市海丰鹭影禾香生态旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕尾市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-258', '汕尾市红海湾东尾红色文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕尾市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-259', '汕尾市红色欢乐谷旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕尾市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-260', '汕尾市老德头海洋文化园旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕尾市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-261', '汕尾市铜鼎山旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕尾市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-262', '汕尾市陆丰上海外滩旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕尾市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-263', '汕尾市陆丰石寨古村文化旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕尾市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-264', '汕尾市陆丰福山妈祖旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕尾市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-265', '汕尾市陆丰金厢滨海红色旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕尾市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-266', '汕尾市陆河共光万亩梅园旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕尾市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-267', '汕尾市陆河螺溪谷旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '汕尾市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-268', '江门五邑华侨华人博物馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-269', '江门市五丰村东南亚风情旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-270', '江门市伍炳亮黄花梨艺博馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-271', '江门市台山喜运来温泉度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-272', '江门市台山市华侨文化博物馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-273', '江门市台山桂水村旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-274', '江门市台山颐和温泉养生度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-275', '江门市启明里景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-276', '江门市周文雍陈铁军烈士纪念园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-277', '江门市崖门渔港景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-278', '江门市开平凤仪里旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-279', '江门市开平博物馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-280', '江门市开平大沙里欢茶谷景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-281', '江门市开平市塘口旧墟旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-282', '江门市恒大泉都旅游度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-283', '江门市恩平冯如故里文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-284', '江门市新会京梅功夫侨村景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-285', '江门市新会区宝骏小冈香业城景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-286', '江门市新会古典家具城景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-287', '江门市新会泓达堂陈皮庄园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-288', '江门市无限极养生文化基地景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-289', '江门市杜阮凉瓜田园综合体旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-290', '江门市林基路红色教育基地景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-291', '江门市歇马举人村景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-292', '江门市海口埠景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-293', '江门市瑷露德玛芦荟庄园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-294', '江门市白水带缤纷乐园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-295', '江门市石板沙疍家风情岛', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-296', '江门市米仓村·簕菜文化创意园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-297', '江门市长廊生态园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-298', '江门市鹤山香草地景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '江门市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-299', '河源国家高新技术开发区百家鲜客家女奇妙乐园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-300', '河源市东江野战俱乐部景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-301', '河源市东源县仙坑古村景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-302', '河源市东源县仙湖茶园旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-303', '河源市东源县南园古村景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-304', '河源市东源县双田畲族民俗文化村旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-305', '河源市东源县康禾云溪温泉旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-306', '河源市九连山原始森林度假村景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-307', '河源市和平县林寨古村景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-308', '河源市和平县水背古村阳明文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-309', '河源市和平县荣佳国韵温泉度假村', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-310', '河源市啸仙故里文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-311', '河源市客天下水晶温泉国际旅游度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-312', '河源市源城区农夫山泉万绿湖工业旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-313', '河源市源城区大水井特色民宿文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-314', '河源市源城区野趣沟旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-315', '河源市紫金县苏区革命旧遗址群景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-316', '河源市越王山风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-317', '河源市龙川县五色茶岭景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-318', '河源市龙川县嶅山溪谷生态旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-319', '河源市龙川县甘陂畲族村旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-320', '河源市龙川县绿油花果树小镇景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '河源市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-321', '深圳市“地王观光•深港之窗”景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '深圳市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-322', '深圳市东山鹿嘴旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '深圳市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-323', '深圳市光明（红满庭）红木文化小镇景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '深圳市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-324', '深圳市华强北步行街景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '深圳市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-325', '深圳市玫瑰海岸文化旅游度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '深圳市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-326', '深圳市甘坑古镇文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '深圳市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-327', '清远市九州驿站-天门沟景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-328', '清远市佛冈田野绿世界景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-329', '清远市天子山旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-330', '清远市奥园英德巧克力王国旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-331', '清远市峡江旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-332', '清远市广东峡天下景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-333', '清远市徐家庄生态旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-334', '清远市欧家梯田观光旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-335', '清远市洛神谷旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-336', '清远市清城区美林湖景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-337', '清远市清新区下迳小华山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-338', '清远市清新区太和古洞风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-339', '清远市清新区笔架山旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-340', '清远市清泉湾生态旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-341', '清远市牛鱼嘴原始生态风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-342', '清远市狮子湖国际休闲旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-343', '清远市神峰关景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-344', '清远市英德仙桥地下河景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-345', '清远市英德宝墩湖生态旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-346', '清远市英德市T三峰林茶谷景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-347', '清远市英德市中华英石园旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-348', '清远市英德市亚婆田·白水寨生态旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-349', '清远市英德市红旗茶厂景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-350', '清远市英德市连樟乡村旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-351', '清远市英德浈阳峡风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-352', '清远市英德茶叶世界景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-353', '清远市连南瑶族自治县油岭民俗瑶寨景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-354', '清远市连山壮族瑶族自治县壮瑶风采非遗旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-355', '清远市连山壮族瑶族自治县鹰扬关景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-356', '清远市连山壮瑶山城景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-357', '清远市连山壮瑶族自治县永梅蒙峒古村', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-358', '清远市连山皇后山生态观光茶庄园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-359', '清远市连州市丰阳镇夏东天然森氧度假旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-360', '清远市连州市丰阳镇畔水乡村旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-361', '清远市连州西岸·禾悦生态旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-362', '清远市阳山县鱼水风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-363', '清远湖蝶湾旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '清远市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-364', '湛江军事文化博览园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '湛江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-365', '湛江市品胜天鹅湖旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '湛江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-366', '湛江市廉江安铺骑楼老街旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '湛江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-367', '湛江市廉江市田园寨田园综合体景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '湛江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-368', '湛江市廉江樱花公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '湛江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-369', '湛江市廉江谢鞋山旅游风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '湛江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-370', '湛江市廉江鳄鱼生态公园旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '湛江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-371', '湛江市徐闻菠萝的海景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '湛江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-372', '湛江市特呈全域旅游岛景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '湛江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-373', '湛江市茂德公大观园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '湛江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-374', '湛江市螺岗小镇景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '湛江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-375', '湛江市角尾乡放坡村旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '湛江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-376', '湛江市角尾乡灯楼角景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '湛江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-377', '湛江市调顺民俗文化园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '湛江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-378', '湛江市赤坎老街旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '湛江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-379', '湛江市遂溪鱼龙湖休闲度假村景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '湛江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-380', '湛江市雷州天成台旅游度假村', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '湛江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-381', '潮州市凤凰山天池景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '潮州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-382', '潮州市凤翔峡旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '潮州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-383', '潮州市展翠佛手果文旅生态园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '潮州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-384', '潮州市湘桥区社光休闲文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '潮州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-385', '潮州市潮安区基泰中草药文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '潮州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-386', '潮州市潮安区龙湖古寨旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '潮州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-387', '潮州市潮州古城文化旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '潮州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-388', '潮州市百师园创意馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '潮州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-389', '潮州市紫莲森林度假村景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '潮州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-390', '潮州市西湖公园旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '潮州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-391', '潮州市许驸马府景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '潮州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-392', '潮州市饶平县石壁山风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '潮州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-393', '潮州市饶平县西澳岛风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '潮州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-394', '潮州市饶平县青岚怪臼谷景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '潮州市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-395', '珠海市大画西游梦工厂景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '珠海市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-396', '珠海市大门口湿地公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '珠海市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-397', '珠海市岭南大地百草园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '珠海市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-398', '肇庆市包公文化园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-399', '肇庆市北岭山森林公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-400', '肇庆市四会LIVE直播基地景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-401', '肇庆市四会市山湖生态旅游度假区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-402', '肇庆市封开千层峰景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-403', '肇庆市封开县黄岩洞景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-404', '肇庆市封开大斑石景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-405', '肇庆市封开广信文化园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-406', '肇庆市广东四会玉器博览城景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-407', '肇庆市广宁县宝锭山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-408', '肇庆市广宁油茶文化博览园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-409', '肇庆市广宁红色江美旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-410', '肇庆市德庆冠旭数字时尚电子产业园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-411', '肇庆市德庆县三元塔景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-412', '肇庆市德庆巢顶山茶业公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-413', '肇庆市德庆无比酒业景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-414', '肇庆市怀集华辰玫瑰园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-415', '肇庆市怀集塔山森林公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-416', '肇庆市怀集宿安红色景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-417', '肇庆市怀集红霞湾牛仙谷景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-418', '肇庆市恒大世纪梦幻城', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-419', '肇庆市澳雪国际工业旅游园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-420', '肇庆市砚阳湖景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-421', '肇庆市紫云谷风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-422', '肇庆市西江酒文化展馆', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-423', '肇庆市金象山森林公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-424', '肇庆市阅江楼景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-425', '肇庆市香满源千年酱油坊景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-426', '肇庆市高新区橡果美立方景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-427', '肇庆市高要区黎槎古村八卦景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-428', '肇庆市高要绿地樾湖生态园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-429', '肇庆市高要金钟山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-430', '肇庆市鼎湖区砚洲岛景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '肇庆市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-431', '茂名市信宜三华李主题公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-432', '茂名市信宜山水双合景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-433', '茂名市信宜市窦州里文化创意街景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-434', '茂名市化州化橘红历史文化产业园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-435', '茂名市化州学宫（孔庙）景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-436', '茂名市天马山生态旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-437', '茂名市广东南路革命柑村文化旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-438', '茂名市建国生态天鹅湖旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-439', '茂名市沙琅新城公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-440', '茂名市牙象大地艺术公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-441', '茂名市玉湖风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-442', '茂名市电白区六韬珠宝创意产业园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-443', '茂名市电白区水东忠良街沉香特色步行街景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-444', '茂名市电白鹅凰嶂旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-445', '茂名市石根山风景旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-446', '茂名市茂南区南越·1959文化创意街景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-447', '茂名市西江温泉度假村', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-448', '茂名市马安竹海旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-449', '茂名市高州冼太庙景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-450', '茂名市高州古丁梯田景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-451', '茂名市高州古郡水城景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-452', '茂名市高州岭南凤凰园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-453', '茂名市高州市粤龙山风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '茂名市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-454', '阳春市春湾镇高村乡村旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '阳江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-455', '阳江市云山绿湖旅游度假村景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '阳江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-456', '阳江市十里泉城温泉旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '阳江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-457', '阳江市张小泉工业旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '阳江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-458', '阳江市敏捷欢乐黄金海岸景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '阳江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-459', '阳江市江城区冼夫人冯盎将军文化公园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '阳江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-460', '阳江市海陵岛北洛秘境景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '阳江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-461', '阳江市海陵岛红树林湿地公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '阳江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-462', '阳江市漆艺院旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '阳江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-463', '阳江市程村红树林生态旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '阳江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-464', '阳江市阳东区寿长河红树林湿地公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '阳江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-465', '阳江市阳东区恩阳台独立大队红色旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '阳江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-466', '阳江市阳东福兴生态园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '阳江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-467', '阳江市阳帆豆豉工业旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '阳江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-468', '阳江市阳春市崆垌岩旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '阳江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-469', '阳江市阳春潭簕红色展馆旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '阳江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-470', '阳江市阳江十八子四合院旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '阳江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-471', '阳江市阳江十八子集团工业旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '阳江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-472', '阳江市阳西县七贤书院景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '阳江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-473', '阳江市阳西县沙扒湾海天旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '阳江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-474', '阳江市阳西县边海红色展馆旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '阳江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-475', '阳江市阳西月亮湾滨海旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '阳江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-476', '阳江横山红色展馆旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '阳江市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-477', '韶关岭南红叶世界景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-478', '韶关市三龙谷（龙王潭）生态旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-479', '韶关市乐昌九福兰花公园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-480', '韶关市乳源仙门奇峡景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-481', '韶关市乳源县天井山森林公园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-482', '韶关市乳源山城水都阳光湖农旅公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-483', '韶关市五马寨生态园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-484', '韶关市仁化县丹霞灵溪景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-485', '韶关市仁化县石塘古村景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-486', '韶关市凡口国家矿山公园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-487', '韶关市华南教育历史研学基地（坪石）景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-488', '韶关市南岭诗意文化康养园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-489', '韶关市南雄市三佳农业公园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-490', '韶关市南雄泉水谷旅游景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-491', '韶关市多彩韶钢—工业文化园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-492', '韶关市始兴县开心农庄景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-493', '韶关市始兴县红梨村景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-494', '韶关市始兴红围景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-495', '韶关市山外山文旅园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-496', '韶关市广东核工业教育基地景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-497', '韶关市恩村古村景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-498', '韶关市新丰县云髻山景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-499', '韶关市新丰江源温泉旅游度假山庄', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-500', '韶关市曲江区百林湾景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-501', '韶关市枫日泉生态温泉度假村景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-502', '韶关市梅兰谷风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-503', '韶关市江尾农耕文化园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-504', '韶关市翁源县湖心坝客家群楼景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-505', '韶关市蓝山源旅游区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-506', '韶关市金喆园景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-507', '韶关市金鸡岭风景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-508', '韶关市香草世界森林公园', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+),
+(
+    '3a-guangdong-509', '韶关市马坝人遗址景区', NULL,
+    (SELECT id FROM category WHERE slug = 'scenic-area'),
+    'CN', '广东省', '韶关市',
+    '3A', NULL, NULL, NULL,
+    'published', '广东省文化和旅游厅 · 广东省A级旅游景区名录', '政府公开信息（官方名录）', NULL
+)
+ON CONFLICT (slug) DO UPDATE SET
+    name        = EXCLUDED.name,
+    category_id = EXCLUDED.category_id,
+    province    = EXCLUDED.province,
+    city        = EXCLUDED.city,
+    a_level     = EXCLUDED.a_level,
+    status      = EXCLUDED.status,
+    source      = EXCLUDED.source,
+    license     = EXCLUDED.license,
+    source_url  = EXCLUDED.source_url;
+
+COMMIT;

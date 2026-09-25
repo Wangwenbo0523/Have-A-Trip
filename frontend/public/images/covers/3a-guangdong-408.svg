@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="肇庆市广宁油茶文化博览园">
+  <title>肇庆市广宁油茶文化博览园</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#182824"/>
+      <stop offset="1" stop-color="#3b5e48"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="579.9" cy="461.5" r="49.5" fill="#e0c83e" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,466.6 216.0,546.1 344.0,467.4 472.0,546.3 600.0,447.8 728.0,542.4 856.0,452.8 984.0,543.4 1112.0,455.7 1240.0,543.9 1368.0,450.9 1496.0,543.0 1240.0,800.0" fill="#2b4738"/>
+  <polygon points="-40.0,800.0 120.0,527.0 280.0,606.2 440.0,522.7 600.0,605.3 760.0,532.1 920.0,607.2 1080.0,539.7 1240.0,608.7 1400.0,559.7 1560.0,612.7 1240.0,800.0" fill="#1d332a"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#12221d"/>
+  <polygon points="-40.0,800.0 66.7,622.3 173.3,684.5 280.0,628.6 386.7,685.7 493.3,645.2 600.0,689.0 706.7,620.3 813.3,684.1 920.0,606.9 1026.7,681.4 1133.3,612.8 1240.0,682.6 1346.7,613.1 1453.3,682.6 1240.0,800.0" fill="#12221d" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0c83e" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0c83e" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="70"
+          font-weight="700" fill="#f4f5f7">肇庆市广宁油茶文化博览园</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

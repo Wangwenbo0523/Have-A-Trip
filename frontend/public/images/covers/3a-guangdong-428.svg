@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="肇庆市高要绿地樾湖生态园景区">
+  <title>肇庆市高要绿地樾湖生态园景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#19281f"/>
+      <stop offset="1" stop-color="#3c5e3f"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="452.8" cy="461.6" r="50.3" fill="#e09944" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,472.6 216.0,547.3 344.0,419.2 472.0,536.6 600.0,435.3 728.0,539.9 856.0,417.6 984.0,536.3 1112.0,447.5 1240.0,542.3 1368.0,422.4 1496.0,537.3 1240.0,800.0" fill="#2c4730"/>
+  <polygon points="-40.0,800.0 120.0,535.4 280.0,607.9 440.0,515.5 600.0,603.9 760.0,510.8 920.0,603.0 1080.0,554.8 1240.0,611.8 1400.0,516.1 1560.0,604.0 1240.0,800.0" fill="#1e3324"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#132218"/>
+  <polygon points="-40.0,800.0 66.7,604.7 173.3,680.9 280.0,641.1 386.7,688.2 493.3,609.1 600.0,681.8 706.7,620.6 813.3,684.1 920.0,617.6 1026.7,683.5 1133.3,637.2 1240.0,687.4 1346.7,610.1 1453.3,682.0 1240.0,800.0" fill="#132218" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e09944" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e09944" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="60"
+          font-weight="700" fill="#f4f5f7">肇庆市高要绿地樾湖生态园景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

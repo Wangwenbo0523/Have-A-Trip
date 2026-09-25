@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="北京焦庄户地道战遗址纪念馆景区">
+  <title>北京焦庄户地道战遗址纪念馆景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b2825"/>
+      <stop offset="1" stop-color="#405e4d"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="520.6" cy="431.0" r="47.5" fill="#e0d057" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,438.5 216.0,540.5 344.0,439.3 472.0,540.7 600.0,440.6 728.0,540.9 856.0,418.6 984.0,536.5 1112.0,478.2 1240.0,548.4 1368.0,424.5 1496.0,537.7 1240.0,800.0" fill="#2f473b"/>
+  <polygon points="-40.0,800.0 120.0,548.1 280.0,610.4 440.0,559.1 600.0,612.6 760.0,553.4 920.0,611.5 1080.0,516.1 1240.0,604.0 1400.0,538.7 1560.0,608.5 1240.0,800.0" fill="#21332c"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#15221e"/>
+  <polygon points="-40.0,800.0 66.7,639.9 173.3,688.0 280.0,609.1 386.7,681.8 493.3,627.7 600.0,685.5 706.7,613.1 813.3,682.6 920.0,624.2 1026.7,684.8 1133.3,610.1 1240.0,682.0 1346.7,620.3 1453.3,684.1 1240.0,800.0" fill="#15221e" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0d057" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0d057" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="56"
+          font-weight="700" fill="#f4f5f7">北京焦庄户地道战遗址纪念馆景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800" role="img" aria-label="安庆市天柱山风景区">
+  <title>安庆市天柱山风景区</title>
+  <desc>自绘示意图, 不代表实景</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#192825"/>
+      <stop offset="1" stop-color="#3c5e4b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#sky)"/>
+  <circle cx="548.1" cy="458.1" r="45.7" fill="#e0d344" opacity="0.88"/>
+  <polygon points="-40.0,800.0 88.0,465.0 216.0,545.8 344.0,423.9 472.0,537.6 600.0,454.9 728.0,543.8 856.0,418.4 984.0,536.5 1112.0,452.5 1240.0,543.3 1368.0,465.2 1496.0,545.8 1240.0,800.0" fill="#2c473b"/>
+  <polygon points="-40.0,800.0 120.0,512.3 280.0,603.3 440.0,557.3 600.0,612.3 760.0,533.7 920.0,607.5 1080.0,553.6 1240.0,611.5 1400.0,527.0 1560.0,606.2 1240.0,800.0" fill="#1e332c"/>
+  <rect x="0" y="660" width="1200" height="140" fill="#13221e"/>
+  <polygon points="-40.0,800.0 66.7,623.7 173.3,684.7 280.0,640.1 386.7,688.0 493.3,618.1 600.0,683.6 706.7,622.0 813.3,684.4 920.0,619.4 1026.7,683.9 1133.3,607.4 1240.0,681.5 1346.7,626.5 1453.3,685.3 1240.0,800.0" fill="#13221e" opacity="0.6"/>
+  <rect x="0" y="702" width="1200" height="3" fill="#e0d344" opacity="0.28"/>
+  <g>
+    <rect x="160" y="162" width="880" height="188" rx="24" fill="#000000" opacity="0.38"/>
+    <text x="600" y="208" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="27"
+          fill="#e0d344" letter-spacing="7">A 级景区</text>
+    <text x="600" y="274" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="84"
+          font-weight="700" fill="#f4f5f7">安庆市天柱山风景区</text>
+    <text x="600" y="322" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif" font-size="21"
+          fill="#a7adb8" letter-spacing="2">自绘示意图 · 不代表实景</text>
+  </g>
+</svg>

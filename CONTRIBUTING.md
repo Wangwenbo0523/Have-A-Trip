@@ -79,8 +79,10 @@ python scripts/license_gate.py --strict
 ## 五、提 PR 前请自己先跑一遍
 
 ```bash
-# 许可证卡口(用装了 backend/requirements.txt 的解释器, 否则会误报)
-python scripts/license_gate.py --strict
+# 静态门禁一把跑完: 许可证 + 生成物可复现 + 种子 SQL 与源文件一致 + 工作流可解析
+# (用装了 backend/requirements.txt 的解释器, 否则许可证卡口会误报;
+#  它不跑 pytest / typecheck / build / db-schema, 跑完会把没覆盖的逐条列出来)
+python scripts/verify_all.py
 
 # 后端
 cd backend && python -m pytest -q
