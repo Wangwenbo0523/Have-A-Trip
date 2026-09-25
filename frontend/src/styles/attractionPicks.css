@@ -43,15 +43,9 @@
   font-size: 1.25rem;
 }
 
-.attractionPicks__lead {
-  margin: 6px 0 0;
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-
-/* 位置那一行: 比 lead 更实一点, 它说的是这一次的依据, 不只是招呼 */
+/* 位置那一行: 标题底下紧跟着的那句, 说的是这一次的依据, 不只是招呼 */
 .attractionPicks__where {
-  margin: 4px 0 0;
+  margin: 6px 0 0;
   color: var(--text);
   font-size: 0.86rem;
   opacity: 0.85;

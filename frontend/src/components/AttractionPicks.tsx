@@ -139,7 +139,6 @@ const AttractionPicks = () => {
             <h2 className="attractionPicks__title" id="attraction-picks-title">
               {t("home.picks.title")}
             </h2>
-            <p className="attractionPicks__lead">{t("home.picks.lead")}</p>
             {result ? (
               <p className="attractionPicks__where">{nearbyLine(result, t)}</p>
             ) : null}
