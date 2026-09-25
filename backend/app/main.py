@@ -16,6 +16,7 @@ from .api import (
     events,
     health,
     itineraries,
+    posts,
     recommendations,
     search,
     sources,
@@ -37,7 +38,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origin_list,
     allow_credentials=False,
-    allow_methods=["GET", "POST", "OPTIONS"],
+    # DELETE 是动态区的作者删除要用的; 少一项浏览器会直接拦掉预检
+    allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -45,6 +47,7 @@ app.add_middleware(
 for module in (
     ai,
     itineraries,
+    posts,
     search,
     health,
     attractions,

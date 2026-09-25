@@ -60,7 +60,7 @@ jobs:
             echo "OK: $3 = $2"
           }
 
-          expect 15 "$(q "select count(*) from information_schema.tables where table_schema='public' and table_type='BASE TABLE';")" "表数量"
+          expect 16 "$(q "select count(*) from information_schema.tables where table_schema='public' and table_type='BASE TABLE';")" "表数量"
           expect 1 "$(q "select count(*) from information_schema.views where table_schema='public';")" "视图数量"
           expect 1 "$(q "select count(*) from information_schema.triggers where trigger_name='trg_attraction_updated_at';")" "updated_at 触发器"
 
@@ -72,6 +72,7 @@ jobs:
           expect 1 "$(q "select count(*) from schema_version where version='0001_init';")" "schema_version 0001 记录数"
           expect 1 "$(q "select count(*) from schema_version where version='0002_plans';")" "schema_version 0002 记录数"
           expect 1 "$(q "select count(*) from schema_version where version='0003_ai';")" "schema_version 0003 记录数"
+          expect 1 "$(q "select count(*) from schema_version where version='0004_posts';")" "schema_version 0004 记录数"
           # 新增的两张表都带 updated_at, 触发器必须真的挂上 —— 配额计数器是靠 UPDATE 自增的
           expect 2 "$(q "select count(*) from information_schema.triggers where trigger_name in ('trg_attraction_embedding_updated_at','trg_trip_quota_updated_at');")" "向量与配额表的 updated_at 触发器"
 
@@ -202,6 +203,26 @@ jobs:
             exit 1
           fi
           echo "OK: trip_quota.used=-1 被拒绝"
+
+          # post.status 只有 visible/hidden。没有自动审核, 下架就是把它改成 hidden
+          if q "insert into post (user_id, body, status) values ($uid, '测试', 'live');" > /dev/null 2>&1; then
+            echo "::error::post_status_check 约束没有生效"
+            exit 1
+          fi
+          echo "OK: post.status=live 被拒绝"
+
+          # 空正文必须被拒: 表里那条 length(body) >= 1 是产品上限之外的最后一道兜底
+          if q "insert into post (user_id, body) values ($uid, '');" > /dev/null 2>&1; then
+            echo "::error::post_body_not_blank 约束没有生效"
+            exit 1
+          fi
+          echo "OK: post.body 为空被拒绝"
+
+          # 作者删除是硬删: 删完 app_user 还在, 动态没了
+          q "insert into post (user_id, body) values ($uid, '待删除');" > /dev/null
+          q "delete from post where user_id=$uid and body='待删除';" > /dev/null
+          expect 0 "$(q "select count(*) from post where user_id=$uid and body='待删除';")" "动态被硬删干净"
+          expect 1 "$(q "select count(*) from app_user where device_id='ci-probe';")" "删动态不动 app_user"
 
       - name: 断言 v_latest_rec 只取最近一批
         run: |

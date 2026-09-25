@@ -43,6 +43,10 @@ ITINERARY_STATUSES = ("pending", "generating", "succeeded", "failed", "rejected"
 A_LEVELS = ("5A", "4A", "3A")
 # 世界遗产类别
 HERITAGE_KINDS = ("cultural", "natural", "mixed")
+# 动态的可见性。没有自动审核(一期的取舍见 docs/PLAN.md 的 v4.0), 所以留一个
+# 运营侧能一键下架的位置: visible 才对外, hidden 只对写它的那张 SQL 可见。
+POST_STATUSES = ("visible", "hidden")
+
 BUDGET_LEVELS = ("free", "low", "mid", "high")
 
 # 景点-标签多对多。用 Table 而不是模型类, 因为这张表只承载关联关系。
@@ -487,3 +491,55 @@ class ItineraryItem(Base):
     reason: Mapped[str] = mapped_column(Text, nullable=False)
 
     itinerary: Mapped[Itinerary] = relationship(back_populates="items")
+
+# ---------------------------------------------------------------- 用户动态
+
+
+class Post(Base):
+    """一条用户写的动态。可选挂一个景点。
+
+    这是全项目唯一由用户产出**自由文本**的地方, 所以有四条与别处不同的口径:
+
+    1. `status` 只有 visible 才对外。一期不做自动审核, 运营侧下架走
+       `update post set status = 'hidden' where id = ...`(见 db/README.md)。
+    2. `author_name` 与 `attraction_name` 都是**快照**: 署名只属于发出来的那一条,
+       景点改名或下架之后回看旧动态仍然显示当时那一刻(与 itinerary_item 同一个道理)。
+    3. 不存任何定位。动态里看起来像位置的字, 只可能是用户自己敲进去的。
+    4. 作者删除是**真删**(DELETE), 运营下架是软删(status) —— 前者是用户的意愿,
+       后者要留痕, 两件事不能合成一个开关。
+    """
+
+    __tablename__ = "post"
+    __table_args__ = (
+        CheckConstraint("status IN ('visible', 'hidden')", name="post_status_check"),
+        # 长度口径: 库这一层只做兜底(非空、别超过 1000 字), 对用户承诺的 500 字在
+        # schemas.py 的 POST_BODY_MAX。两个数字合成一个的话, 改产品上限就要动迁移。
+        CheckConstraint("length(body) >= 1", name="post_body_not_blank"),
+        CheckConstraint("length(body) <= 1000", name="post_body_length_check"),
+        CheckConstraint("length(author_name) <= 40", name="post_author_length_check"),
+        # 列表永远按 (status, created_at) 取, 这两个索引就是给它的
+        Index("idx_post_status_time", "status", "created_at"),
+        Index("idx_post_user_time", "user_id", "created_at"),
+    )
+
+    id: Mapped[int] = mapped_column(BigIntPK, primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("app_user.id", ondelete="CASCADE"), nullable=False
+    )
+    author_name: Mapped[str] = mapped_column(Text, nullable=False, default="游客")
+    body: Mapped[str] = mapped_column(Text, nullable=False)
+    # SET NULL 而不是 CASCADE: 景点被硬删不该连坐删掉别人写的动态, 只是那一行的链接没了
+    attraction_id: Mapped[int | None] = mapped_column(
+        ForeignKey("attraction.id", ondelete="SET NULL")
+    )
+    attraction_name: Mapped[str | None] = mapped_column(Text)
+    status: Mapped[str] = mapped_column(Text, nullable=False, default="visible")
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+
+    attraction: Mapped[Attraction | None] = relationship()
+

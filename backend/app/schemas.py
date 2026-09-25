@@ -490,3 +490,73 @@ class ItineraryOut(BaseModel):
     # 轮询上限(秒)。前端据此停轮询, 而不是各写各的超时
     max_poll_seconds: int
     disclaimer: str
+
+
+# ---------------------------------------------------------------- 动态区
+
+# 正文上限: 接口口径是 500 字, 库里 CHECK 是 1000 的兜底。两个数字故意不合并 ——
+# 收紧产品口径不该动表结构, 放宽存储也不该悄悄放开接口。
+POST_BODY_MAX = 500
+
+
+class PostIn(BaseModel):
+    """发一条动态。user_id 与 device_id 只能给一个, 与行程生成同口径。"""
+
+    body: str = Field(min_length=1, max_length=POST_BODY_MAX)
+    device_id: str | None = Field(default=None, max_length=200)
+    # 可选署名。不给就落「游客」—— 没有账号体系, 署名只是个显示用的字符串
+    nickname: str | None = Field(default=None, max_length=24)
+    # 可选挂一个已发布景点, 按 slug 给; 留空就是纯文字
+    attraction_slug: str | None = Field(default=None, max_length=200)
+    user_id: int | None = None
+
+    @model_validator(mode="after")
+    def _check(self) -> "PostIn":
+        if self.user_id is not None and self.device_id is not None:
+            raise ValueError("user_id 与 device_id 只能传一个")
+        # min_length 只管长度, 一串空格是能过校验的; 正文全是空白等于没发
+        if not self.body.strip():
+            raise ValueError("正文不能只有空白字符")
+        return self
+
+
+class PostAuthorOut(BaseModel):
+    """作者。
+
+    **只有署名**: 删除权限是拿 device_id 判的, 把别人的 device_id 列出来,
+    等于把别人的删除权交给所有人。账号体系上线前这里也不回 user_id —— 用不上。
+    """
+
+    name: str
+
+
+class PostAttractionOut(BaseModel):
+    """动态挂着的景点。name 是发布时的快照, 景点改名不影响旧动态。
+
+    slug 为空表示景点已下架或已删除: 名字照显, 但不给链接(点了会 404)。
+    """
+
+    slug: str | None = None
+    name: str
+    name_en: str | None = None
+
+
+class PostOut(BaseModel):
+    id: int
+    author: PostAuthorOut
+    body: str
+    attraction: PostAttractionOut | None = None
+    created_at: datetime
+    # 是不是当前请求者发的(按 viewer / device_id 判)。只有 true 才给删除按钮
+    mine: bool = False
+
+
+class PostPage(BaseModel):
+    items: list[PostOut] = Field(default_factory=list)
+    page: int = 1
+    size: int
+    total: int = 0
+    # 当天发帖配额: limit 是配置上限, used 是今天已经用掉几条。没给身份时 used 为 None
+    daily_limit: int
+    used_today: int | None = None
+    disclaimer: str

@@ -102,6 +102,15 @@ EXPECTED_TYPES = {
         "used": "INTEGER",
         "tokens_used": "INTEGER",
     },
+    "post": {
+        "user_id": "BIGINT",
+        # 署名与景点名都是**快照**: 作者改名、景点改名或下架, 旧动态仍显示当时那一刻
+        "author_name": "TEXT",
+        "body": "TEXT",
+        "attraction_id": "INTEGER",
+        "attraction_name": "TEXT",
+        "status": "TEXT",
+    },
 }
 
 
@@ -136,3 +145,23 @@ def test_vector_tables_keep_their_unique_keys(pg_engine):
 
     items = {tuple(item["column_names"]) for item in inspect(pg_engine).get_unique_constraints("itinerary_item")}
     assert ("itinerary_id", "day_index", "seq") in items
+
+
+def test_post_indexes_and_foreign_keys(pg_engine):
+    """动态的取数路径与删除语义都压在这几个索引/外键上, 掉了不会报错, 只会变慢或删错。"""
+    inspector = inspect(pg_engine)
+
+    indexes = {item["name"] for item in inspector.get_indexes("post")}
+    assert {"idx_post_status_time", "idx_post_user_time"} <= indexes, "列表与「我的」各走一个索引"
+
+    # 景点被硬删不许连带删掉动态: 内容还在, 只是少一个可点的链接
+    attraction_fk = [
+        item for item in inspector.get_foreign_keys("post") if item["constrained_columns"] == ["attraction_id"]
+    ]
+    assert attraction_fk and attraction_fk[0]["options"].get("ondelete") == "SET NULL"
+
+    # 作者行没了(理论上不会)才连带删动态
+    author_fk = [
+        item for item in inspector.get_foreign_keys("post") if item["constrained_columns"] == ["user_id"]
+    ]
+    assert author_fk and author_fk[0]["options"].get("ondelete") == "CASCADE"
