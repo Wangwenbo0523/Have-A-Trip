@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from functools import lru_cache
+from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -119,9 +120,29 @@ class Settings(BaseSettings):
     # 能写, 信了就等于让伪造的头把所有人指到同一个城市
     geo_trust_forwarded_for: bool = False
 
+    # ------------------------------------------------------------ 静态站点(单进程)
+    #
+    # 把 frontend/dist 挂在 API 进程上, 一个进程 = 整个应用。默认关闭: 生产形态是
+    # nginx 托 dist、API 单独跑(见 docs/DEPLOY.md 第四节), 挂在这里只是为了「本机双击
+    # 即用」不用装 nginx —— 与 GEO_IP_PROVIDER / LLM_PROVIDER 同一思路, 不配就不改变
+    # 现有行为。
+    #
+    # 开了但没 build 过时**不报错也不挂空目录**: / 仍然给 API 自述, 免得界面上出现一个
+    # 空白的 404。scripts/damo-app.ps1 会先确认 dist 在。
+    serve_frontend: bool = False
+    # 留空 = 仓库里的 frontend/dist(按本文件位置算, 与启动时的 cwd 无关)
+    frontend_dist: str = ""
+
     @property
     def cors_origin_list(self) -> list[str]:
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
+
+    @property
+    def frontend_dist_path(self) -> Path:
+        """前端产物目录。相对路径按 cwd 解, 空值按仓库位置解。"""
+        if self.frontend_dist.strip():
+            return Path(self.frontend_dist).expanduser().resolve()
+        return Path(__file__).resolve().parents[2] / "frontend" / "dist"
 
 
 @lru_cache

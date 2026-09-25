@@ -93,6 +93,8 @@ WantedBy=multi-user.target
 | `GEO_IP_BASE_URL`、`GEO_IP_API_KEY` | `custom` 必须给地址（支持 `{ip}` 占位，没有就拼在路径末尾）；需要鉴权的服务会带成 `Authorization: Bearer <key>` |
 | `GEO_IP_TIMEOUT_SECONDS` | 归属地查询超时，默认 1.5 秒。宁可退回随机，也不让它拖慢首页 |
 | `GEO_TRUST_FORWARDED_FOR` | 默认 `false`。在反向代理后面部署时要打开，否则后端只看到代理的地址（多半是私网，等于永远认不出位置）。打开前请确认代理**覆盖**而不是追加 `X-Forwarded-For` |
+| `SERVE_FRONTEND` | `false`(默认) / `true`。让这个 API 进程自己托前端产物（单进程形态，见第四·五节）。不设就等于以前的行为 |
+| `FRONTEND_DIST` | 前端产物目录，只在 `SERVE_FRONTEND=true` 时有意义。留空按仓库位置算（`<仓库>/frontend/dist`），与进程 cwd 无关 |
 
 健康检查用 `GET /api/v1/healthz`：数据库连不上时它返回 `degraded` 而不是 500，
 所以不要拿 HTTP 200 当「一切正常」，要读 `status` 字段。
@@ -141,6 +143,28 @@ server {
 ```
 
 同源部署（上面这种）时 `VITE_API_BASE` 留空，前端会请求 `/api/v1`，由 `/api/` 这条规则转发过去。
+
+## 四·五、单进程形态（不用 nginx：本机应用 / 单机部署）
+
+前端产物也可以**由 API 进程自己托**，省掉中间那一层：
+
+```bash
+cd backend
+SERVE_FRONTEND=true FRONTEND_DIST=/srv/have-a-trip/frontend/dist \
+  .venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8100
+```
+
+打开 `http://127.0.0.1:8100/` 就是应用：界面与 `/api` 同源同端口。仓库里 Windows 那条**本机应用**路径（`damo.cmd` / `scripts/damo-app.ps1`）走的就是这个形态 —— 装一次依赖，双击即用，关窗即停。
+
+四条边界（都在 `backend/app/web.py`，`backend/tests/test_web.py` 逐条断言）：
+
+- **默认关闭**：`SERVE_FRONTEND` 不设或为 `false` 时行为与以前完全一致（`/` 返回 API 自述 JSON，未知路径 404 JSON）；`dist` 不存在时同样退回 JSON，不会 500
+- **不抢 API 的路**：`api/`、`docs`、`openapi.json`、`redoc` 前缀先判，`/api/no-such` 仍是 404 JSON，不会被 SPA 壳吞成 200
+- **不认字面路径以外的东西**：拼出来的文件路径必须仍落在 `dist` 里才算数（`../` 与指向外部的符号链接一律挡掉，命中就回落 `index.html`），`dist` 外的一个字节都读不到
+- **缓存分开对待**：`/assets/**` 是 vite 带内容哈希的产物，回 `public, max-age=31536000, immutable`；`index.html` 回 `no-store`，否则改版后用户拿到的是旧壳
+
+> `FRONTEND_DIST` 留空时按**仓库位置**算（`<仓库>/frontend/dist`），与进程 cwd 无关 —— 从别处起服务也认得出产物在哪。
+> 生产上仍建议「反向代理 + 静态托管」那套（上面第四节）：静态文件交给 nginx / Caddy 比让 Python 读磁盘更划算，还能顺手做 gzip 与 CDN。这条形态的价值在**本机应用**与不需要代理的单机部署。
 
 ## 五、推荐离线任务
 
@@ -219,5 +243,7 @@ python scripts/reclaim_itineraries.py
 - [ ] 前端产物里没有任何地图 SDK：`grep -rIn "leaflet\|mapbox\|ol/" dist/assets` 应为空
 - [ ] （可选）要用模型补景点简介时, 在**本地**跑 `python scripts/draft_attraction_summaries.py`, 逐条核对生成的待审 SQL 后再抄进 `db/seed/seed.sql`;
       **不要在部署机上直接执行** `db/seed/drafts/` 里的文件
+- [ ] 用单进程形态（`SERVE_FRONTEND=true`）时：`/` 给的是 `dist/index.html` 且 `Cache-Control: no-store`，`/assets/*` 是 `immutable`，`/api/no-such` 仍是 404 JSON
+- [ ] 用单进程形态时：`curl --path-as-is 'http://127.0.0.1:8100/..%2f..%2fpackage.json'` 拿不到 `dist` 外的文件，且监听地址只有回环（`ss -ltnp | grep 8100`）
 - [ ] 备份策略覆盖 PostgreSQL
 - [ ] `/api/v1/stats` 的 `attraction_total` 与 `/api/v1/sources` 的一致，`needs_attention` 同为一个值 —— 看板与声明页看的是同一份聚合，两边对不上说明有人改了一边

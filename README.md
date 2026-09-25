@@ -12,7 +12,7 @@
 | 模块 | 状态 | 说明 |
 |---|---|---|
 | `db/` | ✅ | 15 张表 + 视图 + 触发器，幂等可重复执行；156 个景点、32 个标签、156 个旅游方案 |
-| `backend/` | ✅ | 景点列表/详情/搜索、分类标签、来源与许可、看板数据源、行为埋点、推荐接口、随机抽取与就近推荐（按 IP 猜城市，默认关闭）、AI 能力（一句话检索 / 详情页追问 / 推荐理由润色 / 语义检索 / LLM 行程生成，默认关闭）；293 个用例（285 通过，另 8 个 schema 对拍用例需 PostgreSQL） |
+| `backend/` | ✅ | 景点列表/详情/搜索、分类标签、来源与许可、看板数据源、行为埋点、推荐接口、随机抽取与就近推荐（按 IP 猜城市，默认关闭）、AI 能力（一句话检索 / 详情页追问 / 推荐理由润色 / 语义检索 / LLM 行程生成，默认关闭）；310 个用例（302 通过，另 8 个 schema 对拍用例需 PostgreSQL） |
 | `frontend/` | ✅ | 首页（打开时弹出「出去走走」：按猜到的城市就近抽三个、推荐位带理由且可 AI 润色）、全部景点（含等级筛选与「用一句话找景点」）、分类页、详情页（含旅游方案、站外视频搜索、就这个景点追问）、帮我排行程（提交 → 轮询 → 结果，可打印行程单）、数据看板、景点对比、搜索、数据来源与许可页、错误态、页头中英双语与深浅色切换（默认中文、默认深色）；135 用例通过 |
 | `recsys/` | ✅ | 三条脚本（导出 → 训练 → 回写）端到端跑通，BPR 离线结果已写回 `rec_result` |
 | 数据量 | ✅ | 156 个景点 / 32 个标签，中国境内 116 + 境外 40（覆盖六大洲 30 个国家），全部自采（`license` 为 MIT）；图片为程序化自绘 |
@@ -105,7 +105,8 @@ PostgreSQL   景点档案 / 用户行为日志 / 推荐结果表
 | `backend/` | FastAPI 服务与测试，见 `backend/README.md` |
 | `db/` | `schema.sql` + 种子数据 + 字段口径，见 `db/README.md` |
 | `recsys/` | RecBole 调用层：依赖钉版、训练配置、离线脚本，见 `recsys/README.md` |
-| `scripts/` | 基底钉版记录、许可证卡口、DCO 校验、静态素材生成（`make_favicon.py` 站点图标、`make_attraction_covers.py` 景点配图）、离线工具（`draft_attraction_summaries.py` 生成简介草稿，人审后入库）、演示脚本（`demo-offline.ps1` 跑出「不配模型也完整可用」的验收报告） |
+| `scripts/` | 基底钉版记录、许可证卡口、DCO 校验、静态素材生成（`make_favicon.py` 站点图标、`make_attraction_covers.py` 景点配图）、离线工具（`draft_attraction_summaries.py` 生成简介草稿，人审后入库）、演示脚本（`demo-offline.ps1` 跑出「不配模型也完整可用」的验收报告）、本机应用启动器（`damo-app.ps1` 单进程起应用并开窗口、`install-damo-app.ps1` 装桌面与开始菜单快捷方式） |
+| `damo.cmd` | 双击入口（Windows）：起一个单进程应用并开一个独立窗口，见「当应用用」 |
 | `docs/` | `PLAN.md` 施工计划、`BASES.md` 基底清单、`LICENSE-AUDIT.md` 许可审查、`DEPLOY.md` 部署 |
 
 ## 快速起步
@@ -136,6 +137,41 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/dev-up.ps1 -Down
 | `-NoSeed` | 只灌 schema，不灌种子数据 |
 | `-LlmProvider ollama` | 顺手把 AI 检索开成本地 ollama（其余 `LLM_*` 见 `backend/.env.example`） |
 | `-NoBackend` / `-NoFrontend` | 只起一半 |
+
+### 当应用用（双击 `damo.cmd`）
+
+上面那条是**改代码**用的（dev server + 热更新）；想在机器上像应用一样用，走这条。依赖装法与上面完全相同，之后：
+
+```powershell
+# 起一个单进程应用(API 连托 frontend/dist), 用独立窗口打开, 关窗即停
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/damo-app.ps1
+
+# 改了前端代码再进去
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/damo-app.ps1 -Rebuild
+
+# 把 damo 放到桌面与开始菜单(当前用户, 不需要管理员)
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/install-damo-app.ps1
+
+# 收掉它起的实例
+damo.cmd -Down
+```
+
+装好之后不用再开命令行：双击桌面上的 `damo` 就行（`damo.cmd` 是它的等价物）。
+
+分工是**改代码 vs 用**：不开 `--reload`、不跑 vite dev server，而是让 FastAPI **一个进程**同时托 `frontend/dist` 与 `/api`（`SERVE_FRONTEND=true`），所以只有一个进程、一个端口，默认 `8100`（与 dev-up 的 8000/8010 错开，两边可以同时开着）。四条约定：
+
+- 不动仓库：日志与 pid 只写 `.dev/`，不生成也不改 `.env`
+- 认得出自己：端口上跑着本实例就直接复用，不会再起第二个；端口被**别的**程序占着时只报错退出，不去杀别人的进程
+- 关窗即停：窗口一关就把服务收掉（想留着加 `-KeepServer`）
+- 只绑 `127.0.0.1`：这是给人在这台机器上用的应用，不对局域网开口
+
+| 常用参数 | 用途 |
+|---|---|
+| `-Rebuild` | 先重新 build 前端产物（改了前端代码就加它） |
+| `-Port 8101` | 换端口 |
+| `-DatabaseUrl ...` | 直接指定库；不给就按 dev-up 那套探测（`DATABASE_URL` → 5432 → 55432） |
+| `-NoWindow` | 只起服务不开窗口（脚本 / CI 用） |
+| `-Down` | 收掉本脚本起的实例 |
 
 ### 离线演示（不配模型也完整可用）
 

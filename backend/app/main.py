@@ -5,10 +5,10 @@
 """
 from __future__ import annotations
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from . import __version__
+from . import __version__, web
 from .api import (
     ai,
     attractions,
@@ -21,7 +21,7 @@ from .api import (
     sources,
     stats,
 )
-from .config import get_settings
+from .config import Settings, get_settings
 
 settings = get_settings()
 
@@ -58,10 +58,24 @@ for module in (
 
 
 @app.get("/", include_in_schema=False)
-def root() -> dict:
+def root(settings: Settings = Depends(get_settings)):
+    """整站首页。
+
+    开了静态层(SERVE_FRONTEND=true)且前端 build 过时给应用首页; 否则给 API 自述 ——
+    没 build 就返回一个空白 404, 会让人以为应用坏了。
+    """
+    page = web.index_response(settings)
+    if page is not None:
+        return page
     return {
         "name": "Have-A-Trip · 景点大全 API",
         "version": __version__,
         "docs": "/docs",
         "api": settings.api_prefix,
     }
+
+
+# 通配路由必须注册在**最后**, 而且必须在 "/" 之后: Starlette 按注册顺序取第一个匹配,
+# /{path:path} 连 "/" 也匹配, 排在前面会把整站首页抢走。放这里之后, /api/** 与 /docs
+# 先被接走, "/" 有自己的路由, 静态层只收剩下的。
+app.include_router(web.router)
