@@ -58,7 +58,7 @@ psql -d attraction_atlas -c "select * from schema_version;"                 # �
 | `tag` | 自由标签 |
 | `attraction` | 景点档案主表 |
 | `attraction_tag` | 景点-标签多对多 |
-| `attraction_image` | 图集，每条带 `credit` 与 `license`（均 `NOT NULL`）；1385 行 = 每个景点恰好一行：1255 条自绘 SVG + 130 条 Wikimedia Commons 实景照片（台账 `seed/photos.json`） |
+| `attraction_image` | 图集，每条带 `credit` 与 `license`（均 `NOT NULL`）；1385 行 = 每个景点恰好一行：1186 条自绘 SVG + 199 条 Wikimedia Commons 实景照片（台账 `seed/photos.json`） |
 | `attraction_plan` | 景点的旅游方案（自采行程建议），一条一个方案 |
 | `attraction_plan_step` | 方案里的有序步骤，按 `day_no` 分组、组内按 `sort` 升序 |
 | `app_user` | 用户（一期只有匿名 `device_id`） |
@@ -188,7 +188,7 @@ A 级景区条目，单独放在 `seed/attractions_cn.sql`（脚本生成物，�
 | 票价只在**确定免费**时写 `0`，其余为 `NULL` | 票价是易变信息，写进种子的数字迟早会过期。目前只有 9 条写了 `0`（西湖、中国国家博物馆、苏州博物馆、外滩、橘子洲，以及查理大桥、大堡礁、米尔福德峡湾、圣托里尼这几处不收费的开放区域） |
 | 景区等级 `a_level` 与世界遗产 `heritage` 只填能查证的 | `NULL` 是**未核实**。名录会调整，宁可空着也不猜；前端把两者都为空处理成「不显示徽章」。官方名录那一批的 `a_level` 同样只写发布方说过的话，不由本仓库推算 |
 | 方案只给 `budget_level` 档次，不给金额 | 与票价同理，具体价格随季节浮动，写死就会过期 |
-| 配图以**自绘**为主，另有 130 张实景照片 | 原打算全部用 CC0 / 公有领域图库。实测 Wikimedia Commons 与 Openverse 在本机网络下直连不通，Unsplash / Pixabay 又各有各的专有许可（不是 CC0），且对中国具体景点覆盖很薄，于是改成程序化生成 SVG（`scripts/make_attraction_covers.py`），出处就是脚本本身。2026-09-26 补了 130 张 Commons 实景照片（`scripts/fetch_commons_photos.py` 经代理抓取，只收 PD / CC0 / CC BY / CC BY-SA），剩下的景点仍用自绘 SVG 兜底。每条都走 `credit` 与 `license`（两列均为 `NOT NULL`），声明页按「作者 + 许可」聚合；**逐图署名与来源页链接还没做**，见 `docs/LICENSE-AUDIT.md` 第五节 |
+| 配图以**自绘**为主，另有 199 张实景照片 | 原打算全部用 CC0 / 公有领域图库。实测 Wikimedia Commons 与 Openverse 在本机网络下直连不通，Unsplash / Pixabay 又各有各的专有许可（不是 CC0），且对中国具体景点覆盖很薄，于是改成程序化生成 SVG（`scripts/make_attraction_covers.py`），出处就是脚本本身。2026-09-26 分两批补了 199 张 Commons 实景照片（`scripts/fetch_commons_photos.py` 经代理抓取，只收 PD / CC0 / CC BY / CC BY-SA），剩下的景点仍用自绘 SVG 兜底。每条都走 `credit` 与 `license`（两列均为 `NOT NULL`），声明页按「作者 + 许可」聚合；**逐图署名与来源页链接还没做**，见 `docs/LICENSE-AUDIT.md` 第五节 |
 | 自采景点的 `source_url` 为 `NULL` | 内容是逐条整理的公开事实，没有单一可引的页面；等有了再补，不为填空而填。官方名录那一批有明确出处，`source_url` 指向发布页面（广东那一份没留存地址，为空） |
 
 ### 幂等与自愈

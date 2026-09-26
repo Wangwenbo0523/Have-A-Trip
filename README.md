@@ -15,7 +15,7 @@
 | `backend/` | ✅ | 景点列表/详情/搜索、分类标签、来源与许可、看板数据源、行为埋点、推荐接口、随机抽取与就近推荐（按 IP 猜城市，默认关闭）、AI 能力（一句话检索 / 详情页追问 / 推荐理由润色 / 语义检索 / LLM 行程生成，默认关闭）、用户动态区（发动态 / 按景点或按设备看 / 作者删除，匿名无定位）；370 个用例（360 通过，另 10 个 schema 对拍用例需 PostgreSQL） |
 | `frontend/` | ✅ | 首页（打开时弹出「出去走走」：按猜到的城市就近抽三个、推荐位带理由且可 AI 润色）、全部景点（含等级筛选与「用一句话找景点」）、分类页、详情页（含旅游方案、站外视频搜索、就这个景点追问）、帮我排行程（提交 → 轮询 → 结果，可打印行程单）、数据看板、景点对比、搜索、动态区（发动态、只看我的、删自己的；景点详情页带「大家在这儿说了什么」）、数据来源与许可页、错误态、页头中英双语与深浅色切换（默认中文、默认浅色）；157 用例通过 |
 | `recsys/` | ✅ | 三条脚本（导出 → 训练 → 回写）端到端跑通，BPR 离线结果已写回 `rec_result` |
-| 数据量 | ✅ | 1385 个景点。**1229 条来自政府公开名录**（中国 A 级旅游景区，5A 331 / 4A 284 / 3A 614，覆盖 31 个省级行政区，`license` 为「政府公开信息（官方名录）」）；**156 条自采**（中国境内 116 + 境外 40，覆盖六大洲 30 个国家，`license` 为 MIT），带简介、标签、旅游方案与封面；配图每个景点一张（1255 张程序化自绘 SVG + 130 张抓自 Wikimedia Commons 的实景照片，作者与许可逐张登记在 `db/seed/photos.json`） |
+| 数据量 | ✅ | 1385 个景点。**1229 条来自政府公开名录**（中国 A 级旅游景区，5A 331 / 4A 284 / 3A 614，覆盖 31 个省级行政区，`license` 为「政府公开信息（官方名录）」）；**156 条自采**（中国境内 116 + 境外 40，覆盖六大洲 30 个国家，`license` 为 MIT），带简介、标签、旅游方案与封面；配图每个景点一张（1186 张程序化自绘 SVG + 199 张抓自 Wikimedia Commons 的实景照片，作者与许可逐张登记在 `db/seed/photos.json`） |
 
 施工顺序、依赖关系与每步验收标准见 **[`docs/PLAN.md`](docs/PLAN.md)（施工计划表）**。
 
@@ -113,7 +113,7 @@ PostgreSQL   景点档案 / 用户行为日志 / 推荐结果表
 | `backend/` | FastAPI 服务与测试，见 `backend/README.md` |
 | `db/` | `schema.sql` + 种子数据 + 字段口径，见 `db/README.md` |
 | `recsys/` | RecBole 调用层：依赖钉版、训练配置、离线脚本，见 `recsys/README.md` |
-| `scripts/` | 基底钉版记录、许可证卡口、DCO 校验、提交前一把过（`verify_all.py` 跑完本机能跑的静态门禁并汇总）、静态素材生成（`make_favicon.py` 站点图标、`make_attraction_covers.py` 景点配图与 `db/seed/images.sql`、`fetch_commons_photos.py` 抓 Wikimedia Commons 实景照片——需要能出去的代理）、本机网络排查（`system_proxy.py` 读 Windows 的代理设置并实测命令行会不会走代理）、种子渲染（`build_cn_attractions.py` 把官方名录 CSV 渲成 SQL）、离线工具（`draft_attraction_summaries.py` 生成简介草稿，人审后入库）、演示脚本（`demo-offline.ps1` 跑出「不配模型也完整可用」的验收报告）、本机应用启动器（`damo-app.ps1` 单进程起应用并开窗口、`install-damo-app.ps1` 装桌面与开始菜单快捷方式）、打包脚本（`make_installer.ps1` 把仓库打成一个能直接发给别人的 zip） |
+| `scripts/` | 基底钉版记录、许可证卡口、DCO 校验、提交前一把过（`verify_all.py` 跑完本机能跑的静态门禁并汇总）、静态素材生成（`make_favicon.py` 站点图标、`make_attraction_covers.py` 景点配图与 `db/seed/images.sql`、`fetch_commons_photos.py` 抓 Wikimedia Commons 实景照片、复查台账里有没有非实拍（`--audit`）、补齐字段与剔掉配错的（`--repair` / `--drop`）——需要能出去的代理）、本机网络排查（`system_proxy.py` 读 Windows 的代理设置并实测命令行会不会走代理）、种子渲染（`build_cn_attractions.py` 把官方名录 CSV 渲成 SQL）、离线工具（`draft_attraction_summaries.py` 生成简介草稿，人审后入库）、演示脚本（`demo-offline.ps1` 跑出「不配模型也完整可用」的验收报告）、本机应用启动器（`damo-app.ps1` 单进程起应用并开窗口、`install-damo-app.ps1` 装桌面与开始菜单快捷方式）、打包脚本（`make_installer.ps1` 把仓库打成一个能直接发给别人的 zip） |
 | `damo.cmd` | 双击入口（Windows）：起一个单进程应用并开一个独立窗口，见「当应用用」 |
 | `installer/` | 简易安装包（Windows）：`install.ps1` 把包装到**当前用户**（复制文件 → 建 venv 装依赖 → 建库灌 schema 与三个种子 → 装快捷方式），`-Uninstall` 卸载，见「做安装包」 |
 | `install.cmd` | 安装包的双击入口：解压后双击它就装，`install.cmd -Uninstall` 卸载（真实逻辑在 `installer/install.ps1`） |
