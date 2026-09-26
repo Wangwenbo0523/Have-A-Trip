@@ -16,13 +16,13 @@ jobs:
     # 硬失败, push 到 main 只告警, 免得主干长期挂一个红叉。检查本身照跑。
     continue-on-error: ${{ github.event_name == 'push' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           # 要拿到区间内的全部 commit, 浅克隆不够
           fetch-depth: 0
 
       - name: 设置 Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: "3.13"
 

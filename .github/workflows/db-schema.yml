@@ -34,7 +34,7 @@ jobs:
     env:
       PGPASSWORD: postgres
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: 应用 schema.sql 两次(验证幂等)
         run: |
