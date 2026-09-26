@@ -5,7 +5,8 @@
 --
 -- 配图来源有两种:
 --   1. 抓自 Wikimedia Commons 的实景照片, 清单在 db/seed/photos.json,
---      作者与许可逐张登记在 credit / license 里, url 形如 /images/covers/<slug>.jpg,
+--      作者与许可逐张登记在 credit / license 里, url 用台账里的真实文件名
+--      (/images/covers/<slug>.<后缀>, 后缀可能是 .jpg / .jpeg / .png),
 --      source_url 指向 Commons 的文件页(逐图署名的依据, 见 docs/LICENSE-AUDIT.md 第三节);
 --   2. 没有合适照片的景点, 退回仓库自绘的 SVG 示意图, 许可与仓库一致(MIT), source_url 为 NULL。
 --
@@ -753,7 +754,7 @@ INSERT INTO attraction_image (attraction_id, url, caption, credit, license, sour
     ((SELECT id FROM attraction WHERE slug = '4a-guangdong-175'), '/images/covers/4a-guangdong-175.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', NULL, 0),
     ((SELECT id FROM attraction WHERE slug = '4a-guangdong-176'), '/images/covers/4a-guangdong-176.jpg', '#197 · 韩文公祠3.jpg', '三猎', 'CC BY-SA 4.0', 'https://commons.wikimedia.org/wiki/File:%E9%9F%A9%E6%96%87%E5%85%AC%E7%A5%A03.jpg', 0),
     ((SELECT id FROM attraction WHERE slug = '4a-guangdong-177'), '/images/covers/4a-guangdong-177.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', NULL, 0),
-    ((SELECT id FROM attraction WHERE slug = '4a-guangdong-178'), '/images/covers/4a-guangdong-178.jpg', '#198 · 圆明新园 (214973111).jpeg', '林守宗方 Jiisi', 'CC BY 3.0', 'https://commons.wikimedia.org/wiki/File:%E5%9C%86%E6%98%8E%E6%96%B0%E5%9B%AD_(214973111).jpeg', 0),
+    ((SELECT id FROM attraction WHERE slug = '4a-guangdong-178'), '/images/covers/4a-guangdong-178.jpeg', '#198 · 圆明新园 (214973111).jpeg', '林守宗方 Jiisi', 'CC BY 3.0', 'https://commons.wikimedia.org/wiki/File:%E5%9C%86%E6%98%8E%E6%96%B0%E5%9B%AD_(214973111).jpeg', 0),
     ((SELECT id FROM attraction WHERE slug = '4a-guangdong-179'), '/images/covers/4a-guangdong-179.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', NULL, 0),
     ((SELECT id FROM attraction WHERE slug = '4a-guangdong-180'), '/images/covers/4a-guangdong-180.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', NULL, 0),
     ((SELECT id FROM attraction WHERE slug = '4a-guangdong-181'), '/images/covers/4a-guangdong-181.svg', '自绘示意图', 'Have-A-Trip 自绘', 'MIT', NULL, 0),

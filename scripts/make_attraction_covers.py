@@ -43,7 +43,13 @@ SEED_PATHS = (
 IMAGES_SQL_PATH = REPO_ROOT / "db" / "seed" / "images.sql"
 # 抓自 Wikimedia Commons 的实景照片清单(可选)。没有它就跑成纯自绘 SVG 的老样子。
 PHOTOS_JSON_PATH = REPO_ROOT / "db" / "seed" / "photos.json"
-PHOTO_URL_TEMPLATE = "/images/covers/{slug}.jpg"
+# 实拍照片的站内路径 = 前缀 + **台账里记的真实文件名**。
+# 不用 `{slug}.jpg` 拼: fetch 那边是故意保留原图真实后缀的(.jpg / .jpeg / .png,
+# 见 fetch_commons_photos.py 里「缩略图地址的后缀就是真实格式」那段), 台账记的也是
+# 真实文件名。曾经这里写死 .jpg, 于是 199 张里唯一那张 .jpeg(珠海市圆明新园)指着
+# 一个不存在的文件 —— 而 web.py 对找不到的静态路径会回落 SPA 外壳, 浏览器拿到的
+# 是一段 HTML, 连 404 都看不到, 表现就是裂图。
+PHOTO_URL_PREFIX = "/images/covers/"
 PHOTO_CREDIT_FALLBACK = "Wikimedia Commons 用户"
 # 一行 attraction_image: (景点, 站内路径, 标题, 署名, 许可, 来源页, 排序)。
 # source_url 自己带引号或 NULL, 所以模板里这一位不加引号。
@@ -545,7 +551,7 @@ def build_images_sql(rows, photos) -> str:
         item = photos.get(slug)
         if item:
             entries.append(ROW_TEMPLATE % (
-                slug, PHOTO_URL_TEMPLATE.format(slug=slug), sql_quote(photo_caption(item)),
+                slug, PHOTO_URL_PREFIX + item["photo"], sql_quote(photo_caption(item)),
                 sql_quote(item["credit"]), sql_quote(item["license"]),
                 # 来源页指向 Commons 的文件页 —— CC BY / CC BY-SA 要求给出来源, 逐图署名靠它
                 sql_text(item.get("source"))))
@@ -563,7 +569,8 @@ def build_images_sql(rows, photos) -> str:
 --
 -- 配图来源有两种:
 --   1. 抓自 Wikimedia Commons 的实景照片, 清单在 db/seed/photos.json,
---      作者与许可逐张登记在 credit / license 里, url 形如 /images/covers/<slug>.jpg,
+--      作者与许可逐张登记在 credit / license 里, url 用台账里的真实文件名
+--      (/images/covers/<slug>.<后缀>, 后缀可能是 .jpg / .jpeg / .png),
 --      source_url 指向 Commons 的文件页(逐图署名的依据, 见 docs/LICENSE-AUDIT.md 第三节);
 --   2. 没有合适照片的景点, 退回仓库自绘的 SVG 示意图, 许可与仓库一致(MIT), source_url 为 NULL。
 --
@@ -645,6 +652,23 @@ def main() -> int:
             path = COVER_DIR / item["photo"]
             if not path.exists():
                 problems.append(f"缺失照片 {path.relative_to(REPO_ROOT)}")
+        # 种子里的每个配图 URL 都得在磁盘上是同一个文件。这条盯的是**两处名字是否一致**:
+        # 上面两个循环各查一半(台账→磁盘、SVG 内容), 合起来仍然可能指向一个不存在的文件 ——
+        # URL 一度是拿 slug 拼死 .jpg 的, 台账记的却是真实后缀, 两边分别都对, 拼出来的
+        # /images/covers/4a-guangdong-178.jpg 磁盘上没有(真文件是 .jpeg), 于是界面上裂图。
+        # 只扫 INSERT 的值行: 上面那条 DELETE 里也有 '/images/covers/%', 不排除掉就会
+        # 把通配符当文件名报一次假告警(写这条时就踩了)。后缀也要求是真后缀, 不吃 '%'。
+        seeded = [l for l in sql.splitlines() if l.startswith("    ((SELECT id FROM attraction")]
+        urls = sorted({
+            u for line in seeded
+            for u in re.findall(r"'(/images/covers/[^']*\.[A-Za-z0-9]+)'", line)
+        })
+        if len(urls) != len(files):
+            problems.append(f"种子里的配图 URL 只认出 {len(urls)} 条, 应该有 {len(files)} 条")
+        for url in urls:
+            path = COVER_DIR / url.rsplit("/", 1)[-1]
+            if not path.exists():
+                problems.append(f"种子里的 {url} 在磁盘上不存在")
         if COVER_DIR.exists():
             known = {f"{slug}.svg" for slug in files}
             for path in sorted(COVER_DIR.glob("*.svg")):

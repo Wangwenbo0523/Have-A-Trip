@@ -197,6 +197,62 @@ def test_generated_images_sql_puts_the_source_page_on_photos_only():
         assert re.search(r", NULL, 0\),?$", line), line
 
 
+# VALUES 行长这样: 一行一条 attraction_image, 第二个字段是站内路径。
+# 用纯字符串切而不用正则: 行首那两个左括号在正则里要转义, 写错过一次。
+ROW_PREFIX = "    ((SELECT id FROM attraction WHERE slug = '"
+
+
+def _images_sql_urls() -> dict:
+    """把 db/seed/images.sql 的 VALUES 行读成 {slug: url}。"""
+    urls = {}
+    for line in IMAGES_SQL.read_text(encoding="utf-8").splitlines():
+        if not line.startswith(ROW_PREFIX):
+            continue
+        # slug 那一位外面还套着子查询的右括号: `... = 'west-lake'), '/images/...'`
+        slug, rest = line[len(ROW_PREFIX):].split("'), '", 1)
+        urls[slug] = rest.split("', '", 1)[0]
+    return urls
+
+
+def test_generated_images_sql_points_at_files_that_exist_on_disk():
+    """种子里的每个配图 URL, 在磁盘上都得是同一个文件。
+
+    这条盯的是**两处名字是否一致**。曾经这里是坏的: 照片的 URL 是拿 slug 拼死 .jpg 的,
+    而抓取脚本与台账保留的是原图的真实后缀 —— 199 张里唯一那张 .jpeg(珠海市圆明新园)
+    因此指着一个不存在的文件。更难发现的是它不报错: `backend/app/web.py` 对找不到的静态
+    路径会回落 SPA 外壳, HTTP 照样 200, 浏览器里只是那张图空着。
+    """
+    rows = [
+        line
+        for line in IMAGES_SQL.read_text(encoding="utf-8").splitlines()
+        if line.startswith("    ((SELECT id FROM attraction")
+    ]
+    urls = _images_sql_urls()
+    assert len(urls) == len(rows), "有行没解析出 URL, 这条守线就等于没查"
+    assert urls, "一条配图都没有?"
+    missing = [
+        url for url in urls.values()
+        if not (ROOT / "frontend" / "public" / url.lstrip("/")).exists()
+    ]
+    assert missing == []
+
+
+def test_photo_urls_use_the_filename_recorded_in_the_ledger():
+    """照片行的 URL 必须用台账里记的那个文件名(带真实后缀), 不能拿 slug 另拼一个。
+
+    允许的后缀就是抓取脚本肯写出来的那几个: Commons 缩略图地址的后缀 .jpg / .jpeg / .png。
+    """
+    ledger = json.loads(LEDGER.read_text(encoding="utf-8"))
+    urls = _images_sql_urls()
+    wrong = [
+        item["slug"] for item in ledger
+        if urls.get(item["slug"]) != "/images/covers/" + item["photo"]
+    ]
+    assert wrong == []
+    suffix = {pathlib.PurePosixPath(urls[item["slug"]]).suffix for item in ledger}
+    assert suffix <= {".jpg", ".jpeg", ".png"}, suffix
+
+
 def test_attributions_come_out_one_row_per_image_that_has_a_source(client, db_session, seeded):
     """有来源页的图逐张列出来: 聚合行说不清是哪一张, 也说不出出处。"""
     from app.models import AttractionImage
