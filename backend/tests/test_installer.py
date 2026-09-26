@@ -23,6 +23,7 @@ import re
 import shutil
 import socket
 import subprocess
+import sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 INSTALLER = ROOT / "installer"
@@ -52,6 +53,27 @@ Write-Output ('RESULT chatty={0}/{1} noisy={2}/{3} failing={4}/{5} ok={6}' -f @(
     $failing.GetType().Name, $failing, $ok
 ))
 """
+
+
+def _windows_powershell_or_skip() -> str:
+    """拿到本机的 PowerShell; 不在 Windows 上就直接跳过。
+
+    这里按**平台**跳, 不按「有没有 PowerShell」跳。第一次写成「CI 的 ubuntu 上没有 PowerShell,
+    自然会跳过」—— 那是错的: 那份运行器自带 PowerShell 7(2026-09-26 查到镜像里写着 7.6.6),
+    于是下面两条真跑了起来, 而它们要的 cmd.exe 与 Windows 路径都不在, 一句
+    "is not recognized" 直接把用例打成红的。判据要按能力挑: 能不能装这个包, 等价于是不是
+    Windows, 而不是是否存在一个叫 powershell 的命令。
+    """
+    if sys.platform != "win32":
+        import pytest
+
+        pytest.skip("安装包只面向 Windows: 这两条要 cmd.exe 与 Windows 路径, 在 CI 的 ubuntu 上跳过")
+    powershell = shutil.which("powershell") or shutil.which("pwsh")
+    if not powershell:
+        import pytest
+
+        pytest.skip("这台机器上没有 PowerShell, 跑不了这段")
+    return powershell
 
 
 def test_installer_powershell_scripts_start_with_a_bom():
@@ -100,14 +122,11 @@ def test_invoke_exe_does_not_leak_the_child_output_into_its_return_value():
 def test_invoke_exe_returns_a_scalar_exit_code_even_for_a_chatty_child():
     """真的跑一遍: 话多的子进程、往 stderr 写告警的子进程、真失败的子进程, 三种都要拿到 int。
 
-    CI 跑在 ubuntu 上, 没有 PowerShell, 所以这里跳过 —— 文本级那条(上一条)在 CI 里把关,
-    这条在有 PowerShell 的机器(也就是能真装这个包的机器)上把关。
+    只在 Windows 上跑: CI 那份 ubuntu 运行器其实自带 PowerShell, 但它没有 cmd.exe —— 第一次
+    推送时这句 harness 一开口就抛终止错误(NativeCommandError), CI 直接红了。文本级那条(上一条)
+    在所有平台把关, 这条在能真装这个包的 Windows 上把关。
     """
-    powershell = shutil.which("powershell") or shutil.which("pwsh")
-    if not powershell:
-        import pytest
-
-        pytest.skip("这台机器上没有 PowerShell, 跑不了这段(CI 上是常态)")
+    powershell = _windows_powershell_or_skip()
     harness = PS_HARNESS.replace("__PS1__", str(INSTALL_PS1))
     proc = subprocess.run(
         [powershell, "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", harness],
@@ -133,12 +152,9 @@ def test_a_missing_database_prints_the_hint_instead_of_only_a_powershell_excepti
     2026-09-26 真踩到: 便携库停了(留下一个死 postmaster.pid), 安装脚本探测连库失败, 本该
     打出来的那两行提示被一句 NativeCommandError 整段盖掉 —— 报错把「下一步该干什么」也
     一起遮住了。这条用一个连不上任何东西的端口真跑一遍脚本(跳过依赖与快捷方式), 只看它说了什么。
+    同样只在 Windows 上跑: 脚本里到处是 Windows 的路径与命令。
     """
-    powershell = shutil.which("powershell") or shutil.which("pwsh")
-    if not powershell:
-        import pytest
-
-        pytest.skip("这台机器上没有 PowerShell, 跑不了这段(CI 上是常态)")
+    powershell = _windows_powershell_or_skip()
     candidates = [
         shutil.which("psql"),
         r"C:\pgtemp\pginstall\bin\psql.exe",
