@@ -188,12 +188,35 @@ export interface SourceRecord {
 export interface ImageCredit {
   credit: string
   license: string
+  /** 许可全文地址。认不出来的许可为 null —— 页面就不给链接, 不猜一个指向别处的 */
+  license_url: string | null
   image_count: number
+}
+
+/**
+ * 一张图的逐图署名。
+ *
+ * CC BY / CC BY-SA 要求署名 + 指向许可 + 指出来源, 按作者聚合的几行做不到:
+ * 聚合行说不清哪一行对应哪张图, 也给不出来源页。
+ */
+export interface ImageAttribution {
+  attraction_slug: string
+  attraction_name: string
+  url: string
+  /** 带 #NNN 编号的标题, 便于对着 db/seed/photos.json 的编号清单核对 */
+  caption: string | null
+  credit: string
+  license: string
+  license_url: string | null
+  source_url: string | null
+  modification: ModificationStatus
 }
 
 export interface SourcesResponse {
   sources: SourceRecord[]
   images: ImageCredit[]
+  /** 有外部来源的图逐张署名。自绘图不在这里 —— 它没有来源, 不需要向谁署名 */
+  attributions: ImageAttribution[]
   attraction_total: number
   image_total: number
   /** 库里有 share-alike 来源却没登记修改状态 */

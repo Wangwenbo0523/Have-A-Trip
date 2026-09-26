@@ -126,10 +126,15 @@ CREATE TABLE IF NOT EXISTS attraction_image (
     -- 署名与许可是必填: 图片比文字更容易踩许可问题
     credit        TEXT NOT NULL,
     license       TEXT NOT NULL,
+    -- 来源页。实拍照片指向 Wikimedia Commons 的文件页 —— 逐图署名的依据, 见 LICENSE-AUDIT 第三节
+    source_url    TEXT,
     sort          INTEGER NOT NULL DEFAULT 0,
     created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
     UNIQUE (attraction_id, url)
 );
+
+-- 升级既有库: 老库的 attraction_image 没有 source_url, 这里是补列的地方。
+ALTER TABLE attraction_image ADD COLUMN IF NOT EXISTS source_url TEXT;
 
 CREATE INDEX IF NOT EXISTS idx_attraction_image_owner ON attraction_image (attraction_id, sort);
 
@@ -436,6 +441,10 @@ ON CONFLICT (version) DO NOTHING;
 
 INSERT INTO schema_version (version, note)
 VALUES ('0004_posts', '用户动态(自由文本, 可挂景点, 无自动审核)')
+ON CONFLICT (version) DO NOTHING;
+
+INSERT INTO schema_version (version, note)
+VALUES ('0005_image_source', '图片的来源页(逐图署名用)')
 ON CONFLICT (version) DO NOTHING;
 
 COMMIT;

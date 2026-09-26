@@ -42,6 +42,32 @@
   background: var(--panel-bg);
 }
 
+/* 逐图署名那张表列多(图 / 景点 / 署名 / 许可 / 来源页 / 修改状态), 给宽一点再横向滚动 */
+.credits__table--wide {
+  min-width: 720px;
+}
+
+/* 缩略图。199 张图不能一股脑加载, 所以 lazy + 固定尺寸(免得滚动时跳版) */
+.credits__thumbLink {
+  display: inline-block;
+  line-height: 0;
+}
+
+.credits__thumb {
+  width: 96px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--panel-border);
+}
+
+.credits__captionText {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
 /* 修改状态。--warn 用于「share-alike 来源还没登记改没改过」, 要能被一眼看到 */
 .credits__flag {
   display: inline-block;

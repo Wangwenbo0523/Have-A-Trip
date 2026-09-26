@@ -225,12 +225,35 @@ class ImageCredit(BaseModel):
 
     credit: str
     license: str
+    # 许可全文地址。认不出来的许可为 None —— 页面就不给链接, 不猜一个指向别处的
+    license_url: str | None = None
     image_count: int
+
+
+class ImageAttribution(BaseModel):
+    """一张图的逐图署名。
+
+    按作者聚合的几行满足不了 CC BY / CC BY-SA: 它们要求署名 + 指向许可 + 指出来源,
+    而聚合行说不清是哪张图、也没有来源页。所以有外部来源的图逐张列出来。
+    """
+
+    attraction_slug: str
+    attraction_name: str
+    url: str
+    # 带 #NNN 编号的标题, 便于对着 db/seed/photos.json 的编号清单核对
+    caption: str | None = None
+    credit: str
+    license: str
+    license_url: str | None = None
+    source_url: str | None = None
+    modification: ModificationStatus
 
 
 class SourcesOut(BaseModel):
     sources: list[SourceRecord]
     images: list[ImageCredit]
+    # 有外部来源的图逐张署名。自绘图不在这里 —— 它没有外部来源, 不需要向谁署名
+    attributions: list[ImageAttribution] = Field(default_factory=list)
     attraction_total: int
     image_total: int
     # 有 share-alike 来源却没登记修改状态。页面据此显示告警横幅。

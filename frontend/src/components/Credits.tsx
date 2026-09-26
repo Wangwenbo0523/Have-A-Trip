@@ -1,4 +1,5 @@
 import React from "react"
+import { Link } from "react-router-dom"
 
 import { fetchSources } from "../api/client"
 import { APP_REPO_URL, BASE_REPO_NAME, BASE_REPO_URL } from "../config"
@@ -30,6 +31,19 @@ interface CodeAsset {
   noteKey: MessageKey
   link?: string
 }
+
+/**
+ * 许可那一格。有全文地址就做成链接; 认不出来的许可只给字面 ——
+ * 猜一个链接等于把读者指向别的许可, 比没有链接更糟。
+ */
+const LicenseCell = ({ license, url }: { license: string; url: string | null }) =>
+  url ? (
+    <a className="credits__link" href={url} target="_blank" rel="noreferrer noopener">
+      {license}
+    </a>
+  ) : (
+    <>{license}</>
+  )
 
 /**
  * 代码层与静态素材。这一块**不进数据库** —— 它是仓库里的文件, 不是景点档案,
@@ -151,13 +165,108 @@ const Credits = () => {
             {data.images.map((image) => (
               <tr key={`${image.credit}::${image.license}`}>
                 <td>{image.credit}</td>
-                <td>{image.license}</td>
+                <td>
+                  <LicenseCell license={image.license} url={image.license_url} />
+                </td>
                 <td>{image.image_count}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+    )
+  }
+
+  /**
+   * 逐图署名。聚合那一段答不了「这一行对应哪张图」, 也拿不出来源页 ——
+   * CC BY / CC BY-SA 要的正是这两样, 所以有外部来源的图在这里一张一行。
+   */
+  const attributionSection = () => {
+    if (loading) return <StateMessage title={t("credits.attributions.loading")} />
+    if (!data) return null
+    if (data.attributions.length === 0) {
+      return (
+        <StateMessage
+          title={t("credits.attributions.empty.title")}
+          detail={t("credits.attributions.empty.detail")}
+        />
+      )
+    }
+    return (
+      <>
+        <div className="credits__scroll">
+          <table className="credits__table credits__table--wide">
+            <caption className="credits__caption">
+              {t("credits.attributions.caption", { total: data.attributions.length })}
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">{t("credits.table.image")}</th>
+                <th scope="col">{t("credits.table.attraction")}</th>
+                <th scope="col">{t("credits.table.credit")}</th>
+                <th scope="col">{t("credits.table.license")}</th>
+                <th scope="col">{t("credits.table.origin")}</th>
+                <th scope="col">{t("credits.table.modification")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.attributions.map((item) => (
+                <tr key={item.url}>
+                  <td>
+                    {/* 图是装饰、说明文字是链接名: 两者都写成可访问名的话, 读屏会念两遍 */}
+                    <a
+                      className="credits__thumbLink"
+                      href={item.url}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                    >
+                      <img
+                        className="credits__thumb"
+                        src={item.url}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        width={96}
+                        height={64}
+                      />
+                      {item.caption ? (
+                        <span className="credits__captionText">{item.caption}</span>
+                      ) : null}
+                    </a>
+                  </td>
+                  <td>
+                    <Link className="credits__link" to={`/attraction/${item.attraction_slug}`}>
+                      {item.attraction_name}
+                    </Link>
+                  </td>
+                  <td>{item.credit}</td>
+                  <td>
+                    <LicenseCell license={item.license} url={item.license_url} />
+                  </td>
+                  <td>
+                    {item.source_url ? (
+                      <a
+                        className="credits__link"
+                        href={item.source_url}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                      >
+                        {t("credits.attributions.sourceLink")}
+                      </a>
+                    ) : null}
+                  </td>
+                  <td>
+                    <span className="credits__flag">
+                      {t(MODIFICATION_KEYS[item.modification])}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="credits__note">{t("credits.attributions.note")}</p>
+      </>
     )
   }
 
@@ -191,6 +300,11 @@ const Credits = () => {
       <section className="section">
         <h3 className="section__title">{t("credits.images.title")}</h3>
         {imageSection()}
+      </section>
+
+      <section className="section">
+        <h3 className="section__title">{t("credits.attributions.title")}</h3>
+        {attributionSection()}
       </section>
 
       <section className="section">

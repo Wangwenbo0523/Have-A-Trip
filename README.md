@@ -263,7 +263,7 @@ npm run start                 # /api 由 vite 代理到 8000, 本地免跨域
 | GET | `/attractions/{id_or_slug}/similar` | 相似景点（内容相似度，不需要用户行为） |
 | GET | `/stats` | 景点库总览：只统计已发布景点，与 `/sources` 同一口径。看板页据此渲染，数字不写死在前端 |
 | GET | `/categories`、`/tags` | 分类与标签（只统计已发布景点） |
-| GET | `/sources` | 数据来源与许可：从 `attraction` / `attraction_image` 聚合，声明页据此渲染 |
+| GET | `/sources` | 数据来源与许可：从 `attraction` / `attraction_image` 聚合，声明页据此渲染。除按「作者 + 许可」聚合的几行外，还给出**逐图署名**（有外部来源的图一张一行，带许可链接与来源页） |
 | POST | `/events` | 行为埋点：`view` / `favorite` / `rate` / `share` |
 | GET | `/posts` | 用户动态列表：只出 `visible`，按时间倒序。筛选是**精确匹配**：`?attraction=<slug>`（某个景点下）、`?device_id=`（我的）；`?viewer=` 只用来算 `mine` 与当天已用名额。翻页两种给法**只能挑一个**：`?page=` 是偏移，`?before=<上一页的 next_cursor>` 是游标（列表与游标同按 `id` 倒序，翻页途中有人发新的也不会重复）；响应里的 `next_cursor` 为 `null` 表示到底了 |
 | POST | `/posts` | 发一条动态：正文 1–500 字，可选署名与一个**已发布**景点（挂别的会 404）。不存任何定位 |

@@ -130,7 +130,7 @@ vendor 进来的 `frontend/LICENSE`（`Copyright (c) 2019 Zero To Mastery`）原
 | 站点图标五件套：`frontend/public/favicon.ico`（7 档尺寸）、`icon-192.png`、`icon-512.png`、`icon-maskable-512.png`、`apple-touch-icon.png` | **自绘**，但字母轮廓取自 **Noto Sans Bold**（SIL OFL 1.1，允许商用）—— 只嵌入抽稀后的轮廓坐标，**不打包字体文件**；帽子、圆角方块、渐变与高光都是脚本里的几何 | MIT（与仓库同许可）；字体部分按 OFL 1.1，无字体文件随附 | **已换图形**（2026-09-26）。上游的 `earth.ico`（225 KB）与旧 `favicon.ico` 出处无从查证，已于 2026-09-25 删除，占位图形改由 `scripts/make_favicon.py` 生成；2026-09-26 换成 HAT 标志（Have-A-Trip 的缩写）并从单文件扩到五件套。改常量重跑即可复现，`--check` 逐字节比对。页头的 `BrandMark.tsx` 与这五件套是**同一份轮廓** |
 | `frontend/src/logo.svg` | 上游基底的 React 标志 | 零引用死资源 | 已删除（2026-09-25，S4） |
 | 景点配图 · 自绘（1385 个文件，其中 1186 个挂在 `attraction_image` 上） | **自绘**，由 `scripts/make_attraction_covers.py` 程序化生成 | MIT（与仓库同许可） | 出处就是仓库里的脚本本身。每个景点都有一张，改常量重跑即可复现，`--check` 会拦下手工改过的图。**每张都生成了，但只有没照片的 1186 个景点把它挂进 `attraction_image`** —— 剩下 199 个的自绘版留在磁盘上做兜底（照片要换掉时改一行 photos.json 就能回退） |
-| 景点配图 · 实景照片（199 张，`frontend/public/images/covers/*.jpg`） | **Wikimedia Commons**：由 `scripts/fetch_commons_photos.py` 抓取，台账 `db/seed/photos.json` 逐张记作者、许可与来源页 | **逐张不同**：CC BY-SA 4.0（82）、CC BY-SA 3.0（62）、CC BY 3.0（30）、CC0（5）、CC BY 2.0（4）、CC BY-SA 2.0（4）、CC BY 4.0（4）、Public domain（3）、CC BY 2.5（2）、CC BY-SA 3.0 igo（1）、CC BY-SA 2.5（1）、CC BY-SA 1.0（1） | 2026-09-26 加入。原口径是「不引带相同方式共享义务的图」，这次**明知有义务仍然收了** —— 当时的决定是先把 5A 景区的首图补齐，署名与合规回头再补。**已知缺口**：CC BY / CC BY-SA 要求署名（CC BY-SA 还要求以相同方式共享），而库里只有 `credit` / `license` 两列，声明页按「作者 + 许可」聚合出若干行，**没有逐图署名、没有来源页链接、也没标出某一行对应哪张图**。2026-09-25 那句「Wikimedia Commons 在本机网络下不可达」也已过期：本机可经代理出去，199 张就是这么抓来的（先把 5A 补齐，又按 4A 扩了一轮）。**「是不是实拍」也做成了可复查的**：`--audit` 按当前口径回查台账每一张的类别与描述，把 AI 生成图、版画 / 木刻、舆图、手稿、同名车站与军舰挡在门外 —— 西湖那张《漂海录》古籍插图就是这么逮出来的；人工过目后仍配错的用 `--drop` 剔掉，退回自绘 SVG（本轮过目 75 张新图，剔掉 6 张）|
+| 景点配图 · 实景照片（199 张，`frontend/public/images/covers/*.jpg`） | **Wikimedia Commons**：由 `scripts/fetch_commons_photos.py` 抓取，台账 `db/seed/photos.json` 逐张记作者、许可与来源页 | **逐张不同**：CC BY-SA 4.0（82）、CC BY-SA 3.0（62）、CC BY 3.0（30）、CC0（5）、CC BY 2.0（4）、CC BY-SA 2.0（4）、CC BY 4.0（4）、Public domain（3）、CC BY 2.5（2）、CC BY-SA 3.0 igo（1）、CC BY-SA 2.5（1）、CC BY-SA 1.0（1） | 2026-09-26 加入。原口径是「不引带相同方式共享义务的图」，这次**明知有义务仍然收了** —— 当时的决定是先把 5A 景区的首图补齐，署名与合规回头再补。**署名义务已于 2026-09-26 逐图补齐**：`attraction_image.source_url` 存来源页，`/credits` 的「图片逐图署名」一张一行 —— 缩略图、`#NNN` 编号、景点、作者、指向许可全文的链接、来源页链接，以及「已修改」标注（抓的是 Commons 重渲染的缩略图，页面上还按版面裁过，CC BY 3.0 起就要求标注修改）。相同方式共享的义务仍在：这些图的衍生版本要按 CC BY-SA 分发。2026-09-25 那句「Wikimedia Commons 在本机网络下不可达」也已过期：本机可经代理出去，199 张就是这么抓来的（先把 5A 补齐，又按 4A 扩了一轮）。**「是不是实拍」也做成了可复查的**：`--audit` 按当前口径回查台账每一张的类别与描述，把 AI 生成图、版画 / 木刻、舆图、手稿、同名车站与军舰挡在门外 —— 西湖那张《漂海录》古籍插图就是这么逮出来的；人工过目后仍配错的用 `--drop` 剔掉，退回自绘 SVG（本轮过目 75 张新图，剔掉 6 张）|
 
 ### 原则
 
@@ -140,7 +140,7 @@ vendor 进来的 `frontend/LICENSE`（`Copyright (c) 2019 Zero To Mastery`）原
    这条原则在 2026-09-26 被**主动放宽过一次**：为补齐 5A 景区首图（后又扩到 4A）收了 199 张 Commons 照片，其中 151 张 CC BY-SA。
    代价与还没补上的义务记在上表与第四节的核对清单里；要恢复原口径，把这 199 张换成自绘或 PD / CC0 即可。
 3. 图片的署名与许可**是数据库字段**，不是文档里的口头约定。`attraction_image.credit` / `.license` 都是 `NOT NULL`，
-   声明页（`Credits.tsx`）由它们聚合生成——想漏也漏不掉。
+   实拍照片另存 `source_url`（来源页），声明页（`Credits.tsx`）既有按作者聚合的几行、也有逐图署名——想漏也漏不掉。
 4. `public/` 下的图标是**自绘**的（`scripts/make_favicon.py`）。换图形要改那个脚本再重跑，
    不要手工往 `public/` 里塞文件——脚本在，出处就查得到。`license-gate` 工作流会跑 `--check`，图标与脚本对不上就直接红。
    页头那个标志（`src/components/BrandMark.tsx`）用的是同一组轮廓坐标，换图形要连着一起改。
@@ -257,7 +257,7 @@ AI 在本项目里做三件事（都在 `backend/app/llm/`）：
 - [x] `public/` 下的占位图标已换成自绘（2026-09-25）：`scripts/make_favicon.py` 生成，上游 `earth.ico` 已删除
 - [x] 图标换成 HAT 标志并补齐五件套、页头加同一份标志（2026-09-26）：字母轮廓来自 Noto Sans Bold（OFL 1.1），只嵌坐标不打包字体；`--check` 与 `verify_all.py` 均通过
 - [x] 景点配图已落（2026-09-25）：自绘封面由 `scripts/make_attraction_covers.py` 生成，每个景点一张（随名录扩容现为 1385 张），`credit` 为 Have-A-Trip 自绘、`license` 为 MIT
-- [ ] **199 张实景照片的署名义务还没补完**（2026-09-26）：`db/seed/photos.json` 逐张记了作者、许可与来源页，但界面上只有按「作者 + 许可」聚合的几行，没有逐图署名，也没有指向来源页的链接。CC BY / CC BY-SA 要求署名，CC BY-SA 还要求相同方式共享 —— 要么把界面补上，要么把这 199 张换回自绘
+- [x] **199 张实景照片的署名义务已逐图补齐**（2026-09-26）：`attraction_image.source_url` 存来源页（自绘图为 `NULL`），`/credits` 的「图片逐图署名」一张一行 —— 缩略图、`#NNN` 编号、景点、作者、许可全文链接、来源页链接与「已修改」标注。许可全文链接由 `sources.py` 的 `license_url()` 按许可文本推出，推不出来的只给字面（不猜）。守线在 `backend/tests/test_sources.py`：台账每一张都要有 Commons 来源页、生成的种子里照片行必须带 `source_url` 而自绘行必须是 `NULL`、库里出现过的许可写法都要能推出全文地址
 - [x] 境外 40 个景点同样自采（v2.0），没有引入任何第三方数据集；评估过一份 CC BY-SA 4.0 的 5A 名录，因 share-alike 与闭源路线冲突而放弃
 - [x] 一期数据层已定案（2026-09-25，S7）：50 条全部自采、`license` 为 MIT，无第三方数据集，无图片
 - [ ] 接入新数据源或图片时，回来更新第三、第五节并逐条复核

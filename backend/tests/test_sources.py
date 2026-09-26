@@ -5,10 +5,19 @@
 """
 from __future__ import annotations
 
+import json
+import pathlib
+import re
+
 from app.api import sources
 from app.models import Attraction
 
 API = "/api/v1"
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+# 实拍照片的台账, 与由它生成的种子 SQL。两个都读, 是为了守住「台账里有的, 种子里也得有」
+LEDGER = ROOT / "db" / "seed" / "photos.json"
+IMAGES_SQL = ROOT / "db" / "seed" / "images.sql"
 
 
 def get_json(client, path, **params):
@@ -118,3 +127,123 @@ def test_draft_attraction_images_stay_out_of_the_declaration(client, db_session,
 
     body = get_json(client, f"{API}/sources")
     assert body["images"] == []
+
+
+# ---------------------------------------------------------------- 逐图署名
+
+def test_license_url_points_at_the_deed_not_at_a_guess():
+    """许可 -> 许可全文地址。认不出来的返回 None —— 猜一个比不给链接更糟。"""
+    assert sources.license_url("CC BY-SA 4.0") == "https://creativecommons.org/licenses/by-sa/4.0/"
+    assert sources.license_url("CC BY 3.0") == "https://creativecommons.org/licenses/by/3.0/"
+    assert sources.license_url("CC0") == "https://creativecommons.org/publicdomain/zero/1.0/"
+    assert (
+        sources.license_url("CC BY-SA 3.0 igo")
+        == "https://creativecommons.org/licenses/by-sa/3.0/igo/"
+    )
+    assert sources.license_url("MIT") == "https://opensource.org/license/mit"
+    assert (
+        sources.license_url("Public domain")
+        == "https://commons.wikimedia.org/wiki/Commons:Public_domain"
+    )
+    # 编出来的 / 空的不给链接: 那一格宁可是纯文本, 也不要指向别的许可
+    assert sources.license_url("随便写的许可") is None
+    assert sources.license_url("") is None
+    assert sources.license_url(None) is None
+
+
+def test_every_license_in_use_has_a_deed_link():
+    """库里出现过的许可写法都要能给出全文地址 —— 新写法忘了登记, 这条会红。"""
+    licenses = {item["license"] for item in json.loads(LEDGER.read_text(encoding="utf-8"))}
+    licenses.add("MIT")  # 自绘的那一批, 不经过台账
+    assert sorted(text for text in licenses if sources.license_url(text) is None) == []
+
+
+def test_image_modification_is_about_the_pipeline_not_the_license():
+    """外部来源的图一律 modified: 抓的是 Commons 重渲染的缩略图, 页面上还裁过。
+
+    CC BY 3.0 起就要求标注修改, 所以不能只在 share-alike 上标; 自绘图没有这个义务。
+    """
+    for text in ("CC BY-SA 4.0", "CC BY 3.0", "CC0", "Public domain"):
+        assert sources.image_modification(text) == "modified", text
+    assert sources.image_modification("MIT") == "not-applicable"
+
+
+def test_every_photo_in_the_ledger_has_a_source_page():
+    """署名要能追到出处: 台账里每条都得有 Commons 的文件页地址。"""
+    items = json.loads(LEDGER.read_text(encoding="utf-8"))
+    assert items, "台账是空的, 这条守线就白写了"
+    missing = [
+        item["slug"]
+        for item in items
+        if not (item.get("source") or "").startswith("https://commons.wikimedia.org/")
+    ]
+    assert missing == []
+
+
+def test_generated_images_sql_puts_the_source_page_on_photos_only():
+    """生成的种子里: 照片行带来源页, 自绘行写 NULL(它没有外部来源, 不需要向谁署名)。"""
+    rows = [
+        line
+        for line in IMAGES_SQL.read_text(encoding="utf-8").splitlines()
+        if line.startswith("    ((SELECT id FROM attraction")
+    ]
+    photos = [line for line in rows if ".svg'" not in line]
+    svgs = [line for line in rows if ".svg'" in line]
+    assert len(photos) == len(json.loads(LEDGER.read_text(encoding="utf-8")))
+    assert svgs, "自绘图那一批不见了?"
+    for line in photos:
+        assert re.search(r", 'https://commons\.wikimedia\.org/[^']+', 0\),?$", line), line
+    for line in svgs:
+        assert re.search(r", NULL, 0\),?$", line), line
+
+
+def test_attributions_come_out_one_row_per_image_that_has_a_source(client, db_session, seeded):
+    """有来源页的图逐张列出来: 聚合行说不清是哪一张, 也说不出出处。"""
+    from app.models import AttractionImage
+
+    db_session.add_all([
+        AttractionImage(
+            attraction_id=seeded["west_lake"].id, url="/images/covers/west-lake.jpg",
+            caption="#001 · West Lake.jpg", credit="张三", license="CC BY-SA 4.0",
+            source_url="https://commons.wikimedia.org/wiki/File:West_Lake.jpg",
+        ),
+        # 自绘图没有外部来源, 不该出现在逐图署名里
+        AttractionImage(
+            attraction_id=seeded["palace"].id, url="/images/covers/palace.svg",
+            caption="自绘示意图", credit="Have-A-Trip 自绘", license="MIT",
+        ),
+    ])
+    db_session.commit()
+
+    body = get_json(client, f"{API}/sources")
+    assert len(body["attributions"]) == 1
+    row = body["attributions"][0]
+    assert row["attraction_slug"] == "west-lake"
+    assert row["caption"] == "#001 · West Lake.jpg"
+    assert row["credit"] == "张三"
+    assert row["license_url"] == "https://creativecommons.org/licenses/by-sa/4.0/"
+    assert row["source_url"] == "https://commons.wikimedia.org/wiki/File:West_Lake.jpg"
+    assert row["modification"] == "modified"
+    # 聚合口径没变: 两张图都还在 image_total 里, 只是聚合那一栏不逐张列
+    assert body["image_total"] == 2
+    assert {item["license_url"] for item in body["images"]} == {
+        "https://creativecommons.org/licenses/by-sa/4.0/",
+        "https://opensource.org/license/mit",
+    }
+
+
+def test_draft_attraction_photos_are_not_attributed(client, db_session, seeded):
+    """下架景点的照片一样不许署到声明页上 —— 这一页只说「我们用了什么」。"""
+    from app.models import AttractionImage
+
+    db_session.add(
+        AttractionImage(
+            attraction_id=seeded["draft"].id, url="/images/covers/draft.jpg",
+            credit="不该出现", license="CC BY 4.0",
+            source_url="https://commons.wikimedia.org/wiki/File:Draft.jpg",
+        )
+    )
+    db_session.commit()
+
+    body = get_json(client, f"{API}/sources")
+    assert body["attributions"] == []

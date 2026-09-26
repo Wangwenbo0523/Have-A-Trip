@@ -176,6 +176,8 @@ class AttractionImage(Base):
     # 署名与许可必填: 图片比文字更容易踩许可问题
     credit: Mapped[str] = mapped_column(Text, nullable=False)
     license: Mapped[str] = mapped_column(Text, nullable=False)
+    # 来源页。实拍照片指向 Wikimedia Commons 的文件页; 自绘图为空(它没有外部来源)
+    source_url: Mapped[str | None] = mapped_column(Text)
     sort: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()

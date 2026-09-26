@@ -9,7 +9,7 @@
 | `schema.sql` | 建表 DDL（幂等，可重复执行） |
 | `seed/seed.sql` | **自采**种子数据：9 个分类、32 个标签、156 个景点、552 条标签关联、156 个旅游方案、506 条方案步骤（幂等） |
 | `seed/attractions_cn.sql` | **官方名录**种子数据：1 个分类、1229 个景点（5A 331 / 4A 284 / 3A 614）。**由 `scripts/build_cn_attractions.py` 生成，不要手改**；数据在 `seed/data/cn_a_level.csv`，来历见 `seed/data/README.md` |
-| `seed/images.sql` | 景点配图：1385 条 `attraction_image`，每条带 `credit` 与 `license`。**由 `scripts/make_attraction_covers.py` 生成，不要手改** |
+| `seed/images.sql` | 景点配图：1385 条 `attraction_image`，每条带 `credit` 与 `license`；实拍照片另带 `source_url`（指向来源页）。**由 `scripts/make_attraction_covers.py` 生成，不要手改** |
 
 ## 执行
 
@@ -45,8 +45,9 @@ psql -d attraction_atlas -c "select a.name, c.name from attraction a join catego
 psql -d attraction_atlas -c "select a.name, string_agg(t.name, ' / ') from attraction a join attraction_tag at on at.attraction_id = a.id join tag t on t.id = at.tag_id group by a.id, a.name limit 5;"
 psql -d attraction_atlas -c "select count(*) from attraction_image;"           # 1385
 psql -d attraction_atlas -c "select credit, license, count(*) from attraction_image group by 1, 2;"
+psql -d attraction_atlas -c "select count(*) from attraction_image where source_url is not null;"   # 199（逐图署名那批）
 psql -d attraction_atlas -c "select count(*) from post;"                    # 动态是用户产生的，种子数据里没有，通常是 0
-psql -d attraction_atlas -c "select * from schema_version;"                 # 应含 0001_init / 0002_plans / 0003_ai / 0004_posts
+psql -d attraction_atlas -c "select * from schema_version;"                 # 应含 0001_init / 0002_plans / 0003_ai / 0004_posts / 0005_image_source
 ```
 
 ## 表
@@ -58,7 +59,7 @@ psql -d attraction_atlas -c "select * from schema_version;"                 # �
 | `tag` | 自由标签 |
 | `attraction` | 景点档案主表 |
 | `attraction_tag` | 景点-标签多对多 |
-| `attraction_image` | 图集，每条带 `credit` 与 `license`（均 `NOT NULL`）；1385 行 = 每个景点恰好一行：1186 条自绘 SVG + 199 条 Wikimedia Commons 实景照片（台账 `seed/photos.json`） |
+| `attraction_image` | 图集，每条带 `credit` 与 `license`（均 `NOT NULL`）；1385 行 = 每个景点恰好一行：1186 条自绘 SVG + 199 条 Wikimedia Commons 实景照片（台账 `seed/photos.json`）。`source_url` 存来源页：照片指向 Commons 文件页，自绘图为 `NULL`（它没有外部来源），逐图署名就靠这一列 |
 | `attraction_plan` | 景点的旅游方案（自采行程建议），一条一个方案 |
 | `attraction_plan_step` | 方案里的有序步骤，按 `day_no` 分组、组内按 `sort` 升序 |
 | `app_user` | 用户（一期只有匿名 `device_id`） |
@@ -188,7 +189,7 @@ A 级景区条目，单独放在 `seed/attractions_cn.sql`（脚本生成物，�
 | 票价只在**确定免费**时写 `0`，其余为 `NULL` | 票价是易变信息，写进种子的数字迟早会过期。目前只有 9 条写了 `0`（西湖、中国国家博物馆、苏州博物馆、外滩、橘子洲，以及查理大桥、大堡礁、米尔福德峡湾、圣托里尼这几处不收费的开放区域） |
 | 景区等级 `a_level` 与世界遗产 `heritage` 只填能查证的 | `NULL` 是**未核实**。名录会调整，宁可空着也不猜；前端把两者都为空处理成「不显示徽章」。官方名录那一批的 `a_level` 同样只写发布方说过的话，不由本仓库推算 |
 | 方案只给 `budget_level` 档次，不给金额 | 与票价同理，具体价格随季节浮动，写死就会过期 |
-| 配图以**自绘**为主，另有 199 张实景照片 | 原打算全部用 CC0 / 公有领域图库。实测 Wikimedia Commons 与 Openverse 在本机网络下直连不通，Unsplash / Pixabay 又各有各的专有许可（不是 CC0），且对中国具体景点覆盖很薄，于是改成程序化生成 SVG（`scripts/make_attraction_covers.py`），出处就是脚本本身。2026-09-26 分两批补了 199 张 Commons 实景照片（`scripts/fetch_commons_photos.py` 经代理抓取，只收 PD / CC0 / CC BY / CC BY-SA），剩下的景点仍用自绘 SVG 兜底。每条都走 `credit` 与 `license`（两列均为 `NOT NULL`），声明页按「作者 + 许可」聚合；**逐图署名与来源页链接还没做**，见 `docs/LICENSE-AUDIT.md` 第五节 |
+| 配图以**自绘**为主，另有 199 张实景照片 | 原打算全部用 CC0 / 公有领域图库。实测 Wikimedia Commons 与 Openverse 在本机网络下直连不通，Unsplash / Pixabay 又各有各的专有许可（不是 CC0），且对中国具体景点覆盖很薄，于是改成程序化生成 SVG（`scripts/make_attraction_covers.py`），出处就是脚本本身。2026-09-26 分两批补了 199 张 Commons 实景照片（`scripts/fetch_commons_photos.py` 经代理抓取，只收 PD / CC0 / CC BY / CC BY-SA），剩下的景点仍用自绘 SVG 兜底。每条都走 `credit` 与 `license`（两列均为 `NOT NULL`），声明页既有「作者 + 许可」的聚合，也有**逐图署名**（照片一张一行，带缩略图、来源页链接与「已修改」标注），见 `docs/LICENSE-AUDIT.md` 第五节与下面的「图片的逐图署名」 |
 | 自采景点的 `source_url` 为 `NULL` | 内容是逐条整理的公开事实，没有单一可引的页面；等有了再补，不为填空而填。官方名录那一批有明确出处，`source_url` 指向发布页面（广东那一份没留存地址，为空） |
 
 ### 幂等与自愈
@@ -231,6 +232,27 @@ order by records desc;
 
 这张表**是从库里聚合出来的**，不是手写的：将来换一个来源，它会自己多一行、少一行，声明页跟着变。
 「覆盖省份」按 `province` 去重，境外景点的 `province` 填的是所在国家 / 地区，所以自采那一行的 72 里含着境外。
+
+### 图片的逐图署名
+
+实拍照片的来源页存在 `attraction_image.source_url`，自绘图为 `NULL` —— 不是「来源缺失」，
+而是它根本没有外部来源这回事（出处就是 `scripts/make_attraction_covers.py`）。
+
+```sql
+select a.slug, i.caption, i.credit, i.license, i.source_url
+from attraction_image i
+join attraction a on a.id = i.attraction_id
+where a.status = 'published' and i.source_url is not null
+order by i.credit, a.name;
+```
+
+`/credits` 的「图片逐图署名」就是这 199 行：一张一行，缩略图、`#NNN` 编号、景点、作者、
+指向许可全文的链接、来源页链接，以及「已修改」标注。CC BY / CC BY-SA 要的三样（署名、
+许可、来源）都在同一行上，不用回头查台账。
+
+许可全文的链接**不在库里**：`backend/app/api/sources.py` 的 `license_url()` 按许可文本推出来
+（许可字符串是人写的，`CC BY-SA 4.0` 与 `CC-BY-SA-4.0` 都有）。推不出来的返回 `None`，
+页面上那一格只有字面 —— 猜一个链接等于把读者指向别的许可，比没有链接更糟。
 
 那三行的 `license` 写的是 `政府公开信息（官方名录）`。它不是某个开源许可，而是**来源声明**：
 名单由政府部门自己公开发布，不是个人或社区整理的数据集。所以「官方名录」进得来，

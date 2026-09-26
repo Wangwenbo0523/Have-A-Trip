@@ -45,6 +45,9 @@ IMAGES_SQL_PATH = REPO_ROOT / "db" / "seed" / "images.sql"
 PHOTOS_JSON_PATH = REPO_ROOT / "db" / "seed" / "photos.json"
 PHOTO_URL_TEMPLATE = "/images/covers/{slug}.jpg"
 PHOTO_CREDIT_FALLBACK = "Wikimedia Commons 用户"
+# 一行 attraction_image: (景点, 站内路径, 标题, 署名, 许可, 来源页, 排序)。
+# source_url 自己带引号或 NULL, 所以模板里这一位不加引号。
+ROW_TEMPLATE = "    ((SELECT id FROM attraction WHERE slug = '%s'), '%s', '%s', '%s', '%s', %s, 0)"
 COVER_DIR = REPO_ROOT / "frontend" / "public" / "images" / "covers"
 
 # ---------------------------------------------------------------- 版式
@@ -501,6 +504,15 @@ def sql_quote(text: str) -> str:
     return one_line(text).replace("'", "''")
 
 
+def sql_text(value) -> str:
+    """可空文本字面量: 空值写 NULL, 不写空串。
+
+    「这张图没有外部来源」和「来源是空字符串」在声明页上不是一回事, 所以不合并。
+    """
+    text = one_line(value or "")
+    return "NULL" if not text else "'%s'" % text.replace("'", "''")
+
+
 def load_photos() -> dict:
     """读 db/seed/photos.json: 抓自 Wikimedia Commons 的实景照片。
 
@@ -532,14 +544,17 @@ def build_images_sql(rows, photos) -> str:
     for slug, _name, _name_en, _category in rows:
         item = photos.get(slug)
         if item:
-            entries.append(
-                "    ((SELECT id FROM attraction WHERE slug = '%s'), '%s', '%s', '%s', '%s', 0)"
-                % (slug, PHOTO_URL_TEMPLATE.format(slug=slug), sql_quote(photo_caption(item)),
-                   sql_quote(item["credit"]), sql_quote(item["license"])))
+            entries.append(ROW_TEMPLATE % (
+                slug, PHOTO_URL_TEMPLATE.format(slug=slug), sql_quote(photo_caption(item)),
+                sql_quote(item["credit"]), sql_quote(item["license"]),
+                # 来源页指向 Commons 的文件页 —— CC BY / CC BY-SA 要求给出来源, 逐图署名靠它
+                sql_text(item.get("source"))))
         else:
-            entries.append(
-                "    ((SELECT id FROM attraction WHERE slug = '%s'), '%s', '%s', '%s', '%s', 0)"
-                % (slug, URL_TEMPLATE.format(slug=slug), CAPTION, CREDIT, LICENSE))
+            entries.append(ROW_TEMPLATE % (
+                slug, URL_TEMPLATE.format(slug=slug), sql_quote(CAPTION),
+                sql_quote(CREDIT), sql_quote(LICENSE),
+                # 自绘图没有外部来源, 写 NULL。它不是「来源缺失」, 而是「根本没有来源这回事」
+                sql_text(None)))
     values = ",\n".join(entries)
     return f'''-- Have-A-Trip 景点配图的种子数据
 --
@@ -548,10 +563,11 @@ def build_images_sql(rows, photos) -> str:
 --
 -- 配图来源有两种:
 --   1. 抓自 Wikimedia Commons 的实景照片, 清单在 db/seed/photos.json,
---      作者与许可逐张登记在 credit / license 里, url 形如 /images/covers/<slug>.jpg;
---   2. 没有合适照片的景点, 退回仓库自绘的 SVG 示意图, 许可与仓库一致(MIT)。
+--      作者与许可逐张登记在 credit / license 里, url 形如 /images/covers/<slug>.jpg,
+--      source_url 指向 Commons 的文件页(逐图署名的依据, 见 docs/LICENSE-AUDIT.md 第三节);
+--   2. 没有合适照片的景点, 退回仓库自绘的 SVG 示意图, 许可与仓库一致(MIT), source_url 为 NULL。
 --
--- 幂等: 用 upsert, 重跑会把 caption / credit / license 同步成本文件的版本。
+-- 幂等: 用 upsert, 重跑会把 caption / credit / license / source_url 同步成本文件的版本。
 --
 -- 执行:
 --   psql -d attraction_atlas -v ON_ERROR_STOP=1 -f db/seed/images.sql
@@ -563,13 +579,14 @@ BEGIN;
 -- 于是同一个景点有两行 sort = 0, cover_image 就成了碰运气。
 DELETE FROM attraction_image WHERE url LIKE '/images/covers/%';
 
-INSERT INTO attraction_image (attraction_id, url, caption, credit, license, sort) VALUES
+INSERT INTO attraction_image (attraction_id, url, caption, credit, license, source_url, sort) VALUES
 {values}
 ON CONFLICT (attraction_id, url) DO UPDATE SET
-    caption = EXCLUDED.caption,
-    credit  = EXCLUDED.credit,
-    license = EXCLUDED.license,
-    sort    = EXCLUDED.sort;
+    caption    = EXCLUDED.caption,
+    credit     = EXCLUDED.credit,
+    license    = EXCLUDED.license,
+    source_url = EXCLUDED.source_url,
+    sort       = EXCLUDED.sort;
 
 -- 列表页的封面取 sort = 0 的图。
 UPDATE attraction a
