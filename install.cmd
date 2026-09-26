@@ -17,7 +17,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "%PS1%" %*
 set "RC=%ERRORLEVEL%"
 if not "%RC%"=="0" (
   echo.
-  echo [damo-install] install did not finish (exit code %RC%). See the output above.
+  echo [damo-install] install did not finish. Exit code: %RC%
+  echo [damo-install] See the output above.
   pause
 )
 exit /b %RC%

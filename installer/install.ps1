@@ -103,9 +103,28 @@ function Exit-With {
 }
 
 function Invoke-Exe {
-    # 跑一个外部程序并原样透传输出。外部程序的非零退出码不会抛异常, 所以必须显式看。
+    # 跑一个外部程序: 输出照旧显示在控制台上, 但**不进管道** —— 只把退出码返回给调用方。
+    # 外部程序的非零退出码不会抛异常, 所以必须显式看。
+    #
+    # 别写回裸的 `& $Exe @Arguments`: 那样子进程写到 stdout 的每一行都会变成这个函数的返回值,
+    # 于是 `$rc = Invoke-Exe ...` 拿到的是「一整屏输出 + 退出码」的数组, 而 `$rc -ne 0` 恒真。
+    # 2026-09-26 用真打出来的安装包实测到: pip 明明装成功了(输出末尾就是 0), 脚本却报
+    # 「pip 装依赖失败」并中止, 后面建库、写 .env、装快捷方式全没跑。robocopy / psql /
+    # python -m venv 之所以一直没露馅, 只是因为它们被叫起来时几乎不往 stdout 写东西 ——
+    # 也就是说这条路一直是坏的, 只是没人在一台没有 backend\.venv 的机器上走到过。
     param([string]$Exe, [string[]]$Arguments)
-    & $Exe @Arguments
+    # 两个流一起转发到控制台: pip 的告警走 stderr, 分开转会在窗口里和正常输出乱序。
+    # 调用期间把 $ErrorActionPreference 降到 Continue, 是因为外部程序往 stderr 写一行、又用
+    # `2>&1` 合流进来时, 会被本脚本顶上那句 Stop 升级成终止错误(同一天在 psql 探测那条路上
+    # 实测到一次: 连不上库时本该打出来的提示被一句 PowerShell 异常整段盖掉)。真正的失败
+    # 判定只认退出码, 外部程序的一句告警不该把安装中断在半路。
+    $previous = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    try {
+        & $Exe @Arguments 2>&1 | Out-Host
+    } finally {
+        $ErrorActionPreference = $previous
+    }
     return $LASTEXITCODE
 }
 # ------------------------------------------------------------------ 卸载
@@ -270,9 +289,15 @@ if (-not $SkipDatabase) {
     $binDir = Split-Path -Parent $psql
 
     Write-Info "连库 $($PgHost):$PgPort (用户 $PgUser)"
-    $probe = & $psql -h $PgHost -p $PgPort -U $PgUser -d postgres -tAc "select 1" 2>&1
-    if ($LASTEXITCODE -ne 0) {
-        Write-Fail "连不上数据库: $probe"
+    # 探测连库走 Invoke-Exe, 不写回 `& $psql ... 2>&1`。原因是实测出来的: psql 连不上时
+    # 往 stderr 写一行, 那句 `2>&1` 把 stderr 合进成功流之后, 就被脚本顶上那句
+    # $ErrorActionPreference='Stop' 升级成终止错误 —— 于是下面专门写给人看的两行提示
+    # (「服务在跑吗 / 端口对不对 / 口令对不对」)一个字都打不出来, 用户只看到一段红色
+    # 堆栈, 而「数据库没起」恰恰是这条路上最常发生的一种失败。
+    # Invoke-Exe 里已经把两个流都转发到控制台并把失败还原成退出码, 所以这里能好好报错。
+    $probeRc = Invoke-Exe $psql @("-h", $PgHost, "-p", "$PgPort", "-U", $PgUser, "-d", "postgres", "-tAc", "select 1")
+    if ($probeRc -ne 0) {
+        Write-Fail "连不上数据库(psql 退出码 $probeRc; 具体原因见上面那行 psql 输出)。"
         Write-Note "确认 PostgreSQL 服务在跑、端口对、口令对; 便携实例要指 -PgBin / -PgPort。"
         Exit-With 1
     }
